@@ -177,7 +177,8 @@
 			<td valign="top" rowspan="2">
 				<div class="tabCRM">
 					<span id="tabCustomer" class="cssTabSelected" onclick="setTab(tabEnum.customer)">Customers</span>
-					<span id="tabContact" class="cssTab" onclick="setTab(tabEnum.contact)">Contacts</span>	
+					<span id="tabContact" class="cssTab" onclick="setTab(tabEnum.contact)">Contacts</span>
+					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.contact)">Logins</span>
 					<hr>			
 					<div id="divCustomer">
 		              	<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbCustomerList', 'txtSearchCustomer', event)">
@@ -226,6 +227,15 @@
 							<p></p>
 							<p></p>
 						</div>
+						</div>
+						<div id="divLogin">
+							<select id="cmbAvailableLogins" size="3"></select>
+							<select id="cmbLoginContactList" size="5"></select>
+							<label for="txtUserName" class="cssFieldLabel">First Name</label>
+							<input type="text" id="txtUserName">
+							<label for="txtPassword" class="cssFieldLabel">First Name</label>
+							<input type="text" id="txtPassword">							
+							<input type="hidden" value="0">
 						</div>
 						<br>
 						<input type="hidden" id="detailContactId">

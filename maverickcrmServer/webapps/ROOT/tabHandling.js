@@ -62,6 +62,14 @@ function setTab(tab){
 		getById('divCustomer').style.display='none';
 		getById('divContact').style.display='inline';	
 		activateTabContact();
+	case tabEnum.login:
+		getById('tabLogin').className = "cssTabSelected";
+		getById('divLogin').style.display='inline';
+		getById('tabContact').className = "cssTab";
+		getById('tabCustomer').className = "cssTab";		
+		getById('divCustomer').style.display='none';
+		getById('divContact').style.display='none';	
+		activateTabContact();		
 		break;
 	}
 
