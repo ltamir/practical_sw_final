@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="Shortcut icon" href="images/site.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maverick CRM</title>
+    <link rel="stylesheet" type="text/css" href="maverickcrm.css?4">
+    <script src="common.js?8"></script>
+    <script src="dataPopulation.js?7"></script>
+    <script src="maverickcrm.js?9"></script>
+    <script src="tabHandling.js?5"></script>
+    <script src="modelHandler.js?1"></script>
+
+</head>
+<body onload="init()">
+    <table id="menu">
+        <tr>
+            <td width="15%">
+                <select class="cssMenu" id="cmbSearchCustomer" title="Customer list" onchange="setSearchPredicate(this)"></select>                
+            </td>
+            <td width="15%">
+                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" onchange="setSearchPredicate(this)"/>
+            </td>            
+            <td width="12%">
+                <select class="cssMenu" title="Project list" id="cmbSearchProject" onchange="setSearchPredicate(this)"></select>
+            </td>
+            <td width="3%" valign="bottom">
+            	<img src="images/task_open.png" id="searchTaskStatus" value="1" onclick="toggleSearchTaskStatus()">
+            </td>
+            <td width="15%">
+                <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" onchange="setSearchPredicate(this)"></select>                
+            </td>           
+            <td width="5%" valign="bottom">
+            	<img src="images/task_search.png" id="searchTask" onmousedown="toggleAsBotton(this)" onmouseup="searchTask();toggleAsBotton(this)">
+            	<img src="images/refresh_search.png" title="Reset search to all open tasks" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            </td>
+            <td width="45%" align="right" valign="bottom">
+            	<select id="cmbDebug" onchange="setDebugModule()">
+            		<option value=0>None</option>
+            		<option value=1>customer</option>
+            		<option value=2>contact</option>
+            		<option value=3>task</option>
+            		<option value=4>taskLog</option>
+            		<option value=5>relation</option>
+            		<option value=6>attachment</option>
+            		<option value=7>menu</option>
+            		<option value=8>common</option>
+				</select>
+            	<img src="images/add_task.png" title="Add a single task" id="addTask" onmousedown="toggleAsBotton(this)" onmouseup="newTask(); toggleAsBotton(this)">
+            	<img src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+            	
+            </td>                      
+        </tr>
+    </table>
+
+	<table width="100%">
+		<tr>
+			<td class="cssMessageInfo" id="messageInfo">Ready</td>
+		</tr>
+	</table>
+    <hr>
+    <table id="taskList" class="cssTaskList">
+        <thead>
+        <tr>
+            <th class="cssTaskListId">
+                <label>id</label>
+            </th>
+            <th class="cssTaskListCustomer">
+                <label>Customer</label>
+            </th>
+            <th class="cssTaskListTitle">
+                <label>Title</label>
+            </th>
+            <th class="cssTaskListDueDate">
+               <label>Due Date</label>
+            <th class="cssTaskListEffort">
+                <label>Effort</label>
+            </th>
+            <th class="cssTaskListStatus">
+                <label>Status</label>
+            </th>
+        </tr>
+		</thead>
+		<tbody id="taskListBody">             
+        </tbody>     
+    </table>
+    
+    
+    <hr>
+    <table width="100%">
+        <tbody>
+		<tr>
+			<td width="50%" valign="top">
+				<label for="cmbDetailTaskType" class="cssFieldLabel">Type:</label>
+				<select id="cmbDetailTaskType"></select>
+				<label for="cmbDetailContact" class="cssFieldLabel">Contact:</label>
+				<select id="cmbDetailContact"></select>
+				<label for="cmbDetailStatus" class="cssFieldLabel">Status:</label><select id="cmbDetailStatus"></select>
+				<br> 
+				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="60"></textarea>
+				<br>
+				<label for="txtDetailEffort" class="cssFieldLabel">Effort</label>
+				<input type="number" id="txtDetailTaskEffort" min="1">
+				<select id="cmbDetailEffortUnit">
+					<option value="1">Hours</option>
+					<option value="2">Days</option>
+				</select>
+				<label for="txtDetailDueDate" class="cssFieldLabel">Due Date</label>
+				<input type="date" id="txtDetailDueDate"/> 
+				<input type="hidden" id="taskId" value="0">    
+				<img src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
+				<br>
+				<hr>
+				<span class="cssTabSelected" id="TabLog" onclick="setTab(tabEnum.taskLog)">Log</span>
+				<span class="cssTab" id="TabRelation" onclick="setTab(tabEnum.relation)">Relation</span>
+				<span class="cssTab" id="TabAttachment" onclick="setTab(tabEnum.attachment)">Attachments</span>
+				<span class="cssTab" id="TabLinkedCustomer" onclick="setTab(tabEnum.linkedCustomer)">Linked Customers</span>
+				<br>
+				<div id="divTabLog">
+					<select id="cmbTaskLogList" size="5"></select>
+					<br>
+                     <textarea title="Log Description" id="txtTaskLogDescription" rows="3" cols="50"></textarea>
+                     <br>
+                     <label for="cmbTaskLogContact" class="cssFieldLabel">User:</label><select id="cmbTaskLogContact"> </select>
+                     <label for="cmbTaskLogType" class="cssFieldLabel">Type:</label><select id="cmbTaskLogType"> </select>
+                     <input type="hidden" id="taskLogId">
+                     <input type="hidden" id="sysDate">
+                     <input type="hidden" id="taskLogTaskId">
+                     <img src="images/save.png" title="Save log" id="imgSaveTaskLog" onmousedown="toggleAsBotton(this)" onmouseup="validateTaskLog(); toggleAsBotton(this)">
+                     <img src="images/file_new.png" title="new log" id="imgNewTaskLog" onmousedown="toggleAsBotton(this)" onmouseup="newTaskLog(); toggleAsBotton(this)">
+				</div>
+				<div id="divTabRelation">
+					<select id="cmbParentTaskList" size="2"></select>
+					<br>
+					<select id="cmbChildTaskList" size="4"></select>
+					<br>
+					<select id="cmbTabRelationProject"></select>
+					<input type="button" value="Search" id="cmdSearchTask" onclick="searchRelationTask()">
+					<br>
+					<select id="cmbRelationTaskList" size="3"></select>
+					<br>
+					<label id="lblDetailTaskRelationTitle" class="cssFieldLabel">No selected Task for hierarchy</label>
+					<br>
+					<label for="cmbTaskRelationType" class="cssFieldLabel">Type:</label>
+					<select id="cmbTaskRelationType"> </select>
+					<img src="images/relationParent.png" title="Add as parent" id="imgAddParent" onmousedown="toggleAsBotton(this)" onmouseup="saveAsParent(); toggleAsBotton(this)">
+					<img src="images/relationChild.png" title="Add as child" id="imgAddChild" onmousedown="toggleAsBotton(this)" onmouseup="saveAsChild(); toggleAsBotton(this)">
+					<img src="images/relationRemove.png" title="Remove relation" id="imgRemoveRelation" onmousedown="toggleAsBotton(this)" onmouseup="removeTaskRelation(); toggleAsBotton(this)">
+					<input type="hidden" id="taskRelationId" value="0">
+					<input type="hidden" id="taskRelationSelectedTaskId" value="0">
+				</div>    
+               	<div id="divTabAttachment">
+               	<form enctype="multipart/form-data" method="post" name="fileinfo">
+               		<select id="cmbAttachmentList" size="4"></select>
+               		<br>
+					<textarea id="txtAttachmentNotes" rows="2" cols="50"></textarea>
+					<br>
+					<label for="cmbAttachmentType" class="cssFieldLabel">Type:</label><select id="cmbAttachmentType"> </select>
+					<input type="file" id="attachmentFile">
+					<input type="hidden" value="0" id="attachmentId">
+					<input type="hidden" value="0" id="attachmentTaskLogId">
+					<br>
+					<select id="cmbAttachmenContact"></select>
+					<img src="images/save.png" title="save attachment" align="bottom" id="imgSaveAttachment" onmousedown="toggleAsBotton(this)" onmouseup="saveAttachment();toggleAsBotton(this)">
+					<img src="images/file_new.png" title="new attachment" id="imgNewAttachment" onmousedown="toggleAsBotton(this)" onmouseup="newAttachment(); toggleAsBotton(this)">
+				</form>
+				</div> 
+				<div id="divLinkedCustomer">
+					<select id="cmbNoneLinkedCustomer" size="5"></select>
+					<img src="images/add.png" title="Add customer" id="imgAddLinkedCustomer" onmousedown="toggleAsBotton(this)" onmouseup="addLinkedCustomer();toggleAsBotton(this)">
+					<img src="images/remove.png" title="Remove customer" id="imgRemoveLinkedCustomer" onmousedown="toggleAsBotton(this)" onmouseup="removeLinkedCustomer();toggleAsBotton(this)">
+					<select id="cmbLinkedCustomer" size="5"></select>
+				</div>				                    
+			</td>
+			<td valign="top" rowspan="2">
+				<div class="tabCRM">
+					<span id="tabCustomer" class="cssTabSelected" onclick="setTab(tabEnum.customer)">Customers</span>
+					<span id="tabContact" class="cssTab" onclick="setTab(tabEnum.contact)">Contacts</span>	
+					<hr>			
+					<div id="divCustomer">
+		              	<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbCustomerList', 'txtSearchCustomer', event)">
+		              	<img src="images/add_task.png" title="New customer" align="bottom" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="newCustomer();toggleAsBotton(this)">
+						<img src="images/save.png" title="Save customer" id="imgSaveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomer();toggleAsBotton(this)">
+		              	<br>
+		              	<select id="cmbCustomerList" size="5"></select>
+		              	<br>
+						
+						<form action="customer" id="frmCustomer" method="POST">
+						<label for="txtCustomerName" class="cssFieldLabel">Name</label><input type="text" name="customerName" id="txtCustomerName">
+						<br>
+						<label for="txtCustomerNotes" class="cssFieldLabel">Notes</label><textarea name="customerNotes" id="txtCustomerNotes" rows="3" cols="30"></textarea>
+						<br>
+						<input type="hidden" id="detailCustomerId" name="customerId" value="0">
+						</form>                    	
+					</div>
+					<div id="divContact">
+						<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="15" onkeyup="searchText('cmbContactList', 'txtSearchContact', event)">
+						<img src="images/add_task.png" title="New contact" align="bottom" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+						<img src="images/save.png" title="Save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
+						<br>
+						<select id="cmbContactList" size="5"></select>
+						<br>
+						<div class="parent-grid-container">
+						<div class="contact-details-grd">
+							<div class="grid-item"><label for="txtContactFirstName" class="cssFieldLabel">First Name</label></div>
+							<div class="grid-item"><input type="text" id="txtContactFirstName"> </div>
+							<div class="grid-item"><label for="txtContactLastName" class="cssFieldLabel">Last Name</label></div>
+							<div class="grid-item"><input type="text" id="txtContactLastName"></div>
+							<div class="grid-item"><label for="txtContactOfficePhone" class="cssFieldLabel">Office phone</label></div>
+							<div class="grid-item"><input type="tel" id="txtContactOfficePhone"></div>
+							<div class="grid-item"><label for="txtContactCellPhone" class="cssFieldLabel">Mobile phone</label></div>
+							<div class="grid-item"><input type="tel" id="txtContactCellPhone"></div>
+							<div class="grid-item"><label for="txtContactEmail" class="cssFieldLabel">Email</label></div>
+							<div class="grid-item"><input type="email" id="txtContactEmail"></div>
+							<div class="grid-item"><label for="txtContactNotes" class="cssFieldLabel">Notes</label></div>
+							<div class="grid-item"><textarea id="txtContactNotes" rows="2" cols="20"></textarea></div>														
+						</div>
+						<div class="contact-customer-grd">
+							<select id="cmbAvailableCustomers" size="3"></select>
+							<select id="cmbConnectedCustomers" size="3"></select>
+							<select id="cmbContactType"></select>
+							<img src="images/remove.png" title="Remove customer" id="imgRemoveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(0);toggleAsBotton(this)">
+							<img src="images/add.png" title="Add customer" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(1);toggleAsBotton(this)">
+							<p></p>
+							<p></p>
+						</div>
+						</div>
+						<br>
+						<input type="hidden" id="detailContactId">
+					</div>
+				</div>
+			</td>
+		</tr>           
+        </tbody>
+    </table>
+</body>
+</html>

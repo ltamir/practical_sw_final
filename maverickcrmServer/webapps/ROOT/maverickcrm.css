@@ -1,0 +1,224 @@
+body{
+	background-color: #fbfbfb;
+	font-family: arial, sans-serif;
+}
+
+img{
+	cursor: pointer;
+	border-style: outset;
+	vertical-align: bottom;
+}
+	#menu {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      background-color: LightGray;
+    }
+	input, select, textarea, button, span{
+	      border-radius: 3px;
+	      color: #112211;
+	      font-family: arial, sans-serif;
+	}
+	input, select, button{
+	      background-color: #FEFEFE; 
+	}	
+	input, textarea{
+		background-image: url("images/textBackground_no_num.jpg");
+		background-repeat: round;
+		background-attachment: scroll;	
+		/*background-color: PowderBlue;*/
+	}
+	
+	option:nth-child(even){
+	background-color: WhiteSmoke;
+	}
+		
+    #menu.td, #menu.th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 1px;
+    }
+
+    #menu.tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+
+.cssMessageInfo{
+	font-size:11pt;
+	border: 1px inset;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-style: oblique;
+	color: #fbfbfb;
+	background-color: #424f5a;
+}
+	table.cssTaskList {
+    display: table;
+    width: 100%;
+	}
+	table.cssTaskList thead, table.cssTaskList tbody {
+	    float: left;
+	    width: 100%;
+	    font-family: arial, sans-serif;
+	    font-size: medium;
+	}
+	table.cssTaskList tbody {
+	    overflow: auto;
+	    height: 150px;
+	    background-color: DarkGray;
+	    color: #121212;
+	}
+	tbody tr:nth-child(even) {
+      background-color: Snow;
+    }	
+	table.cssTaskList tr {
+	    width: 100%;
+	    display: table;
+	}
+	th.cssTaskListId, td.cssTaskListId {
+	    width: 3em;
+	}
+	th.cssTaskListCustomer, td.cssTaskListCustomer {
+	    width: 15%;
+	}
+	th.cssTaskListTitle {
+	    width: 50%;
+	}
+	td.cssTaskListTitle {
+	    width: 55%;
+	}	
+	th.cssTaskListDueDate, td.cssTaskListDueDate {
+	    width: 9em;
+	}
+	th.cssTaskListTitle td.cssTaskListEffort {
+	    width: 5em;
+	}
+	th.cssTaskListStatus td.cssTaskListStatus {
+	    width: 7em;
+	    text-align: left;
+	}
+
+	#imgSaveTask{
+		margin-top: 1px;
+	}
+    .cssTabLabel:hover{
+    	cursor: pointer;
+    }
+    
+	#divTabAttachment{
+		display: none;
+	}
+	
+	#divLinkedCustomer{
+		display: none;
+	}
+		
+	#TabLinkedCustomer{
+		display: none;
+	}		
+		
+	#divTabRelation{
+		display: none;
+	}
+
+.cssTab{
+	width: 15%;
+	font-family: arial;
+	border-top: 1px outset #f5f5f0;
+	border-left: 1px outset #f5f5f0;
+	border-bottom: 1px outset #1e1e15;
+	border-right: 1px outset #1e1e15;
+	text-align: center;
+	background-color: #f1f1f1;
+	color: #424f5a;	
+	cursor: pointer;
+}
+
+.cssTabSelected{
+    width: 15%;
+	font-family: arial;
+	border-top: 1px solid #1e1e15;
+	border-left: 1px solid #1e1e15;	
+	border-bottom: 1px solid #ff9500;
+	border-right: 1px solid #f5f5f0;
+	text-align: center;
+	background-color: #ebebeb;
+	color: #424f5a;	
+	cursor: pointer;
+}
+
+	
+	#divCustomer{
+		
+	}
+	
+	#divContact{
+		display: none;
+	}
+	
+	#cmbCustomerList{
+		font-family: arial, sans-serif;
+        background-color: GhostWhite;
+        min-width: 21em;	
+	}
+
+	#cmbContactList{
+		font-family: arial, sans-serif;
+        background-color: GhostWhite;
+        min-width: 23em;	
+	}
+		
+	#cmbTaskLogList{
+		font-family: arial, sans-serif;
+        background-color: WhiteSmoke;
+        min-width: 29em;	
+	}	
+	#cmbParentTaskList{
+		font-family: arial, sans-serif;
+        background-color: WhiteSmoke;
+        min-width: 29em;	
+	}	
+	#cmbChildTaskList{
+		font-family: arial, sans-serif;
+        background-color: WhiteSmoke;
+        min-width: 29em;	
+	}	
+#cmbRelationTaskList{
+	font-family: arial, sans-serif;
+	background-color: AliceBlue;
+	min-width: 29em;	
+}	
+	#cmbAttachmentList	 {
+		font-family: arial, sans-serif;
+        min-width: 29em;	
+	}
+	
+.tabRow{
+	border-style: outset;
+	border-color: Snow;
+}
+
+.cssFieldLabel{
+	font-family: arial, sans-serif;
+	background-color: GhostWhite;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+#txtDetailTaskEffort{
+	width: 3em;
+}
+.parent-grid-container{
+	display: grid;
+	grid-template-columns: 17em 12em;	
+}    
+.contact-details-grd {
+	display: grid;
+	grid-template-columns: 6em 4em;
+	padding: 3px;
+}
+
+.contact-customer-grd {
+	display: grid;
+	grid-template-columns: 8em 8em;
+	grid-template-rows:	8em 1.5em;
+}
