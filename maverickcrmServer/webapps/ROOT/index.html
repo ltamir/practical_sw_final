@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
-    <link rel="stylesheet" type="text/css" href="maverickcrm.css?4">
+    <link rel="stylesheet" type="text/css" href="maverickcrm.css?5">
     <script src="common.js?8"></script>
     <script src="dataPopulation.js?7"></script>
     <script src="maverickcrm.js?9"></script>
-    <script src="tabHandling.js?5"></script>
+    <script src="tabHandling.js?7"></script>
     <script src="modelHandler.js?1"></script>
 
 </head>
@@ -178,7 +178,7 @@
 				<div class="tabCRM">
 					<span id="tabCustomer" class="cssTabSelected" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabContact" class="cssTab" onclick="setTab(tabEnum.contact)">Contacts</span>
-					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.contact)">Logins</span>
+					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
 					<hr>			
 					<div id="divCustomer">
 		              	<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbCustomerList', 'txtSearchCustomer', event)">
@@ -228,17 +228,25 @@
 							<p></p>
 						</div>
 						</div>
-						<div id="divLogin">
-							<select id="cmbAvailableLogins" size="3"></select>
-							<select id="cmbLoginContactList" size="5"></select>
-							<label for="txtUserName" class="cssFieldLabel">First Name</label>
-							<input type="text" id="txtUserName">
-							<label for="txtPassword" class="cssFieldLabel">First Name</label>
-							<input type="text" id="txtPassword">							
-							<input type="hidden" value="0">
-						</div>
 						<br>
 						<input type="hidden" id="detailContactId">
+					</div>
+					<div id="divLogin">
+						<select id="cmbAvailableLogins" size="3"></select>
+						<select id="cmbLoginContactList" size="5"></select>
+						<br>
+						<label for="txtUserName" class="cssFieldLabel">UserName</label>
+						<input type="text" id="txtUserName">
+						<br>
+						<label for="txtPassword" class="cssFieldLabel">Password</label>
+						<input type="text" id="txtPassword">
+						<br>
+						<label class="cssFieldLabel">Contact:</label><span id="loginContact"></span>
+						<input type="hidden" name="loginId" value="0">
+						<input type="hidden" name="loginContactId" value="0">
+						<br>
+						<img src="images/add_task.png" title="New Login" align="bottom" id="imgAddLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+						<img src="images/save.png" title="Save Login" id="imgSaveLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 					</div>
 				</div>
 			</td>

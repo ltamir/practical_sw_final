@@ -51,17 +51,22 @@ function setTab(tab){
 		activeTaskTab = tab;
 		break;		
 	case tabEnum.customer:
-		getById('tabContact').className = "cssTab";
 		getById('tabCustomer').className = "cssTabSelected";
+		getById('divCustomer').style.display='inline';
+		getById('tabContact').className = "cssTab";
 		getById('divContact').style.display='none';
-		getById('divCustomer').style.display='inline';		
+		getById('tabLogin').className = "cssTab";
+		getById('divLogin').style.display='none';		
 		break;
 	case tabEnum.contact:
 		getById('tabContact').className = "cssTabSelected";
+		getById('divContact').style.display='inline';
 		getById('tabCustomer').className = "cssTab";		
 		getById('divCustomer').style.display='none';
-		getById('divContact').style.display='inline';	
+		getById('tabLogin').className = "cssTab";
+		getById('divLogin').style.display='none';		
 		activateTabContact();
+		break;
 	case tabEnum.login:
 		getById('tabLogin').className = "cssTabSelected";
 		getById('divLogin').style.display='inline';
@@ -69,7 +74,7 @@ function setTab(tab){
 		getById('tabCustomer').className = "cssTab";		
 		getById('divCustomer').style.display='none';
 		getById('divContact').style.display='none';	
-		activateTabContact();		
+		activateTabLogin();
 		break;
 	}
 
@@ -107,6 +112,15 @@ function activateTabRelation(){
 	getData('cmbTabRelationProject', 'customertask', '?actionId=2', fillCustomerTask)
 }
 	
+function activateTabLinkedCustomer(){
+	getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
+			(opt,item)=>opt.value = item.customerTaskId, 
+			(opt,item)=>opt.text = item.customer.customerName);
+	getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
+			(opt,item)=>opt.value = item.customerId, 
+			(opt,item)=>opt.text = item.customerName);	
+}
+
 function activateTabContact(){
 	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=2', fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
@@ -116,11 +130,11 @@ function activateTabContact(){
 			(opt,item)=>opt.text = item.contactTypeName);  	
 }
 
-function activateTabLinkedCustomer(){
-	getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
-			(opt,item)=>opt.value = item.customerTaskId, 
-			(opt,item)=>opt.text = item.customer.customerName);
-	getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
-			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);	
+function activateTabLogin(){
+	getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
+			(opt,item)=>opt.value = item.contactId, 
+			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName); 
+	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
+			(opt,item)=>opt.value = item.loginId, 
+			(opt,item)=>opt.text = item.username); 	
 }

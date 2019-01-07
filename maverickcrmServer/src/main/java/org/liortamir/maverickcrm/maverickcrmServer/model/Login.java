@@ -6,8 +6,8 @@ public class Login {
 	private String username;
 	private String password;
 	private Contact contactId;
+	
 	public Login(int userId, String userName, String password, Contact contactId) {
-		super();
 		this.loginId = userId;
 		this.username = userName;
 		this.password = password;
@@ -15,7 +15,6 @@ public class Login {
 	}
 	
 	public Login(int userId, String userName, Contact contactId) {
-		super();
 		this.loginId = userId;
 		this.username = userName;
 		this.contactId = contactId;

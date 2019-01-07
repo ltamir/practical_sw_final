@@ -155,6 +155,10 @@ img{
 		display: none;
 	}
 	
+	#divLogin{
+		display: none;
+	}
+		
 	#cmbCustomerList{
 		font-family: arial, sans-serif;
         background-color: GhostWhite;
