@@ -74,8 +74,45 @@ public class LoginController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doPost(req, resp);
+		JsonObject json = new JsonObject();
+		String response;
+		
+		try {
+			String username = req.getParameter(APIConst.FLD_LOGIN_USERNAME);
+			String password = req.getParameter(APIConst.FLD_LOGIN_PASSWORD);
+			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_CONTACT_ID));
+			int loginId = LoginDAL.getInstance().insert(username, password, contactId);
+			json.addProperty("loginId", loginId);
+			
+		}catch(NullPointerException | SQLException e) {
+			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());			
+		}
+		response = jsonHelper.toJson(json);
+		PrintWriter out = resp.getWriter();
+		out.println(response);	
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		JsonObject json = new JsonObject();
+		String response;
+		
+		try {
+			int loginId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_ID));
+			String username = req.getParameter(APIConst.FLD_LOGIN_USERNAME);
+			String password = req.getParameter(APIConst.FLD_LOGIN_PASSWORD);
+			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_CONTACT_ID));
+			LoginDAL.getInstance().update(username, password, contactId, loginId);
+			json.addProperty("loginId", loginId);
+			
+		}catch(NullPointerException | SQLException e) {
+			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());			
+		}
+		response = jsonHelper.toJson(json);
+		PrintWriter out = resp.getWriter();
+		out.println(response);	
 	}
 
 }

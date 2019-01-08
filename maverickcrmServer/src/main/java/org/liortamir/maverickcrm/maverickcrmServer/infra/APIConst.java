@@ -52,6 +52,11 @@ public class APIConst {
 	public static final String FLD_ATTACHMENT_FILENAME = "fileName";
 	public static final String FLD_ATTACHMENT_FILEPATH = "filePath";
 	public static final String FLD_ATTACHMENT_WEB_NOTES = "attachmentNotes";
+	
+	public static final String FLD_LOGIN_ID = "loginId";
+	public static final String FLD_LOGIN_USERNAME = "username";
+	public static final String FLD_LOGIN_PASSWORD = "password";
+	public static final String FLD_LOGIN_CONTACT_ID = "contactId";
 
 	public static final String ERROR = "{msg:\"Internal error. Please contact your Administrator\"}"; 
 	public static final int ACT_ALL = 2;

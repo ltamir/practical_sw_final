@@ -617,3 +617,26 @@ function removeLinkedCustomer(){
 			(opt,item)=>opt.text = item.customerName);	})
 		.then(function(){setMsg(msgType.ok, 'Customer removed');});
 }
+
+function saveLogin(){
+	let formData = new FormData();
+	let method;	
+	
+	formData.append('username', getValue('txtUserName'));
+	formData.append('password', getValue('txtPassword'));
+	formData.append('contactId', getValue('loginContactId'));
+	let loginId = getValue('loginId');
+	if(loginId == 0){
+		method = 'POST';
+	}else{
+		method = 'PUT';
+		formData.append('loginId', getValue('loginId'));
+	}
+	
+	if(dbg==dbgModule.login)
+		debugFormData(formData);
+	
+	setData(method, formData, 'customertask')
+		.then(activateTabLogin())
+		.catch(function(err){setMsg(msgType.nok, 'save Login failed. please check the log'); console.log(err)});
+}
