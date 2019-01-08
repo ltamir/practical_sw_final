@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,6 +22,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@MultipartConfig
 public class AuthenticationFilter implements Filter {
 
 	private ServletContext context;
@@ -46,23 +48,28 @@ public class AuthenticationFilter implements Filter {
 		String username = null;
 		if(session != null ) {
 			username = (String)session.getAttribute("username");
+
+		}
 		if(username == null)
 			isAuthenticated = false;
-		}
+		else
+			isAuthenticated = true;
 		
-		if(session == null) {
+		if(isAuthenticated) {
+			chain.doFilter(request, response);
+		}else if(session == null) {
 			this.context.log("Unauthorized access request");
 			resp.sendRedirect("login.html");
-		}else if(!isAuthenticated && (uri.endsWith("html") || uri.endsWith("png"))){	// )
-			isAuthenticated = authenticate(req, resp);
+		}else if(uri.endsWith("authenticate")) {
+			chain.doFilter(request, response);
+		}
+		else if(!isAuthenticated && (uri.contains("login.html") || uri.endsWith("png"))){	// )
 			chain.doFilter(request, response);
 		}else if(!isAuthenticated) {
 			resp.sendRedirect("login.html");
 		}
 		
-		if(isAuthenticated) {
-			resp.sendRedirect("index.html");
-		}
+
 		
 	}
 

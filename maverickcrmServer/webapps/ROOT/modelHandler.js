@@ -207,7 +207,10 @@ function saveTask(){
 		debugFormData(formData);
 	
 	setData(method, formData, 'task')
-		.then(function(newId){saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', newId.taskId); 
+		.then(function(newId){
+			if(taskId == 0){
+				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', newId.taskId); 
+			}
 			getById('taskId').value = newId.taskId; 
 			if(getValue('cmbDetailTaskType') ==1)
 				getById('TabLinkedCustomer').style.display='inline';

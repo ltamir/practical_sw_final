@@ -48,6 +48,16 @@
 
 
 	<servlet>
+	   <servlet-name>Authentication</servlet-name>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AuthenticationController</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	   <servlet-name>Authentication</servlet-name>
+	   <url-pattern>/authenticate</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 	   <servlet-name>Login</servlet-name>
 	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.LoginController</servlet-class>
 	</servlet>

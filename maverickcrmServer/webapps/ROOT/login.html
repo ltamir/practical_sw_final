@@ -28,13 +28,16 @@
 		formData.append("username", document.getElementById("username").value);
 		formData.append("password", document.getElementById("password").value);   
 		var xhr = new XMLHttpRequest();  
-		xhr.open("POST", "login.html");  
+		xhr.open("POST", "authenticate");  
 		xhr.send(formData); 
 		xhr.onreadystatechange = function() { 
 		if (xhr.readyState == 4)
 			  if (xhr.status == 200){
 			    let data = JSON.parse(xhr.responseText);
-			    document.getElementById('msgBoard').innerHTML = data.msg;
+			    if(data.msg == 'ok')
+			    	window.location.replace(data.redirect);
+			    else
+			    	document.getElementById('msgBoard').innerHTML = data.msg;
 			  }
 		};
     }
