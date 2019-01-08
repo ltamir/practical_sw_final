@@ -76,25 +76,92 @@ public class TaskDAL {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Task> getAll(int customerId, String dueDate, int projectTaskId, int taskTypeId, boolean isOpen) throws SQLException {
+	public List<Task> getAll(int customerId, String dueDate, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
 		List<Task> entityList = null;
-		int closedTask = 0;
-		final String baseSQL = "select * from task where statusId=? and dueDate = ? and taskTypeId=?";
-		final String customerPredicate = "taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
-		final String projectPredicate = "taskId in (select taskId from customerTask where taskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where taskId=?))";
+		int[] paramIndex = new int[6];
+		boolean whereUsed = false;
+		final String baseSQL = "select * from task";
+		final String closedPredicate = " statusId=4";
+		final String dueDatePredicate = " dueDate >= ?";
+		final String taskTypePredicate = " taskTypeId=?";
+		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
+		final String projectPredicate = " taskId in (select taskId from customerTask where taskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where taskId=?))";
+		String sql = baseSQL;
 
+		paramIndex[1] = 0;	//customerId
+		paramIndex[2] = 0;	//dueDate
+		paramIndex[3] = 0;	//projectTaskId
+		paramIndex[4] = 0;	//taskTypeId
+		paramIndex[5] = 0;	//isClosed
+		if(customerId != 0) {
+			sql += " where" + customerPredicate;
+			whereUsed = true;
+			paramIndex[1] += 2;
+		}
+		if(!dueDate.equals("")) {
+			if(whereUsed) {
+				paramIndex[2] +=paramIndex[1] + 1;
+				sql += " and" + dueDatePredicate;
+			}
+			else {
+				paramIndex[2] = 1;
+				sql += " where" + dueDatePredicate;
+				whereUsed = true;
+			}
+		}
+		if(projectTaskId != 0) {
+			if(whereUsed) {
+				paramIndex[3] += paramIndex[2] + paramIndex[1] + 2;
+				sql += " and" + projectPredicate;
+			}
+			else {
+				paramIndex[3] = 2;
+				sql += " where" + projectPredicate;
+				whereUsed = true;
+			}			
+		}
+		if(taskTypeId != 0) {
+			if(whereUsed) {
+				paramIndex[4] += paramIndex[3] + paramIndex[2] +  paramIndex[1]+ 1;
+				sql += " and" + taskTypePredicate;
+				}
+			else {
+				paramIndex[4] = 1;
+				sql += " where" + taskTypePredicate;
+				whereUsed = true;
+			}			
+		}
+		if(isClosed == true) {
+			if(whereUsed) {
+				sql += " and" + closedPredicate;
+				//paramIndex[5] += paramIndex[4] + 1;
+			}
+			else {
+				//paramIndex[5] = 1;
+				sql += " where" + closedPredicate;
+				whereUsed = true;
+			}			
+		}
+		
 		try (Connection conn = DBHandler.getConnection()){
-			if(!isOpen)
-				closedTask = 4;
-			PreparedStatement ps = conn.prepareStatement(baseSQL + " and " + customerPredicate + " and " + projectPredicate);
-			
-			ps.setInt(1, closedTask);
-			ps.setDate(2, java.sql.Date.valueOf(dueDate));
-			ps.setInt(3, taskTypeId);
-			ps.setInt(4, customerId);
-			ps.setInt(5, customerId);
-			ps.setInt(6, projectTaskId);
-			ps.setInt(7, projectTaskId);
+
+			PreparedStatement ps = conn.prepareStatement(sql);
+//			if(isClosed == true)
+//				ps.setInt(paramIndex[5]--, closedTask);
+
+			if(customerId != 0) {
+				ps.setInt(paramIndex[1]--, customerId);
+				ps.setInt(paramIndex[1]--, customerId);				
+			}		
+			if(!dueDate.equals(""))
+				ps.setDate(paramIndex[2], java.sql.Date.valueOf(dueDate));	
+			if(projectTaskId != 0) {
+				ps.setInt(paramIndex[3]--, projectTaskId);
+				ps.setInt(paramIndex[3]--, projectTaskId);				
+			}			
+			if(taskTypeId != 0)
+				ps.setInt(paramIndex[4]--, taskTypeId);
+
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
 			while(rs.next())

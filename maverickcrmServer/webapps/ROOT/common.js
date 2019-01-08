@@ -39,16 +39,41 @@ function getData(id, resource, params, impl){
     .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
+
+function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcText, eventHandler){
+    var url = "http://127.0.0.1:8082/maverick/"+resource+params;
+    fetch(url)
+    .then(function(response) {
+        return response.json();
+        }
+    )
+    .then(function(body){
+        impl(id, body, defaultOption, funcValue, funcText, eventHandler);
+        }
+    )
+    .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
+}
+
+function setData(method, formData, resource){
+	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
+        method: method,
+        body: formData
+    })
+      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
+	.then(function(obj){return obj.body;})
+}
+
 /**
- * Populate given Select element with the
- * @param id - target select element
- * @param data - JSON array containing the data to populate
- * @param defaultOption - 1st Option to create 
- * @param funcValue - statement setting the option value
- * @param funcText - statement setting the Option Text
+ * 
+ * @param id
+ * @param data
+ * @param defaultOption
+ * @param funcValue
+ * @param funcText
+ * @param eventHandler
  * @returns
  */
-function fillSelect(id, data, defaultOption, funcValue, funcText){
+function fillSelect(id, data, defaultOption, funcValue, funcText, eventHandler){
     let selectElement = document.getElementById(id);
     for (let i = selectElement.length - 1; i >= 0; i--) {
         selectElement.remove(i);
@@ -68,31 +93,10 @@ function fillSelect(id, data, defaultOption, funcValue, funcText){
     	let opt = document.createElement("OPTION");
     	funcValue(opt,item);
     	funcText(opt,item);
+    	if(eventHandler != undefined)
+    		eventHandler(opt,item);
         selectElement.appendChild(opt);                        
     }); 	
-}
-
-function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcText){
-    var url = "http://127.0.0.1:8082/maverick/"+resource+params;
-    fetch(url)
-    .then(function(response) {
-        return response.json();
-        }
-    )
-    .then(function(body){
-        impl(id, body, defaultOption, funcValue, funcText);
-        }
-    )
-    .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
-}
-
-function setData(method, formData, resource){
-	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
-        method: method,
-        body: formData
-    })
-      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
-	.then(function(obj){return obj.body;})
 }
 
 /**

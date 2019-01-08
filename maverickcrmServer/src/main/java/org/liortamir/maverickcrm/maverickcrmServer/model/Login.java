@@ -5,19 +5,19 @@ public class Login {
 	private int loginId;
 	private String username;
 	private String password;
-	private Contact contactId;
+	private Contact contact;
 	
-	public Login(int userId, String userName, String password, Contact contactId) {
+	public Login(int userId, String userName, String password, Contact contact) {
 		this.loginId = userId;
 		this.username = userName;
 		this.password = password;
-		this.contactId = contactId;
+		this.contact = contact;
 	}
 	
-	public Login(int userId, String userName, Contact contactId) {
+	public Login(int userId, String userName, Contact contact) {
 		this.loginId = userId;
 		this.username = userName;
-		this.contactId = contactId;
+		this.contact = contact;
 	}
 	
 	public int getLoginId() {
@@ -38,11 +38,11 @@ public class Login {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Contact getContactId() {
-		return contactId;
+	public Contact getContact() {
+		return contact;
 	}
-	public void setContactId(Contact contactId) {
-		this.contactId = contactId;
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 	
 	

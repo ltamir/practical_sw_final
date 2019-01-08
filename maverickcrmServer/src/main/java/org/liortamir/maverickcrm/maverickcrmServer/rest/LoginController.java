@@ -44,14 +44,21 @@ public class LoginController extends HttpServlet {
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
 			
 			if(actionId == APIConst.ACT_ALL) {
+				
 				List<Login> bulk = LoginDAL.getInstance().getAll();
-
+				for(Login item : bulk) {
+						item.setPassword("*****");
+				}
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
-				id = Integer.parseInt(req.getParameter("loginId"));
-				LoginDAL.getInstance().get(id);
 				
+			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+				String username = (String)req.getSession().getAttribute("username");
+				
+				id = Integer.parseInt(req.getParameter("loginId"));
+				login = LoginDAL.getInstance().get(id);
+				if(!login.getUsername().equals(username))
+					login.setPassword("*****");
 				json = new JsonObject();
 				response = jsonHelper.toJson(login);					
 			}

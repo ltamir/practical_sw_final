@@ -23,7 +23,7 @@ public class LoginDAL {
 		Login entity = null;
 
 		try( Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from taskType where taskTypeId=?");
+			PreparedStatement ps = conn.prepareStatement("select * from login where loginId=?");
 			ps.setInt(1, loginId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
@@ -42,6 +42,19 @@ public class LoginDAL {
 				loginList.add(mapFields(rs));
 		}
 		return loginList;
+	}
+	
+	public Login authenticate(String username, String password) throws SQLException{
+		Login login = null;
+		try(Connection conn= DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from login where username = ? and password = ?");
+			ps.setString(1,  username);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				login = mapFields(rs);
+		}
+		return login;
 	}
 	
 	private Login mapFields(ResultSet rs) throws SQLException{

@@ -93,10 +93,12 @@ function activateTabAttachment(){
 	
 	getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Select Attachment type',
 			(opt,item)=>opt.value = item.attachmentTypeId, 
-			(opt,item)=>opt.text = item.attachmentTypeName);
+			(opt,item)=>opt.text = item.attachmentTypeName, 
+			null);
 	getDataEx('cmbAttachmenContact', 'contact', '?actionId=2', fillSelect, 'Select contact',
 			(opt,item)=>opt.value = item.contactId, 
-			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName);	
+			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+			null);	
 	setValue('txtAttachmentNotes', '');
 }
 	
@@ -104,7 +106,8 @@ function activateTabRelation(){
 	
 	getDataEx('cmbTaskRelationType', 'taskrelationtype', '?actionId=2', fillSelect, 'Select relation type', 
 			(opt,item)=>opt.value = item.taskRelationTypeId, 
-			(opt,item)=>opt.text = item.taskRelationTypeName);		
+			(opt,item)=>opt.text = item.taskRelationTypeName, 
+			null);		
 	if(getValue('taskId') > 0){
 		getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getById('taskId').value, fillTaskRelationListParent)
 		getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getById('taskId').value, fillTaskRelationListChild)
@@ -113,28 +116,35 @@ function activateTabRelation(){
 }
 	
 function activateTabLinkedCustomer(){
-	getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
+	getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, 
+			null, 
 			(opt,item)=>opt.value = item.customerTaskId, 
-			(opt,item)=>opt.text = item.customer.customerName);
+			(opt,item)=>opt.text = item.customer.customerName, 
+			null);
 	getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);	
+			(opt,item)=>opt.text = item.customerName, 
+			null);	
 }
 
 function activateTabContact(){
 	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=2', fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);
+			(opt,item)=>opt.text = item.customerName, 
+			null);
 	getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Select Contact type', 
 			(opt,item)=>opt.value = item.contactTypeId, 
-			(opt,item)=>opt.text = item.contactTypeName);  	
+			(opt,item)=>opt.text = item.contactTypeName, 
+			null);  	
 }
 
 function activateTabLogin(){
 	getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
 			(opt,item)=>opt.value = item.contactId, 
-			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName); 
+			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+			null); 
 	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
 			(opt,item)=>opt.value = item.loginId, 
-			(opt,item)=>opt.text = item.username); 	
+			(opt,item)=>opt.text = item.username,
+			(opt, item)=>opt.addEventListener("click", function(){getData('', 'login', '?actionId=3&loginId='+item.loginId, fillLoginDetails)})); 	
 }

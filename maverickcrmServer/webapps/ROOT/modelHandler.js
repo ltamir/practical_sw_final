@@ -136,10 +136,12 @@ function fillContactDetails(id, data){
 
 	getDataEx('cmbConnectedCustomers', 'customercontact', '?actionId=8&contactId='+data.contactId, fillSelect, null,
 			(opt,item)=>opt.value = item.customerContactId, 
-			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName);
+			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName, 
+			null);
 	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=11&contactId='+data.contactId, fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);	
+			(opt,item)=>opt.text = item.customerName, 
+			null);	
 }
         
 function fillCustomerDetails(id, data){
@@ -210,7 +212,7 @@ function saveTask(){
 			if(getValue('cmbDetailTaskType') ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
-		.then(function(){getData('taskListBody', 'task', '?actionId=2&customerId=0&showClosed=false', fillTaskList);})
+		.then(function(){prepareSearchTask()})
 		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getById('taskId').value, fillTaskLogList)})
 		.then(function(){setMsg(msgType.ok, 'Task saved')});
 }
@@ -502,10 +504,12 @@ function saveCustomerContact(action){
 	setData(method, formData, 'customercontact')
 		.then(function(){getDataEx('cmbConnectedCustomers', 'customercontact', '?actionId=8&contactId='+getValue('detailContactId'), fillSelect, null,
 			(opt,item)=>opt.value = item.customerContactId, 
-			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName)})
+			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName,
+			null)})
 			.then(function(){getDataEx('cmbAvailableCustomers', 'customer', '?actionId=11&contactId='+getValue('detailContactId'), fillSelect, null, 
 					(opt,item)=>opt.value = item.customerId, 
-					(opt,item)=>opt.text = item.customerName);})
+					(opt,item)=>opt.text = item.customerName,
+					null);})
 		.then(function(){setMsg(msgType.ok, 'Contact saved')});
 
 }   
@@ -577,7 +581,7 @@ function addLinkedCustomer(){
     setData(method, formData, 'customertask')
     	.then(function(){getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerTaskId, 
-			(opt,item)=>opt.text = item.customer.customerName);})
+			(opt,item)=>opt.text = item.customer.customerName, null);})
 			.then(function(){setMsg(msgType.ok, 'customer added to project');});
  
     for (let i = getById('cmbNoneLinkedCustomer').length - 1; i >= 0; i--) {
@@ -604,7 +608,7 @@ function removeLinkedCustomer(){
     .then(function(newId){console.log(newId)})
 	.then(function(){getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
 		(opt,item)=>opt.value = item.customerTaskId, 
-		(opt,item)=>opt.text = item.customer.customerName);})
+		(opt,item)=>opt.text = item.customer.customerName, null);})
 		.then(function(){getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName);	})

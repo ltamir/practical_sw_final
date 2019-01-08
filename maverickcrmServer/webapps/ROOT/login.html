@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="Shortcut icon" href="images/site.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maverick CRM</title>
+    <style type="text/css">
+		.cssMessageInfo{
+			font-size:11pt;
+			border: 1px inset;
+			font-family: Tahoma, Geneva, sans-serif;
+			font-style: oblique;
+			color: #fbfbfb;
+			background-color: #424f5a;
+		}
+		.cssFieldLabel{
+			font-family: arial, sans-serif;
+			background-color: GhostWhite;
+			font-size: 0.8em;
+			font-weight: bold;
+		}
+    </style>
+    <script>
+    function ddd(){
+		let formData = new FormData();  
+		formData.append("username", document.getElementById("username").value);
+		formData.append("password", document.getElementById("password").value);   
+		var xhr = new XMLHttpRequest();  
+		xhr.open("POST", "login.html");  
+		xhr.send(formData); 
+		xhr.onreadystatechange = function() { 
+		if (xhr.readyState == 4)
+			  if (xhr.status == 200){
+			    let data = JSON.parse(xhr.responseText);
+			    document.getElementById('msgBoard').innerHTML = data.msg;
+			  }
+		};
+    }
+    </script>
+
+</head>
+<body>
+<h1>Maveric CRM</h1>
+<p class="cssMessageInfo" id="msgBoard">Ready</p>
+
+<label for="username" class="cssFieldLabel">Username:</label>
+<input type="text" id="username">
+<br>
+<label for="password" class="cssFieldLabel">Password:</label>
+<input type="password" id="password">
+<br><br>
+<button onclick="ddd()">Authenticate</button>
+
+
+
+</body>
+</html>

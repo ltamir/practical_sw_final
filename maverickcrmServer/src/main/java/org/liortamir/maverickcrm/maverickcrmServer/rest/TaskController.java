@@ -46,11 +46,15 @@ public class TaskController extends HttpServlet {
 		resp.setContentType("application/json");
 		String response = APIConst.ERROR;
 		Task task = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		int taskId = 0;
 
 		int actionId = 0;
-		
+		String username = (String)req.getSession().getAttribute("username");
+		if(username == null) {
+			resp.sendRedirect("/login.html");
+			return;
+		}
 		try {
 
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
@@ -58,14 +62,14 @@ public class TaskController extends HttpServlet {
 			if(actionId == ActionEnum.ACT_ALL.ordinal()){
 				List<Task> taskList = null;
 				List<TaskCustomerView> bulk = new ArrayList<>();
-				json = new JsonObject();
 				
 				int customerId = Integer.parseInt(req.getParameter("customerId"));
-				boolean showClosedTasks = Boolean.parseBoolean(req.getParameter("showClosed"));
-				if(customerId == 0)
-					taskList = TaskDAL.getInstance().getAll();
-				else
-					taskList = TaskDAL.getInstance().getAllByCustomer(customerId, showClosedTasks);
+				String dueDate = req.getParameter("duedate");
+				int projectId = Integer.parseInt(req.getParameter("projectId"));
+				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
+				boolean isClosed = (req.getParameter("showclosed").equals("1"))?true:false;
+				
+				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, projectId, taskTypeId, isClosed);
 				
 				for(Task item : taskList){
 					Customer customer = CustomerDAL.getInstance().getByTask(item.getTaskId());
@@ -79,26 +83,24 @@ public class TaskController extends HttpServlet {
 
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				task = TaskDAL.getInstance().get(taskId);
-
-				json = new JsonObject();
 				response = jsonHelper.toJson(task);	
 			}else if(actionId == ActionEnum.ACT_RELATION_PARENTS.ordinal()) {
 				
-				json = new JsonObject();
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<Task> taskRelationList = TaskDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				response = jsonHelper.toJson(json);	
 				
 			}else if(actionId == ActionEnum.ACT_RELATION_CHILDREN.ordinal()) {
-				json = new JsonObject();
+				
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<Task> taskRelationList = TaskDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				response = jsonHelper.toJson(json);	
 			}
 		}catch(NumberFormatException | SQLException e) {
-			response = "invalid id";
+			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
 		}
 		
 		PrintWriter out = resp.getWriter();

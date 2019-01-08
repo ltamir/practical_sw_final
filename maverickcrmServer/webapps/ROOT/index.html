@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
     <link rel="stylesheet" type="text/css" href="maverickcrm.css?5">
-    <script src="common.js?8"></script>
-    <script src="dataPopulation.js?7"></script>
-    <script src="maverickcrm.js?9"></script>
-    <script src="tabHandling.js?7"></script>
-    <script src="modelHandler.js?1"></script>
+    <script src="common.js?10"></script>
+    <script src="dataPopulation.js?9"></script>
+    <script src="maverickcrm.js?11"></script>
+    <script src="tabHandling.js?9"></script>
+    <script src="modelHandler.js?2"></script>
 
 </head>
 <body onload="init()">
@@ -33,7 +33,7 @@
                 <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" onchange="setSearchPredicate(this)"></select>                
             </td>           
             <td width="5%" valign="bottom">
-            	<img src="images/task_search.png" id="searchTask" onmousedown="toggleAsBotton(this)" onmouseup="searchTask();toggleAsBotton(this)">
+            	<img src="images/task_search.png" id="searchTask" onmousedown="toggleAsBotton(this)" onmouseup="prepareSearchTask();toggleAsBotton(this)">
             	<img src="images/refresh_search.png" title="Reset search to all open tasks" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>
             <td width="45%" align="right" valign="bottom">
@@ -198,7 +198,7 @@
 					</div>
 					<div id="divContact">
 						<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="15" onkeyup="searchText('cmbContactList', 'txtSearchContact', event)">
-						<img src="images/add_task.png" title="New contact" align="bottom" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+						<img src="images/contact.png" title="New contact" align="bottom" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
 						<img src="images/save.png" title="Save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
 						<br>
 						<select id="cmbContactList" size="5"></select>
@@ -233,7 +233,8 @@
 					</div>
 					<div id="divLogin">
 						<select id="cmbAvailableLogins" size="3"></select>
-						<select id="cmbLoginContactList" size="5"></select>
+						<img src="images/login.png" title="New Login" align="bottom" id="imgAddLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+						<img src="images/save.png" title="Save Login" id="imgSaveLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 						<br>
 						<label for="txtUserName" class="cssFieldLabel">UserName</label>
 						<input type="text" id="txtUserName">
@@ -245,8 +246,7 @@
 						<input type="hidden" name="loginId" value="0">
 						<input type="hidden" name="loginContactId" value="0">
 						<br>
-						<img src="images/add_task.png" title="New Login" align="bottom" id="imgAddLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-						<img src="images/save.png" title="Save Login" id="imgSaveLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+						<select id="cmbLoginContactList" size="5"></select>
 					</div>
 				</div>
 			</td>

@@ -12,14 +12,26 @@ function setSearchPredicate(searchElement){
  * Constructs the Task search in the main menu
  * @returns
  */
-function searchTask(){
-	var searchTaskParams = '?actionId=2';
-	searchTaskParams += '&customerId=' + getById('cmbSearchCustomer').value;
-	searchTaskParams + '&showClosed=false';
+function prepareSearchTask(){
+
+	searchTask(getValue('cmbSearchCustomer'),
+			getValue('txtSearchDueDate'),
+			getValue('cmbSearchProject'),
+			 getValue('cmbSearchTaskType'),
+			 getValue('searchTaskStatus'));
+
+}
+
+function searchTask(customerId, dueDate, projectId, cmbSearchTaskType, showClosed){
+	let searchTaskParams = '?actionId=2';
+	searchTaskParams += '&customerId=' + customerId;
+	searchTaskParams += '&duedate=' + dueDate;
+	searchTaskParams += '&projectId=' + projectId;
+	searchTaskParams += '&tasktypeId=' + cmbSearchTaskType;
+	searchTaskParams += '&showclosed=' + showClosed;
 	
 	getData('taskListBody', 'task', searchTaskParams, fillTaskList);
 }
-
 /**
  * Constructs the HTTP call to retrieve tasks by project in the Relation tab 
  * @returns
@@ -40,6 +52,7 @@ function searchRelationTask(){
 function resetTaskSearch(){
 	getById('cmbSearchCustomer').value=0;
 	getById('cmbSearchTaskType').value=0;
+	getById('cmbSearchProject').value=0;
 	getById('txtSearchDueDate').valueAsDate=null;
 	setSearchTaskStatusOpen();
 	setMsg(msgType.ok, 'Ready')
@@ -81,32 +94,40 @@ function init(){
 	toggleSearchTaskStatus();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Select a Customer', 
 			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);
+			(opt,item)=>opt.text = item.customerName, 
+			null);
 	getDataEx('cmbSearchTaskType', 'taskType', '?actionId=2', fillSelect, 'Select a TaskType', 
 			(opt,item)=>opt.value = item.taskTypeId, 
-			(opt,item)=>opt.text = item.taskTypeName);
+			(opt,item)=>opt.text = item.taskTypeName, 
+			null);
 	getDataEx('cmbDetailTaskType', 'taskType', '?actionId=2', fillSelect, 'Select a TaskType', 
 			(opt,item)=>opt.value = item.taskTypeId, 
-			(opt,item)=>opt.text = item.taskTypeName);
+			(opt,item)=>opt.text = item.taskTypeName, 
+			null);
 
     getDataEx('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Select Contact', 
     		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName);
+    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+    		null);
     getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
     		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName);    ;
+    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+    		null);
     
     getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, 'Select Status', 
     		(opt,item)=>opt.value = item.statusId, 
-    		(opt,item)=>opt.text = item.statusName);    
+    		(opt,item)=>opt.text = item.statusName, 
+    		null);    
     
     getDataEx('cmbTaskLogType', 'tasklogtype', '?actionId=2', fillSelect, 'Select Log type', 
     		(opt,item)=>opt.value = item.taskLogTypeId, 
-    		(opt,item)=>opt.text = item.taskLogTypeName);     
+    		(opt,item)=>opt.text = item.taskLogTypeName, 
+    		null);     
 
     getData('cmbSearchProject', 'customertask', '?actionId=2', fillCustomerTask)
 
-    getData('taskListBody', 'task', '?actionId=2&customerId=0&showClosed=false', fillTaskList);
+    searchTask(0, '', 0, 0, 0);
+    
     getData('cmbContactList', 'contact', '?actionId=2', fillContactList);
     getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);
     
