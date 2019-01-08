@@ -29,14 +29,13 @@ public class AuthenticationController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		JsonObject json = new JsonObject();
 		Login login = null;
-		String nextURL = "/";
+		
 		try {
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
 			login = LoginDAL.getInstance().authenticate(username, password);
 			if(login == null) {
 				json.addProperty("msg", "Invalid user or password. Please try Again");
-				nextURL = "/login.html";
 				String response = jsonHelper.toJson(json);	
 				PrintWriter out = resp.getWriter();
 				out.println(response);	
