@@ -1,8 +1,6 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,17 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
-import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 @MultipartConfig
 public class AuthenticationFilter implements Filter {
 
 	private ServletContext context;
-	private Gson jsonHelper = new Gson();
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -79,30 +70,5 @@ public class AuthenticationFilter implements Filter {
 
 	}
 	
-	private boolean authenticate(HttpServletRequest req, HttpServletResponse resp) {
-		boolean isAuthenticated = false;
-		Login login = null;
-		try {
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-			if(username != null) {
-				login = LoginDAL.getInstance().authenticate(username, password);	
-				if(login != null)
-					isAuthenticated = true;
-				else
-				{
-					JsonObject json = new JsonObject();
-					json.addProperty("msg", "Invalid user or password. Please try Again");
-					String response = jsonHelper.toJson(json);	
-					PrintWriter out = resp.getWriter();
-					out.println(response);
-				}			
-			}
-
-		}catch(IOException | NullPointerException | SQLException e) {
-			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
-		}
-		return isAuthenticated;
-	}
 
 }

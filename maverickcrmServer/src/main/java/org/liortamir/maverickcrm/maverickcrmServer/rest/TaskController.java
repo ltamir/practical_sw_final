@@ -122,8 +122,7 @@ public class TaskController extends HttpServlet {
 		try {
 			int taskId = TaskDAL.getInstance().insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty("taskId", taskId);
-//			RequestDispatcher rd = req.getRequestDispatcher("tasklog");
-//			((RequestDispatcher) req).forward(req,resp);
+
 		}catch(SQLException | NumberFormatException e) {
 			System.out.println("TaskController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
 		}
