@@ -46,22 +46,25 @@ public class AuthenticationFilter implements Filter {
 		else
 			isAuthenticated = true;
 		
+		this.context.log("Request: " + uri);
 		if(isAuthenticated) {
+//			this.context.log("Approved: " + uri);
 			chain.doFilter(request, response);
 		}else if(session == null) {
-			this.context.log("Unauthorized access request");
+			this.context.log("Not approved: " + uri);
 			resp.sendRedirect("login.html");
 		}else if(uri.endsWith("authenticate")) {
+//			this.context.log("Authenticating: " + uri);
 			chain.doFilter(request, response);
 		}
 		else if(!isAuthenticated && (uri.contains("login.html") || uri.endsWith("png"))){	// )
+//			this.context.log("Login.html requested: " + uri);
 			chain.doFilter(request, response);
 		}else if(!isAuthenticated) {
+//			this.context.log("not authenticated: " + uri);
 			resp.sendRedirect("login.html");
 		}
-		
-
-		
+			
 	}
 
 	@Override
