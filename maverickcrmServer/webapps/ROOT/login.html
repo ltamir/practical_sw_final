@@ -23,7 +23,7 @@
 		}
     </style>
     <script>
-    function ddd(){
+    function authenticate(){
 		let formData = new FormData();  
 		formData.append("username", document.getElementById("username").value);
 		formData.append("password", document.getElementById("password").value);   
@@ -41,6 +41,11 @@
 			  }
 		};
     }
+    
+    function submitOnEnter(event){
+    	if((event.which || event.keyCode) == 13)
+    		authenticate();
+    }
     </script>
 
 </head>
@@ -52,7 +57,7 @@
 <input type="text" id="username">
 <br>
 <label for="password" class="cssFieldLabel">Password:</label>
-<input type="password" id="password">
+<input type="password" id="password" onkeypress="submitOnEnter(event)">
 <br><br>
 <button onclick="ddd()">Authenticate</button>
 
