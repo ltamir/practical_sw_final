@@ -48,13 +48,8 @@ public class TaskController extends HttpServlet {
 		Task task = null;
 		JsonObject json = new JsonObject();
 		int taskId = 0;
-
 		int actionId = 0;
-		String username = (String)req.getSession().getAttribute("username");
-		if(username == null) {
-			resp.sendRedirect("/login.html");
-			return;
-		}
+
 		try {
 
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
