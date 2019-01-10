@@ -7,7 +7,7 @@ var debugTask = false;
 var debugMenu = false;
 var debugRelation = false;
 var debugAttachment = false;
-var dbgModule = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, 9.login}
+var dbgModule = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9}
 var dbg = 0;
 var msgType = {ok:1, nok:2};
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, contact:5, linkedCustomer:6, login:7}
@@ -44,7 +44,10 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
     fetch(url)
     .then(function(response) {
-        return response.json();
+    		if(resource.endsWith('html'))
+    			return response.text();
+    		else
+    			return response.json();
         }
     )
     .then(function(body){
@@ -54,6 +57,7 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
+
 function setData(method, formData, resource){
 	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
         method: method,
@@ -62,6 +66,34 @@ function setData(method, formData, resource){
       .then(r =>  r.json().then(data => ({status: r.status, body: data})))
 	.then(function(obj){return obj.body;})
 }
+
+
+function getHTML(url) {
+	  // Return a new promise.
+	  return new Promise(function(resolve, reject) {
+	    // Do the usual XHR stuff
+	    var req = new XMLHttpRequest();
+	    req.open('GET', url);
+
+	    req.onload = function() {
+	      if (req.status == 200) {
+	        // Resolve the promise with the response text
+	        resolve(req.response);
+	      }
+	      else {
+	        reject(Error(req.statusText));
+	      }
+	    };
+
+	    // Handle network errors
+	    req.onerror = function() {
+	      reject(Error("Network Error"));
+	    };
+
+	    // Make the request
+	    req.send();
+	  });
+	}
 
 /**
  * 
@@ -97,6 +129,10 @@ function fillSelect(id, data, defaultOption, funcValue, funcText, eventHandler){
     		eventHandler(opt,item);
         selectElement.appendChild(opt);                        
     }); 	
+}
+
+function fillTab(id, data, defaultOption, funcValue, funcText, eventHandler){
+	getById(id).innerHTML = data;
 }
 
 /**

@@ -39,11 +39,10 @@ function newTask(){
 	setValue('txtDetailDueDate', '');
 	setValue('cmbDetailStatus', 1);
 	
-	let element = getById('cmbTaskLogList');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}
-    
+	setTab(tabEnum.taskLog);  
+}
+ 
+function newRelation(){
     element = getById('cmbParentTaskList');
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
@@ -56,14 +55,9 @@ function newTask(){
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
 	}  
-    
     getById('lblDetailTaskRelationTitle').innerHTML = 'No selected Task for hierarchy';
-    element = getById('cmbAttachmentList');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}      
 }
- 
+
 function newTaskLog(){
 	setValue('taskLogId', '0');
 	setValue('cmbTaskLogContact', 0);
@@ -109,7 +103,6 @@ function fillTaskDetails(id, data){
 	if(data.taskType.taskTypeId==1){
 		getById('TabLinkedCustomer').style.display='inline';
 	}else{
-		getById('divLinkedCustomer').style.display='none';
 		getById('TabLinkedCustomer').style.display='none';		
 	}
 }

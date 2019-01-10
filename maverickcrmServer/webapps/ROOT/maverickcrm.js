@@ -109,27 +109,18 @@ function init(){
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
     		null);
-    getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
-    		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		null);
     
     getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, 'Select Status', 
     		(opt,item)=>opt.value = item.statusId, 
     		(opt,item)=>opt.text = item.statusName, 
     		null);    
-    
-    getDataEx('cmbTaskLogType', 'tasklogtype', '?actionId=2', fillSelect, 'Select Log type', 
-    		(opt,item)=>opt.value = item.taskLogTypeId, 
-    		(opt,item)=>opt.text = item.taskLogTypeName, 
-    		null);     
 
     getData('cmbSearchProject', 'customertask', '?actionId=2', fillCustomerTask)
 
     searchTask(0, '', 0, 0, 0);
     
-    getData('cmbContactList', 'contact', '?actionId=2', fillContactList);
-    getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);
+    activateTabCustomer();
+    activateTabTaskLog()
     
     setValue('txtSearchDueDate', '');
     

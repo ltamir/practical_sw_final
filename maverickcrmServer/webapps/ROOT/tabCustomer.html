@@ -1,0 +1,14 @@
+		              	<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbCustomerList', 'txtSearchCustomer', event)">
+		              	<img src="images/add_task.png" title="New customer" align="bottom" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="newCustomer();toggleAsBotton(this)">
+						<img src="images/save.png" title="Save customer" id="imgSaveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomer();toggleAsBotton(this)">
+		              	<br>
+		              	<select id="cmbCustomerList" size="5"></select>
+		              	<br>
+						
+						<form action="customer" id="frmCustomer" method="POST">
+						<label for="txtCustomerName" class="cssFieldLabel">Name</label><input type="text" name="customerName" id="txtCustomerName">
+						<br>
+						<label for="txtCustomerNotes" class="cssFieldLabel">Notes</label><textarea name="customerNotes" id="txtCustomerNotes" rows="3" cols="30"></textarea>
+						<br>
+						<input type="hidden" id="detailCustomerId" name="customerId" value="0">
+						</form>

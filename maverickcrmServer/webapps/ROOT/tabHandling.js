@@ -6,11 +6,7 @@ function setTab(tab){
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTabSelected';
 		getById('TabRelation').className='cssTab';
-		getById('divTabRelation').style.display='none';
-		getById('divTabAttachment').style.display='none';
-		getById('divTabLog').style.display='inline';
-		getById('TabLinkedCustomer').className='cssTab';
-		getById('divLinkedCustomer').style.display='none';	
+		getById('TabLinkedCustomer').className='cssTab';	
 		activateTabTaskLog();
 		activeTaskTab = tab;
 		break;
@@ -18,24 +14,16 @@ function setTab(tab){
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTabSelected';
-		getById('divTabLog').style.display='none';
-		getById('divTabAttachment').style.display='none';
-		getById('TabLinkedCustomer').className='cssTab';
-		getById('divLinkedCustomer').style.display='none';			
-		activateTabRelation();
-		getById('divTabRelation').style.display='inline';  
+		getById('TabLinkedCustomer').className='cssTab';			
+		activateTabRelation();  
 		activeTaskTab = tab;
 		break;
 	case tabEnum.attachment:
 		getById('TabAttachment').className='cssTabSelected';
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTab';		
-		getById('divTabLog').style.display='none';
-		getById('divTabRelation').style.display='none';
 		getById('TabLinkedCustomer').className='cssTab';
-		getById('divLinkedCustomer').style.display='none';	
 		activateTabAttachment();
-		getById('divTabAttachment').style.display='inline';
 		activeTaskTab = tab;
 		break;
 	case tabEnum.linkedCustomer:
@@ -43,37 +31,25 @@ function setTab(tab){
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTab';		
-		getById('divTabLog').style.display='none';
-		getById('divTabRelation').style.display='none';
-		getById('divTabAttachment').style.display='none';
 		activateTabLinkedCustomer();
-		getById('divLinkedCustomer').style.display='inline';
 		activeTaskTab = tab;
 		break;		
 	case tabEnum.customer:
 		getById('tabCustomer').className = "cssTabSelected";
-		getById('divCustomer').style.display='inline';
 		getById('tabContact').className = "cssTab";
-		getById('divContact').style.display='none';
 		getById('tabLogin').className = "cssTab";
-		getById('divLogin').style.display='none';		
+		activateTabCustomer();
 		break;
 	case tabEnum.contact:
 		getById('tabContact').className = "cssTabSelected";
-		getById('divContact').style.display='inline';
 		getById('tabCustomer').className = "cssTab";		
-		getById('divCustomer').style.display='none';
 		getById('tabLogin').className = "cssTab";
-		getById('divLogin').style.display='none';		
 		activateTabContact();
 		break;
 	case tabEnum.login:
 		getById('tabLogin').className = "cssTabSelected";
-		getById('divLogin').style.display='inline';
 		getById('tabContact').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";		
-		getById('divCustomer').style.display='none';
-		getById('divContact').style.display='none';	
 		activateTabLogin();
 		break;
 	}
@@ -81,70 +57,101 @@ function setTab(tab){
 }
 	
 function activateTabTaskLog(){
-	if(getValue('taskId') == '0')
-		return;	
+	getHTML('tabTaskLog.html').then(function(response){fillTab('divTaskTab', response)})
+	.then(()=>getDataEx('cmbTaskLogType', 'tasklogtype', '?actionId=2', fillSelect, 'Select Log type', 
+    		(opt,item)=>opt.value = item.taskLogTypeId, 
+    		(opt,item)=>opt.text = item.taskLogTypeName, 
+    		null))
+    .then(()=>getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
+    		(opt,item)=>opt.value = item.contactId, 
+    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+    		null))
+	.then(()=>{
+		if(getValue('taskId') > 0)
+			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
+	})
 	
-	getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList);
+}
+
+
+function activateTabRelation(){
+	getHTML('tabRelation.html').then(function(response){fillTab('divTaskTab', response)})
+	.then(()=>getDataEx('cmbTaskRelationType', 'taskrelationtype', '?actionId=2', fillSelect, 'Select relation type', 
+			(opt,item)=>opt.value = item.taskRelationTypeId, 
+			(opt,item)=>opt.text = item.taskRelationTypeName, 
+			null))
+	.then(()=>{
+		if(getValue('taskId') > 0)
+			getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getById('taskId').value, fillTaskRelationListParent)})
+	.then(()=>{
+		if(getValue('taskId') > 0)
+			getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getById('taskId').value, fillTaskRelationListChild)
+	})
+	.then(()=>getData('cmbTabRelationProject', 'customertask', '?actionId=2', fillCustomerTask))
+	
 }
 
 function activateTabAttachment(){
-	if(getValue('taskId') > 0)
-		getData('cmbAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillAttachmentList);
-	
-	getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Select Attachment type',
+	getHTML('tabAttachment.html').then(function(response){fillTab('divTaskTab', response)})
+	.then(()=>getData('cmbAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillAttachmentList))
+	.then(()=>getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Select Attachment type',
 			(opt,item)=>opt.value = item.attachmentTypeId, 
 			(opt,item)=>opt.text = item.attachmentTypeName, 
-			null);
-	getDataEx('cmbAttachmenContact', 'contact', '?actionId=2', fillSelect, 'Select contact',
+			null))
+	.then(()=>getDataEx('cmbAttachmenContact', 'contact', '?actionId=2', fillSelect, 'Select contact',
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-			null);	
-	setValue('txtAttachmentNotes', '');
-}
-	
-function activateTabRelation(){
-	
-	getDataEx('cmbTaskRelationType', 'taskrelationtype', '?actionId=2', fillSelect, 'Select relation type', 
-			(opt,item)=>opt.value = item.taskRelationTypeId, 
-			(opt,item)=>opt.text = item.taskRelationTypeName, 
-			null);		
-	if(getValue('taskId') > 0){
-		getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getById('taskId').value, fillTaskRelationListParent)
-		getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getById('taskId').value, fillTaskRelationListChild)
-	}
-	getData('cmbTabRelationProject', 'customertask', '?actionId=2', fillCustomerTask)
+			null))
+	.then(()=>setValue('txtAttachmentNotes', ''))
+//	if(getValue('taskId') > 0)
+
 }
 	
 function activateTabLinkedCustomer(){
-	getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, 
+	getHTML('tabLinkedCustomer.html').then(function(response){fillTab('divTaskTab', response)})
+	.then(()=>getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, 
 			null, 
 			(opt,item)=>opt.value = item.customerTaskId, 
 			(opt,item)=>opt.text = item.customer.customerName, 
-			null);
-	getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
+			null))
+	.then(()=>getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
-			null);	
+			null))	
+}
+
+function activateTabCustomer(){
+	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
+	.then(()=>getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList));
 }
 
 function activateTabContact(){
-	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=2', fillSelect, null, 
+	
+	getHTML('tabContact.html').then(function(response){fillTab('divCRM', response)})
+	.then(()=>getDataEx('cmbAvailableCustomers', 'customer', '?actionId=2', fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
-			null);
-	getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Select Contact type', 
+			null))
+	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Select Contact type', 
 			(opt,item)=>opt.value = item.contactTypeId, 
 			(opt,item)=>opt.text = item.contactTypeName, 
-			null);  	
+			null)) 	
+	.then(()=>getData('cmbContactList', 'contact', '?actionId=2', fillContactList))
+		.catch(err=>console.log(`activateTabContact err: ${err}` + `err: ${err.stack}` + ` url:${url}`))
+
 }
 
+
 function activateTabLogin(){
-	getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
+	getHTML('tabLogin.html').then(function(response){fillTab('divCRM', response)})
+	.then(()=>getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-			null); 
-	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
-			(opt,item)=>opt.value = item.loginId, 
-			(opt,item)=>opt.text = item.username,
-			(opt, item)=>opt.addEventListener("click", function(){getData('', 'login', '?actionId=3&loginId='+item.loginId, fillLoginDetails)})); 	
+				null))
+		.then(()=>	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
+		(opt,item)=>opt.value = item.loginId, 
+		(opt,item)=>opt.text = item.username,
+		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, fillLoginDetails)})
+		))
+			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }

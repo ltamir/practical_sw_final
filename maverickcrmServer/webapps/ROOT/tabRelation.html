@@ -1,0 +1,18 @@
+					<select id="cmbParentTaskList" size="2"></select>
+					<br>
+					<select id="cmbChildTaskList" size="4"></select>
+					<br>
+					<select id="cmbTabRelationProject"></select>
+					<input type="button" value="Search" id="cmdSearchTask" onclick="searchRelationTask()">
+					<br>
+					<select id="cmbRelationTaskList" size="3"></select>
+					<br>
+					<label id="lblDetailTaskRelationTitle" class="cssFieldLabel">No selected Task for hierarchy</label>
+					<br>
+					<label for="cmbTaskRelationType" class="cssFieldLabel">Type:</label>
+					<select id="cmbTaskRelationType"> </select>
+					<img src="images/relationParent.png" title="Add as parent" id="imgAddParent" onmousedown="toggleAsBotton(this)" onmouseup="saveAsParent(); toggleAsBotton(this)">
+					<img src="images/relationChild.png" title="Add as child" id="imgAddChild" onmousedown="toggleAsBotton(this)" onmouseup="saveAsChild(); toggleAsBotton(this)">
+					<img src="images/relationRemove.png" title="Remove relation" id="imgRemoveRelation" onmousedown="toggleAsBotton(this)" onmouseup="removeTaskRelation(); toggleAsBotton(this)">
+					<input type="hidden" id="taskRelationId" value="0">
+					<input type="hidden" id="taskRelationSelectedTaskId" value="0">

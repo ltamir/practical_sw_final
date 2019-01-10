@@ -1,0 +1,14 @@
+               	<form enctype="multipart/form-data" method="post" name="fileinfo">
+               		<select id="cmbAttachmentList" size="4"></select>
+               		<br>
+					<textarea id="txtAttachmentNotes" rows="2" cols="50"></textarea>
+					<br>
+					<label for="cmbAttachmentType" class="cssFieldLabel">Type:</label><select id="cmbAttachmentType"> </select>
+					<input type="file" id="attachmentFile">
+					<input type="hidden" value="0" id="attachmentId">
+					<input type="hidden" value="0" id="attachmentTaskLogId">
+					<br>
+					<select id="cmbAttachmenContact"></select>
+					<img src="images/save.png" title="save attachment" align="bottom" id="imgSaveAttachment" onmousedown="toggleAsBotton(this)" onmouseup="saveAttachment();toggleAsBotton(this)">
+					<img src="images/file_new.png" title="new attachment" id="imgNewAttachment" onmousedown="toggleAsBotton(this)" onmouseup="newAttachment(); toggleAsBotton(this)">
+				</form>
