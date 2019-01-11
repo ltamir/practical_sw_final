@@ -37,6 +37,7 @@ img{
       border: 1px solid #dddddd;
       text-align: left;
       padding: 1px;
+      cursor: pointer;
     }
 
     #menu.tr:nth-child(even) {
@@ -73,6 +74,7 @@ img{
 	table.cssTaskList tr {
 	    width: 100%;
 	    display: table;
+	    cursor: pointer;
 	}
 	th.cssTaskListId, td.cssTaskListId {
 	    width: 3em;
