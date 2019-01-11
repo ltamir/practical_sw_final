@@ -124,6 +124,31 @@ function fillContactList(id, data){
     });         	
 }
 
+function fillContactCard(id, item){
+	let card = getById(id);
+	
+	while(card.hasChildNodes())
+		card.removeChild(card.firstChild);
+    
+    	
+	let span = document.createElement("span");
+	span.innerHTML = item.firstName + " " + item.lastName;
+	card.appendChild(span);
+	card.appendChild(document.createElement("br"));
+	span = document.createElement("span");
+	span.innerHTML = 'office: ' + item.officePhone + ' cellular: ' + item.cellPhone;
+	card.appendChild(span);
+	card.appendChild(document.createElement("br"));
+	span = document.createElement("span");
+	span.innerHTML = item.email;
+	card.appendChild(span);
+	card.appendChild(document.createElement("br"));
+	span = document.createElement("span");
+	span.innerHTML = item.notes;
+	card.appendChild(span);
+
+}
+
 function fillCustomerList(id, data){
     let selectElement = getById(id);
     for (let i = selectElement.length - 1; i >= 0; i--) {
