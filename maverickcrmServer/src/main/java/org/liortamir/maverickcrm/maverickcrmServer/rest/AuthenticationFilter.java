@@ -46,7 +46,7 @@ public class AuthenticationFilter implements Filter {
 		else
 			isAuthenticated = true;
 		
-		this.context.log("Request: " + uri);
+//		this.context.log("Request: " + uri);
 		if(isAuthenticated) {
 //			this.context.log("Approved: " + uri);
 			chain.doFilter(request, response);
