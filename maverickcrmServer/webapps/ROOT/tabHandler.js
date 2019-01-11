@@ -147,10 +147,7 @@ function activateTabConnection(){
 							})
 						)
 				})
-			));
-	 
-//divConnectedContactDetails
-//	        opt.addEventListener("click", function(){getData('', 'contact', '?actionId=3&contactId='+item.contactId, fillContactDetails);});	
+			));	
 }
 
 function activateTabCustomer(){
