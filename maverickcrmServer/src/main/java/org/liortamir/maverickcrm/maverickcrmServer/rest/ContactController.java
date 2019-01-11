@@ -25,6 +25,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Contact;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 @MultipartConfig
@@ -35,7 +36,7 @@ public class ContactController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
 	
-	private Gson jsonHelper = new Gson();
+	private Gson jsonHelper = null;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -168,7 +169,7 @@ public class ContactController extends HttpServlet {
 		String response = "{msg:\"Invalid request\"}";
 		JsonObject json = new JsonObject();
 		try {
-			int contactId = 0; // = Integer.parseInt(req.getParameter("customerTaskId"));
+			int contactId = 0;
 			
 			Part filePart = req.getPart("contactId");
 			int multiplier = 1;
@@ -186,6 +187,15 @@ public class ContactController extends HttpServlet {
 		response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);
+	}
+
+	@Override
+	public void init() throws ServletException {
+
+		GsonBuilder gsonBuilder = new GsonBuilder();  
+		gsonBuilder.serializeNulls();  
+		this.jsonHelper = gsonBuilder.create();
 	}	
 
+	
 }

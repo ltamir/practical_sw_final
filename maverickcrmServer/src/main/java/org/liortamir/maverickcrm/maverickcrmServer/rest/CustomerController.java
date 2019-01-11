@@ -26,6 +26,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 @WebServlet
@@ -36,14 +37,8 @@ public class CustomerController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -4769452647655368178L;
-	private Gson jsonHelper = new Gson();
+	private Gson jsonHelper = null;
 	
-	
-	@Override
-	public void init() throws ServletException {
-		
-		super.init();
-	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -195,4 +190,12 @@ public class CustomerController extends HttpServlet {
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
+	
+	@Override
+	public void init() throws ServletException {
+
+		GsonBuilder gsonBuilder = new GsonBuilder();  
+		gsonBuilder.serializeNulls();  
+		this.jsonHelper = gsonBuilder.create();
+	}	
 }
