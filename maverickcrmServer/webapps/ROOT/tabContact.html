@@ -1,33 +1,33 @@
-						<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="15" onkeyup="searchText('cmbContactList', 'txtSearchContact', event)">
-						<img src="images/contact.png" title="New contact" align="bottom" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
-						<img src="images/save.png" title="Save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
-						<br>
-						<select id="cmbContactList" size="5"></select>
-						<br>
-						<div class="parent-grid-container">
-						<div class="contact-details-grd">
-							<div class="grid-item"><label for="txtContactFirstName" class="cssFieldLabel">First Name</label></div>
-							<div class="grid-item"><input type="text" id="txtContactFirstName"> </div>
-							<div class="grid-item"><label for="txtContactLastName" class="cssFieldLabel">Last Name</label></div>
-							<div class="grid-item"><input type="text" id="txtContactLastName"></div>
-							<div class="grid-item"><label for="txtContactOfficePhone" class="cssFieldLabel">Office phone</label></div>
-							<div class="grid-item"><input type="tel" id="txtContactOfficePhone"></div>
-							<div class="grid-item"><label for="txtContactCellPhone" class="cssFieldLabel">Mobile phone</label></div>
-							<div class="grid-item"><input type="tel" id="txtContactCellPhone"></div>
-							<div class="grid-item"><label for="txtContactEmail" class="cssFieldLabel">Email</label></div>
-							<div class="grid-item"><input type="email" id="txtContactEmail"></div>
-							<div class="grid-item"><label for="txtContactNotes" class="cssFieldLabel">Notes</label></div>
-							<div class="grid-item"><textarea id="txtContactNotes" rows="2" cols="20"></textarea></div>														
-						</div>
-						<div class="contact-customer-grd">
-							<select id="cmbAvailableCustomers" size="3"></select>
-							<select id="cmbConnectedCustomers" size="3"></select>
-							<select id="cmbContactType"></select>
-							<img src="images/remove.png" title="Remove customer" id="imgRemoveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(0);toggleAsBotton(this)">
-							<img src="images/add.png" title="Add customer" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(1);toggleAsBotton(this)">
-							<p></p>
-							<p></p>
-						</div>
-						</div>
-						<br>
-						<input type="hidden" id="detailContactId">
+<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="15" onkeyup="searchText('cmbContactList', 'txtSearchContact', event)">
+<img src="images/contact.png" title="New contact" align="bottom" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+<img src="images/save.png" title="Save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
+<br>
+<select id="cmbContactList" size="5"></select>
+<br>
+<div class="parent-grid-container">
+<div class="contact-details-grd">
+	<div class="grid-item"><label for="txtContactFirstName" class="cssFieldLabel">First Name</label></div>
+	<div class="grid-item"><input type="text" id="txtContactFirstName"> </div>
+	<div class="grid-item"><label for="txtContactLastName" class="cssFieldLabel">Last Name</label></div>
+	<div class="grid-item"><input type="text" id="txtContactLastName"></div>
+	<div class="grid-item"><label for="txtContactOfficePhone" class="cssFieldLabel">Office phone</label></div>
+	<div class="grid-item"><input type="tel" id="txtContactOfficePhone"></div>
+	<div class="grid-item"><label for="txtContactCellPhone" class="cssFieldLabel">Mobile phone</label></div>
+	<div class="grid-item"><input type="tel" id="txtContactCellPhone"></div>
+	<div class="grid-item"><label for="txtContactEmail" class="cssFieldLabel">Email</label></div>
+	<div class="grid-item"><input type="email" id="txtContactEmail"></div>
+	<div class="grid-item"><label for="txtContactNotes" class="cssFieldLabel">Notes</label></div>
+	<div class="grid-item"><textarea id="txtContactNotes" rows="2" cols="20"></textarea></div>														
+</div>
+<div class="contact-customer-grd">
+	<select id="cmbAvailableCustomers" size="3"></select>
+	<select id="cmbConnectedCustomers" size="3"></select>
+	<select id="cmbContactType"></select>
+	<img src="images/remove.png" title="Remove customer" id="imgRemoveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(0);toggleAsBotton(this)">
+	<img src="images/add.png" title="Add customer" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomerContact(1);toggleAsBotton(this)">
+	<p></p>
+	<p></p>
+</div>
+</div>
+<br>
+<input type="hidden" id="detailContactId">
