@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
-    <link rel="stylesheet" type="text/css" href="maverickcrm.css?5">
+    <link rel="stylesheet" type="text/css" href="maverickcrm.css?6">
     <script src="common.js?10"></script>
-    <script src="dataPopulation.js?9"></script>
+    <script src="dataPopulation.js?12"></script>
     <script src="maverickcrm.js?13"></script>
-    <script src="tabHandling.js?11"></script>
+    <script src="tabHandler.js?12"></script>
     <script src="modelHandler.js?3"></script>
 
 </head>
@@ -123,7 +123,8 @@
 			</td>
 			<td valign="top" rowspan="2">
 				<div class="tabCRM">
-					<span id="tabCustomer" class="cssTabSelected" onclick="setTab(tabEnum.customer)">Customers</span>
+					<span id="tabConnection" class="cssTab" onclick="setTab(tabEnum.connection)">Connection</span>
+					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabContact" class="cssTab" onclick="setTab(tabEnum.contact)">Contacts</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
 					<hr>			
