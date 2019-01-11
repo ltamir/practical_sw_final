@@ -119,7 +119,7 @@ function init(){
 
     searchTask(0, '', 0, 0, 0);
     
-    activateTabCustomer();
+    setTab(tabEnum.connection)
     activateTabTaskLog()
     
     setValue('txtSearchDueDate', '');
