@@ -71,6 +71,12 @@ public class CustomerContactController extends HttpServlet {
 				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);									
+			}else if(actionId == ActionEnum.ACT_CONTACT_BY_CUSTOMER.ordinal()){
+				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
+				List<CustomerContact> bulk = CustomerContactDAL.getInstance().getByCustomer(id);	
+				json = new JsonObject();
+				json.add("array", jsonHelper.toJsonTree(bulk));
+				response = jsonHelper.toJson(json);									
 			}
 		}catch(NumberFormatException | SQLException e) {
 			System.out.println("CustomerContactController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
