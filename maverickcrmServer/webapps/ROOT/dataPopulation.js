@@ -20,41 +20,27 @@ function fillTaskList(id, data){
         taskIdCell.appendChild(input)
     	
     	var customerNameCell  = newRow.insertCell(1);
-    	input = document.createElement('span');
-        input.innerHTML = item.customer.customerName;
-        input.addEventListener("mouseover", function(){this.style.cursor='pointer';})
+        customerNameCell.innerHTML = item.customer.customerName;
         customerNameCell.classList.add("cssTaskListCustomer");
-        customerNameCell.appendChild(input);
     	
     	var titleCell  = newRow.insertCell(2);
-        input = document.createElement('span');
-        input.innerHTML = item.title;
-        input.addEventListener("mouseover", function(){this.style.cursor='pointer';})
+    	titleCell.innerHTML = item.title;
         titleCell.classList.add("cssTaskListTitle");         
-        titleCell.appendChild(input);
-    	
+
     	var dueDateCell  = newRow.insertCell(3);
-        input = document.createElement('span');
         let day = (item.dueDate.day<10)?'0'+item.dueDate.day:item.dueDate.day;
         let month = (item.dueDate.month<10)?'0'+item.dueDate.month:item.dueDate.month;
-        input.innerHTML = day + "/" + month + "/" + item.dueDate.year;
+        dueDateCell.innerHTML = day + "/" + month + "/" + item.dueDate.year;
         dueDateCell.classList.add("cssTaskListDueDate");
-    	//let newText  = document.createTextNode();
-    	dueDateCell.addEventListener("mouseover", function(){this.style.cursor='pointer';})
-    	dueDateCell.appendChild(input);
     	
     	var effortCell  = newRow.insertCell(4);
     	effortCell.classList.add("cssTaskListEffort");
     	var strEffort = new String(item.effort)
-        input = document.createElement('span');
-        input.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
-        input.innerHTML +=' ' + new String((item.effortUnit==1)?'h':'d');
-    	effortCell.addEventListener("mouseover", function(){this.style.cursor='pointer';})
-    	effortCell.appendChild(input);
+    	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
+    	effortCell.innerHTML +=' ' + new String((item.effortUnit==1)?'h':'d');
     	
     	var statusNameCell  = newRow.insertCell(5);
     	statusNameCell.classList.add("cssTaskListStatus");
-    	statusNameCell.addEventListener("mouseover", function(){this.style.cursor='pointer';})
     	newText  = document.createTextNode(item.status.statusName);
     	statusNameCell.style.textAlign='left';
     	statusNameCell.appendChild(newText);
