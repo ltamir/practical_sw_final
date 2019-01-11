@@ -114,9 +114,10 @@ function fillContactList(id, data){
 		console.log(data);
     data.array.forEach(function (item) {
         let opt = document.createElement("OPTION");
-        let txtValue = item.firstName + " " + item.lastName + " : " + new String((item.officePhone.length == 0)?item.cellPhone:item.officePhone);
+        let phone = (item.officePhone == '')?((item.cellPhone == '')?'':item.cellPhone):item.officePhone
+        let txtValue = item.firstName + " " + item.lastName + " : " + phone;
         opt.value = item.contactId;
-        opt.text = txtValue; //item.firstName + " " + item.lastName;
+        opt.text = txtValue; 
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
         opt.addEventListener("click", function(){getData('', 'contact', '?actionId=3&contactId='+item.contactId, fillContactDetails);});
         element.appendChild(opt);                        
