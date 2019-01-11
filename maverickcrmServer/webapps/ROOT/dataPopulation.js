@@ -12,38 +12,33 @@ function fillTaskList(id, data){
     	var newRow   = selectElement.insertRow(selectElement.rows.length);
     	newRow.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);});
     	
-    	var taskIdCell  = newRow.insertCell(0);
-    	let input = document.createElement('span');
-        input.innerHTML = item.taskId;
-        input.addEventListener("mouseover", function(){this.style.cursor='pointer';})
-        taskIdCell.classList.add("cssTaskListId");
-        taskIdCell.appendChild(input)
-    	
-    	var customerNameCell  = newRow.insertCell(1);
+    	var customerNameCell  = newRow.insertCell(0);
         customerNameCell.innerHTML = item.customer.customerName;
         customerNameCell.classList.add("cssTaskListCustomer");
     	
-    	var titleCell  = newRow.insertCell(2);
+    	var titleCell  = newRow.insertCell(1);
     	titleCell.innerHTML = item.title;
         titleCell.classList.add("cssTaskListTitle");         
 
-    	var dueDateCell  = newRow.insertCell(3);
+    	var dueDateCell  = newRow.insertCell(2);
         let day = (item.dueDate.day<10)?'0'+item.dueDate.day:item.dueDate.day;
         let month = (item.dueDate.month<10)?'0'+item.dueDate.month:item.dueDate.month;
         dueDateCell.innerHTML = day + "/" + month + "/" + item.dueDate.year;
         dueDateCell.classList.add("cssTaskListDueDate");
     	
-    	var effortCell  = newRow.insertCell(4);
+    	var effortCell  = newRow.insertCell(3);
     	effortCell.classList.add("cssTaskListEffort");
     	var strEffort = new String(item.effort)
     	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
     	effortCell.innerHTML +=' ' + new String((item.effortUnit==1)?'h':'d');
     	
-    	var statusNameCell  = newRow.insertCell(5);
+    	var statusNameCell  = newRow.insertCell(4);
     	statusNameCell.classList.add("cssTaskListStatus");
-    	newText  = document.createTextNode(item.status.statusName);
-    	statusNameCell.style.textAlign='left';
-    	statusNameCell.appendChild(newText);
+    	statusNameCell.innerHTML = item.status.statusName
+    	statusNameCell.style.textAlign='center';
+//    	newText  = document.createTextNode(item.status.statusName);
+//    	statusNameCell.style.textAlign='left';
+//    	statusNameCell.appendChild(newText);
     }); 
 }
 
