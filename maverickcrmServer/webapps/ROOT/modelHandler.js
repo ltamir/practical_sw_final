@@ -209,7 +209,7 @@ function saveTask(){
 				getById('TabLinkedCustomer').style.display='inline';
 			})
 		.then(function(){prepareSearchTask()})
-		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getById('taskId').value, fillTaskLogList)})
+		.then(function(){setTab(prepareSearchTask)})
 		.then(function(){setMsg(msgType.ok, 'Task saved')});
 }
 
