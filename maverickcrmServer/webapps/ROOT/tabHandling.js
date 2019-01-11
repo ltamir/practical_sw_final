@@ -38,20 +38,30 @@ function setTab(tab){
 		getById('tabCustomer').className = "cssTabSelected";
 		getById('tabContact').className = "cssTab";
 		getById('tabLogin').className = "cssTab";
+		getById('tabConnection').className = "cssTab";
 		activateTabCustomer();
 		break;
 	case tabEnum.contact:
 		getById('tabContact').className = "cssTabSelected";
 		getById('tabCustomer').className = "cssTab";		
 		getById('tabLogin').className = "cssTab";
+		getById('tabConnection').className = "cssTab";
 		activateTabContact();
 		break;
 	case tabEnum.login:
 		getById('tabLogin').className = "cssTabSelected";
 		getById('tabContact').className = "cssTab";
-		getById('tabCustomer').className = "cssTab";		
+		getById('tabCustomer').className = "cssTab";	
+		getById('tabConnection').className = "cssTab";
 		activateTabLogin();
 		break;
+	case tabEnum.connection:
+		getById('tabConnection').className = "cssTabSelected";
+		getById('tabLogin').className = "cssTab";
+		getById('tabContact').className = "cssTab";
+		getById('tabCustomer').className = "cssTab";
+		activateTabConnection();
+		break;		
 	}
 
 }
@@ -118,6 +128,29 @@ function activateTabLinkedCustomer(){
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
 			null))	
+}
+
+function activateTabConnection(){
+	getHTML('tabConnection.html').then(function(response){fillTab('divCRM', response)})
+	.then(()=>getDataEx('cmbConnectedCustomer', 'customer', '?actionId=2', fillSelect, null, 
+			(opt,item)=>opt.value = item.customerId, 
+			(opt,item)=>opt.text = item.customerName,
+			(opt, item)=>opt.addEventListener("click", ()=>{
+				getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
+						(opt,item)=>opt.value = item.contact.contactId, 
+						(opt,item)=>{
+						let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
+						opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + phone;
+						},
+						(opt, item)=>opt.addEventListener("click", ()=>{
+							getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard)
+							})
+						)
+				})
+			));
+	 
+//divConnectedContactDetails
+//	        opt.addEventListener("click", function(){getData('', 'contact', '?actionId=3&contactId='+item.contactId, fillContactDetails);});	
 }
 
 function activateTabCustomer(){
