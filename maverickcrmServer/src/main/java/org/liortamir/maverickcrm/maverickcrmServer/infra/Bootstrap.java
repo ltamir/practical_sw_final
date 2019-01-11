@@ -11,15 +11,21 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBSetup;
 public class Bootstrap {
 
 	public static void main(String[] args) {
+		Reference ref = Reference.getInstance();
+		String storagePath = ref.getAsString("attachment.fileStorage");
 		
-		File attachmentDir = new File("./data/attachments");
+		if(storagePath == null) {
+			System.exit(0);
+		}
+			
+		File attachmentDir = new File(storagePath);
 		if(!attachmentDir.exists()) {
-			System.out.println("Attachment directory set to ./data/attachments");
-			new File("./data/attachments").mkdirs();
+			System.out.println("Attachment directory set to " + storagePath);
+			new File(storagePath).mkdirs();
 		}
 		
 		// database init
-		File[] files = new File("./data/db").listFiles();
+		File[] files = new File(ref.getAsString("db.path")).listFiles();
 		if(files == null || files.length == 0) {
 			System.out.println("creating db");
 			DBSetup dbSetup = new DBSetup();
@@ -29,7 +35,7 @@ public class Bootstrap {
 				e.printStackTrace();
 				System.exit(0);
 			}
-			System.out.println("Database directory set to ./data/db");
+			System.out.println("Database directory set to " + ref.getAsString("db.path"));
 			dbSetup.stopServiceImpl();
 		}else {
 			System.out.println("db exists");

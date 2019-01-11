@@ -28,6 +28,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.dal.AttachmentDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.Reference;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Attachment;
 
 import com.google.gson.Gson;
@@ -45,6 +46,9 @@ public class AttachmentHandler extends HttpServlet {
 
 	private Gson jsonHelper = new Gson();
 	private SimpleDateFormat frm=  new SimpleDateFormat();
+	private String storagePath;
+	private Reference ref = Reference.getInstance();
+	private String refPrefix = "attachment";
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -92,7 +96,7 @@ public class AttachmentHandler extends HttpServlet {
 			int attachmentTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ATTACHMENT_TYPE_ID));
 			String fileName = null;
 			String storageFileName = null;
-			String storageFilePath = "./data/attachments/";
+//			String storageFilePath = "./data/attachments/";
 			
 			Part filePart = req.getPart("attachmentFile");
 			fileName = filePart.getSubmittedFileName();
@@ -100,7 +104,7 @@ public class AttachmentHandler extends HttpServlet {
 			//File existingFile = new File(storageFilePath + storageFileName + ".zip");
 			int fileNumber = 0;
 			//if(existingFile.exists()) {
-				for(File existingFile = new File(storageFilePath + fileName + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storageFilePath + fileName + "_" + fileNumber + ".zip"));
+				for(File existingFile = new File(storagePath + fileName + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"));
 			//}
 			
 			if(fileNumber > 0)
@@ -108,7 +112,7 @@ public class AttachmentHandler extends HttpServlet {
 			else
 				storageFileName = fileName + ".zip";
 			
-			File uploadedFile = new File(storageFilePath + storageFileName);
+			File uploadedFile = new File(storagePath + storageFileName);
 			try(ZipOutputStream out = new ZipOutputStream(new FileOutputStream(uploadedFile))){
 				ZipEntry e = new ZipEntry(fileName);
 				out.putNextEntry(e);
@@ -120,7 +124,7 @@ public class AttachmentHandler extends HttpServlet {
 
 			frm.applyPattern("yyyy-MM-dd HH:mm:ss");
 			taskLogId = TaskLogDAL.getInstance().insert(frm.format(new Date()), taskId, contactId, description, taskLogTypeId);
-			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storageFilePath);
+			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
 			json.addProperty("taskLogId", taskLogId);
 			json.addProperty("attachmentId", attachmentId);
 
@@ -194,5 +198,8 @@ public class AttachmentHandler extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		frm.applyPattern("yyyy-MM-dd HH:mm:ss");
+		storagePath = ref.getAsString(refPrefix + ".fileStorage");
+		if(storagePath == null)
+			throw new ServletException("Invalid fileStoragein configuration");
 	}
 }

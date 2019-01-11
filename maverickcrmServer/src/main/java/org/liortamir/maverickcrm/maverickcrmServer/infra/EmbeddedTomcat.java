@@ -5,12 +5,15 @@ import java.net.MalformedURLException;
 
 import javax.servlet.ServletException;
 
+import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.catalina.Context;
 
 public class EmbeddedTomcat {
 
+	private Reference ref = Reference.getInstance();
+	private String refPrefix = "http";
+	
 	public void start() throws ServletException, LifecycleException,
     MalformedURLException {
 	
@@ -21,7 +24,7 @@ public class EmbeddedTomcat {
 		// Define port number for the web application
 		String webPort = System.getenv("PORT");
 		if (webPort == null || webPort.isEmpty()) {
-		webPort = "8082";
+		webPort = ref.getAsString(refPrefix + ".port", "8080");
 		}
 		// Bind the port to Tomcat server
 		tomcat.setPort(Integer.valueOf(webPort));
