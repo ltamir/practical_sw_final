@@ -46,13 +46,14 @@ public class CustomerContactDAL {
 		return entityList;
 	}
 		
-	public int insert(int customerId, int contactId, int contactTypeId) throws SQLException {
+	public int insert(int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
 		int identity = 0;
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("insert into customerContact values(default,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = conn.prepareStatement("insert into customerContact values(default,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, customerId);
 			ps.setInt(2, contactId);
 			ps.setInt(3, contactTypeId);
+			ps.setInt(4, addressId);
 			if(ps.executeUpdate() != 1)
 				throw new SQLException("error insert customercontact");
 			
@@ -63,16 +64,17 @@ public class CustomerContactDAL {
 		return identity;
 	}
 	
-	public void update(int customerContactId, int customerId, int ContactId, int contactTypeId) throws SQLException {
+	public void update(int customerContactId, int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
 
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("update customerContact set customerId=?, contactId=?, contactTypeId=? where customerContactId=?");
+			PreparedStatement ps = conn.prepareStatement("update customerContact set customerId=?, contactId=?, contactTypeId=? addressId=? where customerContactId=?");
 			ps.setInt(1, customerId);
-			ps.setInt(2, ContactId);
+			ps.setInt(2, contactId);
 			ps.setInt(3, contactTypeId);
-			ps.setInt(4, customerContactId);
+			ps.setInt(4, addressId);
+			ps.setInt(5, customerContactId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing insert task");
+				throw new SQLException("Error performing update customerContact");
 		}
 	}
 	
@@ -81,7 +83,7 @@ public class CustomerContactDAL {
 			PreparedStatement ps = conn.prepareStatement("delete from customerContact where customerContactId=?");
 			ps.setInt(1, customerContactId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing insert task");
+				throw new SQLException("Error performing delete customerContact");
 		}
 	}
 	
@@ -120,6 +122,7 @@ public class CustomerContactDAL {
 				rs.getInt("customerContactId"), 
 				CustomerDAL.getInstance().get(rs.getInt("customerId")),
 				ContactDAL.getInstance().get(rs.getInt("contactId")),
+				AddressDAL.getInstance().get(rs.getInt("addressId")),
 				ContactTypeDAL.getInstance().get(rs.getInt("contactTypeId")));
 
 		return customerContacts;

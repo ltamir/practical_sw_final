@@ -1,6 +1,37 @@
 <input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
+<img src="images/filter.png" id="filterConnection" value="0" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">
 <br>
-<select id="cmbConnectedCustomer" size="5"></select>
-<select id="cmbConnectedContact" size="5"></select>
+<div class="connection-grd">
+	<select id="cmbConnectedCustomer" size="5" class="cssConnectedCustomers"></select>
+	<span class="cssFieldLabel" class="cssConnectedContactsLabel">Connected contacts</span>
+	<select id="cmbConnectedContact" size="5" class="cssConncetedContacts"></select>
+	<span class="cssFieldLabel" class="cssAllContactsLabel">All contacts</span><br>
+	<select id="cmbAllContact" size="5" class="cssAllContacts"></select>
+</div>
+
+<img src="images/addCustomerContact_Up.png" title="add to selected customer" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<img src="images/add_generic.png" title="new contact" id="imgAddAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<img src="images/save_item.png" title="save contact" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 <br>
-<div id="divConnectedContactDetails" class="cssCard"></div>
+<div id="divConnectedEditContact" class="cssCard">
+<span>Name:</span><input type="text" id="txtFirstName" size="7" class="cssCardInput"><input type="text" id="txtLastName" size="7" class="cssCardInput">
+<br>
+<span>Office</span><img title="Office phone" src="images/phone.png" class="cssCardInput"><input type="text" id="txtOfficePhone" size="10" class="cssCardInput">
+<span>Mobile</span><img title="Mobile phone" src="images/cellular.png" class="cssCardInput"><input type="text" id="txtMobilePhone" size="10" class="cssCardInput">
+<br>
+<span>Email</span><img title="Email address" src="images/email.png" class="cssCardInput"><input type="text" id="txtEmail" size="20" class="cssCardInput">
+<br>
+<span>Notes</span><img title="Notes" src="images/notes.png" class="cssCardInput"><input type="text" id="txtNotes" size="27em" class="cssCardInput">
+<input type="hidden" id="ConnectionContactId" value="0">
+</div>
+<select id="cmbConnectedAddress" size="3"></select>
+<img src="images/add_generic.png" title="add address" id="imgAddAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<img src="images/save_item.png" title="save address" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<div id="divConnectedEditAddress" class="cssCard">
+<label for="txtAddressStreet" class="cssCardInput">Street:</label><input type="text" id="txtAddressStreet" size="33" class="cssCardInput">
+<label for="txtAddressHouseNum" class="cssCardInput">Building No.</label><input type="text" id="txtAddressHouseNum" size="3" class="cssCardInput">
+<br>
+<label for="txtAddressCity" class="cssCardInput">City:</label><input type="text" id="txtAddressCity" class="cssCardInput">
+<label for="txtAddressCountry" class="cssCardInput">Country</label><input type="text" id="txtAddressCountry" class="cssCardInput">
+<input type="hidden" id="addressId" value="0">
+</div>

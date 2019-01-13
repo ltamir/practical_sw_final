@@ -74,6 +74,13 @@ function toggleSearchTaskStatus(id){
 		setSearchTaskStatusOpen();
 }
 
+function toggleHandler(id, implA, implB){
+	if(id.value == '0')
+		implA(id);
+	else
+		implB(id);
+}
+
 function setSearchTaskStatusClosed(){
 	let statusImg = getById('searchTaskStatus');
 	statusImg.src='images/task_done.png';
@@ -88,6 +95,19 @@ function setSearchTaskStatusOpen(){
 	statusImg.value='0';
 	statusImg.style.borderStyle='outset';
 	statusImg.title = 'Open tasks';
+}
+
+function connectionFilterOn(element){
+	element.value='1';
+	element.style.borderStyle='inset';
+	element.title = 'Customers of selected task';
+}
+
+function connectionFilterOff(element){
+	let statusImg = getById('searchTaskStatus');
+	element.value='0';
+	element.style.borderStyle='outset';
+	element.title = 'All customers';
 }
 
 function init(){

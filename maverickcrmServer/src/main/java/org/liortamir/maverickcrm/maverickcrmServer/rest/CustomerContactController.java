@@ -95,9 +95,10 @@ public class CustomerContactController extends HttpServlet {
 		try {
 			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CUSTOMERID));
 			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACTID));
-			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID));			
+			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID));	
+			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
 			
-			int customerContactId = CustomerContactDAL.getInstance().insert(customerId, contactId, contactTypeId);
+			int customerContactId = CustomerContactDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
 			
 			json.addProperty("customerContact", customerContactId);			
 		}catch(SQLException | NullPointerException e) {
@@ -117,13 +118,15 @@ public class CustomerContactController extends HttpServlet {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
 		try {
-			System.out.println(req.getContentType());
-			int customerId = 0;
-			String customerName = null;
-			String customerNotes = null;
-		     
-			CustomerDAL.getInstance().update(customerId, customerName, customerNotes);
-			json.addProperty("customerContactId", "");
+			int customercontactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ID)); 
+			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CUSTOMERID));
+			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACTID));
+			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID));	
+			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
+
+			CustomerContactDAL.getInstance().update(customercontactId, customerId, contactId, contactTypeId, addressId);
+			
+			json.addProperty("customerContactId", customercontactId);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println("CustomerContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
 			json.addProperty("customerContactId", "0");

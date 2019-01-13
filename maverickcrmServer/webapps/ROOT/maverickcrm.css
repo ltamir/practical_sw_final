@@ -18,6 +18,7 @@ img{
 	      border-radius: 3px;
 	      color: #112211;
 	      font-family: arial, sans-serif;
+	      
 	}
 	input, select, button{
 	      background-color: #FEFEFE; 
@@ -26,7 +27,6 @@ img{
 		background-image: url("images/textBackground_no_num.jpg");
 		background-repeat: round;
 		background-attachment: scroll;	
-		/*background-color: PowderBlue;*/
 	}
 	
 	option:nth-child(even){
@@ -76,9 +76,7 @@ img{
 	    display: table;
 	    cursor: pointer;
 	}
-	th.cssTaskListId, td.cssTaskListId {
-	    width: 3em;
-	}
+
 	th.cssTaskListCustomer, td.cssTaskListCustomer {
 	    width: 15%;
 	}
@@ -110,6 +108,10 @@ img{
 		display: none;
 	}		
 
+/* 	#divConnectedContact{
+		display: none;
+	} */
+	
 .cssTab{
 	width: 15%;
 	font-family: arial;
@@ -201,11 +203,52 @@ img{
 
 .contact-customer-grd {
 	display: grid;
-	grid-template-columns: 8em 8em;
-	grid-template-rows:	8em 1.5em;
+	/* grid-template-columns: 8em 8em; */
+	grid-template-rows:	4em 1.5em 1.5em 3em;
+	padding: 3px;
 }
-
+  
 .cssCard{
 	border: 1px solid #000000;
 	background-color: LightGoldenRodYellow;
+}
+
+.cssCardInput{
+	border-style: groove;
+	border-color: LightGoldenRodYellow;
+	font-family: arial, sans-serif;
+	background-color: LightGoldenRodYellow;
+	font-size: 1em;
+	background-image: none;
+}
+
+img.cssCardInput{
+	border-width: 1px;
+	border-style: outset;
+	border-color: LightGoldenRodYellow;
+	vertical-align: bottom;
+}
+	#cmbConnectedAddress{
+		font-family: arial, sans-serif;
+        min-width: 29em;	
+	}	
+
+.cssConnectedCustomers{grid-area: connectedCustomers;
+	max-width: 14em;
+	min-width: 14em;}
+.cssConnectedContactsLabel{grid-area: connectedContactsLabel;}
+.cssConncetedContacts{grid-area: conncetedContacts;
+	max-width: 14em;
+	min-width: 14em;
+	}
+.cssAllContactsLabel{grid-area: allContactsLabel;}
+.cssAllContacts{grid-area: allContacts;
+max-width: 14em;
+min-width: 14em;}
+
+.connection-grd{
+	display: grid;
+	grid-template-areas: 'connectedCustomers connectedContactsLabel allContactsLabel'
+		'connectedCustomers conncetedContacts allContacts';
+
 }

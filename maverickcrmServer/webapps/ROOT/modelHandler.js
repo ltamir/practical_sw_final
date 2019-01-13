@@ -386,79 +386,57 @@ function saveCustomer(){
 		.then(function(data){if(dbg==dbgModule.customer){console.logdata}})
 		.then(function(){getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);})
 			.then(function(){setMsg(msgType.ok, 'Customer saved')});
-//	let request = new XMLHttpRequest();
-//	request.open(method, "http://127.0.0.1:8082/maverick/customer");
-//	request.send(formData);
-//	
+
 }
 
-//function saveCustomer(){
-//	let method;
-//	let formData;
-//	
-//	if(getValue('txtCustomerName') == ''){
-//		setMsg(msgType.nok, 'Please fill customer name');
-//		return;
-//	}
-//				
-//	let customerName = getById('txtCustomerName');
-//	let customerNotes = getById('txtCustomerNotes');
-//	let customerId = getById('detailCustomerId');
-//	
-//	
-//	let htmlForm = getById('frmCustomer');
-//	if(customerId.value == 0){
-//		method = 'POST';
-//		htmlForm.method = method;
-//		formData = new FormData(htmlForm);
-//	}
-//	else{
-//		method = 'PUT';
-//		htmlForm.method = method;
-//		formData = new FormData(htmlForm);    		
-//	}
-//
-//	if(dbg==dbgModule.customer)
-//		debugFormData(formData);
-//
-//	let request = new XMLHttpRequest();
-//	request.open(method, "http://127.0.0.1:8082/maverick/customer");
-//	request.send(formData);
-////	.then(function(){setMsg(msgType.ok, 'Customer saved')});
-//}
       	
 function saveContact(){
 	let formData = new FormData();
 	let element;
 	let method;
-	if(getValue('txtContactFirstName') == ''){
+	if(getValue('txtFirstName') == ''){
 		setMsg(msgType.nok, 'Contact missing First Name');
 		return;
 	}
-	if(getValue('txtContactLastName') == ''){
+	if(getValue('txtLastName') == ''){
 		setMsg(msgType.nok, 'Contact missing Last Name');
 		return;
 	}	
-	formData.append('firstName', getValue('txtContactFirstName'))
-	formData.append('lastName', getValue('txtContactLastName'))
-	formData.append('officePhone', getValue('txtContactOfficePhone'))
-	formData.append('cellPhone', getValue('txtContactCellPhone'))
-	formData.append('email', getValue('txtContactEmail'))
-	formData.append('notes', getValue('txtContactNotes'))
+	formData.append('firstName', getValue('txtFirstName'))
+	formData.append('lastName', getValue('txtLastName'))
+	formData.append('officePhone', getValue('txtOfficePhone'))
+	formData.append('cellPhone', getValue('txtMobilePhone'))
+	formData.append('email', getValue('txtEmail'))
+	formData.append('notes', getValue('txtNotes'))
 	
-	let detailContactId = getValue('detailContactId');
-	if(detailContactId == 0){
+	let contactId = getValue('ConnectionContactId');
+	if(contactId == 0){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-    	formData.append('contactId', detailContactId)
+    	formData.append('contactId', contactId);
 	}
 
 	if(dbg==dbgModule.contact)
 		debugFormData(formData);
 
 	setData(method, formData, 'contact')
-		.then(function(){getData('cmbContactList', 'contact', '?actionId=2', fillContactList)});
+		.then(
+			getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
+					(opt,item)=>opt.value = item.contact.contactId, 
+					(opt,item)=>{
+					let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
+					opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + phone;
+					},
+					(opt, item)=>{
+						opt.addEventListener("click", ()=>{
+							getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+							cmbConnectedAddress.value=item.address.addressId
+							})
+						}
+					)
+		
+		);
 	setMsg(msgType.ok, 'Contact saved');
 }
 

@@ -41,10 +41,17 @@ public class APIConst {
 	public static final String FLD_TASK_DUE_DATE = "dueDate";
 	public static final String FLD_TASK_STATUS_ID = "statusId";
 	
+	public static final String FLD_ADDRESS_ID = "addressId";
+	public static final String FLD_ADDRESS_STREET = "street";
+	public static final String FLD_ADDRESS_HOUSENUM = "houseNum";
+	public static final String FLD_ADDRESS_CITY = "city";
+	public static final String FLD_ADDRESS_COUNTRY = "country";
+	
 	public static final String FLD_CUSTOMERCONTACT_ID = "customerContactId";
 	public static final String FLD_CUSTOMERCONTACT_CONTACTID = "contactId";
 	public static final String FLD_CUSTOMERCONTACT_CUSTOMERID = "customerId";
 	public static final String FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID = "contactTypeId";
+	public static final String FLD_CUSTOMERCONTACT_ADDRESS_ID = "addressId";
 	
 	public static final String FLD_ATTACHMENT_ID = "attachmentId";
 	public static final String FLD_ATTACHMENT_ATTACHMENT_TYPE_ID = "attachmentTypeId";
