@@ -109,6 +109,18 @@
 	   <url-pattern>/contacttype</url-pattern>
 	</servlet-mapping>		
 	
+	
+	<servlet>
+	   <servlet-name>Address</servlet-name>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AddressController</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	   <servlet-name>Address</servlet-name>
+	   <url-pattern>/address</url-pattern>
+	</servlet-mapping>	
+	
+	
 	<servlet>
 	   <servlet-name>TaskType</servlet-name>
 	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.TaskTypeController</servlet-class>
@@ -131,7 +143,7 @@
 
 	<servlet>
 	   <servlet-name>Attachment</servlet-name>
-	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AttachmentHandler</servlet-class>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AttachmentController</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>

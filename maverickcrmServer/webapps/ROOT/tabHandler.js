@@ -139,15 +139,34 @@ function activateTabConnection(){
 				getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
 						(opt,item)=>opt.value = item.contact.contactId, 
 						(opt,item)=>{
-						let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
+						let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'':item.contact.mobilePhone):item.contact.officePhone;
 						opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + phone;
 						},
-						(opt, item)=>opt.addEventListener("click", ()=>{
-							getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard)
-							})
+						(opt, item)=>{
+							opt.addEventListener("click", ()=>{
+								getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+								cmbConnectedAddress.value=item.address.addressId
+								})
+							}
 						)
+				getDataEx('cmbConnectedAddress', 'address', '?actionId=13&customerId='+item.customerId, fillSelect, null, 
+						(opt,item)=>opt.value = item.addressId, 
+						(opt,item)=>opt.text = item.street + ' ' + item.houseNum + ' ' + item.city, 
+						(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
 				})
-			));	
+			))
+		.then(()=>getDataEx('cmbAllContact', 'contact', '?actionId=2', fillSelect, null,
+				(opt,item)=>opt.value = item.contactId, 
+				(opt,item)=>{
+				let phone = (item.officePhone == '')?((item.mobilePhone == '')?'':item.mobilePhone):item.officePhone;
+				opt.text = item.firstName + " " + item.lastName + " : " + phone;
+				},
+				(opt, item)=>{
+					opt.addEventListener("click", ()=>{
+						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
+						})
+					}
+				));	
 }
 
 function activateTabCustomer(){
