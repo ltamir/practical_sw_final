@@ -65,7 +65,7 @@ public class ContactDAL {
 			ps.setString(1, contact.getFirstName());
 			ps.setString(2, contact.getLastName());
 			ps.setString(3, contact.getOfficePhone());
-			ps.setString(4, contact.getCellPhone());
+			ps.setString(4, contact.getMobilePhone());
 			ps.setString(5, contact.getEmail());
 			ps.setString(6, contact.getNotes());
 			if(ps.executeUpdate() != 1)
@@ -80,12 +80,12 @@ public class ContactDAL {
 	
 	public void update (Contact contact) throws SQLException{
 		try(Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("update contact set firstName = ?, lastName = ?, officePhone = ?, cellPhone = ?, email = ?, notes = ? where contactId = ? ");
+			PreparedStatement ps = conn.prepareStatement("update contact set firstName = ?, lastName = ?, officePhone = ?, mobilePhone = ?, email = ?, notes = ? where contactId = ? ");
 			
 			ps.setString(1, contact.getFirstName());
 			ps.setString(2, contact.getLastName());
 			ps.setString(3, contact.getOfficePhone());
-			ps.setString(4, contact.getCellPhone());
+			ps.setString(4, contact.getMobilePhone());
 			ps.setString(5, contact.getEmail());
 			ps.setString(6, contact.getNotes());
 			ps.setInt(7, contact.getContactId());
@@ -110,7 +110,7 @@ public class ContactDAL {
 				rs.getString("firstName"), 
 				rs.getString("lastName"), 
 				rs.getString("officePhone"), 
-				rs.getString("cellPhone"), 
+				rs.getString("mobilePhone"), 
 				rs.getString("email"),
 				rs.getString("notes"));
 		

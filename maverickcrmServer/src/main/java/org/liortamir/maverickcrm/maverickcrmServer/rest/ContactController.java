@@ -88,7 +88,7 @@ public class ContactController extends HttpServlet {
 					req.getParameter("firstName"),
 					req.getParameter("lastName"),
 					req.getParameter("officePhone"),
-					req.getParameter("cellPhone"),
+					req.getParameter("mobilePhone"),
 					req.getParameter("email"),
 					req.getParameter("notes"));
 			
@@ -136,7 +136,7 @@ public class ContactController extends HttpServlet {
 						contact.setOfficePhone(item.getString());
 						break;
 					case APIConst.FLD_CONTACT_CELL_PHONE:
-						contact.setCellPhone(item.getString());
+						contact.setMobilePhone(item.getString());
 						break;
 					case APIConst.FLD_CONTACT_EMAIL:
 						contact.setEmail(item.getString());

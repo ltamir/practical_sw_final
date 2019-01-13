@@ -6,7 +6,7 @@ public class Contact {
 	private String firstName;
 	private String lastName;
 	private String officePhone;
-	private String cellPhone;
+	private String mobilePhone;
 	private String email;
 	private String notes;
 	
@@ -14,14 +14,14 @@ public class Contact {
 		
 	}
 	
-	public Contact(int contactId, String firstName, String lastName, String officePhone, String cellPhone, String email,
+	public Contact(int contactId, String firstName, String lastName, String officePhone, String mobilePhone, String email,
 			String notes) {
 		super();
 		this.contactId = contactId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.officePhone = officePhone;
-		this.cellPhone = cellPhone;
+		this.mobilePhone = mobilePhone;
 		this.email = email;
 		this.notes = notes;
 	}
@@ -58,12 +58,12 @@ public class Contact {
 		this.officePhone = officePhone;
 	}
 
-	public String getCellPhone() {
-		return cellPhone;
+	public String getMobilePhone() {
+		return mobilePhone;
 	}
 
-	public void setCellPhone(String cellPhone) {
-		this.cellPhone = cellPhone;
+	public void setMobilePhone(String cellPhone) {
+		this.mobilePhone = cellPhone;
 	}
 
 	public String getEmail() {
