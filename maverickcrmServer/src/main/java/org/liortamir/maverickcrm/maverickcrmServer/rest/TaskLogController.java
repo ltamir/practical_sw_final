@@ -42,8 +42,8 @@ public class TaskLogController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = "{msg:\"Invalid request\"}";
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		TaskLog taskLog = null;
 		JsonObject json = null;
 		int taskLogId = 0;

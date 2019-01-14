@@ -30,8 +30,8 @@ public class TaskTypeController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = APIConst.ERROR;
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		TaskType taskType = null;
 		JsonObject json = new JsonObject();
 		int id = 0;

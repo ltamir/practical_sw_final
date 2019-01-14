@@ -29,8 +29,8 @@ public class LoginController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = "{msg:'invalid username or password'}";
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		Login login = null;
 		JsonObject json = new JsonObject();
 		int id = 0;

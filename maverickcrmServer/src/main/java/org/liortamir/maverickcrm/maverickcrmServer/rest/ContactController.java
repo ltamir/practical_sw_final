@@ -40,8 +40,8 @@ public class ContactController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = "{msg:\"Invalid request\"}";
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		Contact contact = null;
 		JsonObject json = new JsonObject();
 		int id = 0;
@@ -86,12 +86,12 @@ public class ContactController extends HttpServlet {
 		JsonObject json = new JsonObject();
 		try {
 			Contact contact = new Contact(0, 
-					req.getParameter("firstName"),
-					req.getParameter("lastName"),
-					req.getParameter("officePhone"),
-					req.getParameter("mobilePhone"),
-					req.getParameter("email"),
-					req.getParameter("notes"));
+					req.getParameter(APIConst.FLD_CONTACT_FIRST_NAME),
+					req.getParameter(APIConst.FLD_CONTACT_LAST_NAME),
+					req.getParameter(APIConst.FLD_CONTACT_OFFICE_PHONE),
+					req.getParameter(APIConst.FLD_CONTACT_CELL_PHONE),
+					req.getParameter(APIConst.FLD_CONTACT_EMAIL),
+					req.getParameter(APIConst.FLD_CONTACT_NOTES));
 			
 			int contactId = ContactDAL.getInstance().insert(contact);
 			json.addProperty("contactId", contactId);
@@ -147,7 +147,7 @@ public class ContactController extends HttpServlet {
 						contact.setNotes(item.getString());
 						break;						
 						default:
-							System.out.println("CustomerHandler.doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
+							System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
 					}
 				}
 			}

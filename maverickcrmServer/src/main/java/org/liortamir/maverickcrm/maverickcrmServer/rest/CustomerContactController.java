@@ -47,8 +47,8 @@ public class CustomerContactController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = APIConst.ERROR;
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		CustomerContact customerContact = null;
 		JsonObject json = null;
 		int id = 0;
@@ -105,7 +105,7 @@ public class CustomerContactController extends HttpServlet {
 			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
 			
 			int customerContactId = CustomerContactDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
-			if(customerContactId > 0)
+			if(customerContactId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
 			json.addProperty("customerContact", customerContactId);			
 		}catch(SQLException | NullPointerException e) {

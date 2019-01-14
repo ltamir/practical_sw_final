@@ -2,7 +2,9 @@ package org.liortamir.maverickcrm.maverickcrmServer.infra;
 
 public class APIConst {
 
+	public static final ActionEnum[] ACTION_LIST = ActionEnum.values();
 	public static final String PARAM_ACTION_ID = "actionId";
+	public static final String CONTENT_TYPE = "application/json; charset=utf-8";
 	
 	public static final String FLD_CUSTOMER_ID = "customerId";
 	public static final String FLD_CUSTOMER_NAME = "customerName";
@@ -12,7 +14,7 @@ public class APIConst {
 	public static final String FLD_CONTACT_FIRST_NAME = "firstName";
 	public static final String FLD_CONTACT_LAST_NAME = "lastName";
 	public static final String FLD_CONTACT_OFFICE_PHONE = "officePhone";
-	public static final String FLD_CONTACT_CELL_PHONE = "cellPhone";
+	public static final String FLD_CONTACT_CELL_PHONE = "mobilePhone";
 	public static final String FLD_CONTACT_EMAIL = "email";
 	public static final String FLD_CONTACT_NOTES = "notes";
 	

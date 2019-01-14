@@ -32,8 +32,8 @@ public class CustomerTaskController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = APIConst.ERROR;
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		CustomerTask customerTask = null;
 		List<CustomerTask> bulk;
 		JsonObject json = new JsonObject();

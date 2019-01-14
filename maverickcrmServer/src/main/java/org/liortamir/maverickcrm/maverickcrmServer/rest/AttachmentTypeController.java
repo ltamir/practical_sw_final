@@ -29,8 +29,8 @@ public class AttachmentTypeController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("text/html");
-		String response = "{msg:\"Invalid request\"}";
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		AttachmentType attachmentType = null;
 		JsonObject json = null;
 		int actionId = 0;
