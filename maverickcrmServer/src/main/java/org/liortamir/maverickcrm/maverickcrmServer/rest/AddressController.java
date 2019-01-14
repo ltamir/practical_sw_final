@@ -15,6 +15,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.AddressDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerAddressDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.Reference;
@@ -66,8 +67,9 @@ public class AddressController extends HttpServlet {
 				response = jsonHelper.toJson(json);				
 			}
 		}catch(NullPointerException | NumberFormatException | SQLException e) {			
-			System.out.println("AddressController.doGet: " + e.toString() + " " + req.getQueryString());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			response = jsonHelper.toJson(json);	
 		}
 		
@@ -80,17 +82,20 @@ public class AddressController extends HttpServlet {
 		JsonObject json = new JsonObject();
 		try {
 			String street = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String houseNum = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String city = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String country = req.getParameter(APIConst.FLD_ADDRESS_STREET);
+			String houseNum = req.getParameter(APIConst.FLD_ADDRESS_HOUSENUM);
+			String city = req.getParameter(APIConst.FLD_ADDRESS_CITY);
+			String country = req.getParameter(APIConst.FLD_ADDRESS_COUNTRY);
+			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 			if(country == null)
 				country = defaultCountry;
 			
 			int addressId = AddressDAL.getInstance().insert(new Address(0, street, houseNum, city, country));
+			CustomerAddressDAL.getInstance().insert(customerId, addressId);
 			json.addProperty("addressId", addressId);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("AddressController.doGet: " + e.toString() + " " + req.getQueryString());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("addressId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "addressId already exists");
@@ -106,19 +111,42 @@ public class AddressController extends HttpServlet {
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
+		int multiplier = 1;
 		try {
-			String street = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String houseNum = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String city = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String country = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ADDRESS_ID));
-			if(country == null)
+			String street = null;
+			String houseNum = null;
+			String city = null;
+			String country = null;
+			int addressId = 0;			
+			
+			Part filePart = req.getPart(APIConst.FLD_ADDRESS_STREET);
+			street = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_HOUSENUM);
+			houseNum = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_CITY);
+			city = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_COUNTRY);
+			if(IOUtils.toByteArray(filePart.getInputStream()).length == 0)
 				country = defaultCountry;
-			AddressDAL.getInstance().update(new Address(0, street, houseNum, city, country));
+			else
+				country = new String(IOUtils.toByteArray(filePart.getInputStream()));
+
+			filePart = req.getPart(APIConst.FLD_ADDRESS_ID);
+			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
+			for(int i= bytes.length-1; i>=0; i--) {
+				addressId += (bytes[i]-48) * multiplier;
+				multiplier *= 10;
+			}			
+			
+			AddressDAL.getInstance().update(new Address(addressId, street, houseNum, city, country));
 			json.addProperty("addressId", addressId);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println("AddressController.doGet: " + e.toString() + " " + req.getQueryString());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("addressId", "0");
 		}
 		String response = jsonHelper.toJson(json);	
@@ -143,8 +171,9 @@ public class AddressController extends HttpServlet {
 			AddressDAL.getInstance().delete(addressId);
 			json.addProperty("addressId", addressId);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("AddressController.doGet: " + e.toString() + " " + req.getQueryString());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("addressId", "0");
 		}
 		String response = jsonHelper.toJson(json);	

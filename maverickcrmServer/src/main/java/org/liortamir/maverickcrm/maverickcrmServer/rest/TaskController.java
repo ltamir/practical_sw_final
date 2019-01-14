@@ -21,7 +21,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
-import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 import org.liortamir.maverickcrm.maverickcrmServer.model.TaskCustomerView;
@@ -46,6 +45,7 @@ public class TaskController extends HttpServlet {
 		resp.setContentType("application/json");
 		String response = APIConst.ERROR;
 		Task task = null;
+		List<Task> taskRelationList;
 		JsonObject json = new JsonObject();
 		int taskId = 0;
 		int actionId = 0;
@@ -53,8 +53,8 @@ public class TaskController extends HttpServlet {
 		try {
 
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()){
+			switch(APIConst.ACTION_LIST[actionId]) {
+			case ACT_ALL:
 				List<Task> taskList = null;
 				List<TaskCustomerView> bulk = new ArrayList<>();
 				
@@ -73,29 +73,35 @@ public class TaskController extends HttpServlet {
 					bulk.add(new TaskCustomerView(item, customer));
 				}
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
-
+				response = jsonHelper.toJson(json);
+				break;
+			case ACT_SINGLE:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				task = TaskDAL.getInstance().get(taskId);
-				response = jsonHelper.toJson(task);	
-			}else if(actionId == ActionEnum.ACT_RELATION_PARENTS.ordinal()) {
-				
+				response = jsonHelper.toJson(task);
+				break;
+			case ACT_RELATION_PARENTS:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				List<Task> taskRelationList = TaskDAL.getInstance().getParents(taskId);
+				taskRelationList = TaskDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);	
-				
-			}else if(actionId == ActionEnum.ACT_RELATION_CHILDREN.ordinal()) {
-				
+				response = jsonHelper.toJson(json);
+				break;
+			case ACT_RELATION_CHILDREN:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				List<Task> taskRelationList = TaskDAL.getInstance().getChildren(taskId);
+				taskRelationList = TaskDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);	
+				response = jsonHelper.toJson(json);
+				break;
+			default:
+				json.addProperty("msg", "invalid state " + actionId);
+				json.addProperty("status",  "nack");
+				break;
 			}
+
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();
@@ -119,7 +125,9 @@ public class TaskController extends HttpServlet {
 			json.addProperty("taskId", taskId);
 
 		}catch(SQLException | NumberFormatException e) {
-			System.out.println("TaskController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
@@ -180,11 +188,12 @@ public class TaskController extends HttpServlet {
 			}	
 			TaskDAL.getInstance().update(taskId, taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty("taskId", taskId);
-		}catch(SQLException | FileUploadException e) {
-			e.printStackTrace();
-		}catch(NumberFormatException e) {
-			e.printStackTrace();
+		}catch(SQLException | FileUploadException | NumberFormatException e) {
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
+		
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);

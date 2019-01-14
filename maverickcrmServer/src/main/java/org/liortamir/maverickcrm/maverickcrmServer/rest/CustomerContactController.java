@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerAddressDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
@@ -22,6 +23,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 import org.liortamir.maverickcrm.maverickcrmServer.model.CustomerContact;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 @WebServlet
@@ -32,13 +34,15 @@ public class CustomerContactController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -4769452647655368178L;
-	private Gson jsonHelper = new Gson();
+	private Gson jsonHelper =null;
 	
 	
 	@Override
 	public void init() throws ServletException {
 		
-		super.init();
+		GsonBuilder gsonBuilder = new GsonBuilder();  
+		gsonBuilder.serializeNulls();  
+		this.jsonHelper = gsonBuilder.create();
 	}
 
 	@Override
@@ -79,7 +83,9 @@ public class CustomerContactController extends HttpServlet {
 				response = jsonHelper.toJson(json);									
 			}
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("CustomerContactController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		//boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
@@ -99,10 +105,13 @@ public class CustomerContactController extends HttpServlet {
 			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
 			
 			int customerContactId = CustomerContactDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
-			
+			if(customerContactId > 0)
+				CustomerAddressDAL.getInstance().delete(customerId, addressId);
 			json.addProperty("customerContact", customerContactId);			
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("CustomerContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("customerContactId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "customer already exist");
@@ -128,7 +137,9 @@ public class CustomerContactController extends HttpServlet {
 			
 			json.addProperty("customerContactId", customercontactId);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println("CustomerContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("customerContactId", "0");
 		}
 		String response = jsonHelper.toJson(json);	
@@ -149,11 +160,18 @@ public class CustomerContactController extends HttpServlet {
 				customerContactId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			
+			CustomerContact customerContact = CustomerContactDAL.getInstance().get(customerContactId);
+			List<CustomerContact> bulk = CustomerContactDAL.getInstance().getByAddress(customerContact.getAddress().getAddressId());
+			if(bulk.size() == 1)
+				CustomerAddressDAL.getInstance().insert(customerContact.getCustomer().getCustomerId(), customerContact.getAddress().getAddressId());
 			CustomerContactDAL.getInstance().delete(customerContactId);
+			
+			
 			json.addProperty("customerContactId", customerContactId);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("CustomerContactController.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("customerContactId", "0");
 		}
 		String response = jsonHelper.toJson(json);	

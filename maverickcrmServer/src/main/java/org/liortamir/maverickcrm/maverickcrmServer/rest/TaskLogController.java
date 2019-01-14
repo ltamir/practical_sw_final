@@ -69,7 +69,9 @@ public class TaskLogController extends HttpServlet {
 
 			}
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("TaskLogController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();
@@ -90,8 +92,9 @@ public class TaskLogController extends HttpServlet {
 			int taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);
 			json.addProperty("taskId", taskLogId);
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("TaskLogController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			json.addProperty("taskId", "0");
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		String response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
@@ -149,7 +152,9 @@ public class TaskLogController extends HttpServlet {
 			json.addProperty("taskLogId", taskLogId);
 
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println("CustomerController.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("taskId", "0");
 		}
 		String response = jsonHelper.toJson(json);	

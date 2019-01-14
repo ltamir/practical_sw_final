@@ -69,8 +69,9 @@ public class TaskRelationController extends HttpServlet {
 				response = jsonHelper.toJson(json);		
 			}
 		}catch(SQLException e) {
-			System.out.println("TaskRelationController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			json.addProperty("msg", e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			response = jsonHelper.toJson(json);
 		}
 		
@@ -92,7 +93,9 @@ public class TaskRelationController extends HttpServlet {
 			int taskRelationId = TaskRelationDAL.getInstance().insert(parentTaskId, childTaskId, taskRelationTypeId);
 			json.addProperty("taskRelationId", taskRelationId);
 		}catch(SQLException | NumberFormatException e) {
-			System.out.println("TaskRelationController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("taskRelationId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "relation already exist");
@@ -144,7 +147,8 @@ public class TaskRelationController extends HttpServlet {
 			TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
 			json.addProperty("taskRelationId", taskRelationId);
 		}catch(SQLException | FileUploadException |NumberFormatException e) {
-			System.out.println("TaskRelationController.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("status",  "nack");
 			json.addProperty("taskRelationId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "relation already exist");
@@ -184,7 +188,9 @@ public class TaskRelationController extends HttpServlet {
 			TaskRelationDAL.getInstance().delete(taskRelationId);
 			json.addProperty("taskRelationId", taskRelationId);
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println("TaskLogController.doDelete: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("taskRelationId", "0");
 		}
 		String response = jsonHelper.toJson(json);

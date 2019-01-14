@@ -15,7 +15,6 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerTaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
-import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.CustomerTask;
 
 import com.google.gson.Gson;
@@ -36,40 +35,47 @@ public class CustomerTaskController extends HttpServlet {
 		resp.setContentType("application/json");
 		String response = APIConst.ERROR;
 		CustomerTask customerTask = null;
-		JsonObject json = null;
+		List<CustomerTask> bulk;
+		JsonObject json = new JsonObject();
 		int id = 0;
 		int actionId = 0;
 		
 		try {
 			
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			if(actionId == ActionEnum.ACT_SINGLE.ordinal()) {
-				
+			switch(APIConst.ACTION_LIST[actionId]) {
+			case ACT_SINGLE:
 				id = Integer.parseInt(req.getParameter("customerTaskId"));
 				customerTask = CustomerTaskDAL.getInstance().get(id);
-				json = new JsonObject();
-				response = jsonHelper.toJson(customerTask);	
-				
-			}else if(actionId == ActionEnum.ACT_CUSTOMER_TASK_BY_CUSTOMER.ordinal()) {
+				response = jsonHelper.toJson(customerTask);
+				break;
+			case ACT_CUSTOMER_TASK_BY_CUSTOMER:
 				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("customerId"));
-				List<CustomerTask> bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
+				bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);				
-			}else if(actionId == ActionEnum.ACT_CUSTOMER_TASK_BY_TASK.ordinal()) {
+				response = jsonHelper.toJson(json);	
+				break;
+			case ACT_CUSTOMER_TASK_BY_TASK:
 				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("taskId"));
-				List<CustomerTask> bulk = CustomerTaskDAL.getInstance().getByTask(id);
+				bulk = CustomerTaskDAL.getInstance().getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);				
-			}else if(actionId == ActionEnum.ACT_ALL.ordinal()) {
-				
-				json = new JsonObject();
-				List<CustomerTask> bulk = CustomerTaskDAL.getInstance().getAll(true);
+				response = jsonHelper.toJson(json);	
+				break;
+			case ACT_ALL:
+				bulk = CustomerTaskDAL.getInstance().getAll(true);
 				json.add("array", jsonHelper.toJsonTree(bulk));
+				break;
+				default:
+					json.addProperty("msg",  this.getClass().getName() + ".doGet: invalid State");
+					json.addProperty("status",  "nack");
+					break;				
 			}
 		}catch(SQLException e) {
-			System.out.println("CustomerTaskController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		response = jsonHelper.toJson(json);			
 		PrintWriter out = resp.getWriter();
@@ -89,7 +95,8 @@ public class CustomerTaskController extends HttpServlet {
 			json.addProperty("customerTaskId", customerTaskId);
 
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println("CustomerTaskController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("status",  "nack");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("customerTaskId", "0");
 				json.addProperty("msg", "customer already exist");
@@ -118,7 +125,9 @@ public class CustomerTaskController extends HttpServlet {
 			CustomerTaskDAL.getInstance().delete(customerTaskId);
 			json.addProperty("customerTaskId", customerTaskId);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println("CustomerTaskController.doDelete: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("customerTaskId", "0");
 		}
 		response = jsonHelper.toJson(json);

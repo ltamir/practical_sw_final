@@ -56,7 +56,9 @@ public class ContactTypeController extends HttpServlet {
 			}
 
 		}catch(NumberFormatException | SQLException e) {
-			e.printStackTrace();
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();

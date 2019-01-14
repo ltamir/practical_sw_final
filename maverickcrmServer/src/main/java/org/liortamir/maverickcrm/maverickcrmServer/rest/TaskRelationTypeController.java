@@ -56,7 +56,9 @@ public class TaskRelationTypeController extends HttpServlet {
 				
 			}
 		}catch(SQLException e) {
-			e.printStackTrace();
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();

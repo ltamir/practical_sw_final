@@ -36,10 +36,6 @@ public class LoginController extends HttpServlet {
 		int id = 0;
 		int actionId = 0;
 		
-
-//		String username = req.getParameter("username");
-//		String password = req.getParameter("password");
-		
 		try {
 			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
 			
@@ -63,8 +59,9 @@ public class LoginController extends HttpServlet {
 				response = jsonHelper.toJson(login);					
 			}
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-			json.addProperty("msg", e.getLocalizedMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			response = jsonHelper.toJson(json);
 		}
 		
@@ -85,8 +82,9 @@ public class LoginController extends HttpServlet {
 			json.addProperty("loginId", loginId);
 			
 		}catch(NullPointerException | SQLException e) {
-			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());			
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
@@ -107,8 +105,9 @@ public class LoginController extends HttpServlet {
 			json.addProperty("loginId", loginId);
 			
 		}catch(NullPointerException | SQLException e) {
-			System.out.println("TaskController.doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());			
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");		
 		}
 		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();

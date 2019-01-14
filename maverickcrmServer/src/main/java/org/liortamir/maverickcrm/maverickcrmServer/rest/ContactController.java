@@ -72,8 +72,9 @@ public class ContactController extends HttpServlet {
 			}
 
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("ContactController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			json.addProperty("msg", e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			response = jsonHelper.toJson(json);
 		}
 		PrintWriter out = resp.getWriter();
@@ -95,8 +96,9 @@ public class ContactController extends HttpServlet {
 			int contactId = ContactDAL.getInstance().insert(contact);
 			json.addProperty("contactId", contactId);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("ContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			json.addProperty("customerTaskId", "0");
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "contact already exist");
 			}			
@@ -153,7 +155,9 @@ public class ContactController extends HttpServlet {
 			ContactDAL.getInstance().update(contact);
 			json.addProperty("contactId", contact.getContactId());
 		}catch(SQLException | NullPointerException | NumberFormatException |FileUploadException e) {
-			System.out.println("ContactController.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("contactId", "0");
 		}
 		
@@ -181,7 +185,9 @@ public class ContactController extends HttpServlet {
 			ContactDAL.getInstance().delete(contactId);
 			json.addProperty("contactId", contactId);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println("ContactController.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("contactId", "0");
 		}
 		response = jsonHelper.toJson(json);	

@@ -19,9 +19,6 @@ import com.google.gson.JsonObject;
 @MultipartConfig
 public class AuthenticationController extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3340984536477397627L;
 	Gson jsonHelper = new Gson();
 
@@ -47,12 +44,13 @@ public class AuthenticationController extends HttpServlet {
 				String response = jsonHelper.toJson(json);	
 				PrintWriter out = resp.getWriter();
 				out.println(response);
-//				getServletContext().getRequestDispatcher("/index.html");
+
 			}
 
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("ContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			json.addProperty("customerTaskId", "0");
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "Internal error");
 			}			

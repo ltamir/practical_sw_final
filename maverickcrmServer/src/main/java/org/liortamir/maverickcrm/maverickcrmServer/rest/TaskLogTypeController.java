@@ -53,7 +53,9 @@ public class TaskLogTypeController extends HttpServlet {
 			}
 
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println("TaskLogTypeController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();

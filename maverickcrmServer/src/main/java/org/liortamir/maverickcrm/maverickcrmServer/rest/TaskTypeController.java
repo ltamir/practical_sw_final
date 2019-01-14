@@ -53,8 +53,9 @@ public class TaskTypeController extends HttpServlet {
 				response = jsonHelper.toJson(taskType);					
 			}
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-			response = "Invalid taskTypeId";
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();

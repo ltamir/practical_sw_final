@@ -76,8 +76,9 @@ public class AttachmentController extends HttpServlet {
 				response = jsonHelper.toJson(attachment);	
 			}
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println("AttachmentHandler.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
-			//resp.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, e.getStackTrace()[0].toString());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();
@@ -96,16 +97,13 @@ public class AttachmentController extends HttpServlet {
 			int attachmentTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ATTACHMENT_TYPE_ID));
 			String fileName = null;
 			String storageFileName = null;
-//			String storageFilePath = "./data/attachments/";
+
 			
 			Part filePart = req.getPart("attachmentFile");
 			fileName = filePart.getSubmittedFileName();
 			
-			//File existingFile = new File(storageFilePath + storageFileName + ".zip");
 			int fileNumber = 0;
-			//if(existingFile.exists()) {
-				for(File existingFile = new File(storagePath + fileName + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"));
-			//}
+			for(File existingFile = new File(storagePath + fileName + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"));
 			
 			if(fileNumber > 0)
 				storageFileName = fileName + "_" + fileNumber + ".zip";
@@ -120,19 +118,21 @@ public class AttachmentController extends HttpServlet {
 				out.write(bytes, 0, bytes.length);
 				out.closeEntry();		
 			}
-			//out.close();
 
-			frm.applyPattern("yyyy-MM-dd HH:mm:ss");
 			taskLogId = TaskLogDAL.getInstance().insert(frm.format(new Date()), taskId, contactId, description, taskLogTypeId);
 			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
 			json.addProperty("taskLogId", taskLogId);
 			json.addProperty("attachmentId", attachmentId);
 
 		}catch(NumberFormatException  | NullPointerException e) {
-			System.out.println("AttachmentHandler.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", "0");
 		} catch (Exception e) {
-			System.out.println("AttachmentHandler.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println("AttachmentController.doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", "0");
 		}
 		String response = jsonHelper.toJson(json);	
@@ -186,7 +186,9 @@ public class AttachmentController extends HttpServlet {
 			TaskLogDAL.getInstance().update(attachmentTaskLogId, attachmentNotes, contactId);
 			json.addProperty("attachmentId", attachmentId);
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println("AttachmentHandler.doPut: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", 0);
 		}
 		String response = jsonHelper.toJson(json);	
