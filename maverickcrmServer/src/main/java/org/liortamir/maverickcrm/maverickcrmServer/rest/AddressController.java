@@ -38,8 +38,8 @@ public class AddressController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = APIConst.ERROR;
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
 		Address address = null;
 		JsonObject json = new JsonObject();
 		int actionId = 0;	
@@ -120,19 +120,19 @@ public class AddressController extends HttpServlet {
 			int addressId = 0;			
 			
 			Part filePart = req.getPart(APIConst.FLD_ADDRESS_STREET);
-			street = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			street = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");
 			
 			filePart = req.getPart(APIConst.FLD_ADDRESS_HOUSENUM);
 			houseNum = new String(IOUtils.toByteArray(filePart.getInputStream()));
 			
 			filePart = req.getPart(APIConst.FLD_ADDRESS_CITY);
-			city = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			city = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");
 			
 			filePart = req.getPart(APIConst.FLD_ADDRESS_COUNTRY);
 			if(IOUtils.toByteArray(filePart.getInputStream()).length == 0)
 				country = defaultCountry;
 			else
-				country = new String(IOUtils.toByteArray(filePart.getInputStream()));
+				country = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");
 
 			filePart = req.getPart(APIConst.FLD_ADDRESS_ID);
 			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
