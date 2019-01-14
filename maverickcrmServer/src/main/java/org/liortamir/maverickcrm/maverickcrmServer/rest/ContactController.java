@@ -1,12 +1,10 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
@@ -85,13 +79,29 @@ public class ContactController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		JsonObject json = new JsonObject();
 		try {
-			Contact contact = new Contact(0, 
-					req.getParameter(APIConst.FLD_CONTACT_FIRST_NAME),
-					req.getParameter(APIConst.FLD_CONTACT_LAST_NAME),
-					req.getParameter(APIConst.FLD_CONTACT_OFFICE_PHONE),
-					req.getParameter(APIConst.FLD_CONTACT_CELL_PHONE),
-					req.getParameter(APIConst.FLD_CONTACT_EMAIL),
-					req.getParameter(APIConst.FLD_CONTACT_NOTES));
+			Contact contact = new Contact();
+			for(Part part : req.getParts()) {
+				switch(part.getName()) {
+				case APIConst.FLD_CONTACT_FIRST_NAME:
+					contact.setFirstName(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_LAST_NAME:
+					contact.setLastName(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_OFFICE_PHONE:
+					contact.setOfficePhone(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_CELL_PHONE:
+					contact.setMobilePhone(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_EMAIL:
+					contact.setEmail(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_NOTES:
+					contact.setNotes(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;					
+				}
+			}
 			
 			int contactId = ContactDAL.getInstance().insert(contact);
 			json.addProperty("contactId", contactId);
@@ -115,46 +125,40 @@ public class ContactController extends HttpServlet {
 		
 		try {			
 			Contact contact = new Contact();
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_CONTACT_ID:
-						contact.setContactId(Integer.parseInt(item.getString()));
-						break;
-					case APIConst.FLD_CONTACT_FIRST_NAME:
-						contact.setFirstName(item.getString());
-						break;
-					case APIConst.FLD_CONTACT_LAST_NAME:
-						contact.setLastName(item.getString());
-						break;
-					case APIConst.FLD_CONTACT_OFFICE_PHONE:
-						contact.setOfficePhone(item.getString());
-						break;
-					case APIConst.FLD_CONTACT_CELL_PHONE:
-						contact.setMobilePhone(item.getString());
-						break;
-					case APIConst.FLD_CONTACT_EMAIL:
-						contact.setEmail(item.getString());
-						break;
-					case APIConst.FLD_CONTACT_NOTES:
-						contact.setNotes(item.getString());
-						break;						
-						default:
-							System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
+
+			for(Part part : req.getParts()) {
+
+				switch(part.getName()) {
+				case APIConst.FLD_CONTACT_ID:
+					contact.setContactId(Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream()))));
+					break;
+				case APIConst.FLD_CONTACT_FIRST_NAME:
+					contact.setFirstName(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_LAST_NAME:
+					contact.setLastName(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_OFFICE_PHONE:
+					contact.setOfficePhone(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_CELL_PHONE:
+					contact.setMobilePhone(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_EMAIL:
+					contact.setEmail(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_NOTES:
+					contact.setNotes(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;						
+					default:
+						System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + part.getName());
 				}
+				
 			}
 			
 			ContactDAL.getInstance().update(contact);
 			json.addProperty("contactId", contact.getContactId());
-		}catch(SQLException | NullPointerException | NumberFormatException |FileUploadException e) {
+		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");

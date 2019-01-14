@@ -1,12 +1,10 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -15,10 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
@@ -128,44 +122,35 @@ public class CustomerController extends HttpServlet {
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
+		int multiplier = 1;
 		try {
 			int customerId = 0;
 			String customerName = null;
 			String customerNotes = null;
 			
+			
+			Part filePart = req.getPart(APIConst.FLD_CUSTOMER_NAME);
+			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
+			customerName = new String(bytes);
+
+			filePart = req.getPart(APIConst.FLD_CUSTOMER_NOTES);
+			bytes = IOUtils.toByteArray(filePart.getInputStream());
+			customerNotes = new String(bytes);
+			
+			filePart = req.getPart(APIConst.FLD_CUSTOMER_ID);
+			bytes = IOUtils.toByteArray(filePart.getInputStream());
+			for(int i= bytes.length-1; i>=0; i--) {
+				customerId += (bytes[i]-48) * multiplier;
+				multiplier *= 10;
+			}	
 //			boolean isMultipart = ServletFileUpload.isMultipartContent(req);
 //			System.out.println("isMultipart :" + isMultipart);
-			
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_CUSTOMER_ID:
-						customerId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_CUSTOMER_NAME:
-						customerName = item.getString();
-						break;
-					case APIConst.FLD_CUSTOMER_NOTES:
-						customerNotes = item.getString();
-						break;
-						default:
-							System.out.println("CustomerHandler.doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
-				}
-			}
 		     
 			CustomerDAL.getInstance().update(customerId, customerName, customerNotes);
 			
 			json.addProperty("customerId", customerId);
 
-		}catch(SQLException | NullPointerException | NumberFormatException | FileUploadException e) {
+		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
