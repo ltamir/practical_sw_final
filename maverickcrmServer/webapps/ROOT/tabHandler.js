@@ -139,13 +139,15 @@ function activateTabConnection(){
 				getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
 						(opt,item)=>opt.value = item.contact.contactId, 
 						(opt,item)=>{
-						let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'':item.contact.mobilePhone):item.contact.officePhone;
-						opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + phone;
+						let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
+						opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
 						},
 						(opt, item)=>{
 							opt.addEventListener("click", ()=>{
 								getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
 								cmbConnectedAddress.value=item.address.addressId
+								cmbContactType.value=item.contactType.contactTypeId;
+								ConnectionCustomerContactId.value=item.customerContactId;
 								})
 							}
 						)
@@ -159,14 +161,18 @@ function activateTabConnection(){
 				(opt,item)=>opt.value = item.contactId, 
 				(opt,item)=>{
 				let phone = (item.officePhone == '')?((item.mobilePhone == '')?'':item.mobilePhone):item.officePhone;
-				opt.text = item.firstName + " " + item.lastName + " : " + phone;
+				opt.text = item.firstName + " " + item.lastName + " : " + new String((phone == null)?"  -  ":phone);
 				},
 				(opt, item)=>{
 					opt.addEventListener("click", ()=>{
 						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
 						})
 					}
-				));	
+				))
+	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Select Contact type', 
+			(opt,item)=>opt.value = item.contactTypeId, 
+			(opt,item)=>opt.text = item.contactTypeName, 
+			null));	
 }
 
 function activateTabCustomer(){
