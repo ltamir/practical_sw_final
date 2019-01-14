@@ -36,7 +36,7 @@ public class ContactDAL {
 	public List<Contact> getAll() throws SQLException {
 		List<Contact> entityList = null;
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from contact");
+			PreparedStatement ps = conn.prepareStatement("select * from contact order by contact.firstName");
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(50);
 			while(rs.next())
@@ -49,7 +49,7 @@ public class ContactDAL {
 		List<Contact> entityList = null;
 		try (Connection conn = DBHandler.getConnection()){
 
-			PreparedStatement ps = conn.prepareStatement("select * from contact inner join login on login.contactId = contact.contactId");
+			PreparedStatement ps = conn.prepareStatement("select * from contact inner join login on login.contactId = contact.contactId order by contact.firstName");
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(50);
 			while(rs.next())
