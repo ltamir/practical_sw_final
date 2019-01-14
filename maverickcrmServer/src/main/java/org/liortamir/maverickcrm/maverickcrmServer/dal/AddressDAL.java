@@ -52,8 +52,10 @@ public class AddressDAL {
 		List<Address> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement stmt = conn.prepareStatement("select * from address where addressId in(select addressId from customercontact where customerId=?)");
+			PreparedStatement stmt = conn.prepareStatement("select * from address where addressId in(select addressId from customercontact where customerId=?)"
+					+ " or addressId in(select addressId from customeraddress where customerId=?)");
 			stmt.setInt(1, customerId);
+			stmt.setInt(2, customerId);
 			ResultSet rs = stmt.executeQuery();
 			entityList = new ArrayList<>(5);
 			while(rs.next())
@@ -65,7 +67,7 @@ public class AddressDAL {
 	public int insert(Address address) throws SQLException{
 		int identity = 0;
 		try(Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("insert into address values(default, ?,?,?,?", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = conn.prepareStatement("insert into address values(default, ?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, address.getStreet());
 			ps.setString(2, address.getHouseNum());
 			ps.setString(3, address.getCity());
@@ -82,7 +84,7 @@ public class AddressDAL {
 	
 	public void update(Address address) throws SQLException{
 		try(Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("update address set street=1, houseNum=?, city=?, country=? where addressId=?");
+			PreparedStatement ps = conn.prepareStatement("update address set street=?, houseNum=?, city=?, country=? where addressId=?");
 			ps.setString(1, address.getStreet());
 			ps.setString(2, address.getHouseNum());
 			ps.setString(3, address.getCity());
