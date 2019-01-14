@@ -232,7 +232,17 @@ img.cssCardInput{
 		font-family: arial, sans-serif;
         min-width: 29em;	
 	}	
-
+	
+	.cssOneChar{
+	@extends .cssCardInput;
+	max-width: 2em;
+	}
+#divConnectedEditContact{
+	max-width: 24em;
+}
+#divConnectedEditAddress{
+	max-width: 24em;
+}
 .cssConnectedCustomers{grid-area: connectedCustomers;
 	max-width: 14em;
 	min-width: 14em;}
