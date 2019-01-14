@@ -15,18 +15,13 @@ function newCustomer(){
 }
 
 function newContact(){
-	setValue('txtContactFirstName', '');
-	setValue('txtContactLastName', '');
-	setValue('txtContactOfficePhone', '');
-	setValue('txtContactCellPhone', '');
-	setValue('txtContactEmail', '');
-	setValue('txtContactNotes', '');
-	setValue('detailContactId', '0');
-
-	let element = getById('cmbConnectedCustomers');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}	
+	setValue('txtFirstName', '');
+	setValue('txtLastName', '');
+	setValue('txtOfficePhone', '');
+	setValue('txtMobilePhone', '');
+	setValue('txtEmail', '');
+	setValue('txtNotes', '');
+	setValue('ConnectionContactId', '0');	
 }
 
 function newTask(){
@@ -405,7 +400,7 @@ function saveContact(){
 	formData.append('firstName', getValue('txtFirstName'))
 	formData.append('lastName', getValue('txtLastName'))
 	formData.append('officePhone', getValue('txtOfficePhone'))
-	formData.append('cellPhone', getValue('txtMobilePhone'))
+	formData.append('mobilePhone', getValue('txtMobilePhone'))
 	formData.append('email', getValue('txtEmail'))
 	formData.append('notes', getValue('txtNotes'))
 	
@@ -421,21 +416,36 @@ function saveContact(){
 		debugFormData(formData);
 
 	setData(method, formData, 'contact')
-		.then(
-			getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
-					(opt,item)=>opt.value = item.contact.contactId, 
-					(opt,item)=>{
-					let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
-					opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + phone;
-					},
-					(opt, item)=>{
-						opt.addEventListener("click", ()=>{
-							getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-							cmbConnectedAddress.value=item.address.addressId
-							})
-						}
-					)
-		
+		.then(()=>{
+			if(cmbConnectedCustomer.value != ''){
+				getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
+				(opt,item)=>opt.value = item.contact.contactId, 
+				(opt,item)=>{
+				let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
+				opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
+				},
+				(opt, item)=>{
+					opt.addEventListener("click", ()=>{
+						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+						cmbConnectedAddress.value=item.address.addressId
+						})
+					}
+				)	
+			}
+			getDataEx('cmbAllContact', 'contact', '?actionId=2', fillSelect, null,
+			(opt,item)=>opt.value = item.contactId, 
+			(opt,item)=>{
+			let phone = (item.officePhone == '')?((item.mobilePhone == '')?'':item.mobilePhone):item.officePhone;
+			opt.text = item.firstName + " " + item.lastName + " : " + new String((phone == null)?"  -  ":phone);
+			},
+			(opt, item)=>{
+				opt.addEventListener("click", ()=>{
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
+					})
+				}
+			)			
+		}
+
 		);
 	setMsg(msgType.ok, 'Contact saved');
 }
@@ -447,24 +457,41 @@ function saveCustomerContact(action){
 	
 	if(action == 1){	//add
 		
-		if(getValue('cmbAvailableCustomers') == 0 || getValue('cmbAvailableCustomers') == ''){
+		if(getValue('cmbConnectedCustomer') == 0 || getValue('cmbConnectedCustomer') == ''){
 			setMsg(msgType.nok, 'Please select a customer');
 			return;
 		}
+		if(getValue('ConnectionContactId') == 0 || getValue('ConnectionContactId') == ''){
+			setMsg(msgType.nok, 'Please select a contact');
+			return;
+		}		
 		if(getValue('cmbContactType') == 0){
 			setMsg(msgType.nok, 'Please select a Contact type');
 			return;
+		}
+		if(getValue('cmbConnectedAddress') == 0 || getValue('cmbConnectedAddress') == ''){
+			setMsg(msgType.nok, 'Please select an address');
+			return;
 		}		
-		formData.append('customerId',  getValue('cmbAvailableCustomers'));
-		formData.append('contactId', getValue('detailContactId'))
+		formData.append('customerId',  getValue('cmbConnectedCustomer'));
+		formData.append('contactId', getValue('ConnectionContactId'))
 		formData.append('contactTypeId', getValue('cmbContactType'))
+		formData.append('addressId', getValue('cmbConnectedAddress'))
 	}else{				//delete
-		if(getValue('cmbConnectedCustomers') == 0 || getValue('cmbConnectedCustomers') == ''){
-			setMsg(msgType.nok, 'Please select a customer to remove');
+		if(getValue('cmbConnectedCustomer') == 0 || getValue('cmbConnectedCustomer') == ''){
+			setMsg(msgType.nok, 'Please select a customer to remove from the contact');
 			return;
 		}
+		if(getValue('ConnectionContactId') == 0 || getValue('ConnectionContactId') == ''){
+			setMsg(msgType.nok, 'Please select a contact to remove the connection');
+			return;
+		}	
+		if(getValue('ConnectionCustomerContactId') == 0 || getValue('ConnectionCustomerContactId') == ''){
+			setMsg(msgType.nok, 'Please select a Customer to remove the connection');
+			return;
+		}		
 		
-		formData.append('customerContactId', getValue('cmbConnectedCustomers'))
+		formData.append('customerContactId', getValue('ConnectionCustomerContactId'))
 	}
 	if(dbg == dbgModule.contact)
 		debugFormData(formData);
@@ -476,17 +503,73 @@ function saveCustomerContact(action){
 	}	
 	
 	setData(method, formData, 'customercontact')
-		.then(function(){getDataEx('cmbConnectedCustomers', 'customercontact', '?actionId=8&contactId='+getValue('detailContactId'), fillSelect, null,
-			(opt,item)=>opt.value = item.customerContactId, 
-			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName,
-			null)})
-			.then(function(){getDataEx('cmbAvailableCustomers', 'customer', '?actionId=11&contactId='+getValue('detailContactId'), fillSelect, null, 
-					(opt,item)=>opt.value = item.customerId, 
-					(opt,item)=>opt.text = item.customerName,
-					null);})
-		.then(function(){setMsg(msgType.ok, 'Contact saved')});
+	.then(getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
+			(opt,item)=>opt.value = item.contact.contactId, 
+			(opt,item)=>{
+			let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
+			opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
+			},
+			(opt, item)=>{
+				opt.addEventListener("click", ()=>{
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+					cmbConnectedAddress.value=item.address.addressId
+					})
+				}
+			)
+		)
+		.then(function(){setMsg(msgType.ok, 'Connection change saved')});
 
 }   
+
+function newAddress(){
+	setValue('txtAddressStreet', '');
+	setValue('txtAddressHouseNum', '');
+	setValue('txtAddressCity', '');
+	setValue('txtAddressCountry', '');
+	setValue('addressId', 0);
+}
+
+function saveAddress(){
+	let formData;
+	let method;
+	if(getValue('txtAddressStreet') == ''){
+		setMsg(msgType.nok, 'Please fill the street name');
+		return;
+	}
+	if(getValue('txtAddressHouseNum') == ''){
+		setMsg(msgType.nok, 'Please fill the building number');
+		return;
+	}
+	if(getValue('txtAddressCity') == ''){
+		setMsg(msgType.nok, 'Please fill the city name');
+		return;
+	}
+	if(getValue('cmbConnectedCustomer') == ''){
+		setMsg(msgType.nok, 'Please select a Customer');
+		return;
+	}	
+	
+	formData = new FormData();
+	formData.append('street', getValue('txtAddressStreet'));
+	formData.append('houseNum', getValue('txtAddressHouseNum'));
+	formData.append('city', getValue('txtAddressCity'));
+	formData.append('country', getValue('txtAddressCountry'));
+	formData.append('customerId', getValue('cmbConnectedCustomer'));
+	
+	let addressId = getValue('addressId');
+	if(addressId == '0'){
+		method = 'POST';
+	}else{
+		method = 'PUT';
+		formData.append('addressId', addressId);
+	}
+
+	if(dbg == dbgModule.contact)
+	debugFormData(formData);
+	
+	setData(method, formData, 'address');
+	setMsg(msgType.ok, 'Address saved');
+}
 
 function saveAttachment(){
 	
