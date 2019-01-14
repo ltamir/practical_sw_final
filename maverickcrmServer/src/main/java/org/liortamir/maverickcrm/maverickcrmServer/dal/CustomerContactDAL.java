@@ -113,7 +113,21 @@ public class CustomerContactDAL {
 				entityList.add(mapFields(rs));
 		}
 		return entityList;
-	}		
+	}
+	
+	public List<CustomerContact> getByAddress(int addressId) throws SQLException {
+		List<CustomerContact> entityList = null;
+		
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from customercontact where addressId=?");
+			ps.setInt(1, addressId);
+			ResultSet rs = ps.executeQuery();
+			entityList = new ArrayList<>(20);
+			while(rs.next())
+				entityList.add(mapFields(rs));
+		}
+		return entityList;
+	}	
 	
 	private CustomerContact mapFields(ResultSet rs)throws SQLException {
 		CustomerContact customerContacts = null;
