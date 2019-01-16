@@ -2,7 +2,7 @@ package org.liortamir.maverickcrm.maverickcrmServer.model;
 
 /**
  * Depicts the association type between a contact and a customer<br>
- * in CustomerContacts
+ * in association
  * @author liort
  *
  */

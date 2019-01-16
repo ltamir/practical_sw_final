@@ -6,12 +6,14 @@ function newAttachment(){
 	setValue('cmbAttachmenContact', 0);
 	setValue('attachmentFile', '');
 	setValue('attachmentId', '0');
+	setMsg(msgType.ok, 'Ready');
 }
 
 function newCustomer(){	
 	setValue('txtCustomerName', '');
 	setValue('txtCustomerNotes', '');
 	setValue('detailCustomerId', '0');
+	setMsg(msgType.ok, 'Ready');
 }
 
 function newContact(){
@@ -21,7 +23,8 @@ function newContact(){
 	setValue('txtMobilePhone', '');
 	setValue('txtEmail', '');
 	setValue('txtNotes', '');
-	setValue('ConnectionContactId', '0');	
+	setValue('ConnectionContactId', '0');
+	setMsg(msgType.ok, 'Ready');
 }
 
 function newTask(){
@@ -29,20 +32,21 @@ function newTask(){
 	setValue('cmbDetailTaskType', 0);
 	setValue('cmbDetailContact', 0);
 	setValue('txtDetailTaskTitle', '');
-	setValue('txtDetailTaskEffort', '0');
-	setValue('cmbDetailEffortUnit', 1);
+	setValue('txtDetailTaskEffort', 1);
+	setValue('effortUnit', 1);
 	setValue('txtDetailDueDate', '');
 	setValue('cmbDetailStatus', 1);
 	
-	setTab(tabEnum.taskLog);  
+	setTab(tabEnum.taskLog); 
+	setMsg(msgType.ok, 'Ready');
 }
  
 function newRelation(){
-    element = getById('cmbParentTaskList');
+    element = getById('divParentTaskList');
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
 	}  
-    element = getById('cmbChildTaskList');
+    element = getById('divChildTaskList');
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
 	}  
@@ -50,7 +54,8 @@ function newRelation(){
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
 	}  
-    getById('lblDetailTaskRelationTitle').innerHTML = 'No selected Task for hierarchy';
+	getById('lblDetailTaskRelationTitle').innerHTML = 'No selected Task for hierarchy';
+	
 }
 
 function newTaskLog(){
@@ -58,6 +63,7 @@ function newTaskLog(){
 	setValue('cmbTaskLogContact', 0);
 	setValue('cmbTaskLogType', 0);
 	setValue('txtTaskLogDescription', '');
+	setMsg(msgType.ok, 'Ready');
 }
 
 // ***** edit model ***** //
@@ -67,7 +73,17 @@ function fillTaskDetails(id, data){
 	setValue('cmbDetailContact', data.contact.contactId);
 	setValue('txtDetailTaskTitle', data.title);
 	setValue('txtDetailTaskEffort', data.effort);
-	setValue('cmbDetailEffortUnit', data.effortUnit);
+	switch(data.effortUnit){
+		case 1:
+		effortUnit.sec="images/effortUnit_hours.png";
+		break;
+		case 2:
+		effortUnit.sec="images/effortUnit_days.png";
+		break;
+		case 3:
+		effortUnit.sec="images/effortUnit_months.png";
+		break;		
+	}
 
 	let date = data.dueDate.year + "-";
 	date += (data.dueDate.month<10)?"0":"";
@@ -122,8 +138,8 @@ function fillContactDetails(id, data){
 	setValue('txtContactNotes', data.notes);
 	setValue('detailContactId', data.contactId);
 
-	getDataEx('cmbConnectedCustomers', 'customercontact', '?actionId=8&contactId='+data.contactId, fillSelect, null,
-			(opt,item)=>opt.value = item.customerContactId, 
+	getDataEx('cmbConnectedCustomers', 'association', '?actionId=8&contactId='+data.contactId, fillSelect, null,
+			(opt,item)=>opt.value = item.associationId, 
 			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName, 
 			null);
 	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=11&contactId='+data.contactId, fillSelect, null, 
@@ -179,7 +195,7 @@ function saveTask(){
 	formData.append('contactId', getValue('cmbDetailContact'));
 	formData.append('title', getValue('txtDetailTaskTitle'));
 	formData.append('effort', getValue('txtDetailTaskEffort'));
-	formData.append('effortUnit',getValue('cmbDetailEffortUnit'));
+	formData.append('effortUnit',getValue('effortUnit'));
 	formData.append('dueDate', getValue('txtDetailDueDate'));
 	formData.append('statusId', getValue('cmbDetailStatus'));
 	
@@ -259,11 +275,11 @@ function saveAsParent(){
 	let method;
 	let formData = new FormData();
 	
-	if(getValue('cmbChildTaskList') == '' && getValue('cmbRelationTaskList') == ''){
+	if(getValue('taskRelationSelectedTaskId') == ''){
 		setMsg(msgType.nok, 'Please select a task to set as parent');
 		return;
 	}
-	let parentTaskList = getById('cmbParentTaskList');
+	let parentTaskList = getById('divParentTaskList');
     for (let i = parentTaskList.length - 1; i >= 0; i--) {
     	if(parentTaskList.options[i].value == getValue('taskRelationSelectedTaskId')){
     		setMsg(msgType.nok, 'This task is already set as a parent');
@@ -291,8 +307,8 @@ function saveAsParent(){
     	formData.append('taskRelationId', taskRelationId)
 	}		
 	setData(method, formData, 'taskrelation')
-	.then(function(){getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
-	.then(function(){getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
+	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
+	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
 	.then(function(){setMsg(msgType.ok, 'Parent relation saved')});
 }
 
@@ -300,16 +316,19 @@ function saveAsChild(){
 	let method;
 	let formData = new FormData();
 
-	if(getValue('cmbParentTaskList') == '' && getValue('cmbRelationTaskList') == ''){
+	if(getValue('divParentTaskList') == '' && getValue('cmbRelationTaskList') == ''){
 		setMsg(msgType.nok, 'Please select a task to set as child');
 		return;
 	}
 
-	let parentTaskList = getById('cmbChildTaskList');
-    for (let i = parentTaskList.length - 1; i >= 0; i--) {
-    	if(parentTaskList.options[i].value == getValue('taskRelationSelectedTaskId')){
-    		setMsg(msgType.nok, 'This task is already set as a child');
-    		return;
+	let selectedTaskId = getValue('taskRelationSelectedTaskId');
+	let childTaskList = getById('divChildTaskList');
+    for (let i = childTaskList.childNodes.length - 1; i >= 0; i--) {
+    	if(childTaskList.childNodes[i].hasAttribute("data-taskId")){
+    		if(childTaskList.childNodes[i].getAttribute("data-taskId") == selectedTaskId){
+    			setMsg(msgType.nok, 'This task is already set as a child');
+        		return;
+    		}
     	}
 	}
 	if(getValue('cmbTaskRelationType') == 0){
@@ -333,8 +352,8 @@ function saveAsChild(){
 	}
 	
 	setData(method, formData, 'taskrelation')
-	.then(function(){getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
-	.then(function(){getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
+	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
+	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
 	.then(function(){setMsg(msgType.ok, 'Child relation saved')});
 }
 
@@ -350,8 +369,8 @@ function removeTaskRelation(){
 	formData.append('taskRelationId', getValue('taskRelationId'));
 	
 	setData(method, formData, 'taskrelation')
-	.then(function(){getData('cmbParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
-	.then(function(){getData('cmbChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
+	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
+	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
 	.then(function(){setMsg(msgType.ok, 'Relation Removed')});
 	
 }
@@ -418,7 +437,7 @@ function saveContact(){
 	setData(method, formData, 'contact')
 		.then(()=>{
 			if(cmbConnectedCustomer.value != ''){
-				getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
+				getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
 				(opt,item)=>opt.value = item.contact.contactId, 
 				(opt,item)=>{
 				let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
@@ -451,7 +470,7 @@ function saveContact(){
 }
 
 //TODO vdddd
-function saveCustomerContact(action){
+function saveAssociation(action){
 	let formData = new FormData();
 	let method;
 	
@@ -486,12 +505,12 @@ function saveCustomerContact(action){
 			setMsg(msgType.nok, 'Please select a contact to remove the connection');
 			return;
 		}	
-		if(getValue('ConnectionCustomerContactId') == 0 || getValue('ConnectionCustomerContactId') == ''){
-			setMsg(msgType.nok, 'Please select a Customer to remove the connection');
+		if(getValue('ConnectionAssociationId') == 0 || getValue('ConnectionAssociationId') == ''){
+			setMsg(msgType.nok, 'Contact is not connected');
 			return;
 		}		
 		
-		formData.append('customerContactId', getValue('ConnectionCustomerContactId'))
+		formData.append('associationId', getValue('ConnectionAssociationId'))
 	}
 	if(dbg == dbgModule.contact)
 		debugFormData(formData);
@@ -502,8 +521,8 @@ function saveCustomerContact(action){
 		method = 'DELETE';
 	}	
 	
-	setData(method, formData, 'customercontact')
-	.then(getDataEx('cmbConnectedContact', 'customercontact', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
+	setData(method, formData, 'association')
+	.then(getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
 			(opt,item)=>opt.value = item.contact.contactId, 
 			(opt,item)=>{
 			let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
@@ -527,6 +546,7 @@ function newAddress(){
 	setValue('txtAddressCity', '');
 	setValue('txtAddressCountry', '');
 	setValue('addressId', 0);
+	setMsg(msgType.ok, 'Ready');
 }
 
 function saveAddress(){

@@ -62,14 +62,14 @@ public class CustomerTaskDAL {
 		return entityList;
 	}	
 	
-	public List<CustomerTask> getAll(boolean isOpen) throws SQLException {
+	public List<CustomerTask> getAll(boolean isClosed) throws SQLException {
 		List<CustomerTask> entityList = null;
 		PreparedStatement ps = null;
 		String sqlAll = "select * from customerTask";
-		String sqlAllOpen = "select * from customerTask inner join task on task.taskId = customerTask.TaskId where task.statusId!=4";
+		String sqlAllClosed = "select * from customerTask inner join task on task.taskId = customerTask.TaskId where task.statusId=4";
 		try (Connection conn = DBHandler.getConnection()) {
-			if(isOpen)
-				ps = conn.prepareStatement(sqlAllOpen);
+			if(isClosed)
+				ps = conn.prepareStatement(sqlAllClosed);
 			else
 				ps = conn.prepareStatement(sqlAll);
 			ResultSet rs = ps.executeQuery();
@@ -111,7 +111,9 @@ public class CustomerTaskDAL {
 	private CustomerTask mapFields(ResultSet rs) throws SQLException{
 		CustomerTask customerTask = null;
 		try{
-			customerTask = new CustomerTask(rs.getInt("customerTaskId"), CustomerDAL.getInstance().get(rs.getInt("customerId")), TaskDAL.getInstance().get(rs.getInt("customerId")));
+			customerTask = new CustomerTask(rs.getInt("customerTaskId"), 
+					CustomerDAL.getInstance().get(rs.getInt("customerId")), 
+					TaskDAL.getInstance().get(rs.getInt("taskId")));
 		}catch(SQLException e) {
 			return customerTask;
 		}

@@ -63,6 +63,12 @@ public class CustomerController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);	
 				break;
+			case ACT_CUSTOMER_LINKED_BY_TASK:
+				id = Integer.parseInt(req.getParameter("taskId"));
+				bulk = CustomerDAL.getInstance().getAllByTask(id);
+				json.add("array", jsonHelper.toJsonTree(bulk));
+				response = jsonHelper.toJson(json);	
+				break;				
 			case ACT_CUSTOMER_NOT_LINKED_CONTACT:
 				id = Integer.parseInt(req.getParameter("contactId"));
 				bulk = CustomerDAL.getInstance().getNonLinkedToContact(id);
@@ -95,16 +101,16 @@ public class CustomerController extends HttpServlet {
 			String customerName = null;
 			String customerNotes = null;
 
-			Part filePart = req.getPart("customerName");
+			Part filePart = req.getPart(APIConst.FLD_CUSTOMER_NAME);
 			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
 			customerName = new String(bytes);
 
-			filePart = req.getPart("customerNotes");
+			filePart = req.getPart(APIConst.FLD_CUSTOMER_NOTES);
 			bytes = IOUtils.toByteArray(filePart.getInputStream());
 			customerNotes = new String(bytes);
 
 			customerId = CustomerDAL.getInstance().insert(customerName, customerNotes);
-			json.addProperty("customerId", customerId);
+			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);
 
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
@@ -170,7 +176,7 @@ public class CustomerController extends HttpServlet {
 		try {
 			int customerId = 0; 
 			
-			Part filePart = req.getPart("customerId");
+			Part filePart = req.getPart(APIConst.FLD_CUSTOMER_ID);
 			int multiplier = 1;
 			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
 			for(int i= bytes.length-1; i>=0; i--) {

@@ -8,24 +8,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.liortamir.maverickcrm.maverickcrmServer.model.CustomerContact;
+import org.liortamir.maverickcrm.maverickcrmServer.model.Association;
 import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 
-public class CustomerContactDAL {
+public class AssociationDAL {
 
-	private static CustomerContactDAL instance = new CustomerContactDAL();
+	private static AssociationDAL instance = new AssociationDAL();
 	
-	public static CustomerContactDAL getInstance() {
+	public static AssociationDAL getInstance() {
 		return instance;
 	}
 	
-	private CustomerContactDAL() {}
+	private AssociationDAL() {}
 	
-	public CustomerContact get(int customerContactId) throws SQLException {
-		CustomerContact entity = null;
-		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from customerContact where customerContactId=?");
-			ps.setInt(1, customerContactId);
+	public Association get(int connectionId) throws SQLException {
+		Association entity = null;
+		try (java.sql.Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from association where associationId=?");
+			ps.setInt(1, connectionId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);
@@ -33,11 +33,11 @@ public class CustomerContactDAL {
 		return entity;
 	}
 	
-	public List<CustomerContact> getAll() throws SQLException {
-		List<CustomerContact> entityList = null;
+	public List<Association> getAll() throws SQLException {
+		List<Association> entityList = null;
 		
-		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("select * from customerContact");
+		try(java.sql.Connection conn = DBHandler.getConnection()) {
+			PreparedStatement ps = conn.prepareStatement("select * from association");
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(5);
 			while(rs.next())
@@ -49,13 +49,13 @@ public class CustomerContactDAL {
 	public int insert(int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
 		int identity = 0;
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("insert into customerContact values(default,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = conn.prepareStatement("insert into association values(default,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, customerId);
 			ps.setInt(2, contactId);
 			ps.setInt(3, contactTypeId);
 			ps.setInt(4, addressId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("error insert customercontact");
+				throw new SQLException("error insert association");
 			
 			ResultSet rs = ps.getGeneratedKeys();
 			if(rs != null && rs.next())
@@ -64,34 +64,34 @@ public class CustomerContactDAL {
 		return identity;
 	}
 	
-	public void update(int customerContactId, int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
+	public void update(int associationId, int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
 
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("update customerContact set customerId=?, contactId=?, contactTypeId=? addressId=? where customerContactId=?");
+			PreparedStatement ps = conn.prepareStatement("update association set customerId=?, contactId=?, contactTypeId=? addressId=? where associationId=?");
 			ps.setInt(1, customerId);
 			ps.setInt(2, contactId);
 			ps.setInt(3, contactTypeId);
 			ps.setInt(4, addressId);
-			ps.setInt(5, customerContactId);
+			ps.setInt(5, associationId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing update customerContact");
+				throw new SQLException("Error performing update association");
 		}
 	}
 	
-	public void delete(int customerContactId) throws SQLException {
-		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("delete from customerContact where customerContactId=?");
-			ps.setInt(1, customerContactId);
+	public void delete(int associationId) throws SQLException {
+		try(java.sql.Connection conn = DBHandler.getConnection()) {
+			PreparedStatement ps = conn.prepareStatement("delete from association where associationId=?");
+			ps.setInt(1, associationId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing delete customerContact");
+				throw new SQLException("Error performing delete association");
 		}
 	}
 	
-	public List<CustomerContact> getByContact(int contactId) throws SQLException {
-		List<CustomerContact> entityList = null;
+	public List<Association> getByContact(int contactId) throws SQLException {
+		List<Association> entityList = null;
 		
-		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from customercontact where contactId=?");
+		try (java.sql.Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from association where contactId=?");
 			ps.setInt(1, contactId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(20);
@@ -101,11 +101,11 @@ public class CustomerContactDAL {
 		return entityList;
 	}	
 	
-	public List<CustomerContact> getByCustomer(int customerId) throws SQLException {
-		List<CustomerContact> entityList = null;
+	public List<Association> getByCustomer(int customerId) throws SQLException {
+		List<Association> entityList = null;
 		
-		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from customercontact where customerId=?");
+		try (java.sql.Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from association where customerId=?");
 			ps.setInt(1, customerId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(20);
@@ -115,11 +115,11 @@ public class CustomerContactDAL {
 		return entityList;
 	}
 	
-	public List<CustomerContact> getByAddress(int addressId) throws SQLException {
-		List<CustomerContact> entityList = null;
+	public List<Association> getByAddress(int addressId) throws SQLException {
+		List<Association> entityList = null;
 		
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from customercontact where addressId=?");
+			PreparedStatement ps = conn.prepareStatement("select * from association where addressId=?");
 			ps.setInt(1, addressId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(20);
@@ -129,16 +129,16 @@ public class CustomerContactDAL {
 		return entityList;
 	}	
 	
-	private CustomerContact mapFields(ResultSet rs)throws SQLException {
-		CustomerContact customerContacts = null;
+	private Association mapFields(ResultSet rs)throws SQLException {
+		Association association = null;
 
-		customerContacts = new CustomerContact(
-				rs.getInt("customerContactId"), 
+		association = new Association(
+				rs.getInt("associationId"), 
 				CustomerDAL.getInstance().get(rs.getInt("customerId")),
 				ContactDAL.getInstance().get(rs.getInt("contactId")),
 				AddressDAL.getInstance().get(rs.getInt("addressId")),
 				ContactTypeDAL.getInstance().get(rs.getInt("contactTypeId")));
 
-		return customerContacts;
+		return association;
 	}
 }

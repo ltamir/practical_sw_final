@@ -89,13 +89,13 @@
 	
 	
 	<servlet>
-	   <servlet-name>CustomerContact</servlet-name>
-	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.CustomerContactController</servlet-class>
+	   <servlet-name>Association</servlet-name>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AssociationController</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>
-	   <servlet-name>CustomerContact</servlet-name>
-	   <url-pattern>/customercontact</url-pattern>
+	   <servlet-name>Association</servlet-name>
+	   <url-pattern>/association</url-pattern>
 	</servlet-mapping>	
 	
 	

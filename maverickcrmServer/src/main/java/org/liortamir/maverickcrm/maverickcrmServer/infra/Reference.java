@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -58,7 +60,7 @@ private Map<String, String> referenceMap = new HashMap<String, String>();
 			}
 			// handle config files (param=value struct)
 			try{
-				prop.load(new FileInputStream(configFile));	
+				prop.load(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")));	
 			}catch(FileNotFoundException e){
 				e.printStackTrace();
 			}catch (IOException e){

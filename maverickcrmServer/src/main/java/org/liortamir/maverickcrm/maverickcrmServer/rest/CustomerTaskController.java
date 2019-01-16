@@ -64,7 +64,7 @@ public class CustomerTaskController extends HttpServlet {
 				response = jsonHelper.toJson(json);	
 				break;
 			case ACT_ALL:
-				bulk = CustomerTaskDAL.getInstance().getAll(true);
+				bulk = CustomerTaskDAL.getInstance().getAll(false);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 				default:

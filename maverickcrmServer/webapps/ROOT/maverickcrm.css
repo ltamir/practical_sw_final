@@ -3,32 +3,41 @@ body{
 	font-family: arial, sans-serif;
 }
 
+input, select, textarea, button, span{
+	border-radius: 3px;
+	color: #112211;
+	font-family: arial, sans-serif;
+	
+}
+input, select, button{
+	background-color: #FEFEFE; 
+}	
+input, textarea{
+  background-image: url("images/textBackground_no_num.jpg");
+  background-repeat: round;
+  background-attachment: scroll;	
+}
+input[type=date]{
+	width: 10em;	
+}
+select{
+  width: 8em;
+}
+
 img{
 	cursor: pointer;
 	border-style: outset;
 	vertical-align: bottom;
 }
+
 	#menu {
       font-family: arial, sans-serif;
       border-collapse: collapse;
       width: 100%;
       background-color: LightGray;
     }
-	input, select, textarea, button, span{
-	      border-radius: 3px;
-	      color: #112211;
-	      font-family: arial, sans-serif;
-	      
-	}
-	input, select, button{
-	      background-color: #FEFEFE; 
-	}	
-	input, textarea{
-		background-image: url("images/textBackground_no_num.jpg");
-		background-repeat: round;
-		background-attachment: scroll;	
-	}
-	
+
+
 	option:nth-child(even){
 	background-color: WhiteSmoke;
 	}
@@ -65,7 +74,7 @@ img{
 	table.cssTaskList tbody {
 	    overflow: auto;
 	    height: 150px;
-	    background-color: DarkGray;
+	    background-color: WhiteSmoke;
 	    color: #121212;
 	}
 	tbody tr:nth-child(even) {
@@ -78,7 +87,11 @@ img{
 	}
 
 	th.cssTaskListCustomer, td.cssTaskListCustomer {
-	    width: 15%;
+	    width: 5%;
+	}
+	td img{
+		border-width: 1px;
+		
 	}
 	th.cssTaskListTitle {
 	    width: 50%;
@@ -119,9 +132,9 @@ img{
 	border-left: 1px outset #f5f5f0;
 	border-bottom: 1px outset #1e1e15;
 	border-right: 1px outset #1e1e15;
-	text-align: center;
 	background-color: #f1f1f1;
-	color: #424f5a;	
+	color: #424f5a;		
+	text-align: center;
 	cursor: pointer;
 }
 
@@ -156,16 +169,42 @@ img{
         background-color: WhiteSmoke;
         min-width: 29em;	
 	}	
-	#cmbParentTaskList{
-		font-family: arial, sans-serif;
-        background-color: WhiteSmoke;
-        min-width: 29em;	
-	}	
-	#cmbChildTaskList{
-		font-family: arial, sans-serif;
-        background-color: WhiteSmoke;
-        min-width: 29em;	
-	}	
+	
+
+#divParentTaskList{
+	height: 3em;
+	width: 24em;
+	overflow-y: scroll;
+	border-bottom: 1px inset #000000;
+}
+
+#divParentTaskList span{
+	font-family: arial, sans-serif;
+	font-size:10pt;
+	cursor: pointer;
+	
+}
+#divParentTaskList img{
+	border-style: outset;
+	border-width: 1px;
+}
+
+#divChildTaskList{
+	height: 4em;
+	width: 24em;
+	overflow-y: scroll;
+}
+
+#divChildTaskList span{
+	font-family: arial, sans-serif;
+	font-size:10pt;
+	cursor: pointer;
+}
+#divChildTaskList img{
+	border-style: outset;
+	border-width: 1px;
+}
+
 #cmbRelationTaskList{
 	font-family: arial, sans-serif;
 	background-color: AliceBlue;
@@ -181,11 +220,27 @@ img{
 	border-color: Snow;
 }
 
+#divEffortUnit{
+	display: none;
+	position: fixed;
+	z-index: 2;
+	background-color: oldlace;
+}
+
+#imgEffortUnit{
+	border-style: inset;
+}
+
+#cmbDetailStatus option[value="0"]{
+	background-color: SlateGray;
+}
 .cssFieldLabel{
 	font-family: arial, sans-serif;
 	background-color: GhostWhite;
 	font-size: 0.8em;
-	font-weight: bold;
+	font-weight: bold;	
+	width: 3.5em;
+	display: inline-block;
 }
 
 #txtDetailTaskEffort{
@@ -214,8 +269,9 @@ img{
 }
 
 .cssCardInput{
-	border-style: groove;
-	border-color: LightGoldenRodYellow;
+	border-width: 1px;
+	border-style: dotted;
+	border-color: black;
 	font-family: arial, sans-serif;
 	background-color: LightGoldenRodYellow;
 	font-size: 1em;
@@ -224,7 +280,7 @@ img{
 
 img.cssCardInput{
 	border-width: 1px;
-	border-style: outset;
+	border-style: none;
 	border-color: LightGoldenRodYellow;
 	vertical-align: bottom;
 }
@@ -233,9 +289,8 @@ img.cssCardInput{
         min-width: 29em;	
 	}	
 	
-	.cssOneChar{
-	@extends .cssCardInput;
-	max-width: 2em;
+	#txtAddressHouseNum.cssCardInput {
+		max-width: 2em;
 	}
 #divConnectedEditContact{
 	max-width: 24em;

@@ -85,7 +85,7 @@ public class TaskDAL {
 		final String dueDatePredicate = " dueDate >= ?";
 		final String taskTypePredicate = " taskTypeId=?";
 		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
-		final String projectPredicate = " taskId in (select taskId from customerTask where taskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where taskId=?))";
+		final String projectPredicate = " taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?)";
 		String sql = baseSQL;
 
 		paramIndex[1] = 0;	//customerId
@@ -169,6 +169,9 @@ public class TaskDAL {
 		}
 		return entityList;
 	}
+	
+	
+	
 	
 	/**
 	 * Get Tasks connected to a customer directly or by parent task

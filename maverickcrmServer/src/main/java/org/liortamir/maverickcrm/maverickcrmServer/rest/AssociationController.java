@@ -15,12 +15,12 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerAddressDAL;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerContactDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AssociationDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
-import org.liortamir.maverickcrm.maverickcrmServer.model.CustomerContact;
+import org.liortamir.maverickcrm.maverickcrmServer.model.Association;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +28,7 @@ import com.google.gson.JsonObject;
 
 @WebServlet
 @MultipartConfig
-public class CustomerContactController extends HttpServlet {
+public class AssociationController extends HttpServlet {
 
 	/**
 	 * 
@@ -49,7 +49,7 @@ public class CustomerContactController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
-		CustomerContact customerContact = null;
+		Association association = null;
 		JsonObject json = null;
 		int id = 0;
 		int actionId = 0;
@@ -66,18 +66,18 @@ public class CustomerContactController extends HttpServlet {
 				
 			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-				customerContact = CustomerContactDAL.getInstance().get(id);	
+				association = AssociationDAL.getInstance().get(id);	
 				json = new JsonObject();
-				response = jsonHelper.toJson(customerContact);									
+				response = jsonHelper.toJson(association);									
 			}else if(actionId == ActionEnum.ACT_CUSTOMER_BY_CONTACT.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
-				List<CustomerContact> bulk = CustomerContactDAL.getInstance().getByContact(id);	
+				List<Association> bulk = AssociationDAL.getInstance().getByContact(id);	
 				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);									
 			}else if(actionId == ActionEnum.ACT_CONTACT_BY_CUSTOMER.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-				List<CustomerContact> bulk = CustomerContactDAL.getInstance().getByCustomer(id);	
+				List<Association> bulk = AssociationDAL.getInstance().getByCustomer(id);	
 				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);									
@@ -99,20 +99,20 @@ public class CustomerContactController extends HttpServlet {
 		String response = null;
 		JsonObject json = new JsonObject();
 		try {
-			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CUSTOMERID));
-			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACTID));
-			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID));	
-			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
+			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CUSTOMERID));
+			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACTID));
+			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
+			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
 			
-			int customerContactId = CustomerContactDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
-			if(customerContactId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
+			int connectionId = AssociationDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
+			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
-			json.addProperty("customerContact", customerContactId);			
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);			
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
-			json.addProperty("customerContactId", "0");
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "customer already exist");
 			}	
@@ -127,20 +127,20 @@ public class CustomerContactController extends HttpServlet {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
 		try {
-			int customercontactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ID)); 
-			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CUSTOMERID));
-			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACTID));
-			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_CONTACT_TYPE_ID));	
-			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMERCONTACT_ADDRESS_ID));
+			int connectionId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ID)); 
+			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CUSTOMERID));
+			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACTID));
+			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
+			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
 
-			CustomerContactDAL.getInstance().update(customercontactId, customerId, contactId, contactTypeId, addressId);
+			AssociationDAL.getInstance().update(connectionId, customerId, contactId, contactTypeId, addressId);
 			
-			json.addProperty("customerContactId", customercontactId);
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
-			json.addProperty("customerContactId", "0");
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
@@ -151,28 +151,28 @@ public class CustomerContactController extends HttpServlet {
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
-		int customerContactId = 0;
+		int connectionId = 0;
 		try {
-			Part filePart = req.getPart("customerContactId");
+			Part filePart = req.getPart(APIConst.FLD_ASSOCIATION_ID);
 			int multiplier = 1;
 			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
 			for(int i= bytes.length-1; i>=0; i--) {
-				customerContactId += (bytes[i]-48) * multiplier;
+				connectionId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			CustomerContact customerContact = CustomerContactDAL.getInstance().get(customerContactId);
-			List<CustomerContact> bulk = CustomerContactDAL.getInstance().getByAddress(customerContact.getAddress().getAddressId());
+			Association association = AssociationDAL.getInstance().get(connectionId);
+			List<Association> bulk = AssociationDAL.getInstance().getByAddress(association.getAddress().getAddressId());
 			if(bulk.size() == 1)
-				CustomerAddressDAL.getInstance().insert(customerContact.getCustomer().getCustomerId(), customerContact.getAddress().getAddressId());
-			CustomerContactDAL.getInstance().delete(customerContactId);
+				CustomerAddressDAL.getInstance().insert(association.getCustomer().getCustomerId(), association.getAddress().getAddressId());
+			AssociationDAL.getInstance().delete(connectionId);
 			
 			
-			json.addProperty("customerContactId", customerContactId);
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
-			json.addProperty("customerContactId", "0");
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();

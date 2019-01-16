@@ -50,7 +50,7 @@ public class CustomerDAL {
 		List<Customer> entityList = null;
 		
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from customer where customerId in (select customerId from customercontact where contactId=?)");
+			PreparedStatement ps = conn.prepareStatement("select * from customer where customerId in (select customerId from association where contactId=?)");
 			ps.setInt(1, contactId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(20);
@@ -64,7 +64,7 @@ public class CustomerDAL {
 		List<Customer> entityList = null;
 
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("select * from customer where customerId not in(select customerId from customercontact where contactId=?)");
+			PreparedStatement ps = conn.prepareStatement("select * from customer where customerId not in(select customerId from association where contactId=?)");
 			ps.setInt(1, contactId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(10);
@@ -86,6 +86,21 @@ public class CustomerDAL {
 				entity = mapFields(rs);
 		}
 		return entity;
+	}
+	
+	public List<Customer> getAllByTask(int TaskId) throws SQLException {
+		List<Customer> entityList = null;
+
+		try(Connection conn = DBHandler.getConnection()) {
+			PreparedStatement ps = conn.prepareStatement("select * from customer where customerId in(select customerId from customerTask where taskId=?) or customerId in (select customerId from customerTask where taskId in (select parentTaskId from taskrelation where childTaskId=?))");
+			ps.setInt(1, TaskId);
+			ps.setInt(2, TaskId);
+			ResultSet rs = ps.executeQuery();
+			entityList = new ArrayList<>(5);
+			while(rs.next())
+				entityList.add(mapFields(rs));
+		}
+		return entityList;
 	}
 	
 	public List<Customer> getNonLinkedToTask(int TaskId) throws SQLException {

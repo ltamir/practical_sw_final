@@ -26,9 +26,9 @@ public class AddressDAL {
 
 		try (Connection conn = DBHandler.getConnection()){
 			
-			PreparedStatement stmt = conn.prepareStatement("select * from address where addressId=?");
-			stmt.setInt(1, addressId);
-			ResultSet rs = stmt.executeQuery();
+			PreparedStatement ps = conn.prepareStatement("select * from address where addressId=?");
+			ps.setInt(1, addressId);
+			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);
 		}
@@ -52,11 +52,11 @@ public class AddressDAL {
 		List<Address> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement stmt = conn.prepareStatement("select * from address where addressId in(select addressId from customercontact where customerId=?)"
+			PreparedStatement ps = conn.prepareStatement("select * from address where addressId in(select addressId from association where customerId=?)"
 					+ " or addressId in(select addressId from customeraddress where customerId=?)");
-			stmt.setInt(1, customerId);
-			stmt.setInt(2, customerId);
-			ResultSet rs = stmt.executeQuery();
+			ps.setInt(1, customerId);
+			ps.setInt(2, customerId);
+			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(5);
 			while(rs.next())
 				entityList.add(mapFields(rs));

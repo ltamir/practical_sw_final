@@ -1,12 +1,5 @@
-// debug globals
-var debugCustomer = false;
-var debugAttachment = true;
-var debugContact = false;
-var debugTaskLog = false;
-var debugTask = false;
-var debugMenu = false;
-var debugRelation = false;
-var debugAttachment = false;
+// globals
+
 var dbgModule = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9}
 var dbg = 0;
 var msgType = {ok:1, nok:2};
@@ -117,7 +110,9 @@ function fillSelect(id, data, defaultOption, funcValue, funcText, eventHandler){
     if(defaultOption != undefined){
 	    let opt = document.createElement("OPTION");
 	    opt.value = 0;
-	    opt.text = defaultOption;
+		opt.text = defaultOption;
+		opt.style.background = 'SlateGray';
+		opt.style.color = 'White';
 	    selectElement.appendChild(opt)
     }
     

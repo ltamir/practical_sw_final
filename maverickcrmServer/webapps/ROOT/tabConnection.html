@@ -1,37 +1,40 @@
 <input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
-<img src="images/filter.png" id="filterConnection" value="0" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">
+<img src="images/filter.png" id="imgFilterConnection" value="0" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">
 <br>
 <div class="connection-grd">
-	<select id="cmbConnectedCustomer" size="5" class="cssConnectedCustomers"></select>
-	<span class="cssFieldLabel" class="cssConnectedContactsLabel">Connected contacts</span>
-	<select id="cmbConnectedContact" size="5" class="cssConncetedContacts"></select>
-	<span class="cssFieldLabel" class="cssAllContactsLabel">All contacts</span><br>
-	<select id="cmbAllContact" size="5" class="cssAllContacts"></select>
+	<select id="cmbConnectedCustomer" size="4" class="cssConnectedCustomers"></select>
+	<span class="cssFieldLabel" class="cssConnectedContactsLabel">Associated</span>
+	<select id="cmbConnectedContact" size="4" class="cssConncetedContacts"></select>
+	<span class="cssFieldLabel" class="cssAllContactsLabel">All</span><br>
+	<select id="cmbAllContact" size="4" class="cssAllContacts"></select>
 </div>
+<img src="images/contact.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+<img src="images/save_blue.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
+<img src="images/add_up.png" title="add to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(1);toggleAsBotton(this)">
+<img src="images/remove_down.png" title="Remove from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(0);toggleAsBotton(this)">
 
-<img src="images/addCustomerContact_Up.png" title="add to selected customer" id="imgAddContact" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-<img src="images/add_generic.png" title="new contact" id="imgAddAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-<img src="images/save_item.png" title="save contact" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<select id="cmbContactType"></select>
 <br>
 <div id="divConnectedEditContact" class="cssCard">
-<span>Name:</span><input type="text" id="txtFirstName" size="7" class="cssCardInput"><input type="text" id="txtLastName" size="7" class="cssCardInput">
-<br>
-<span>Office</span><img title="Office phone" src="images/phone.png" class="cssCardInput"><input type="text" id="txtOfficePhone" size="10" class="cssCardInput">
-<span>Mobile</span><img title="Mobile phone" src="images/cellular.png" class="cssCardInput"><input type="text" id="txtMobilePhone" size="10" class="cssCardInput">
-<br>
-<span>Email</span><img title="Email address" src="images/email.png" class="cssCardInput"><input type="text" id="txtEmail" size="20" class="cssCardInput">
-<br>
-<span>Notes</span><img title="Notes" src="images/notes.png" class="cssCardInput"><input type="text" id="txtNotes" size="27em" class="cssCardInput">
-<input type="hidden" id="ConnectionContactId" value="0">
+	<input type="text" id="txtFirstName" tabindex="1" size="7" class="cssCardInput" placeholder="First name">
+	<img title="Office phone" src="images/phone.png" class="cssCardInput"><input type="text" id="txtOfficePhone" tabindex="3" size="10" class="cssCardInput" placeholder="Office phone">
+	<img title="Mobile phone" src="images/cellular.png" class="cssCardInput"><input type="text" id="txtMobilePhone" tabindex="4" size="10" class="cssCardInput" placeholder="Mobile name">
+	<br>
+	<input type="text" id="txtLastName" tabindex="2" size="7" class="cssCardInput" placeholder="Last name">
+	<img title="Email address" src="images/email.png" class="cssCardInput"><input type="text" id="txtEmail" tabindex="5" size="28" class="cssCardInput">
+	<br>
+	<img title="Notes" src="images/notes.png" class="cssCardInput"><input type="text" id="txtNotes" tabindex="6" size="40" class="cssCardInput" placeholder="Notes...">
+	<input type="hidden" id="ConnectionContactId" value="0">
+	<input type="hidden" id="ConnectionAssociationId" value="0">
 </div>
 <select id="cmbConnectedAddress" size="3"></select>
-<img src="images/add_generic.png" title="add address" id="imgAddAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-<img src="images/save_item.png" title="save address" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+<img src="images/add_generic.png" title="New address" id="imgNewAddress" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
+<img src="images/save_blue.png" title="Save address" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="saveAddress(); toggleAsBotton(this)">
 <div id="divConnectedEditAddress" class="cssCard">
-<label for="txtAddressStreet" class="cssCardInput">Street:</label><input type="text" id="txtAddressStreet" size="33" class="cssCardInput">
-<label for="txtAddressHouseNum" class="cssCardInput">Building No.</label><input type="text" id="txtAddressHouseNum" size="3" class="cssCardInput">
-<br>
-<label for="txtAddressCity" class="cssCardInput">City:</label><input type="text" id="txtAddressCity" class="cssCardInput">
-<label for="txtAddressCountry" class="cssCardInput">Country</label><input type="text" id="txtAddressCountry" class="cssCardInput">
-<input type="hidden" id="addressId" value="0">
+	<input type="text" id="txtAddressStreet" size="16" class="cssCardInput" placeholder="Street">
+	<input type="text" id="txtAddressHouseNum" size="2" class="cssCardInput" placeholder="No.">
+	<input type="text" id="txtAddressCity" size="8" class="cssCardInput" placeholder="City">
+	<br>
+	<input type="text" id="txtAddressCountry" size="8" class="cssCardInput" placeholder="Country">
+	<input type="hidden" id="addressId" value="0">
 </div>

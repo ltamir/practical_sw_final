@@ -1,27 +1,27 @@
 package org.liortamir.maverickcrm.maverickcrmServer.model;
 
-public class CustomerContact {
+public class Association {
 
-	private int customerContactId;
+	private int associationId;
 	private Customer customer;
 	private Contact contact;
 	private Address address;
 	private ContactType contactType;
 	
-	public CustomerContact(int customerContactId, Customer customer, Contact contact, Address address, ContactType contactType) {
-		this.customerContactId = customerContactId;
+	public Association(int associationId, Customer customer, Contact contact, Address address, ContactType contactType) {
+		this.associationId = associationId;
 		this.customer = customer;
 		this.contact = contact;
 		this.address = address;
 		this.contactType = contactType;
 	}
 	
-	public int getCustomerContactId() {
-		return customerContactId;
+	public int getAssociationId() {
+		return associationId;
 	}
 	
-	public void setCustomerContactId(int customerContactId) {
-		this.customerContactId = customerContactId;
+	public void setAssociationId(int associationId) {
+		this.associationId = associationId;
 	}
 	public Customer getCustomer() {
 		return customer;

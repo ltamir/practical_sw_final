@@ -81,13 +81,26 @@ public class AddressController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		JsonObject json = new JsonObject();
 		try {
-			String street = req.getParameter(APIConst.FLD_ADDRESS_STREET);
-			String houseNum = req.getParameter(APIConst.FLD_ADDRESS_HOUSENUM);
-			String city = req.getParameter(APIConst.FLD_ADDRESS_CITY);
-			String country = req.getParameter(APIConst.FLD_ADDRESS_COUNTRY);
+			String street = null;
+			String houseNum = null;
+			String city = null;
+			String country = null;
 			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-			if(country == null)
+
+			Part filePart = req.getPart(APIConst.FLD_ADDRESS_STREET);
+			street = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_HOUSENUM);
+			houseNum = new String(IOUtils.toByteArray(filePart.getInputStream()));
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_CITY);
+			city = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");
+			
+			filePart = req.getPart(APIConst.FLD_ADDRESS_COUNTRY);
+			if(IOUtils.toByteArray(filePart.getInputStream()).length == 0)
 				country = defaultCountry;
+			else
+				country = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");			
 			
 			int addressId = AddressDAL.getInstance().insert(new Address(0, street, houseNum, city, country));
 			CustomerAddressDAL.getInstance().insert(customerId, addressId);
