@@ -60,11 +60,12 @@ public class TaskController extends HttpServlet {
 				
 				int customerId = Integer.parseInt(req.getParameter("customerId"));
 				String dueDate = req.getParameter("duedate");
+				String title = req.getParameter("title");
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
 				boolean isClosed = (req.getParameter("showclosed").equals("1"))?true:false;
 				
-				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, projectId, taskTypeId, isClosed);
+				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, isClosed);
 				
 				for(Task item : taskList){
 					Customer customer = CustomerDAL.getInstance().getByTask(item.getTaskId());
@@ -95,6 +96,7 @@ public class TaskController extends HttpServlet {
 			default:
 				json.addProperty("msg", "invalid state " + actionId);
 				json.addProperty("status",  "nack");
+				response = jsonHelper.toJson(json);
 				break;
 			}
 
@@ -102,6 +104,7 @@ public class TaskController extends HttpServlet {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
+			response = jsonHelper.toJson(json);
 		}
 		
 		PrintWriter out = resp.getWriter();

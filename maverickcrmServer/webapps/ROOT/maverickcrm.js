@@ -16,33 +16,38 @@ function prepareSearchTask(){
 
 	searchTask(getValue('cmbSearchCustomer'),
 			getValue('txtSearchDueDate'),
+			getValue('txtSearchTitle'),
 			getValue('cmbSearchProject'),
 			 getValue('cmbSearchTaskType'),
 			 getValue('searchTaskStatus'));
 
 }
 
-function searchTask(customerId, dueDate, projectId, cmbSearchTaskType, showClosed){
+function searchTask(customerId, dueDate, txtSearchTitle, projectId, cmbSearchTaskType, showClosed){
 	let searchTaskParams = '?actionId=2';
 	searchTaskParams += '&customerId=' + customerId;
 	searchTaskParams += '&duedate=' + dueDate;
 	searchTaskParams += '&projectId=' + projectId;
 	searchTaskParams += '&tasktypeId=' + cmbSearchTaskType;
 	searchTaskParams += '&showclosed=' + showClosed;
+	searchTaskParams += '&title=' + txtSearchTitle;
 	
 	getData('taskListBody', 'task', searchTaskParams, fillTaskList);
 }
+
 /**
  * Constructs the HTTP call to retrieve tasks by project in the Relation tab 
  * @returns
  */
 function searchRelationTask(){
+//	searchTask(0,'',getValue('cmbTabRelationProject'),0,0,'');
 	let searchTaskParams = '?actionId=2';
 	searchTaskParams += '&customerId=0';
 	searchTaskParams += '&duedate=';
 	searchTaskParams += '&projectId=' + getValue('cmbTabRelationProject');
 	searchTaskParams += '&tasktypeId=0';
 	searchTaskParams += '&showclosed=0';
+	searchTaskParams += '&title=';
 	
 	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
 	
@@ -58,10 +63,36 @@ function resetTaskSearch(){
 	getById('cmbSearchTaskType').value=0;
 	getById('cmbSearchProject').value=0;
 	getById('txtSearchDueDate').valueAsDate=null;
+	setValue('txtSearchTitle', '');
 	setSearchTaskStatusOpen();
-	setMsg(msgType.ok, 'Ready')
+	setMsg(msgType.ok, 'Ready');
 }
 
+function flagToggle(lbl, field, ev){
+	if(ev.keyCode == 27)
+		toggleSearchDate(lbl, field);
+}
+
+function toggleSearchDate(lbl, field){
+	if(field.getAttribute('data-isActive') == '0'){
+		field.style.display='inline';
+		lbl.style.display='none';
+		field.setAttribute('data-isActive', '1');
+	}else{
+		let formattedDate = 'Due date';
+		field.style.display='none';
+		let dateval = field.value;
+		if(dateval.split("-")[2] != undefined){
+			formattedDate = dateval.split("-")[2];
+			formattedDate += '/' + dateval.split("-")[1];
+			formattedDate += '/' + dateval.split("-")[0];	
+		}
+		lbl.innerHTML = formattedDate;
+		lbl.style.display='inline';
+		field.setAttribute('data-isActive', '0');
+	}
+	
+}
 
 function toggleAsBotton(img){
 	if(img.style.borderStyle=='inset')
@@ -201,7 +232,7 @@ function init(){
 		(opt, item)=>opt.title = item.task.title
 	)
 
-    searchTask(0, '', 0, 0, 0);
+    searchTask(0, '','', 0, 0, 0);
     
     setTab(tabEnum.connection)
     activateTabTaskLog()

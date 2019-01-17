@@ -33,7 +33,11 @@ img{
 	#menu {
       font-family: arial, sans-serif;
       /* border-collapse: collapse; */
-      border: 2px outset WhiteSmoke;
+      border: 1.5px outset #f5f5f0;
+/* 	border-top: 1px outset #f5f5f0;
+	border-left: 1px outset #f5f5f0;
+	border-bottom: 1px outset #1e1e15;
+	border-right: 1px outset #1e1e15; */      
       width: 100%;
       background-color: WhiteSmoke;
     }
@@ -54,6 +58,20 @@ img{
       background-color: #dddddd;
     }
 
+#lblSearchDueDate{
+	cursor: pointer;
+}
+#txtSearchDueDate{
+	display: none;
+}
+
+#lblDetailDueDate{
+	cursor: pointer;
+	width: 4.5em;
+}
+#txtDetailDueDate{
+	display: none;
+}
 .cssMessageInfo{
 	font-size:11pt;
 	border: 1px inset;
@@ -309,8 +327,8 @@ img.cssCardInput{
 	}
 .cssAllContactsLabel{grid-area: allContactsLabel;}
 .cssAllContacts{grid-area: allContacts;
-max-width: 14em;
-min-width: 14em;}
+max-width: 12em;
+min-width: 12em;}
 
 .connection-grd{
 	display: grid;

@@ -76,13 +76,14 @@ public class TaskDAL {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Task> getAll(int customerId, String dueDate, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
+	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
 		List<Task> entityList = null;
 		int[] paramIndex = new int[6];
 		boolean whereUsed = false;
 		final String baseSQL = "select * from task";
 		final String closedPredicate = " statusId=4";
 		final String dueDatePredicate = " dueDate <= ?";
+		final String titlePredicate = " title like ?";
 		final String taskTypePredicate = " taskTypeId=?";
 		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
 		final String projectPredicate = " taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?)";
@@ -92,7 +93,7 @@ public class TaskDAL {
 		paramIndex[2] = 0;	//dueDate
 		paramIndex[3] = 0;	//projectTaskId
 		paramIndex[4] = 0;	//taskTypeId
-		paramIndex[5] = 0;	//isClosed
+		paramIndex[5] = 0;	//title
 		if(customerId != 0) {
 			sql += " where" + customerPredicate;
 			whereUsed = true;
@@ -142,6 +143,18 @@ public class TaskDAL {
 				whereUsed = true;
 			}			
 		}
+		if(!title.equals("")) {
+			title = "%" + title + "%";
+			if(whereUsed) {
+				paramIndex[5] += paramIndex[4] + paramIndex[3] + paramIndex[2] +  paramIndex[1]+ 1;
+				sql += " and" + titlePredicate;
+				}
+			else {
+				paramIndex[5] = 1;
+				sql += " where" + titlePredicate;
+				whereUsed = true;
+			}			
+		}		
 		
 		try (Connection conn = DBHandler.getConnection()){
 
@@ -161,7 +174,9 @@ public class TaskDAL {
 			}			
 			if(taskTypeId != 0)
 				ps.setInt(paramIndex[4]--, taskTypeId);
-
+			if(!title.equals(""))
+				ps.setString(paramIndex[5], title);	
+			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
 			while(rs.next())
