@@ -656,16 +656,8 @@ function addLinkedCustomer(){
     formData.append('taskId', getValue('taskId'));
     
     setData(method, formData, 'customertask')
-    	.then(function(){getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
-			(opt,item)=>opt.value = item.customerTaskId, 
-			(opt,item)=>opt.text = item.customer.customerName, null);})
+    	.then(activateTabLinkedCustomer())
 			.then(function(){setMsg(msgType.ok, 'customer added to project');});
- 
-    for (let i = getById('cmbNoneLinkedCustomer').length - 1; i >= 0; i--) {
-    	if(getById('cmbNoneLinkedCustomer').options[i].value == getValue('cmbNoneLinkedCustomer')){
-    		getById('cmbNoneLinkedCustomer').remove(i);
-    	}
-    }
 }
 
 function removeLinkedCustomer(){
@@ -682,13 +674,7 @@ function removeLinkedCustomer(){
 		debugFormData(formData);
 	
     setData(method, formData, 'customertask')
-    .then(function(newId){console.log(newId)})
-	.then(function(){getDataEx('cmbLinkedCustomer', 'customertask', '?actionId=9&taskId='+getValue('taskId'), fillSelect, null, 
-		(opt,item)=>opt.value = item.customerTaskId, 
-		(opt,item)=>opt.text = item.customer.customerName, null);})
-		.then(function(){getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
-			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName);	})
+    .then(activateTabLinkedCustomer())
 		.then(function(){setMsg(msgType.ok, 'Customer removed');});
 }
 

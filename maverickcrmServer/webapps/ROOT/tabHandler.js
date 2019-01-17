@@ -36,21 +36,21 @@ function setTab(tab){
 		break;		
 	case tabEnum.customer:
 		getById('tabCustomer').className = "cssTabSelected";
-		getById('tabContact').className = "cssTab";
+		getById('tabTimeline').className = "cssTab";
 		getById('tabLogin').className = "cssTab";
 		getById('tabConnection').className = "cssTab";
 		activateTabCustomer();
 		break;
-	case tabEnum.contact:
-		getById('tabContact').className = "cssTabSelected";
+	case tabEnum.timeline:
+		getById('tabTimeline').className = "cssTabSelected";
 		getById('tabCustomer').className = "cssTab";		
 		getById('tabLogin').className = "cssTab";
 		getById('tabConnection').className = "cssTab";
-		activateTabContact();
+		activateTabTimeline();
 		break;
 	case tabEnum.login:
 		getById('tabLogin').className = "cssTabSelected";
-		getById('tabContact').className = "cssTab";
+		getById('tabTimeline').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";	
 		getById('tabConnection').className = "cssTab";
 		activateTabLogin();
@@ -58,7 +58,7 @@ function setTab(tab){
 	case tabEnum.connection:
 		getById('tabConnection').className = "cssTabSelected";
 		getById('tabLogin').className = "cssTab";
-		getById('tabContact').className = "cssTab";
+		getById('tabTimeline').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";
 		activateTabConnection();
 		break;		
@@ -126,11 +126,11 @@ function activateTabLinkedCustomer(){
 			null, 
 			(opt,item)=>opt.value = item.customerTaskId, 
 			(opt,item)=>opt.text = item.customer.customerName, 
-			null))
+			(opt,item)=>opt.addEventListener("dblclick", ()=>removeLinkedCustomer())))
 	.then(()=>getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
-			null))	
+			(opt,item)=>opt.addEventListener("dblclick", ()=>addLinkedCustomer())))	
 }
 
 function activateTabConnection(){
@@ -163,8 +163,7 @@ function activateTabConnection(){
 		.then(()=>getDataEx('cmbAllContact', 'contact', '?actionId=2', fillSelect, null,
 				(opt,item)=>opt.value = item.contactId, 
 				(opt,item)=>{
-				let phone = (item.officePhone == '')?((item.mobilePhone == '')?'':item.mobilePhone):item.officePhone;
-				opt.text = item.firstName + " " + item.lastName + " : " + new String((phone == null)?"  -  ":phone);
+				opt.text = item.firstName + " " + item.lastName;
 				},
 				(opt, item)=>{
 					opt.addEventListener("click", ()=>{
@@ -183,9 +182,9 @@ function activateTabCustomer(){
 	.then(()=>getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList));
 }
 
-function activateTabContact(){
+function activateTabTimeline(){
 	
-	getHTML('tabContact.html').then(function(response){fillTab('divCRM', response)});
+	getHTML('tabTimeline.html').then(function(response){fillTab('divCRM', response)});
 
 }
 
