@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 
 import com.google.gson.Gson;
@@ -22,6 +23,31 @@ public class AuthenticationController extends HttpServlet {
 	private static final long serialVersionUID = -3340984536477397627L;
 	Gson jsonHelper = new Gson();
 
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response = null;
+		JsonObject json = null;
+		
+		try {
+			String user = (String) req.getSession().getAttribute("username");
+			if(user == null)
+				throw new NullPointerException();
+
+			Login login = LoginDAL.getInstance().get(user);
+			response = jsonHelper.toJson(login);
+
+		}catch(NullPointerException | NumberFormatException | SQLException e) {
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json = new JsonObject();
+			json.addProperty("msg",  e.getMessage());
+			json.addProperty("status",  "nack");
+		}
+		
+		PrintWriter out = resp.getWriter();
+		out.println(response);
+	}	
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		JsonObject json = new JsonObject();
