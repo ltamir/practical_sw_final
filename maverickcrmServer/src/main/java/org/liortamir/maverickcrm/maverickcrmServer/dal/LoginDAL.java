@@ -32,6 +32,19 @@ public class LoginDAL {
 		return entity;
 	}
 	
+	public Login get(String username) throws SQLException {
+		Login entity = null;
+
+		try( Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from login where username=?");
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = mapFields(rs);
+		}
+		return entity;
+	}	
+	
 	public List<Login> getAll() throws SQLException{
 		List<Login> loginList = null;
 		try(Connection conn = DBHandler.getConnection()){
@@ -84,7 +97,7 @@ public class LoginDAL {
 	
 	private Login mapFields(ResultSet rs) throws SQLException{
 		Login login = null;
-		login = new Login(rs.getInt("loginId"), rs.getString("username"), rs.getString("password"),ContactDAL.getInstance().get(rs.getInt("contactId")));
+		login = new Login(rs.getInt("loginId"), rs.getString("username"), "-----",ContactDAL.getInstance().get(rs.getInt("contactId")));
 
 		return login;
 	}
