@@ -82,7 +82,7 @@ public class TaskDAL {
 		boolean whereUsed = false;
 		final String baseSQL = "select * from task";
 		final String closedPredicate = " statusId=4";
-		final String dueDatePredicate = " dueDate >= ?";
+		final String dueDatePredicate = " dueDate <= ?";
 		final String taskTypePredicate = " taskTypeId=?";
 		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
 		final String projectPredicate = " taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?)";
