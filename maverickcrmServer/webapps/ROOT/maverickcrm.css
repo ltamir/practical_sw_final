@@ -32,9 +32,10 @@ img{
 
 	#menu {
       font-family: arial, sans-serif;
-      border-collapse: collapse;
+      /* border-collapse: collapse; */
+      border: 2px outset WhiteSmoke;
       width: 100%;
-      background-color: LightGray;
+      background-color: WhiteSmoke;
     }
 
 
