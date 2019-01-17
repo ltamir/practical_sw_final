@@ -33,15 +33,10 @@ img{
 	#menu {
       font-family: arial, sans-serif;
       /* border-collapse: collapse; */
-      border: 1.5px outset #f5f5f0;
-/* 	border-top: 1px outset #f5f5f0;
-	border-left: 1px outset #f5f5f0;
-	border-bottom: 1px outset #1e1e15;
-	border-right: 1px outset #1e1e15; */      
+      border: 1.5px outset #f5f5f0;     
       width: 100%;
       background-color: WhiteSmoke;
     }
-
 
 	option:nth-child(even){
 	background-color: WhiteSmoke;
@@ -82,18 +77,25 @@ img{
 	color: #fbfbfb;
 	background-color: #424f5a;
 }
-	table.cssTaskList {
-    display: table;
+
+.Fixed
+{
+    position: fixed;
+    top: 4em;
+    width: 100%
+}
+
+	.cssTaskList {
+    /* display: table; */
     width: 100%;
 	}
-	table.cssTaskList thead, table.cssTaskList tbody {
+	
+	table.cssTaskList tbody {
 	    float: left;
 	    width: 100%;
 	    font-family: arial, sans-serif;
-	    font-size: medium;
-	}
-	table.cssTaskList tbody {
-	    overflow: auto;
+	    font-size: medium;	
+	    overflow-y: auto;
 	    height: 150px;
 	    background-color: WhiteSmoke;
 	    color: #121212;
@@ -101,33 +103,26 @@ img{
 	tbody tr:nth-child(even) {
       background-color: Snow;
     }	
-	table.cssTaskList tr {
-	    width: 100%;
-	    display: table;
-	    cursor: pointer;
-	}
 
-	th.cssTaskListCustomer, td.cssTaskListCustomer {
-	    width: 5%;
-	}
 	td img{
 		border-width: 1px;
 		
 	}
-	th.cssTaskListTitle {
-	    width: 50%;
-	}
+
+	td.cssTaskListType {
+	    width: 5%;
+	}		
 	td.cssTaskListTitle {
-	    width: 55%;
+	    width: 75%;
 	}	
-	th.cssTaskListDueDate, td.cssTaskListDueDate {
-	    width: 9em;
+	td.cssTaskListDueDate {
+	    width: 12%;
 	}
-	th.cssTaskListTitle td.cssTaskListEffort {
-	    width: 5em;
+	td.cssTaskListEffort {
+	    width: 6%;
 	}
-	th.cssTaskListStatus td.cssTaskListStatus {
-	    width: 7em;
+	td.cssTaskListStatus {
+	    width: 10%;
 	    text-align: left;
 	}
 

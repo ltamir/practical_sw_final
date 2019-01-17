@@ -47,6 +47,7 @@ function fillTaskList(id, data){
     		break;       		
     	}
     	customerNameCell.appendChild(typeImg);
+    	customerNameCell.classList.add("cssTaskListType");   
     	
     	var titleCell  = newRow.insertCell(1);
     	titleCell.innerHTML = item.title;
@@ -66,8 +67,8 @@ function fillTaskList(id, data){
     	
     	var statusNameCell  = newRow.insertCell(4);
     	statusNameCell.classList.add("cssTaskListStatus");
-    	statusNameCell.innerHTML = item.status.statusName
-    	statusNameCell.style.textAlign='center';
+    	statusNameCell.innerHTML = item.status.statusName;
+    	
     }); 
 }
 

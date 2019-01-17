@@ -32,7 +32,7 @@ function searchTask(customerId, dueDate, txtSearchTitle, projectId, cmbSearchTas
 	searchTaskParams += '&showclosed=' + showClosed;
 	searchTaskParams += '&title=' + txtSearchTitle;
 	
-	getData('taskListBody', 'task', searchTaskParams, fillTaskList);
+	getData('taskList', 'task', searchTaskParams, fillTaskList);
 }
 
 /**
