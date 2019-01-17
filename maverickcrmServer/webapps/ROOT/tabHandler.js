@@ -76,11 +76,13 @@ function activateTabTaskLog(){
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
     		null))
+	.then(()=>{if(loggedContact != undefined)
+			setValue('cmbTaskLogContact', loggedContact.contactId);})    		
 	.then(()=>{
 		if(getValue('taskId') > 0)
 			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
 	})
-	
+
 }
 
 

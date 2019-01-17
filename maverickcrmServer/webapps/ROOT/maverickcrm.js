@@ -184,6 +184,17 @@ function connectionFilterOff(element){
 	setMsg(msgType.ok, 'Task filter removed');
 }
 
+function showNewTaskTypes(){
+	getById('divNewTaskType').style.display='inline';
+}
+
+function setNewTaskType(selectedImg ,taskType){
+	newTask(taskType);
+	getById('addTask').src = selectedImg.src;
+	getById('addTask').title = selectedImg.title;
+	getById('divNewTaskType').style.display = 'none';	
+}
+
 function showEffortUnits(){
 	getById('divEffortUnit').style.display='inline';
 }
@@ -202,10 +213,18 @@ function dropOnParent(ev){
 }
 function allowDrop(ev) {
 	ev.preventDefault();
-  }
-  
+}
+
+var loggedContact;
+function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHandler){
+	loggedContact = body.contact;
+	setValue('user', body.username);
+}
+
 function init(){
+
 	toggleSearchTaskStatus();
+	getDataEx('', 'authenticate', '', setLoggedinUser, 'Customers:', null, null, null);
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers:', 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 

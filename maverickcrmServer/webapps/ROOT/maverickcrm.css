@@ -249,6 +249,13 @@ img{
 	border-style: inset;
 }
 
+#divNewTaskType{
+	display: none;
+	position: fixed;
+	z-index: 2;
+	background-color: oldlace;
+}
+
 #cmbDetailStatus option[value="0"]{
 	background-color: SlateGray;
 }

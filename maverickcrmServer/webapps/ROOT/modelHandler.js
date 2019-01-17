@@ -27,10 +27,12 @@ function newContact(){
 	setMsg(msgType.ok, 'Ready');
 }
 
-function newTask(){
+function newTask(taskType){
+	if(taskType == null)
+		taskType = 0;
 	setValue('taskId', '0');
-	setValue('cmbDetailTaskType', 0);
-	setValue('cmbDetailContact', 0);
+	setValue('cmbDetailTaskType', taskType);
+	setValue('cmbDetailContact', loggedContact.contactId);
 	setValue('txtDetailTaskTitle', '');
 	setValue('txtDetailTaskEffort', 1);
 	setValue('effortUnit', 1);
@@ -85,6 +87,11 @@ function fillTaskDetails(id, data){
 		break;		
 	}
 
+	
+	let taskTypeImg = getTaskTypeImg(data.taskType.taskTypeId);
+	getById('addTask').src = taskTypeImg.src;
+	getById('addTask').title = taskTypeImg.title;
+	
 	let date = data.dueDate.year + "-";
 	date += (data.dueDate.month<10)?"0":"";
 	date += data.dueDate.month + "-";

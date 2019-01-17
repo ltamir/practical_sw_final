@@ -1,3 +1,39 @@
+
+function getTaskTypeImg(taskType){
+	let img = document.createElement("IMG");
+	switch(taskType){
+	case 1:
+		img.src="images/tasklist/project.png";
+		img.title="Project";
+		break;
+	case 2:
+		img.src="images/tasklist/requirements.png";
+		img.title="Requirement";
+		break;
+	case 3:
+		img.src="images/tasklist/design.png";
+		img.title="Design";
+		break;
+	case 4:
+		img.src="images/tasklist/develop.png";
+		img.title="Development";
+		break;
+	case 5:
+		img.src="images/tasklist/qa.png";
+		img.title="QA";
+		break;
+	case 6:
+		img.src="images/tasklist/delivery.png";
+		img.title="Delivery";
+		break;
+	case 7:
+		img.src="images/tasklist/support.png";
+		img.title="Support";
+		break;       		
+	}
+	return img
+}
+
 function fillTaskList(id, data){
 	//taskListBody
 	var selectElement = getById(id);
@@ -13,7 +49,6 @@ function fillTaskList(id, data){
     	newRow.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);});
     	
     	var customerNameCell  = newRow.insertCell(0);
-//        customerNameCell.innerHTML = item.customer.customerName;
         customerNameCell.classList.add("cssTaskListCustomer");
         let typeImg = document.createElement("IMG");
     	switch(item.taskType.taskTypeId){
