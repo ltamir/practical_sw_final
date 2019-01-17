@@ -85,10 +85,29 @@
         <tbody>
 		<tr>
 			<td width="50%" valign="top">
+				<img src="images/task.png" id="imgTaskType" title="select Task type" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divTaskType'); toggleAsBotton(this)">
+				
 				<select title="Task Type" id="cmbDetailTaskType"></select>
 				<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
 				<select  title="Task Status"id="cmbDetailStatus"></select>
-				<br> 
+				<img src="images/status/new.png" id="imgTaskStatus" title="select Task status" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divTaskStatus'); toggleAsBotton(this)">
+            	<div id="divTaskStatus">
+            		<img src="images/status/new.png" title="New" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 1)"><br>
+            		<img src="images/status/running.png" title="Running" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this,2)"><br>
+            		<img src="images/status/delivered.png" title="Delivered" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 3)"><br>
+            		<img src="images/status/closed.png" title="Closed" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 4)"><br>
+            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 5)"><br>
+            	</div>					
+				<br>
+            	<div id="divTaskType">
+            		<img src="images/tasklist/project.png" title="new project task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 1)"><br>
+            		<img src="images/tasklist/requirements.png" title="new requirement task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this,2)"><br>
+            		<img src="images/tasklist/design.png" title="new design task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 3)"><br>
+            		<img src="images/tasklist/develop.png" title="new development task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 4)"><br>
+            		<img src="images/tasklist/qa.png" title="new qa task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 5)"><br>
+            		<img src="images/tasklist/delivery.png" title="new delivery task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 6)"><br>
+            		<img src="images/tasklist/support.png" title="new support task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 7)">
+            	</div>				
 				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="60" tabindex="1"></textarea>
 				<br>
 				<label for="txtDetailEffort" class="cssFieldLabel" tabindex="2">Effort</label>
@@ -104,7 +123,7 @@
 				<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeyup="flagToggle(getById('lblDetailDueDate'),this, event)" onchange="toggleSearchDate(getById('lblDetailDueDate'),this)"/> 
 				<input type="hidden" id="taskId" value="0">    
 				<img src="images/save_blue.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
-            	<img src="images/add_task.png" title="Add a single task" id="addTask" onmousedown="toggleAsBotton(this)" onmouseup="showNewTaskTypes(); toggleAsBotton(this)">
+            	<img src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleNewTaskTypeMenu(this); toggleAsBotton(this)">
             	<div id="divNewTaskType">
             		<img src="images/tasklist/project.png" title="new project task" onclick="setNewTaskType(this, 1)">
             		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="setNewTaskType(this, 2)">

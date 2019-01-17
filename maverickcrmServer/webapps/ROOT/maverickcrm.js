@@ -184,15 +184,47 @@ function connectionFilterOff(element){
 	setMsg(msgType.ok, 'Task filter removed');
 }
 
-function showNewTaskTypes(){
-	getById('divNewTaskType').style.display='inline';
+function toggleImgMenu(imgId, menuId){
+	menu = getById(menuId);
+	if(imgId.getAttribute('data-state') == 0){
+		menu.style.display = 'inline';
+		imgId.setAttribute('data-state', 1);
+	}else{
+		menu.style.display = 'none';
+		imgId.setAttribute('data-state', 0);		
+	}
+}
+
+function setTaskType(selectedImg, taskType){
+	setValue('cmbDetailTaskType', taskType);
+	getById('imgTaskType').src = selectedImg.src;
+	getById('imgTaskType').title = selectedImg.title;	
+	toggleImgMenu(getById('imgTaskType'), 'divTaskType');
+}
+
+function setTaskStatus(selectedImg, taskStatus){
+	setValue('cmbDetailStatus', taskStatus);
+	getById('imgTaskStatus').src = selectedImg.src;
+	getById('imgTaskStatus').title = selectedImg.title;	
+	toggleImgMenu(getById('imgTaskStatus'), 'divTaskStatus');
+}
+
+function toggleNewTaskTypeMenu(imgId){
+	if(imgId.getAttribute('data-state') == 0){
+		getById('divNewTaskType').style.display='inline';
+		imgId.setAttribute('data-state', 1);
+	}else{
+		getById('divNewTaskType').style.display='none';
+		imgId.setAttribute('data-state', 0);		
+	}	
+	
 }
 
 function setNewTaskType(selectedImg ,taskType){
 	newTask(taskType);
 	getById('addTask').src = selectedImg.src;
 	getById('addTask').title = selectedImg.title;
-	getById('divNewTaskType').style.display = 'none';	
+	toggleNewTaskTypeMenu(getById('addTask'));
 }
 
 function showEffortUnits(){

@@ -89,8 +89,14 @@ function fillTaskDetails(id, data){
 
 	
 	let taskTypeImg = getTaskTypeImg(data.taskType.taskTypeId);
-	getById('addTask').src = taskTypeImg.src;
-	getById('addTask').title = taskTypeImg.title;
+	getById('imgTaskType').src = taskTypeImg.src;
+	getById('imgTaskType').title = taskTypeImg.title;
+	
+	if(getById('addTask').getAttribute('data-state') == 1)
+		toggleNewTaskTypeMenu(getById('addTask'));
+	let ggb = getTaskStatus(data.status.statusId);
+	getById('imgTaskStatus').src = ggb.src;
+	getById('imgTaskStatus').title = ggb.title;	
 	
 	let date = data.dueDate.year + "-";
 	date += (data.dueDate.month<10)?"0":"";

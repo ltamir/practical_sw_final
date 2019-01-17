@@ -27,11 +27,28 @@ function getTaskTypeImg(taskType){
 		img.title="Delivery";
 		break;
 	case 7:
-		img.src="images/tasklist/support.png";
+		img.src="images/tasklist/support.png"; 
 		img.title="Support";
 		break;       		
 	}
-	return img
+	return img;
+}
+
+
+function getTaskStatus(statusId){
+
+	switch(statusId){
+	case 1:
+		return {src:"images/status/new.png", title:"New"};
+	case 2:
+		return {src:"images/status/running.png", title:"Running"};
+	case 3:
+		return {src:"images/status/delivered.png", title:"Delivered"};
+	case 4:
+		return {src:"images/status/closed.png", title:"Closed"};
+	case 5:
+		return {src:"images/status/onhold.png", title:"On Hold"};	
+	}
 }
 
 function fillTaskList(id, data){
@@ -50,37 +67,8 @@ function fillTaskList(id, data){
     	
     	var customerNameCell  = newRow.insertCell(0);
         customerNameCell.classList.add("cssTaskListCustomer");
-        let typeImg = document.createElement("IMG");
-    	switch(item.taskType.taskTypeId){
-    	case 1:
-    		typeImg.src="images/tasklist/project.png";
-    		typeImg.title="Project";
-    		break;
-    	case 2:
-    		typeImg.src="images/tasklist/requirements.png";
-    		typeImg.title="Requirement";
-    		break;
-    	case 3:
-    		typeImg.src="images/tasklist/design.png";
-    		typeImg.title="Design";
-    		break;
-    	case 4:
-    		typeImg.src="images/tasklist/develop.png";
-    		typeImg.title="Development";
-    		break;
-    	case 5:
-    		typeImg.src="images/tasklist/qa.png";
-    		typeImg.title="QA";
-    		break;
-    	case 6:
-    		typeImg.src="images/tasklist/delivery.png";
-    		typeImg.title="Delivery";
-    		break;
-    	case 7:
-    		typeImg.src="images/tasklist/support.png";
-    		typeImg.title="Support";
-    		break;       		
-    	}
+        let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
+
     	customerNameCell.appendChild(typeImg);
     	customerNameCell.classList.add("cssTaskListType");   
     	
