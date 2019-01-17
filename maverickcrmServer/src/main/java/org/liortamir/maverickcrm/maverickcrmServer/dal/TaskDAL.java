@@ -187,7 +187,6 @@ public class TaskDAL {
 	
 	
 	
-	
 	/**
 	 * Get Tasks connected to a customer directly or by parent task
 	 * @param customerId
