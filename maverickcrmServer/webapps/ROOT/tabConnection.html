@@ -1,12 +1,10 @@
 <input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
-<img src="images/filter.png" id="imgFilterConnection" value="0" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">
+<img src="images/filter.png" id="imgFilterConnection" value="0" title="filter on selected task" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">
 <br>
 <div class="connection-grd">
 	<select id="cmbConnectedCustomer" size="4" class="cssConnectedCustomers"></select>
-	<span class="cssFieldLabel" class="cssConnectedContactsLabel">Associated</span>
+	<span class="cssFieldLabel" id="lblCRMContacts" title="Click to filter by selected customer" data-state="1" onclick="toggleShowContacts(this); ">All Contacts</span>
 	<select id="cmbConnectedContact" size="4" class="cssConncetedContacts"></select>
-	<span class="cssFieldLabel" class="cssAllContactsLabel">All</span><br>
-	<select id="cmbAllContact" size="4" class="cssAllContacts"></select>
 </div>
 <img src="images/contact.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
 <img src="images/save_blue.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">

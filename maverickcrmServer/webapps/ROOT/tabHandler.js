@@ -139,6 +139,8 @@ function activateTabConnection(){
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName,
 			(opt, item)=>opt.addEventListener("click", ()=>{
+				if(getById('lblCRMContacts').getAttribute("data-state") == 1)
+					return;
 				getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
 						(opt,item)=>opt.value = item.contact.contactId, 
 						(opt,item)=>{
@@ -160,21 +162,59 @@ function activateTabConnection(){
 						(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
 				})
 			))
-		.then(()=>getDataEx('cmbAllContact', 'contact', '?actionId=2', fillSelect, null,
-				(opt,item)=>opt.value = item.contactId, 
-				(opt,item)=>{
-				opt.text = item.firstName + " " + item.lastName;
-				},
-				(opt, item)=>{
-					opt.addEventListener("click", ()=>{
-						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
-						})
-					}
-				))
 	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
 			(opt,item)=>opt.value = item.contactTypeId, 
 			(opt,item)=>opt.text = item.contactTypeName, 
 			null));	
+	showAllContacts();
+}
+
+function toggleShowContacts(obj){
+	toggleAsBotton(obj);
+	if(obj.getAttribute("data-state") == 1){
+		showAssociatedContacts();
+		obj.innerHTML = 'Associated contacts';
+		obj.setAttribute("data-state", 2);
+		obj.title="Click to show all contacts"
+	}else{
+		obj.setAttribute("data-state", 1);
+		obj.innerHTML = 'All contacts';
+		obj.title="Click to filter by selected customer"
+		showAllContacts();
+	}
+}
+
+function showAssociatedContacts(){
+	if(getValue('cmbConnectedCustomer') == '')
+		return;
+	getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+getValue('cmbConnectedCustomer'), fillSelect, null, 
+			(opt,item)=>opt.value = item.contact.contactId, 
+			(opt,item)=>{
+			let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
+			opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
+			},
+			(opt, item)=>{
+				opt.addEventListener("click", ()=>{
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+					cmbConnectedAddress.value=item.address.addressId
+					cmbContactType.value=item.contactType.contactTypeId;
+					ConnectionAssociationId.value=item.associationId;
+					})
+				}
+			)
+}
+function showAllContacts(){
+	getDataEx('cmbConnectedContact', 'contact', '?actionId=2', fillSelect, null,
+			(opt,item)=>opt.value = item.contactId, 
+			(opt,item)=>{
+			opt.text = item.firstName + " " + item.lastName;
+			},
+			(opt, item)=>{
+				opt.addEventListener("click", ()=>{
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
+					})
+				}
+			)
 }
 
 function activateTabCustomer(){
