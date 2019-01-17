@@ -148,7 +148,9 @@ function connectionFilterOn(element){
 	(opt,item)=>opt.value = item.customerId, 
 	(opt,item)=>opt.text = item.customerName,
 	(opt, item)=>opt.addEventListener("click", ()=>{
-		getDataEx('cmbConnectedContact', 'assocoation', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
+		if(getById('lblCRMContacts').getAttribute("data-state") == 1)
+			return;
+		getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
 				(opt,item)=>opt.value = item.contact.contactId, 
 				(opt,item)=>{
 				let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
@@ -159,7 +161,7 @@ function connectionFilterOn(element){
 						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
 						cmbConnectedAddress.value=item.address.addressId
 						cmbContactType.value=item.contactType.contactTypeId;
-						ConnectionAssocoationId.value=item.assocoationId;
+						ConnectionAssociationId.value=item.associationId;
 						})
 					}
 				)
