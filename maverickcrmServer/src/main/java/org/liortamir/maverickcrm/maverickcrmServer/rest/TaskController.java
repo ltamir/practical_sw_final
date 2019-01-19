@@ -13,11 +13,13 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
@@ -115,22 +117,52 @@ public class TaskController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
-		int taskTypeId = Integer.parseInt(req.getParameter("taskTypeId"));
-		int contactId = Integer.parseInt(req.getParameter("contactId"));
-		String title = req.getParameter("title");
-		int effort = Integer.parseInt(req.getParameter("effort"));
-		int effortUnit = Integer.parseInt(req.getParameter("effortUnit"));
-		String dueDate = req.getParameter("dueDate");
-		int statusId = Integer.parseInt(req.getParameter("statusId"));
+		int taskTypeId = 0;
+		int contactId = 0;
+		String title = null;
+		int effort = 0;
+		int effortUnit = 0;
+		String dueDate = null;
+		int statusId = 0;
+		
+		for(Part part : req.getParts()) {
+			switch(part.getName()) {
+			case APIConst.FLD_TASK_TASKTYPEID:
+				taskTypeId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+				break;
+			case APIConst.FLD_CONTACT_ID:
+				contactId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+				break;
+			case APIConst.FLD_TASK_TITLE:
+				title = new String(IOUtils.toByteArray(part.getInputStream()));
+				break;
+			case APIConst.FLD_TASK_EFFORT:
+				effort = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+				break;
+			case APIConst.FLD_TASK_EFFORT_UNIT:
+				effortUnit = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+				break;	
+			case APIConst.FLD_TASK_DUE_DATE:
+				dueDate = new String(IOUtils.toByteArray(part.getInputStream()));
+				break;
+			case APIConst.FLD_TASK_STATUS_ID:
+				statusId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+				break;	
+			default:
+				System.out.println(this.getClass().getName() + ".doPost: Invalid field: Name:" + part.getName());				
+			}
+		}
 		
 		try {
 			int taskId = TaskDAL.getInstance().insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty("taskId", taskId);
-
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("err",  e.getMessage());
 			json.addProperty("status",  "nack");
+			if(e instanceof SQLException && ((SQLException)e).getSQLState().equals("22001"))
+				json.addProperty("msg",  "title too long");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
@@ -150,49 +182,44 @@ public class TaskController extends HttpServlet {
 		int statusId = 0;
 		try {
 	
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_TASK_ID:
-						taskId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASK_TASKTYPEID:
-						taskTypeId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASK_CONTACT_ID:
-						contactId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASK_TITLE:
-						title = item.getString();
-						break;
-					case APIConst.FLD_TASK_EFFORT:
-						effort = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASK_EFFORT_UNIT:
-						effortUnit = Integer.parseInt(item.getString());
-						break;	
-					case APIConst.FLD_TASK_DUE_DATE:
-						dueDate = item.getString();
-						break;						
-					case APIConst.FLD_TASK_STATUS_ID:
-						statusId = Integer.parseInt(item.getString());
-						break;						
-						default:
-							System.out.println("CustomerHandler.doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
+			for(Part part : req.getParts()) {
+				switch(part.getName()) {
+				case APIConst.FLD_TASK_ID:
+					taskId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;				
+				case APIConst.FLD_TASK_TASKTYPEID:
+					taskTypeId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_CONTACT_ID:
+					contactId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_TASK_TITLE:
+					title = new String(IOUtils.toByteArray(part.getInputStream()));
+					break;
+				case APIConst.FLD_TASK_EFFORT:
+					effort = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_TASK_EFFORT_UNIT:
+					effortUnit = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;	
+				case APIConst.FLD_TASK_DUE_DATE:
+					dueDate = new String(IOUtils.toByteArray(part.getInputStream()));
+					break;
+				case APIConst.FLD_TASK_STATUS_ID:
+					statusId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;	
+				default:
+					System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + part.getName());				
 				}
-			}	
+			}
+			
+
 			TaskDAL.getInstance().update(taskId, taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty("taskId", taskId);
-		}catch(SQLException | FileUploadException | NumberFormatException e) {
+			json.addProperty("status",  "ack");
+		}catch(SQLException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("err",  e.getMessage());
 			json.addProperty("msg",  e.getMessage());
 			json.addProperty("status",  "nack");
 		}
