@@ -62,7 +62,7 @@ function newRelation(){
 
 function newTaskLog(){
 	setValue('taskLogId', '0');
-	setValue('cmbTaskLogContact', 0);
+	setValue('cmbTaskLogContact', loggedContact.contactId);
 	setValue('cmbTaskLogType', 0);
 	setValue('txtTaskLogDescription', '');
 	setMsg(msgType.ok, 'Ready');
@@ -374,8 +374,9 @@ function saveRelation(parent, child, relationType){
 	.then(function(){
 		if(activeTaskTab != tabEnum.relation)
 			return;
-		getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent);
-		getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild);
+		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+//		getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent);
+		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
 		})
 	.then(function(){setMsg(msgType.ok, 'Parent relation saved')});
 }
@@ -392,8 +393,10 @@ function removeTaskRelation(){
 	formData.append('taskRelationId', getValue('taskRelationId'));
 	
 	setData(method, formData, 'taskrelation')
-	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
-	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
+	
+	.then(function(){getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)})
+//	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
+	.then(function(){getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)})
 	.then(function(){setMsg(msgType.ok, 'Relation Removed')});
 	
 }

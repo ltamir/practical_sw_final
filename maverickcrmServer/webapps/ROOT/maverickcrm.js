@@ -252,7 +252,6 @@ function allowDrop(ev) {
 	ev.preventDefault();
 }
 
-var loggedContact;
 function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHandler){
 	loggedContact = body.contact;
 	setValue('user', body.username);
@@ -278,7 +277,7 @@ function init(){
     getDataEx('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		null);
+    		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
     
     getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, 'Status:', 
     		(opt,item)=>opt.value = item.statusId, 
@@ -292,8 +291,8 @@ function init(){
 
     searchTask(0, '','', 0, 0, 0);
     
-    setTab(tabEnum.connection)
-    activateTabTaskLog()
+    setTab(tabEnum.connection);
+    setTab(tabEnum.taskLog);
     
     setValue('txtSearchDueDate', '');
     

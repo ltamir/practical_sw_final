@@ -14,7 +14,8 @@ function setTab(tab){
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTabSelected';
-		getById('TabLinkedCustomer').className='cssTab';			
+		getById('TabLinkedCustomer').className='cssTab';
+		getById('divTaskTab').removeAttribute('data-selected');
 		activateTabRelation();  
 		activeTaskTab = tab;
 		break;
@@ -72,12 +73,13 @@ function activateTabTaskLog(){
     		(opt,item)=>opt.value = item.taskLogTypeId, 
     		(opt,item)=>opt.text = item.taskLogTypeName, 
     		null))
-    .then(()=>getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Contacts', 
+    .then(()=>{
+    	getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Contacts', 
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		null))
-	.then(()=>{if(loggedContact != undefined)
-			setValue('cmbTaskLogContact', loggedContact.contactId);})    		
+    		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
+
+    })
 	.then(()=>{
 		if(getValue('taskId') > 0)
 			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
@@ -94,10 +96,11 @@ function activateTabRelation(){
 			null))
 	.then(()=>{
 		if(getValue('taskId') > 0)
-			getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getById('taskId').value, fillTaskRelationListParent)})
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)
+			})
 	.then(()=>{
 		if(getValue('taskId') > 0)
-			getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getById('taskId').value, fillTaskRelationListChild)
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
 	})
 	.then(()=>getDataEx('cmbTabRelationProject', 'customertask', '?actionId=2', fillSelect, 'projects',
 	(opt, item)=>opt.value = item.task.taskId,

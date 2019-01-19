@@ -196,8 +196,8 @@ img{
 	width: 27em;
 }
 #divParentTaskList{
-	height: 3em;
-	width: 24em;
+	height: 2em;
+	width: 27em;
 	overflow-y: scroll;
 	border-bottom: 1px inset #000000;
 }
@@ -215,7 +215,7 @@ img{
 
 #divChildTaskList{
 	height: 4em;
-	width: 24em;
+	width: 27em;
 	overflow-y: scroll;
 }
 
@@ -229,14 +229,23 @@ img{
 	border-width: 1px;
 }
 
+.cssTaskRelationTitle{
+	background-color: WhiteSmoke;
+	color: Black;
+}
+.cssTaskRelationTitleSelected{
+	background-color: FloralWhite;
+	color: FireBrick;
+}
+
 #cmbRelationTaskList{
 	font-family: arial, sans-serif;
 	background-color: AliceBlue;
-	min-width: 29em;	
+	min-width: 32em;	
 }	
 	#cmbAttachmentList	 {
 		font-family: arial, sans-serif;
-        min-width: 29em;	
+        min-width: 32em;	
 	}
 	
 .tabRow{
