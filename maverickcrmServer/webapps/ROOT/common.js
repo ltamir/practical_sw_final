@@ -37,8 +37,11 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
     fetch(url)
     .then(function(response) {
-    		if(resource.endsWith('html'))
+    		if(response.redirect)
+    			window.location.replace(response.url);
+    		if(resource.endsWith('html')){
     			return response.text();
+    		}
     		else
     			return response.json();
         }
