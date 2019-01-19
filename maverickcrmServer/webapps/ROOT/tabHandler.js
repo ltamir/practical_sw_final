@@ -143,21 +143,7 @@ function activateTabConnection(){
 			(opt, item)=>opt.addEventListener("click", ()=>{
 				if(getById('lblCRMContacts').getAttribute("data-state") == 1)
 					return;
-				getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
-						(opt,item)=>opt.value = item.contact.contactId, 
-						(opt,item)=>{
-						let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
-						opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-						},
-						(opt, item)=>{
-							opt.addEventListener("click", ()=>{
-								getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-								cmbConnectedAddress.value=item.address.addressId
-								cmbContactType.value=item.contactType.contactTypeId;
-								ConnectionAssociationId.value=item.associationId;
-								})
-							}
-						)
+				showAssociatedContacts();
 				getDataEx('cmbConnectedAddress', 'address', '?actionId=13&customerId='+item.customerId, fillSelect, null, 
 						(opt,item)=>opt.value = item.addressId, 
 						(opt,item)=>opt.text = item.street + ' ' + item.houseNum + ' ' + item.city, 
@@ -190,21 +176,22 @@ function showAssociatedContacts(){
 	if(getValue('cmbConnectedCustomer') == '')
 		return;
 	getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+getValue('cmbConnectedCustomer'), fillSelect, null, 
-			(opt,item)=>opt.value = item.contact.contactId, 
-			(opt,item)=>{
-			let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
-			opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-			},
-			(opt, item)=>{
-				opt.addEventListener("click", ()=>{
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-					cmbConnectedAddress.value=item.address.addressId
-					cmbContactType.value=item.contactType.contactTypeId;
-					ConnectionAssociationId.value=item.associationId;
-					})
-				}
-			)
+		(opt,item)=>opt.value = item.contact.contactId, 
+		(opt,item)=>{
+		let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
+		opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
+		},
+		(opt, item)=>{
+			opt.addEventListener("click", ()=>{
+				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+				cmbConnectedAddress.value=item.address.addressId
+				cmbContactType.value=item.contactType.contactTypeId;
+				ConnectionAssociationId.value=item.associationId;
+			})
+		}
+	)
 }
+
 function showAllContacts(){
 	getDataEx('cmbConnectedContact', 'contact', '?actionId=2', fillSelect, null,
 			(opt,item)=>opt.value = item.contactId, 

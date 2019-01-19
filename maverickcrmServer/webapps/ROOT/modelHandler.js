@@ -94,9 +94,9 @@ function fillTaskDetails(id, data){
 	
 	if(getById('addTask').getAttribute('data-state') == 1)
 		toggleNewTaskTypeMenu(getById('addTask'));
-	let ggb = getTaskStatus(data.status.statusId);
-	getById('imgTaskStatus').src = ggb.src;
-	getById('imgTaskStatus').title = ggb.title;	
+	let statusImg = getTaskStatus(data.status.statusId);
+	getById('imgTaskStatus').src = statusImg.src;
+	getById('imgTaskStatus').title = statusImg.title;	
 	
 	let date = data.dueDate.year + "-";
 	date += (data.dueDate.month<10)?"0":"";
@@ -129,6 +129,7 @@ function fillTaskDetails(id, data){
 	}else{
 		getById('TabLinkedCustomer').style.display='none';		
 	}
+	setMsg(msgType.ok, 'Ready');
 }
 
 
@@ -173,6 +174,22 @@ function fillAttachmentDetails(id, data){
 	setValue('txtAttachmentNotes', data.taskLog.description);
 	setValue('attachmentTaskLogId', data.taskLog.taskLogId);
 	setValue('attachmentId', data.attachmentId);
+}
+
+function setChildTask(setter){
+	if(setter.getAttribute('data-state') == 0){
+		setMsg(msgType.ok, 'new Task will not be set as child');
+		return;
+	}
+
+	if(getValue('taskId') == 0){
+		setMsg(msgType.nok, 'Please select a task');
+		toggleAsBotton(getById('addChildTask'));
+		return;
+	}
+	setter.setAttribute('data-parentTask', getValue('taskId'));
+	newTask(getValue('cmbDetailTaskType'));
+	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
 //***** save model ***** //
@@ -225,6 +242,10 @@ function saveTask(){
 	
 	setData(method, formData, 'task')
 		.then(function(newId){
+			if(newId.status == 'nack'){
+				setMsg(msgType.nok, newId.msg);
+				return;
+			}
 			if(taskId == 0){
 				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', newId.taskId); 
 			}
@@ -232,6 +253,9 @@ function saveTask(){
 			if(getValue('cmbDetailTaskType') ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
+		.then(()=>{if(getById('addChildTask').getAttribute('data-state') == 1){
+			saveRelation(getById('addChildTask').getAttribute('data-parentTask'), getValue('taskId'), 1);
+		}})
 		.then(function(){prepareSearchTask()})
 		.then(function(){setTab(prepareSearchTask)})
 		.then(function(){setMsg(msgType.ok, 'Task saved')});
@@ -283,36 +307,63 @@ function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getById('taskId').value, fillTaskLogList)})
 		.then(function(){setMsg(msgType.ok, 'Log saved')});
 }
-        
-function saveAsParent(){
-	let method;
-	let formData = new FormData();
+
+function prepareSaveRelation(asParent){
+	let relationTaskList;
 	
-	if(getValue('taskRelationSelectedTaskId') == ''){
-		setMsg(msgType.nok, 'Please select a task to set as parent');
+	if(getValue('taskId') == 0){
+		setMsg(msgType.nok, 'Please select a task');
 		return;
 	}
-	let parentTaskList = getById('divParentTaskList');
-    for (let i = parentTaskList.length - 1; i >= 0; i--) {
-    	if(parentTaskList.options[i].value == getValue('taskRelationSelectedTaskId')){
-    		setMsg(msgType.nok, 'This task is already set as a parent');
-    		return;
-    	}
+	if(getValue('taskRelationSelectedTaskId') == ''){
+		if(asParent == 1)
+			setMsg(msgType.nok, 'Please select a task to set as parent');
+		else
+			setMsg(msgType.nok, 'Please select a task to set as child');
+		return;
 	}
-
+	
+	let selectedTaskId = getValue('taskRelationSelectedTaskId');
+	if(asParent == 1)
+		relationTaskList = getById('divParentTaskList');
+	else
+		relationTaskList = getById('divChildTaskList');
+    for (let i = relationTaskList.childNodes.length - 1; i >= 0; i--) {
+    	if(relationTaskList.childNodes[i].hasAttribute("data-taskId")){
+    		if(relationTaskList.childNodes[i].getAttribute("data-taskId") == selectedTaskId){
+    			if(asParent == 1)
+    				setMsg(msgType.nok, 'This task is already set as a parent');
+    			else
+    				setMsg(msgType.nok, 'This task is already set as a child');
+        		return;
+    		}
+    	}
+	}	
+	
 	if(getValue('cmbTaskRelationType') == 0){
 		setMsg(msgType.nok, 'Please select a relation type');
 		return;
 	}
-	
-	formData.append('childTaskId', getValue('taskId'));
-	formData.append('parentTaskId', getValue('taskRelationSelectedTaskId'));
-	formData.append('taskRelationTypeId', getValue('cmbTaskRelationType'));
+	if(asParent == 1)
+		saveRelation(getValue('taskRelationSelectedTaskId'), getValue('taskId'), getValue('cmbTaskRelationType'));
+	else
+		saveRelation(getValue('taskId'), getValue('taskRelationSelectedTaskId'), getValue('cmbTaskRelationType'));
+}
+
+function saveRelation(parent, child, relationType){
+	let method;
+	let formData = new FormData();
+	let taskRelationId;
+
+	formData.append('childTaskId', child);
+	formData.append('parentTaskId', parent);
+	formData.append('taskRelationTypeId', relationType);
 	
 	if(dbg==dbgModule.relation)
 		debugFormData(formData);
-	
-	let taskRelationId = getValue('taskRelationId');
+	try{
+		taskRelationId = getValue('taskRelationId');
+	}catch(err){taskRelationId = 0;}
 	if(taskRelationId == 0){
 		method = 'POST';
 	}else{
@@ -320,54 +371,13 @@ function saveAsParent(){
     	formData.append('taskRelationId', taskRelationId)
 	}		
 	setData(method, formData, 'taskrelation')
-	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
-	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
+	.then(function(){
+		if(activeTaskTab != tabEnum.relation)
+			return;
+		getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent);
+		getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild);
+		})
 	.then(function(){setMsg(msgType.ok, 'Parent relation saved')});
-}
-
-function saveAsChild(){
-	let method;
-	let formData = new FormData();
-
-	if(getValue('divParentTaskList') == '' && getValue('cmbRelationTaskList') == ''){
-		setMsg(msgType.nok, 'Please select a task to set as child');
-		return;
-	}
-
-	let selectedTaskId = getValue('taskRelationSelectedTaskId');
-	let childTaskList = getById('divChildTaskList');
-    for (let i = childTaskList.childNodes.length - 1; i >= 0; i--) {
-    	if(childTaskList.childNodes[i].hasAttribute("data-taskId")){
-    		if(childTaskList.childNodes[i].getAttribute("data-taskId") == selectedTaskId){
-    			setMsg(msgType.nok, 'This task is already set as a child');
-        		return;
-    		}
-    	}
-	}
-	if(getValue('cmbTaskRelationType') == 0){
-		setMsg(msgType.nok, 'Please select a relation type');
-		return;
-	}	
-	
-	formData.append('parentTaskId', getValue('taskId')); 
-	formData.append('childTaskId', getValue('taskRelationSelectedTaskId'));
-	formData.append('taskRelationTypeId',  getValue('cmbTaskRelationType'));
-	
-	if(dbg==dbgModule.relation)
-		debugFormData(formData);
-	
-	let taskRelationId = getValue('taskRelationId');
-	if(taskRelationId == 0){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-    	formData.append('taskRelationId', taskRelationId)
-	}
-	
-	setData(method, formData, 'taskrelation')
-	.then(function(){getData('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationListChild)})
-	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
-	.then(function(){setMsg(msgType.ok, 'Child relation saved')});
 }
 
 function removeTaskRelation(){
@@ -449,40 +459,15 @@ function saveContact(){
 
 	setData(method, formData, 'contact')
 		.then(()=>{
-			if(cmbConnectedCustomer.value != ''){
-				getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
-				(opt,item)=>opt.value = item.contact.contactId, 
-				(opt,item)=>{
-				let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
-				opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-				},
-				(opt, item)=>{
-					opt.addEventListener("click", ()=>{
-						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-						cmbConnectedAddress.value=item.address.addressId
-						})
-					}
-				)	
-			}
-			getDataEx('cmbAllContact', 'contact', '?actionId=2', fillSelect, null,
-			(opt,item)=>opt.value = item.contactId, 
-			(opt,item)=>{
-			let phone = (item.officePhone == '')?((item.mobilePhone == '')?'':item.mobilePhone):item.officePhone;
-			opt.text = item.firstName + " " + item.lastName + " : " + new String((phone == null)?"  -  ":phone);
-			},
-			(opt, item)=>{
-				opt.addEventListener("click", ()=>{
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
-					})
-				}
-			)			
-		}
-
-		);
+			if(getById('lblCRMContacts').getAttribute("data-state") == 1){
+				showAllContacts();
+			}else{
+				showAssociatedContacts();
+			}			
+		});
 	setMsg(msgType.ok, 'Contact saved');
 }
 
-//TODO vdddd
 function saveAssociation(action){
 	let formData = new FormData();
 	let method;

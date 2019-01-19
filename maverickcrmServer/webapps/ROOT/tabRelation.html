@@ -9,8 +9,8 @@
 <br>
 <label for="cmbTaskRelationType" class="cssFieldLabel">Type:</label>
 <select id="cmbTaskRelationType"> </select>
-<img src="images/relation_add_parent.png" title="Add as parent" id="imgAddParent" onmousedown="toggleAsBotton(this)" onmouseup="saveAsParent(); toggleAsBotton(this)">
-<img src="images/relation_add_child.png" title="Add as child" id="imgAddChild" onmousedown="toggleAsBotton(this)" onmouseup="saveAsChild(); toggleAsBotton(this)">
+<img src="images/relation_add_parent.png" title="Add as parent" id="imgAddParent" onmousedown="toggleAsBotton(this)" onmouseup="prepareSaveRelation(1); toggleAsBotton(this)">
+<img src="images/relation_add_child.png" title="Add as child" id="imgAddChild" onmousedown="toggleAsBotton(this)" onmouseup="prepareSaveRelation(0); toggleAsBotton(this)">
 <img src="images/relation_delete_child.png" title="Remove relation" id="imgRemoveRelation" onmousedown="toggleAsBotton(this)" onmouseup="removeTaskRelation(); toggleAsBotton(this)">
 <input type="hidden" id="taskRelationId" value="0">
 <input type="hidden" id="taskRelationSelectedTaskId" value="0">

@@ -63,6 +63,7 @@ function resetTaskSearch(){
 	getById('cmbSearchTaskType').value=0;
 	getById('cmbSearchProject').value=0;
 	getById('txtSearchDueDate').valueAsDate=null;
+	getById('lblSearchDueDate').innerHTML = 'Due date';
 	setValue('txtSearchTitle', '');
 	setSearchTaskStatusOpen();
 	setMsg(msgType.ok, 'Ready');
@@ -95,10 +96,14 @@ function toggleSearchDate(lbl, field){
 }
 
 function toggleAsBotton(img){
-	if(img.style.borderStyle=='inset')
+	if(img.style.borderStyle=='inset'){
 		img.style.borderStyle='outset';
-	else
+		img.setAttribute('data-state',0);
+	}
+	else{
 		img.style.borderStyle='inset';
+		img.setAttribute('data-state',1);
+	}
 }
 
 function toggleSearchTaskStatus(id){
@@ -150,21 +155,7 @@ function connectionFilterOn(element){
 	(opt, item)=>opt.addEventListener("click", ()=>{
 		if(getById('lblCRMContacts').getAttribute("data-state") == 1)
 			return;
-		getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+item.customerId, fillSelect, null, 
-				(opt,item)=>opt.value = item.contact.contactId, 
-				(opt,item)=>{
-				let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
-				opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-				},
-				(opt, item)=>{
-					opt.addEventListener("click", ()=>{
-						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-						cmbConnectedAddress.value=item.address.addressId
-						cmbContactType.value=item.contactType.contactTypeId;
-						ConnectionAssociationId.value=item.associationId;
-						})
-					}
-				)
+		showAssociatedContacts();
 		getDataEx('cmbConnectedAddress', 'address', '?actionId=13&customerId='+item.customerId, fillSelect, null, 
 				(opt,item)=>opt.value = item.addressId, 
 				(opt,item)=>opt.text = item.street + ' ' + item.houseNum + ' ' + item.city, 
@@ -186,13 +177,28 @@ function connectionFilterOff(element){
 
 function toggleImgMenu(imgId, menuId){
 	menu = getById(menuId);
-	if(imgId.getAttribute('data-state') == 0){
+	if(imgId.getAttribute('data-state') == 1){
 		menu.style.display = 'inline';
-		imgId.setAttribute('data-state', 1);
 	}else{
-		menu.style.display = 'none';
-		imgId.setAttribute('data-state', 0);		
+		menu.style.display = 'none';		
 	}
+}
+
+function toggleState(img){
+	if(img.getAttribute('data-state') == 0){
+		setPressed(img);
+	}else{
+		setUnpressed(img);
+	}
+}
+function setPressed(img){
+	img.style.borderStyle='inset';
+	img.setAttribute('data-state', 1);
+}
+
+function setUnpressed(img){
+	img.style.borderStyle='outset';
+	img.setAttribute('data-state', 0);
 }
 
 function setTaskType(selectedImg, taskType){
@@ -206,16 +212,15 @@ function setTaskStatus(selectedImg, taskStatus){
 	setValue('cmbDetailStatus', taskStatus);
 	getById('imgTaskStatus').src = selectedImg.src;
 	getById('imgTaskStatus').title = selectedImg.title;	
+	setUnpressed(getById('imgTaskStatus'));
 	toggleImgMenu(getById('imgTaskStatus'), 'divTaskStatus');
 }
 
 function toggleNewTaskTypeMenu(imgId){
-	if(imgId.getAttribute('data-state') == 0){
+	if(imgId.getAttribute('data-state') == 1){
 		getById('divNewTaskType').style.display='inline';
-		imgId.setAttribute('data-state', 1);
 	}else{
 		getById('divNewTaskType').style.display='none';
-		imgId.setAttribute('data-state', 0);		
 	}	
 	
 }
@@ -224,7 +229,7 @@ function setNewTaskType(selectedImg ,taskType){
 	newTask(taskType);
 	getById('addTask').src = selectedImg.src;
 	getById('addTask').title = selectedImg.title;
-	toggleNewTaskTypeMenu(getById('addTask'));
+	
 }
 
 function showEffortUnits(){

@@ -60,10 +60,23 @@ function fillTaskList(id, data){
 
     var newText;
     var input;
-
+    selectElement.removeAttribute('data-selected')
     data.array.forEach(function (item) {
-    	var newRow   = selectElement.insertRow(selectElement.rows.length);
-    	newRow.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);});
+    	var newRow = selectElement.insertRow(selectElement.rows.length);
+    	newRow.id = 'taskList' + item.taskId;
+    	newRow.addEventListener("click", function(){
+    		if(selectElement.hasAttribute('data-selected')){
+    			let prevRow = getById(selectElement.getAttribute('data-selected'));
+    			prevRow.style.backgroundColor = prevRow.getAttribute('data-backgroundColor');
+    			prevRow.style.color = '#000000';
+    		}
+    			
+    		newRow.setAttribute('data-backgroundColor', newRow.style.backgroundColor);
+    		newRow.style.backgroundColor = '#424f5a';
+    		newRow.style.color = '#FFFFFF';
+    		selectElement.setAttribute('data-selected', newRow.id);
+    		getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);
+    		});
     	
     	var customerNameCell  = newRow.insertCell(0);
         customerNameCell.classList.add("cssTaskListCustomer");
@@ -181,7 +194,7 @@ function fillTaskRelationSearchResult(id, data){
     for (let i = selectElement.length - 1; i >= 0; i--) {
         selectElement.remove(i);
 	}
-    
+    setValue('taskRelationId', 0);
     data.array.forEach(function (item) {
     	let thisDate = new Date(item.sysdate);
         let opt = document.createElement("OPTION");
@@ -193,13 +206,43 @@ function fillTaskRelationSearchResult(id, data){
     });            
 }
 
-function fillTaskRelationListParent(id, data){
-	let parentElement = getById(id);
-    for (let i = parentElement.length - 1; i >= 0; i--) {
-    	parentElement.remove(i);
-	}
+function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, eventHandler){
+	let container = getById(id);
+	
+	for(let i = parentElement.childNodes.length-1; i > -1; i--)
+		parentElement.removeChild(parentElement.childNodes[i]);
+	
 	if(dbg==dbgModule.relation)
     	console.log(data);
+	data.array.forEach(function (item) {
+    	let relType = document.createElement("IMG");
+    	switch(item.taskRelationType.taskRelationTypeId){
+    	case 2:
+    		relType.src="images/process.png";
+    		relType.title="process";
+    		break;
+    	case 1:
+    		relType.src="images/derived.png";
+    		relType.title="derived from task";
+    		break;
+    	case 3:
+    		relType.src="images/dependency.png";
+    		relType.title="depends on";
+    		break;    		
+    	}
+    	parentElement.appendChild(relType);		
+	});
+}
+
+function fillTaskRelationListParent(id, data){
+	let parentElement = getById(id);
+	
+	for(let i = parentElement.childNodes.length-1; i > -1; i--)
+		parentElement.removeChild(parentElement.childNodes[i]);
+	
+	if(dbg==dbgModule.relation)
+    	console.log(data);
+	
     data.array.forEach(function (item) {
     	let relType = document.createElement("IMG");
     	switch(item.taskRelationType.taskRelationTypeId){
@@ -239,9 +282,10 @@ function fillTaskRelationListParent(id, data){
 
 function fillTaskRelationListChild(id, data){
 	let parentElement = getById(id);
-    for (let i = parentElement.length - 1; i >= 0; i--) {
-    	parentElement.remove(i);
-	}
+
+	for(let i = parentElement.childNodes.length-1; i > -1; i--)
+		parentElement.removeChild(parentElement.childNodes[i]);
+	
 	if(dbg==dbgModule.relation)
     	console.log(data);
 
