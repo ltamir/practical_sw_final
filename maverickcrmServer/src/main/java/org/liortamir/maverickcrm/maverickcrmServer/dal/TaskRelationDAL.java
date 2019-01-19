@@ -71,7 +71,7 @@ public class TaskRelationDAL {
 			ps.setInt(2, childTaskId);
 			ps.setInt(3, relationTypeId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing insert task");
+				throw new SQLException("Error performing insert taskRelation", "row not inserted");
 				
 			ResultSet rs = ps.getGeneratedKeys();
 			if(rs != null && rs.next())
@@ -88,7 +88,7 @@ public class TaskRelationDAL {
 			ps.setInt(3, relationTypeId);
 			ps.setInt(4, taskRelationId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing insert task");
+				throw new SQLException("Error performing update taskRelation", "row not updated");
 		}
 	}
 	
@@ -97,7 +97,7 @@ public class TaskRelationDAL {
 			PreparedStatement ps = conn.prepareStatement("delete from taskRelation where taskRelationId=?");
 			ps.setInt(1, taskRelationId);
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error performing insert task");
+				throw new SQLException("Error performing delete taskRelation", "row not deleted");
 		}
 	}
 	

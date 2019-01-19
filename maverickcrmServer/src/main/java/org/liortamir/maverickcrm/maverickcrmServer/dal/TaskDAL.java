@@ -81,6 +81,7 @@ public class TaskDAL {
 		int[] paramIndex = new int[6];
 		boolean whereUsed = false;
 		final String baseSQL = "select * from task";
+		final String orderBy = " order by duedate";
 		final String closedPredicate = " statusId=4";
 		final String dueDatePredicate = " dueDate <= ?";
 		final String titlePredicate = " title like ?";
@@ -155,7 +156,7 @@ public class TaskDAL {
 				whereUsed = true;
 			}			
 		}		
-		
+		sql += orderBy;
 		try (Connection conn = DBHandler.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sql);
