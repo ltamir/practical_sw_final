@@ -7,7 +7,7 @@ var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, link
 var activeTaskTab = tabEnum.taskLog;
 
 var taskLog = {taskId:0, contactId:0, taskLogTypeId:0}
-
+var loggedContact;
 function setDebugModule(moduleNum){
 	dbg = getValue('cmbDebug');
 }
@@ -37,7 +37,7 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
     fetch(url)
     .then(function(response) {
-    		if(response.redirect)
+    		if(response.redirected)
     			window.location.replace(response.url);
     		if(resource.endsWith('html')){
     			return response.text();
@@ -53,17 +53,6 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
-
-function setData(method, formData, resource){
-	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
-        method: method,
-        body: formData
-    })
-      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
-	.then(function(obj){return obj.body;})
-}
-
-
 function getHTML(url) {
 	  // Return a new promise.
 	  return new Promise(function(resolve, reject) {
@@ -73,6 +62,8 @@ function getHTML(url) {
 
 	    req.onload = function() {
 	      if (req.status == 200) {
+	    		if(req.responseURL.endsWith('login.html'))
+	    			window.location.replace(req.responseURL);
 	        // Resolve the promise with the response text
 	        resolve(req.response);
 	      }
@@ -89,7 +80,16 @@ function getHTML(url) {
 	    // Make the request
 	    req.send();
 	  });
-	}
+}
+function setData(method, formData, resource){
+	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
+        method: method,
+        body: formData
+    })
+      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
+	.then(function(obj){return obj.body;})
+}
+
 
 /**
  * 
