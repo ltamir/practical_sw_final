@@ -93,7 +93,7 @@ public class CustomerTaskController extends HttpServlet {
 			int taskId = Integer.parseInt(req.getParameter("taskId"));
 			int customerTaskId = CustomerTaskDAL.getInstance().insert(customerId, taskId);
 			json.addProperty("customerTaskId", customerTaskId);
-
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("status",  "nack");
@@ -124,6 +124,7 @@ public class CustomerTaskController extends HttpServlet {
 			}
 			CustomerTaskDAL.getInstance().delete(customerTaskId);
 			json.addProperty("customerTaskId", customerTaskId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

@@ -91,6 +91,7 @@ public class TaskLogController extends HttpServlet {
 			
 			int taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);
 			json.addProperty("taskId", taskLogId);
+			json.addProperty("status",  "ack");
 		}catch(NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -150,7 +151,7 @@ public class TaskLogController extends HttpServlet {
 			}			
 			TaskLogDAL.getInstance().update(taskLogId, taskId, contactId, description, taskLogTypeId);
 			json.addProperty("taskLogId", taskLogId);
-
+			json.addProperty("status",  "ack");
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

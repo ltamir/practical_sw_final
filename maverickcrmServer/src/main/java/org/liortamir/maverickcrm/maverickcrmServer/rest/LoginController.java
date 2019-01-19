@@ -80,7 +80,7 @@ public class LoginController extends HttpServlet {
 			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_CONTACT_ID));
 			int loginId = LoginDAL.getInstance().insert(username, password, contactId);
 			json.addProperty("loginId", loginId);
-			
+			json.addProperty("status",  "ack");
 		}catch(NullPointerException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -103,7 +103,7 @@ public class LoginController extends HttpServlet {
 			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_CONTACT_ID));
 			LoginDAL.getInstance().update(username, password, contactId, loginId);
 			json.addProperty("loginId", loginId);
-			
+			json.addProperty("status",  "ack");
 		}catch(NullPointerException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

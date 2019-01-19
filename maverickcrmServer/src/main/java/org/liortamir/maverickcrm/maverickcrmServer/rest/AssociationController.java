@@ -107,7 +107,8 @@ public class AssociationController extends HttpServlet {
 			int connectionId = AssociationDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
 			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
-			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);			
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -136,6 +137,7 @@ public class AssociationController extends HttpServlet {
 			AssociationDAL.getInstance().update(connectionId, customerId, contactId, contactTypeId, addressId);
 			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -168,6 +170,7 @@ public class AssociationController extends HttpServlet {
 			
 			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

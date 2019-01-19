@@ -123,7 +123,7 @@ public class AttachmentController extends HttpServlet {
 			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
 			json.addProperty("taskLogId", taskLogId);
 			json.addProperty("attachmentId", attachmentId);
-
+			json.addProperty("status",  "ack");
 		}catch(NumberFormatException  | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -185,6 +185,7 @@ public class AttachmentController extends HttpServlet {
 			AttachmentDAL.getInstance().update(attachmentId, attachmentTypeId);	
 			TaskLogDAL.getInstance().update(attachmentTaskLogId, attachmentNotes, contactId);
 			json.addProperty("attachmentId", attachmentId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

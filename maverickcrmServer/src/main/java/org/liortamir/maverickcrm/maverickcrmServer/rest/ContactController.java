@@ -105,6 +105,7 @@ public class ContactController extends HttpServlet {
 			
 			int contactId = ContactDAL.getInstance().insert(contact);
 			json.addProperty("contactId", contactId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -158,6 +159,7 @@ public class ContactController extends HttpServlet {
 			
 			ContactDAL.getInstance().update(contact);
 			json.addProperty("contactId", contact.getContactId());
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -174,7 +176,7 @@ public class ContactController extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
-		String response = "{msg:\"Invalid request\"}";
+		String response;
 		JsonObject json = new JsonObject();
 		try {
 			int contactId = 0;
@@ -188,6 +190,7 @@ public class ContactController extends HttpServlet {
 			}
 			ContactDAL.getInstance().delete(contactId);
 			json.addProperty("contactId", contactId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());

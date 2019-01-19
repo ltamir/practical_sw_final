@@ -111,7 +111,7 @@ public class CustomerController extends HttpServlet {
 
 			customerId = CustomerDAL.getInstance().insert(customerName, customerNotes);
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);
-
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -155,7 +155,7 @@ public class CustomerController extends HttpServlet {
 			CustomerDAL.getInstance().update(customerId, customerName, customerNotes);
 			
 			json.addProperty("customerId", customerId);
-
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
@@ -186,6 +186,7 @@ public class CustomerController extends HttpServlet {
 			//TODO check if customer is in relation with task or contact
 			CustomerDAL.getInstance().delete(customerId);
 			json.addProperty("customerId", customerId);
+			json.addProperty("status",  "ack");
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  e.getMessage());
