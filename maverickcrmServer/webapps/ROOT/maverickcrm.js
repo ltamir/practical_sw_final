@@ -95,34 +95,6 @@ function toggleSearchDate(lbl, field){
 	
 }
 
-function toggleAsBotton(img){
-	if(img.style.borderStyle=='inset'){
-		img.style.borderStyle='outset';
-		img.setAttribute('data-state',0);
-	}
-	else{
-		img.style.borderStyle='inset';
-		img.setAttribute('data-state',1);
-	}
-}
-
-function toggleSearchTaskStatus(id){
-	let statusImg = getById('searchTaskStatus');
-	if(statusImg.value == '0')
-		setSearchTaskStatusClosed();
-	else
-		setSearchTaskStatusOpen();
-}
-
-function toggleHandler(id, implA, implB){
-	if(id.value == undefined)
-		id.value='0';
-	if(id.value == '0')
-		implA(id);
-	else
-		implB(id);
-}
-
 function setSearchTaskStatusClosed(){
 	let statusImg = getById('searchTaskStatus');
 	statusImg.src='images/task_done.png';
@@ -175,12 +147,40 @@ function connectionFilterOff(element){
 	setMsg(msgType.ok, 'Task filter removed');
 }
 
+function toggleAsBotton(img){
+	if(img.style.borderStyle=='inset'){
+		img.style.borderStyle='outset';
+	}
+	else{
+		img.style.borderStyle='inset';
+	}
+}
+
+function toggleSearchTaskStatus(id){
+	let statusImg = getById('searchTaskStatus');
+	if(statusImg.value == '0')
+		setSearchTaskStatusClosed();
+	else
+		setSearchTaskStatusOpen();
+}
+
+function toggleHandler(id, implA, implB){
+	if(id.value == undefined)
+		id.value='0';
+	if(id.value == '0')
+		implA(id);
+	else
+		implB(id);
+}
+
 function toggleImgMenu(imgId, menuId){
 	menu = getById(menuId);
-	if(imgId.getAttribute('data-state') == 1){
+	if(imgId.getAttribute('data-state') == 0){
 		menu.style.display = 'inline';
+		imgId.setAttribute('data-state', 1);
 	}else{
-		menu.style.display = 'none';		
+		menu.style.display = 'none';
+		imgId.setAttribute('data-state', 0);
 	}
 }
 
@@ -212,7 +212,6 @@ function setTaskStatus(selectedImg, taskStatus){
 	setValue('cmbDetailStatus', taskStatus);
 	getById('imgTaskStatus').src = selectedImg.src;
 	getById('imgTaskStatus').title = selectedImg.title;	
-	setUnpressed(getById('imgTaskStatus'));
 	toggleImgMenu(getById('imgTaskStatus'), 'divTaskStatus');
 }
 
@@ -227,9 +226,9 @@ function toggleNewTaskTypeMenu(imgId){
 
 function setNewTaskType(selectedImg ,taskType){
 	newTask(taskType);
-	getById('addTask').src = selectedImg.src;
-	getById('addTask').title = selectedImg.title;
-	
+	getById('imgTaskType').src = selectedImg.src;
+	getById('imgTaskType').title = selectedImg.title;
+	toggleImgMenu(getById('addTask'), 'divNewTaskType')
 }
 
 function showEffortUnits(){
@@ -253,6 +252,9 @@ function allowDrop(ev) {
 }
 
 function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHandler){
+	if(body == null)
+		window.location.replace('login.html');
+	
 	loggedContact = body.contact;
 	setValue('user', body.username);
 }
