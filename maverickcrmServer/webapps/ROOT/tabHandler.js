@@ -15,7 +15,6 @@ function setTab(tab){
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTabSelected';
 		getById('TabLinkedCustomer').className='cssTab';
-		getById('divTaskTab').removeAttribute('data-selected');
 		activateTabRelation();  
 		activeTaskTab = tab;
 		break;
@@ -107,6 +106,7 @@ function activateTabRelation(){
 	(opt, item)=>opt.text = item.customer.customerName,
 	(opt, item)=>opt.title = item.task.title)
 	);
+	getById('divTaskTab').removeAttribute('data-selected');
 }
 
 function activateTabAttachment(){
