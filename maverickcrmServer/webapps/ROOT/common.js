@@ -5,6 +5,27 @@ var dbg = 0;
 var msgType = {ok:1, nok:2};
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8}
 var activeTaskTab = tabEnum.taskLog;
+var effortUnit = {
+		1:{src:"images/effortUnit_hours.png", unit:'h'},
+			2:{src:"images/effortUnit_days.png", unit:'d'},
+			3:{src:"images/effortUnit_months.png", unit:'m'}
+}
+var taskTypeImg = {
+		1:{src:"images/tasklist/project.png", title:"Project"},
+		2:{src:"images/tasklist/requirements.png", title:"Requirement"},
+		3:{src:"images/tasklist/design.png", title:"Design"},
+		4:{src:"images/tasklist/develop.png", title:"Development"},
+		5:{src:"images/tasklist/qa.png", title:"QA"},
+		6:{src:"images/tasklist/delivery.png", title:"Delivery"},
+		7:{src:"images/tasklist/support.png", title:"Support"}
+	}
+var taskStatusImg = {
+		1:{src:"images/status/new.png", title:"New"},
+		2:{src:"images/status/running.png", title:"Running"},
+		3:{src:"images/status/delivered.png", title:"Delivered"},
+		4:{src:"images/status/closed.png", title:"Closed"},
+		5:{src:"images/status/onhold.png", title:"On Hold"}
+	}
 
 var taskLog = {taskId:0, contactId:0, taskLogTypeId:0}
 var loggedContact;
@@ -22,6 +43,8 @@ function getData(id, resource, params, impl){
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
     fetch(url)
     .then(function(response) {
+		if(response.redirected)
+			window.location.replace(response.url);
         return response.json();
         }
     )
