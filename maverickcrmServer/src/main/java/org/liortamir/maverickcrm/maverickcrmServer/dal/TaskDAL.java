@@ -86,7 +86,7 @@ public class TaskDAL {
 		final String dueDatePredicate = " dueDate <= ?";
 		final String titlePredicate = " title like ?";
 		final String taskTypePredicate = " taskTypeId=?";
-		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?))";
+		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))";
 		final String projectPredicate = " taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?)";
 		String sql = baseSQL;
 
@@ -98,7 +98,7 @@ public class TaskDAL {
 		if(customerId != 0) {
 			sql += " where" + customerPredicate;
 			whereUsed = true;
-			paramIndex[1] += 2;
+			paramIndex[1] += 3;
 		}
 		if(!dueDate.equals("")) {
 			if(whereUsed) {
@@ -165,7 +165,8 @@ public class TaskDAL {
 
 			if(customerId != 0) {
 				ps.setInt(paramIndex[1]--, customerId);
-				ps.setInt(paramIndex[1]--, customerId);				
+				ps.setInt(paramIndex[1]--, customerId);
+				ps.setInt(paramIndex[1]--, customerId);		
 			}		
 			if(!dueDate.equals(""))
 				ps.setDate(paramIndex[2], java.sql.Date.valueOf(dueDate));	
