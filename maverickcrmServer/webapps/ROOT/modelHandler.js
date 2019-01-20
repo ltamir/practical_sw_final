@@ -424,6 +424,7 @@ function removeTaskRelation(){
 	
 	.then(function(){getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)})
 	.then(function(){getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)})
+	.then(getById('divTaskTab').removeAttribute('data-selected'))
 	.then(function(){setMsg(msgType.ok, 'Relation Removed')});
 	
 }
