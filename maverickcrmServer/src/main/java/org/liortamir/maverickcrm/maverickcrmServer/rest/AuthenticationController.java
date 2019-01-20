@@ -30,12 +30,28 @@ public class AuthenticationController extends HttpServlet {
 		JsonObject json = null;
 		
 		try {
-			String user = (String) req.getSession().getAttribute("username");
-			if(user == null)
-				throw new NullPointerException();
+			int actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			switch(APIConst.ACTION_LIST[actionId]) {
+			case ACT_GET_LOGGED_IN:
+				String user = (String) req.getSession().getAttribute("username");
+				if(user == null)
+					throw new NullPointerException();
 
-			Login login = LoginDAL.getInstance().get(user);
-			response = jsonHelper.toJson(login);
+				Login login = LoginDAL.getInstance().get(user);
+				response = jsonHelper.toJson(login);				
+				break;
+			case ACT_LOGOUT:
+				req.getSession().removeAttribute("username");
+				resp.sendRedirect("login.html");
+				break;
+				default:
+					json = new JsonObject();
+					json.addProperty("msg", "invalid state " + actionId);
+					json.addProperty("status",  "nack");
+					response = jsonHelper.toJson(json);
+					break;
+			}
+
 
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());

@@ -262,7 +262,7 @@ function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHand
 function init(){
 
 	toggleSearchTaskStatus();
-	getDataEx('', 'authenticate', '', setLoggedinUser, 'Customers:', null, null, null);
+	getDataEx('', 'authenticate', '?actionId=16', setLoggedinUser, 'Customers:', null, null, null);
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers:', 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
@@ -301,5 +301,7 @@ function init(){
     getById('txtDetailDueDate').valueAsDate = new Date(); 
 }
 
-
+function logout(){
+	getDataEx('', 'authenticate', '?actionId=15', null, null, null, null, null);
+}
 

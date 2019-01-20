@@ -70,7 +70,8 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
         }
     )
     .then(function(body){
-        impl(id, body, defaultOption, funcValue, funcText, eventHandler);
+    	if(impl != null)
+    		impl(id, body, defaultOption, funcValue, funcText, eventHandler);
         }
     )
     .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));

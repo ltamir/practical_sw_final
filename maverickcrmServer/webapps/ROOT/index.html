@@ -36,10 +36,11 @@
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
  
             	<img src="images/task_open.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" value="1" onclick="toggleSearchTaskStatus()">
-            	<img src="images/task_search.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTask" onmousedown="toggleAsBotton(this)" onmouseup="prepareSearchTask();toggleAsBotton(this)">
-            	<img src="images/refresh_search.png" style="margin-left:0.5em; margin-right:0.5em" title="Reset search to all open tasks" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            	<img src="images/task_search.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="prepareSearchTask();toggleAsBotton(this)">
+            	<img src="images/refresh_search.png" style="margin-left:0.5em; margin-right:0.5em" title="Reset search (all open tasks)" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>
             <td width="50%" align="right" valign="bottom">
+            	<img src="images/logout.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" title="logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<select id="cmbDebug" onchange="setDebugModule()">
             		<option value=0>None</option>
             		<option value=1>customer</option>
