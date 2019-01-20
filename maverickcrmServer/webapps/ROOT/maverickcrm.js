@@ -281,7 +281,7 @@ function init(){
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
     		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
     
-    getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, 'Status:', 
+    getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, null, 
     		(opt,item)=>opt.value = item.statusId, 
     		(opt,item)=>opt.text = item.statusName, 
     		null);    

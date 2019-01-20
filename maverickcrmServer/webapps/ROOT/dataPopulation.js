@@ -1,54 +1,10 @@
 
 function getTaskTypeImg(taskType){
 	let img = document.createElement("IMG");
-	switch(taskType){
-	case 1:
-		img.src="images/tasklist/project.png";
-		img.title="Project";
-		break;
-	case 2:
-		img.src="images/tasklist/requirements.png";
-		img.title="Requirement";
-		break;
-	case 3:
-		img.src="images/tasklist/design.png";
-		img.title="Design";
-		break;
-	case 4:
-		img.src="images/tasklist/develop.png";
-		img.title="Development";
-		break;
-	case 5:
-		img.src="images/tasklist/qa.png";
-		img.title="QA";
-		break;
-	case 6:
-		img.src="images/tasklist/delivery.png";
-		img.title="Delivery";
-		break;
-	case 7:
-		img.src="images/tasklist/support.png"; 
-		img.title="Support";
-		break;       		
-	}
+
+	img.src = taskTypeImg[taskType].src;
+	img.title = taskTypeImg[taskType].title;
 	return img;
-}
-
-
-function getTaskStatus(statusId){
-
-	switch(statusId){
-	case 1:
-		return {src:"images/status/new.png", title:"New"};
-	case 2:
-		return {src:"images/status/running.png", title:"Running"};
-	case 3:
-		return {src:"images/status/delivered.png", title:"Delivered"};
-	case 4:
-		return {src:"images/status/closed.png", title:"Closed"};
-	case 5:
-		return {src:"images/status/onhold.png", title:"On Hold"};	
-	}
 }
 
 function fillTaskList(id, data){
@@ -99,7 +55,9 @@ function fillTaskList(id, data){
     	effortCell.classList.add("cssTaskListEffort");
     	var strEffort = new String(item.effort)
     	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
-    	effortCell.innerHTML +=' ' + new String((item.effortUnit==1)?'h':'d');
+
+    	effortCell.innerHTML +=' ' + effortUnit[item.effortUnit].unit;
+
     	
     	var statusNameCell  = newRow.insertCell(4);
     	statusNameCell.classList.add("cssTaskListStatus");

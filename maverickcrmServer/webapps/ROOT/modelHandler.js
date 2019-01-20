@@ -48,6 +48,11 @@ function newTask(taskType){
 	setValue('txtDetailDueDate', '');
 	setValue('cmbDetailStatus', 1);
 	
+	if(getById('addChildTask').getAttribute('data-state') == 1){
+		toggleState(getById('addChildTask'));
+		setChildTask(getById('addChildTask'));
+	}
+	
 	setTab(tabEnum.taskLog); 
 	setMsg(msgType.ok, 'Ready');
 }
@@ -79,31 +84,45 @@ function newTaskLog(){
 
 // ***** edit model ***** //
 
+function setChildTask(setter){
+	if(setter.getAttribute('data-state') == 0){
+		setter.setAttribute('data-parentTask', 0);
+		setMsg(msgType.ok, 'new Task will not be set as child');
+		return;
+	}
+
+	if(getValue('taskId') == 0){
+		setMsg(msgType.nok, 'Please select a task');
+		toggleAsBotton(getById('addChildTask'));
+		return;
+	}
+	setter.setAttribute('data-parentTask', getValue('taskId'));
+	newTask(getValue('cmbDetailTaskType'));
+	setMsg(msgType.ok, 'new Task will be set as child');
+}
+
 function fillTaskDetails(id, data){
 	setValue('cmbDetailTaskType', data.taskType.taskTypeId);
 	setValue('cmbDetailContact', data.contact.contactId);
 	setValue('txtDetailTaskTitle', data.title);
 	setValue('txtDetailTaskEffort', data.effort);
-	switch(data.effortUnit){
-		case 1:
-		effortUnit.sec="images/effortUnit_hours.png";
-		break;
-		case 2:
-		effortUnit.sec="images/effortUnit_days.png";
-		break;
-		case 3:
-		effortUnit.sec="images/effortUnit_months.png";
-		break;		
+	
+	setValue('effortUnit', data.effortUnit);
+	let effortUnitImg = getById('imgEffortUnit');
+	effortUnitImg.src = effortUnit[data.effortUnit].src;
+	
+	if(getById('addChildTask').getAttribute('data-state') == 1){
+		toggleState(getById('addChildTask'));
+		setChildTask(getById('addChildTask'));
 	}
 
-	
 	let taskTypeImg = getTaskTypeImg(data.taskType.taskTypeId);
 	getById('imgTaskType').src = taskTypeImg.src;
 	getById('imgTaskType').title = taskTypeImg.title;
 	
 	if(getById('addTask').getAttribute('data-state') == 1)
 		toggleNewTaskTypeMenu(getById('addTask'));
-	let statusImg = getTaskStatus(data.status.statusId);
+	let statusImg = taskStatusImg[data.status.statusId];
 	getById('imgTaskStatus').src = statusImg.src;
 	getById('imgTaskStatus').title = statusImg.title;	
 	
@@ -113,6 +132,16 @@ function fillTaskDetails(id, data){
 	date += (data.dueDate.day<10)?"0":"";
 	date += data.dueDate.day;
 	setValue('txtDetailDueDate', date);
+	
+	let lblDate = getById('lblDetailDueDate');
+	
+	let formattedDate = (data.dueDate.day<10)?"0":"";
+	formattedDate += data.dueDate.day + "/";	
+	formattedDate += (data.dueDate.month<10)?"0":"";
+	formattedDate += data.dueDate.month + "/";
+	formattedDate += data.dueDate.year;
+
+	lblDate.innerHTML = formattedDate;
 	
 	setValue('cmbDetailStatus', data.status.statusId);
 	setValue('taskId', data.taskId);        	
@@ -183,23 +212,6 @@ function fillAttachmentDetails(id, data){
 	setValue('txtAttachmentNotes', data.taskLog.description);
 	setValue('attachmentTaskLogId', data.taskLog.taskLogId);
 	setValue('attachmentId', data.attachmentId);
-}
-
-function setChildTask(setter){
-	if(setter.getAttribute('data-state') == 0){
-		setter.setAttribute('data-parentTask', 0);
-		setMsg(msgType.ok, 'new Task will not be set as child');
-		return;
-	}
-
-	if(getValue('taskId') == 0){
-		setMsg(msgType.nok, 'Please select a task');
-		toggleAsBotton(getById('addChildTask'));
-		return;
-	}
-	setter.setAttribute('data-parentTask', getValue('taskId'));
-	newTask(getValue('cmbDetailTaskType'));
-	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
 function fillLoginDetails(id, data){

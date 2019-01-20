@@ -192,7 +192,10 @@ img{
 #txtDetailTaskTitle, #cmbTaskLogList, #txtTaskLogDescription{
 	width: 32em;
 }
-#taskDetailsTop{
+#divTaskDetailsTop{
+	width: 27em;
+}
+#divTaskDetailsBottom{
 	width: 27em;
 }
 #divParentTaskList{
