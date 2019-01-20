@@ -156,8 +156,9 @@ function activateTabConnection(){
 	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
 			(opt,item)=>opt.value = item.contactTypeId, 
 			(opt,item)=>opt.text = item.contactTypeName, 
-			null));	
-	showAllContacts();
+			null))
+			.then(()=>showAllContacts())
+	
 }
 
 function toggleShowContacts(obj){
@@ -227,10 +228,13 @@ function activateTabLogin(){
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
-		.then(()=>	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
+		.then(()=>fillLoginList())
+			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
+}
+function fillLoginList(){
+	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
 		(opt,item)=>opt.value = item.loginId, 
 		(opt,item)=>opt.text = item.username,
 		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, fillLoginDetails)})
-		))
-			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
+	)
 }

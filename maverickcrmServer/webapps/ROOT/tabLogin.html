@@ -1,15 +1,13 @@
-						<select id="cmbAvailableLogins" size="3"></select>
-						<img src="images/login.png" title="New Login" align="bottom" id="imgAddLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-						<img src="images/save.png" title="Save Login" id="imgSaveLogin" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-						<br>
-						<label for="txtUserName" class="cssFieldLabel">UserName</label>
-						<input type="text" id="txtUserName">
-						<br>
-						<label for="txtPassword" class="cssFieldLabel">Password</label>
-						<input type="text" id="txtPassword">
-						<br>
-						<label class="cssFieldLabel">Contact:</label><span id="loginContact"></span>
-						<input type="hidden" name="loginId" value="0">
-						<input type="hidden" name="loginContactId" value="0">
-						<br>
-						<select id="cmbLoginContactList" size="5"></select>
+<select id="cmbAvailableLogins" size="4" class="cssLoginList"></select>
+<img src="images/login.png" title="New Login" align="bottom" id="imgAddLogin" onmousedown="toggleAsBotton(this)" onmouseup="newLogin(); toggleAsBotton(this)">
+<img src="images/save.png" title="Save Login" id="imgSaveLogin" onmousedown="toggleAsBotton(this)" onmouseup="saveLogin(); toggleAsBotton(this)">
+<br>
+
+<img src="images/locker.png" title="username"><input type="text" id="txtUserName" title="username" placeholder="username">
+<br>
+<img src="images/key.png" title="password"><input type="password" id="txtPassword" title="password" placeholder="password">
+<br>
+<label class="cssFieldLabel">Contact:</label>
+<input type="hidden" id="loginId" value="0">
+<br>
+<select id="cmbLoginContactList" size="5" class="cssLoginList"></select>

@@ -27,6 +27,15 @@ function newContact(){
 	setMsg(msgType.ok, 'Ready');
 }
 
+function newLogin(){
+	setValue('txtUserName', '');
+	setValue('txtPassword', '');
+	setValue('loginId', 0);
+	setValue('cmbLoginContactList', 0);
+	setValue('cmbAvailableLogins', 0);
+	
+}
+
 function newTask(taskType){
 	if(taskType == null)
 		taskType = 0;
@@ -178,6 +187,7 @@ function fillAttachmentDetails(id, data){
 
 function setChildTask(setter){
 	if(setter.getAttribute('data-state') == 0){
+		setter.setAttribute('data-parentTask', 0);
 		setMsg(msgType.ok, 'new Task will not be set as child');
 		return;
 	}
@@ -190,6 +200,13 @@ function setChildTask(setter){
 	setter.setAttribute('data-parentTask', getValue('taskId'));
 	newTask(getValue('cmbDetailTaskType'));
 	setMsg(msgType.ok, 'new Task will be set as child');
+}
+
+function fillLoginDetails(id, data){
+	setValue('txtUserName', data.username);
+	setValue('txtPassword', data.password);
+	setValue('loginId', data.loginId);
+	setValue('cmbLoginContactList', data.contact.contactId);
 }
 
 //***** save model ***** //
@@ -315,7 +332,7 @@ function prepareSaveRelation(asParent){
 		setMsg(msgType.nok, 'Please select a task');
 		return;
 	}
-	if(getValue('taskRelationSelectedTaskId') == ''){
+	if(getValue('taskRelationSelectedTaskId') == '' || getValue('taskRelationSelectedTaskId') == 0){
 		if(asParent == 1)
 			setMsg(msgType.nok, 'Please select a task to set as parent');
 		else
@@ -375,7 +392,6 @@ function saveRelation(parent, child, relationType){
 		if(activeTaskTab != tabEnum.relation)
 			return;
 		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-//		getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent);
 		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
 		})
 	.then(function(){setMsg(msgType.ok, 'Parent relation saved')});
@@ -395,7 +411,6 @@ function removeTaskRelation(){
 	setData(method, formData, 'taskrelation')
 	
 	.then(function(){getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)})
-//	.then(function(){getData('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationListParent)})
 	.then(function(){getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)})
 	.then(function(){setMsg(msgType.ok, 'Relation Removed')});
 	
@@ -682,10 +697,33 @@ function removeLinkedCustomer(){
 function saveLogin(){
 	let formData = new FormData();
 	let method;	
-	
+
+    if(getValue('cmbLoginContactList') == '' || getValue('cmbLoginContactList') == 0){
+		setMsg(msgType.nok, 'Please select a contact');
+		return;
+    }	
+
+    if(getValue('txtUserName') == ''){
+		setMsg(msgType.nok, 'Please type a username');
+		return;
+    }	
+    if(getValue('txtUserName').length < 4){
+		setMsg(msgType.nok, 'username must contain at least 4 letters');
+		return;
+    }    
+    
+    if(getValue('txtPassword') == ''){
+		setMsg(msgType.nok, 'Please type a password');
+		return;
+    }	
+    if(getValue('txtPassword').length < 4){
+		setMsg(msgType.nok, 'password must contain at least 5 letters');
+		return;
+    }       
 	formData.append('username', getValue('txtUserName'));
 	formData.append('password', getValue('txtPassword'));
-	formData.append('contactId', getValue('loginContactId'));
+	formData.append('contactId', getValue('cmbLoginContactList'));
+	
 	let loginId = getValue('loginId');
 	if(loginId == 0){
 		method = 'POST';
@@ -694,10 +732,23 @@ function saveLogin(){
 		formData.append('loginId', getValue('loginId'));
 	}
 	
-	if(dbg==dbgModule.login)
+	if(dbg==dbgModule.login){
 		debugFormData(formData);
+		console.log('method ' + method);
+	}
 	
-	setData(method, formData, 'customertask')
-		.then(activateTabLogin())
-		.catch(function(err){setMsg(msgType.nok, 'save Login failed. please check the log'); console.log(err)});
+	setData(method, formData, 'login')
+		.then(function(resp){
+			if(resp.status == 'nack'){
+				setMsg(msgType.nok, resp.msg);
+				console.log('error ' + resp.err);
+				return;
+			}else{
+				fillLoginList();
+				setValue('loginId', resp.loginId);
+				setValue('cmbAvailableLogins', resp.loginId);
+			}		
+		})
+		.catch(function(err){setMsg(msgType.nok, 'an unknown error has occured. please check the log'); console.log(err)});
+	
 }

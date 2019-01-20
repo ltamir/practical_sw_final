@@ -315,9 +315,3 @@ function fillTaskLogList(id, data){
         selectElement.appendChild(opt);
     });        	
 }
-
-function fillLoginDetails(id, data){
-	setValue('txtUserName', data.username);
-	setValue('txtPassword', data.password);
-	setValue('cmbLoginContactList', data.contact.contactId);
-}

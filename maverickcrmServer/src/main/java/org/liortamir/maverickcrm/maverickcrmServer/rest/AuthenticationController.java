@@ -65,6 +65,7 @@ public class AuthenticationController extends HttpServlet {
 				
 			}else {
 				req.getSession().setAttribute("username", login.getUsername());
+				req.getSession().setAttribute("loginId", login.getLoginId());
 				json.addProperty("msg", "ok");
 				json.addProperty("redirect", "index.html");
 				String response = jsonHelper.toJson(json);	

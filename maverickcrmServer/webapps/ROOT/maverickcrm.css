@@ -379,3 +379,7 @@ min-width: 12em;}
 		'connectedCustomers conncetedContacts allContacts';
 
 }
+
+.cssLoginList{
+	width: 14em;
+}
