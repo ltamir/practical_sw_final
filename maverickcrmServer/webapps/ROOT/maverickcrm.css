@@ -78,7 +78,7 @@ img{
 	background-color: #424f5a;
 	border-right: 1px inset #dddddd;
 	border-bottom: 1px inset #dddddd;
-	transform: skewX(-20deg);
+	transform: skewX(-10deg);
 }
 
 .Fixed
