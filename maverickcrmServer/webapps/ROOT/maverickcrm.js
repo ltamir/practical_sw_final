@@ -54,6 +54,28 @@ function searchRelationTask(){
 }
 
 /**
+ * Constructs the HTTP call to retrieve tasks by project in the search project combo 
+ * @returns
+ */
+function searchProjectTask(){
+//	searchTask(0,'',getValue('cmbTabRelationProject'),0,0,'');
+	let searchTaskParams = '?actionId=2';
+	searchTaskParams += '&customerId=0';
+	searchTaskParams += '&duedate=';
+	searchTaskParams += '&projectId=0'
+	searchTaskParams += '&tasktypeId=1';
+	searchTaskParams += '&showclosed=0';
+	searchTaskParams += '&title=';
+	
+	getDataEx('cmbSearchProject', 'task', searchTaskParams, fillSelect, 'projects:',
+			(opt, item)=>opt.value = item.taskId,
+			(opt, item)=>opt.text = item.title,
+			(opt, item)=>opt.title = item.title
+		);
+	
+}
+
+/**
  * Resets the Task search in the main menu.
  * The checkbox 'Open Tasks' is set to checked
  * @returns
@@ -285,12 +307,13 @@ function init(){
     		(opt,item)=>opt.value = item.statusId, 
     		(opt,item)=>opt.text = item.statusName, 
     		null);    
-	getDataEx('cmbSearchProject', 'customertask', '?actionId=2', fillSelect, 'projects:',
-		(opt, item)=>opt.value = item.task.taskId,
-		(opt, item)=>opt.text = item.customer.customerName,
-		(opt, item)=>opt.title = item.task.title
-	)
+//	getDataEx('cmbSearchProject', 'customertask', '?actionId=2', fillSelect, 'projects:',
+//		(opt, item)=>opt.value = item.task.taskId,
+//		(opt, item)=>opt.text = item.task.title,
+//		(opt, item)=>opt.title = item.task.title
+//	)
 
+	searchProjectTask();
     searchTask(0, '','', 0, 0, 0);
     
     setTab(tabEnum.connection);
