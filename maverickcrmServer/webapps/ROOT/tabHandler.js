@@ -105,8 +105,10 @@ function activateTabRelation(){
 	(opt, item)=>opt.value = item.task.taskId,
 	(opt, item)=>opt.text = item.customer.customerName,
 	(opt, item)=>opt.title = item.task.title)
-	);
+	)
+	.then(()=>getById('lblDetailTaskRelationTitle').innerHTML = 'No selected relation');
 	getById('divTaskTab').removeAttribute('data-selected');
+	
 }
 
 function activateTabAttachment(){

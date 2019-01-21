@@ -159,7 +159,7 @@ function fillTaskRelationSearchResult(id, data){
         opt.value = item.taskId;
         opt.text = item.title;
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getById('lblDetailTaskRelationTitle').innerHTML = item.title; setValue('taskRelationSelectedTaskId', item.taskId);});
+        opt.addEventListener("click", function(){getById('lblDetailTaskRelationTitle').innerHTML = 'Task selected'; setValue('taskRelationSelectedTaskId', item.taskId);});
         selectElement.appendChild(opt);
     });            
 }
@@ -248,11 +248,7 @@ function fillTaskRelationDetails(id, data){
 	getById('taskRelationId').value=data.taskRelationId;
 	getById('cmbTaskRelationType').value=data.taskRelationType.taskRelationTypeId;
 	
-	if(getById('taskId').value==data.parentTask.taskId){
-		getById('lblDetailTaskRelationTitle').innerText = data.childTask.title;
-	}else{
-		getById('lblDetailTaskRelationTitle').innerText = data.parentTask.title;
-	}
+	getById('lblDetailTaskRelationTitle').innerText = 'Task selected';
 }
         
 function fillTaskLogList(id, data){
