@@ -40,7 +40,8 @@
             	<img src="images/refresh_search.png" style="margin-left:0.5em; margin-right:0.5em" title="Reset search (all open tasks)" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>
             <td width="50%" align="right" valign="bottom">
-            	<img src="images/logout.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" title="logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
+            	<img src="images/logout.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
+            	<img src="images/database.png" style="margin-left:0.5em; margin-right:0.5em" id="showDatabase" title="Developer" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); toggleDatabase()">
             	<select id="cmbDebug" onchange="setDebugModule()">
             		<option value=0>None</option>
             		<option value=1>customer</option>
@@ -62,7 +63,6 @@
 			<td class="cssMessageInfo" id="messageInfo">Ready</td>
 		</tr>
 	</table>
-    
    	<table class="Fixed">
 		<tr>
 			<td style="width: 5%;">Type</td>
@@ -145,13 +145,23 @@
 				<br>
 				<div id="divTaskTab"></div>				                    
 			</td>
-			<td valign="top" rowspan="2">
-				<div class="tabCRM">
+			<td valign="top" rowspan="2">			
+				<div class="tabCRM">				
 					<span id="tabConnection" class="cssTab" onclick="setTab(tabEnum.connection)">Connections</span>
 					<span id="tabTimeline" class="cssTab" onclick="setTab(tabEnum.timeline)">Timeline</span>
 					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
-					<hr>			
+					<hr>
+	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; position:relative; overflow-y: scroll; height:18em; width: 33m;">
+	            		<textarea rows="3" cols="40" id="txtSQL">select * from task</textarea>
+	            		<br>
+	            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
+	            		
+	            		<table>
+	            			<thead id="resultHeader"></thead>
+	            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
+	            		</table>
+	            	</div>	
 					<div id="divCRM"></div>
 				</div>
 			</td>

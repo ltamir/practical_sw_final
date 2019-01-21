@@ -232,4 +232,14 @@
 	   <url-pattern>/business</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+	   <servlet-name>Database</servlet-name>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.DatabaseController</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	   <servlet-name>Database</servlet-name>
+	   <url-pattern>/database</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

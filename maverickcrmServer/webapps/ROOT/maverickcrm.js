@@ -305,3 +305,56 @@ function logout(){
 	getDataEx('', 'authenticate', '?actionId=15', null, null, null, null, null);
 }
 
+function toggleDatabase(){
+	let sqlDIV = getById('divDataFrame');
+	let sqlState = getById('showDatabase');
+	
+	if(sqlState.getAttribute('data-state') == 0){
+		sqlDIV.style.display='inline';
+		sqlState.setAttribute('data-state', 1);
+		getById('divCRM').style.display='none';
+		
+	}else{
+		sqlDIV.style.display='none';
+		sqlState.setAttribute('data-state', 0);
+		getById('divCRM').style.display='inline';
+	}
+	
+	
+}
+function executeSQL(){
+	getDataEx('', 'database', '?sql=' + getValue('txtSQL'), fillDataBase, null, null, null, null)
+}
+function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler){
+	let resultHeader = getById('resultHeader');
+	let resultBody = getById('resultBody');
+	
+    for (var i = resultHeader.rows.length - 1; i >= 0; i--) {
+    	resultHeader.deleteRow(i);
+    }
+    
+    for (var i = resultBody.rows.length - 1; i >= 0; i--) {
+    	resultBody.deleteRow(i);
+    }    
+	
+	let headerCols = data.array[0].row;
+	let row = document.createElement('TR');
+	resultHeader.appendChild(row);
+	headerCols.forEach(function (colName) {
+		let col = document.createElement('TH');
+		col.innerHTML = colName;
+		row.appendChild(col);
+	})
+	
+	for(let pos = 1; pos < data.array.length; pos++){
+		row = document.createElement('TR');
+		resultBody.appendChild(row);
+		let dataCols = data.array[pos].row;
+			dataCols.forEach(function (colName) {
+			let col = document.createElement('TD');
+			col.innerHTML = colName;
+			row.appendChild(col);
+		})
+	}
+	
+}
