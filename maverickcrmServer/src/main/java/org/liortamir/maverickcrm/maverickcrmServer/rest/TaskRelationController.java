@@ -116,6 +116,8 @@ public class TaskRelationController extends HttpServlet {
 		int childTaskId = 0;
 		int taskRelationTypeId = 0;
 
+		String strParentTaskId = null;
+		String strChildTaskId = null;
 		try {
 	
 			DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -132,10 +134,12 @@ public class TaskRelationController extends HttpServlet {
 						taskRelationId = Integer.parseInt(item.getString());
 						break;
 					case APIConst.FLD_TASKRELATION_PARENT_TASK_ID:
-						parentTaskId = Integer.parseInt(item.getString());
+						strParentTaskId = item.getString();
+						parentTaskId = Integer.parseInt(strParentTaskId);
 						break;
 					case APIConst.FLD_TASKRELATION_CHILD_TASK_ID:
-						childTaskId = Integer.parseInt(item.getString());
+						strChildTaskId = item.getString();
+						childTaskId = Integer.parseInt(strChildTaskId);
 						break;
 					case APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID:
 						taskRelationTypeId = Integer.parseInt(item.getString());;
@@ -145,18 +149,24 @@ public class TaskRelationController extends HttpServlet {
 					}
 				}
 			}	
-			TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
+			if(strParentTaskId != null)
+				TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
+			else
+				TaskRelationDAL.getInstance().update(taskRelationId, taskRelationTypeId);
 			json.addProperty("taskRelationId", taskRelationId);
 			json.addProperty("status",  "ack");
 		}catch(SQLException | FileUploadException |NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("status",  "nack");
+			json.addProperty("err",  e.toString());
 			json.addProperty("taskRelationId", "0");
 			if( e instanceof SQLException) {
 				SQLException sqe = (SQLException)e;
 				if(sqe.getSQLState().equals("23505"))
 					json.addProperty("msg", "relation already exist");
-			} 
+			}else {
+				json.addProperty("msg", "Internal error");
+			}
 		}
 		String response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();

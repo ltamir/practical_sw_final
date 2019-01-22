@@ -92,6 +92,16 @@ public class TaskRelationDAL {
 		}
 	}
 	
+	public void update(int taskRelationId, int relationTypeId) throws SQLException {
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("update taskRelation set taskRelationTypeId = ? where taskRelationId=?");
+			ps.setInt(1, relationTypeId);
+			ps.setInt(2, taskRelationId);
+			if(ps.executeUpdate() != 1)
+				throw new SQLException("Error performing update taskRelation", "row not updated");
+		}
+	}	
+	
 	public void delete(int taskRelationId) throws SQLException {
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("delete from taskRelation where taskRelationId=?");

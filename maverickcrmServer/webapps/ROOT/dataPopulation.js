@@ -174,6 +174,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     	console.log(data);
 	data.array.forEach(function (item) {
 		let divRow = document.createElement('DIV');
+		divRow.style.zIndex = 0;
 		parentElement.appendChild(divRow);
 		
     	let relType = document.createElement("IMG");
@@ -191,6 +192,19 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     		relType.title="depends on";
     		break;    		
     	}
+    	relType.addEventListener("click", function(){
+    		let containerDiv = getById('divTaskTab');
+    		if(getById('divRelationTypeList').style.display == 'none'){
+    			divRow.appendChild(getById('divRelationTypeList'));
+        		getById('divRelationTypeList').style.display='inline';
+        		getById('divRelationTypeList').setAttribute('data-taskrelationId', item.taskRelationId);
+    		}else{
+    			getById('divRelationTypeList').style.display='none'; 
+    			containerDiv.appendChild(getById('divRelationTypeList'));
+    			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
+    		}
+
+    	});
     	divRow.appendChild(relType);
 
     	let gotoImg = document.createElement("IMG");

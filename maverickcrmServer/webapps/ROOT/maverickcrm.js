@@ -14,13 +14,14 @@ function setSearchPredicate(searchElement){
  */
 function prepareSearchTask(){
 
-	searchTask(getValue('cmbSearchCustomer'),
-			getValue('txtSearchDueDate'),
-			getValue('txtSearchTitle'),
-			getValue('cmbSearchProject'),
-			 getValue('cmbSearchTaskType'),
-			 getValue('searchTaskStatus'));
-
+	searchTask(
+		getValue('cmbSearchCustomer'),
+		getValue('txtSearchDueDate'),
+		getValue('txtSearchTitle'),
+		getValue('cmbSearchProject'),
+		getValue('cmbSearchTaskType'),
+		getValue('searchTaskStatus')
+	);
 }
 
 function searchTask(customerId, dueDate, txtSearchTitle, projectId, cmbSearchTaskType, showClosed){
@@ -57,7 +58,7 @@ function searchRelationTask(){
  * Constructs the HTTP call to retrieve tasks by project in the search project combo 
  * @returns
  */
-function searchProjectTask(){
+function searchProjectTask(id){
 //	searchTask(0,'',getValue('cmbTabRelationProject'),0,0,'');
 	let searchTaskParams = '?actionId=2';
 	searchTaskParams += '&customerId=0';
@@ -67,7 +68,7 @@ function searchProjectTask(){
 	searchTaskParams += '&showclosed=0';
 	searchTaskParams += '&title=';
 	
-	getDataEx('cmbSearchProject', 'task', searchTaskParams, fillSelect, 'projects:',
+	getDataEx(id, 'task', searchTaskParams, fillSelect, 'projects:',
 			(opt, item)=>opt.value = item.taskId,
 			(opt, item)=>opt.text = item.title,
 			(opt, item)=>opt.title = item.title
@@ -307,13 +308,8 @@ function init(){
     		(opt,item)=>opt.value = item.statusId, 
     		(opt,item)=>opt.text = item.statusName, 
     		null);    
-//	getDataEx('cmbSearchProject', 'customertask', '?actionId=2', fillSelect, 'projects:',
-//		(opt, item)=>opt.value = item.task.taskId,
-//		(opt, item)=>opt.text = item.task.title,
-//		(opt, item)=>opt.title = item.task.title
-//	)
 
-	searchProjectTask();
+	searchProjectTask('cmbSearchProject');
     searchTask(0, '','', 0, 0, 0);
     
     setTab(tabEnum.connection);
@@ -347,6 +343,7 @@ function toggleDatabase(){
 }
 function executeSQL(){
 	getDataEx('', 'database', '?sql=' + getValue('txtSQL'), fillDataBase, null, null, null, null)
+//	.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let resultHeader = getById('resultHeader');

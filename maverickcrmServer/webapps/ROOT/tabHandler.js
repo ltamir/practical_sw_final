@@ -101,10 +101,11 @@ function activateTabRelation(){
 		if(getValue('taskId') > 0)
 			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
 	})
-	.then(()=>getDataEx('cmbTabRelationProject', 'customertask', '?actionId=2', fillSelect, 'projects',
-	(opt, item)=>opt.value = item.task.taskId,
-	(opt, item)=>opt.text = item.customer.customerName,
-	(opt, item)=>opt.title = item.task.title)
+	.then(()=>searchProjectTask('cmbTabRelationProject')
+//	getDataEx('cmbTabRelationProject', 'customertask', '?actionId=2', fillSelect, 'projects',
+//	(opt, item)=>opt.value = item.task.taskId,
+//	(opt, item)=>opt.text = item.customer.customerName,
+//	(opt, item)=>opt.title = item.task.title)
 	)
 	.then(()=>getById('lblDetailTaskRelationTitle').innerHTML = 'No selected relation');
 	getById('divTaskTab').removeAttribute('data-selected');

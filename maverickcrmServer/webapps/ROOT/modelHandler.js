@@ -96,8 +96,9 @@ function setChildTask(setter){
 		toggleAsBotton(getById('addChildTask'));
 		return;
 	}
-	setter.setAttribute('data-parentTask', getValue('taskId'));
+	let parentTaskId = getValue('taskId');
 	newTask(getValue('cmbDetailTaskType'));
+	setter.setAttribute('data-parentTask', parentTaskId);
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
@@ -282,8 +283,9 @@ function saveTask(){
 			if(getValue('cmbDetailTaskType') ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
-		.then(()=>{if(getById('addChildTask').getAttribute('data-state') == 1){
+		.then(()=>{if(method == 'POST' && getById('addChildTask').getAttribute('data-parentTask') != 0){
 			saveRelation(getById('addChildTask').getAttribute('data-parentTask'), getValue('taskId'), 1);
+			getById('addChildTask').setAttribute('data-parentTask', 0);
 		}})
 		.then(function(){prepareSearchTask()})
 		.then(function(){setTab(prepareSearchTask)})
@@ -406,7 +408,30 @@ function saveRelation(parent, child, relationType){
 		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
 		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
 		})
-	.then(function(){setMsg(msgType.ok, 'Parent relation saved')});
+	.then(function(){setMsg(msgType.ok, 'Relation saved')});
+}
+
+function saveRelationType(relationTypeId){
+	let taskRelationId = getById('divRelationTypeList').getAttribute('data-taskrelationId');
+	let formData = new FormData();
+	
+	formData.append('taskRelationId', taskRelationId);
+	formData.append('taskRelationTypeId', relationTypeId);
+	setData('PUT', formData, 'taskrelation')
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok, resp.msg);
+			console.log('error ' + resp.err);
+			return;
+		}else{
+			setMsg(msgType.ok, 'Relation type updated');
+			getById('divRelationTypeList').style.display='none'; 
+			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
+			getById('divTaskTab').appendChild(getById('divRelationTypeList'));
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);			
+		}		
+	});
 }
 
 function removeTaskRelation(){
