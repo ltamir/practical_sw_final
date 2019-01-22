@@ -43,8 +43,9 @@ public class DatabaseController extends HttpServlet {
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("err",  e.toString());
-			json.addProperty("msg",  e.toString());
+			json.addProperty("msg",  "Internal error. please check the log");
 			json.addProperty("status",  "nack");
+			response = jsonHelper.toJson(json);
 		}
 		
 		PrintWriter out = resp.getWriter();

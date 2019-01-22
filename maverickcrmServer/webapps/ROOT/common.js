@@ -52,9 +52,17 @@ function getData(id, resource, params, impl){
         impl(id, body);
         }
     )
-    .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
+    
 }
 
+function setData(method, formData, resource){
+	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
+        method: method,
+        body: formData
+    })
+      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
+	.then(function(obj){return obj.body;})
+}
 
 function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcText, eventHandler){
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
@@ -70,11 +78,17 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
         }
     )
     .then(function(body){
+    	if(body.status == 'nack'){
+    		console.log(body.err);
+    		setMsg(msgType.nok, body.msg);
+    		return;
+    	}
     	if(impl != null)
     		impl(id, body, defaultOption, funcValue, funcText, eventHandler);
         }
     )
-    .catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
+    .then(function(body){return body;})
+    //.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
 function getHTML(url) {
@@ -105,14 +119,7 @@ function getHTML(url) {
 	    req.send();
 	  });
 }
-function setData(method, formData, resource){
-	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
-        method: method,
-        body: formData
-    })
-      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
-	.then(function(obj){return obj.body;})
-}
+
 
 
 /**
