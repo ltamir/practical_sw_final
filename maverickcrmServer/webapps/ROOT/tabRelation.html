@@ -5,16 +5,19 @@
 <br>
 <select id="cmbRelationTaskList" size="3"></select>
 <br>
-<label id="lblDetailTaskRelationTitle">No selected relation</label>
+
 <label for="cmbTaskRelationType" class="cssFieldLabel">Type:</label>
+<input type="hidden" id="taskRelationTypeId" value="0">
 <select id="cmbTaskRelationType"> </select>
 <img src="images/relation_add_parent.png" title="Add as parent" id="imgAddParent" onmousedown="toggleAsBotton(this)" onmouseup="prepareSaveRelation(1); toggleAsBotton(this)">
 <img src="images/relation_add_child.png" title="Add as child" id="imgAddChild" onmousedown="toggleAsBotton(this)" onmouseup="prepareSaveRelation(0); toggleAsBotton(this)">
 <img src="images/relation_delete_child.png" title="Remove relation" id="imgRemoveRelation" onmousedown="toggleAsBotton(this)" onmouseup="removeTaskRelation(); toggleAsBotton(this)">
 <input type="hidden" id="taskRelationId" value="0">
 <input type="hidden" id="taskRelationSelectedTaskId" value="0">
-<div id="divRelationTypeList" style="display:none;position: absolute; left:2em; z-index: 1; background-image: url('images/textBackground_no_num.jpg'); border-right:2px solid black; border-bottom:2px solid black">
+<div id="divRelationTypeList" style="align:right; display:none; font-size:small; absolute; background-image: url('images/textBackground_no_num.jpg'); border-right:2px solid black; border-bottom:2px solid black">
 	<img src="images/process.png" title="Change to Process" style="margin-left:0.5em;" onmousedown="toggleAsBotton(this)" onmouseup="saveRelationType(2); toggleAsBotton(this)">
 	<img src="images/derived.png" title="Change to Derived" style="margin-left:0.5em;" onmousedown="toggleAsBotton(this)" onmouseup="saveRelationType(1); toggleAsBotton(this)">
 	<img src="images/dependency.png" title="Change to Dependency" style="margin-left:0.5em;" onmousedown="toggleAsBotton(this)" onmouseup="saveRelationType(3); toggleAsBotton(this)">
 </div>
+
+<!-- <div id="divRelationTypeList" style="display:none; float:left; position:relative; z-index: 2; background-image: url('images/textBackground_no_num.jpg'); border-right:2px solid black; border-bottom:2px solid black"> -->

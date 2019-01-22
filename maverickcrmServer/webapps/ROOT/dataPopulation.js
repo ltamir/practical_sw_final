@@ -159,7 +159,7 @@ function fillTaskRelationSearchResult(id, data){
         opt.value = item.taskId;
         opt.text = item.title;
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getById('lblDetailTaskRelationTitle').innerHTML = 'Task selected'; setValue('taskRelationSelectedTaskId', item.taskId);});
+        opt.addEventListener("click", function(){setValue('taskRelationSelectedTaskId', item.taskId);});
         selectElement.appendChild(opt);
     });            
 }
@@ -194,14 +194,17 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     	}
     	relType.addEventListener("click", function(){
     		let containerDiv = getById('divTaskTab');
-    		if(getById('divRelationTypeList').style.display == 'none'){
-    			divRow.appendChild(getById('divRelationTypeList'));
-        		getById('divRelationTypeList').style.display='inline';
-        		getById('divRelationTypeList').setAttribute('data-taskrelationId', item.taskRelationId);
+    		let popup = getById('divRelationTypeList');
+    		if(popup.style.display == 'none'){
+    			divRow.insertBefore(popup, divRow.childNodes[2]);
+//    			popup.style.top = divRow.offsetTop;
+//				popup.style.left = divRow.offsetLeft;
+    			popup.style.display='inline';
+    			popup.setAttribute('data-taskrelationId', item.taskRelationId);
     		}else{
-    			getById('divRelationTypeList').style.display='none'; 
+    			popup.style.display='none'; 
     			containerDiv.appendChild(getById('divRelationTypeList'));
-    			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
+    			popup.removeAttribute('data-taskrelationId');
     		}
 
     	});
@@ -260,9 +263,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 function fillTaskRelationDetails(id, data){
 	getById('cmbTaskRelationType').value = data.taskRelationType.taskRelationTypeId;
 	getById('taskRelationId').value=data.taskRelationId;
-	getById('cmbTaskRelationType').value=data.taskRelationType.taskRelationTypeId;
-	
-	getById('lblDetailTaskRelationTitle').innerText = 'Task selected';
+
 }
         
 function fillTaskLogList(id, data){

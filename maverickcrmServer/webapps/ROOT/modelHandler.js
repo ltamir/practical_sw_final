@@ -69,8 +69,7 @@ function newRelation(){
     element = getById('cmbRelationTaskList');
     for (let i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
-	}  
-	getById('lblDetailTaskRelationTitle').innerHTML = 'No selected Task for hierarchy';
+	}
 	
 }
 
