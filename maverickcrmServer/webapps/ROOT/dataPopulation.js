@@ -18,14 +18,14 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     data.array.forEach(function (item) {
     	var row = parentTable.insertRow(rowIndex+1+rowPos);
     	if(rowPos == firstRow){
-    		row.style.borderTop='4px inset #898989';	
+    		row.style.borderTop='2px outset #696969';	
     	}
     	if(rowPos == lastRow){
-    		row.style.borderBottom='4px inset #898989';
+    		row.style.borderBottom='2px inset #b1b1b0';
     	}
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
-    	row.style.borderLeft='4px inset #121212';
-    	row.style.borderRight='4px inset #121212';
+    	row.style.borderLeft='2px outset #696969';
+    	row.style.borderRight='2px inset #b1b1b0';
     	createTaskRow(row, item.childTask, parentTable); 
     	rowPos++;
     }); 

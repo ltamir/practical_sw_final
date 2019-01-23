@@ -311,7 +311,7 @@ function init(){
     		null);    
 
 	searchProjectTask('cmbSearchProject');
-    searchTask(0, '','', 0, 0, 0);
+    searchTask(0, '','', 0, 1, 0);
     
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
