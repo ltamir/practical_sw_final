@@ -23,7 +23,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	if(rowPos == lastRow){
     		row.style.borderBottom='4px inset #898989';
     	}
-    	row.setAttribute('data-isTaskChild', 1);
+    	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
     	row.style.borderLeft='4px inset #121212';
     	row.style.borderRight='4px inset #121212';
     	createTaskRow(row, item.childTask, parentTable); 
@@ -77,15 +77,15 @@ function createTaskRow(row, item, parent){
 	    	
 	    	if(row.hasAttribute('data-isTaskParent')){
 	    	    for (var i = parent.rows.length - 1; i >= 0; i--) {
-	    	    	if(parent.rows[i].hasAttribute('data-isTaskChild'))
+	    	    	if(parent.rows[i].hasAttribute('data-isTaskChild') && parent.rows[i].getAttribute('data-isTaskChild') == item.taskId)
 	    	    		parent.deleteRow(i);
 	    	    }	    		
 	    	    expandImg.src="images/row_expand.png";
 	    	    expandImg.title = "show children";
 	    	    row.removeAttribute('data-isTaskParent');
 	    	}else{
-		    	row.setAttribute('data-isTaskParent', 1);
-		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillChildTaskList, row.rowIndex, null, null, null);
+		    	row.setAttribute('data-isTaskParent', item.taskId);
+		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
 		        expandImg.src="images/row_collapse.png";
 		        expandImg.title = "hide children";	    		
 	    	}

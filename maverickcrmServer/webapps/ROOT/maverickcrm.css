@@ -84,8 +84,11 @@ img{
 .Fixed
 {
     position: fixed;
-    top: 4em;
-    width: 100%
+    top: 3.8em;
+    width: 100%;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 0.9em;
+    font-weight: bold;
 }
 
 	.cssTaskList {
@@ -96,7 +99,7 @@ img{
 	table.cssTaskList tbody {
 	    float: left;
 	    width: 100%;
-	    font-family: arial, sans-serif;
+	    font-family: Geneva, arial, sans-serif;
 	    font-size: medium;	
 	    overflow-y: auto;
 	    overflow-x: hidden;
