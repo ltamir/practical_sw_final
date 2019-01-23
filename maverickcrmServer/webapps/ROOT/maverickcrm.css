@@ -89,7 +89,7 @@ img{
 }
 
 	.cssTaskList {
-    /* display: table; */
+    border-collapse: collapse;
     width: 100%;
 	}
 	
@@ -99,10 +99,12 @@ img{
 	    font-family: arial, sans-serif;
 	    font-size: medium;	
 	    overflow-y: auto;
+	    overflow-x: hidden;
 	    height: 150px;
 	    background-color: WhiteSmoke;
 	    color: #121212;
 	    cursor: pointer;
+	    
 	}
 	tbody tr:nth-child(even) {
       background-color: Snow;

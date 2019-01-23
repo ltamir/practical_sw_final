@@ -36,6 +36,7 @@ function newLogin(){
 	
 }
 
+
 function newTask(taskType){
 	if(taskType == null)
 		taskType = 0;
@@ -45,16 +46,22 @@ function newTask(taskType){
 	setValue('txtDetailTaskTitle', '');
 	setValue('txtDetailTaskEffort', 1);
 	setValue('effortUnit', 1);
+	setEffortUnit(1);
 	setValue('txtDetailDueDate', '');
 	setValue('cmbDetailStatus', 1);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
-		toggleState(getById('addChildTask'));
 		setChildTask(getById('addChildTask'));
 	}
 	
 	setTab(tabEnum.taskLog); 
 	setMsg(msgType.ok, 'Ready');
+}
+
+function setEffortUnit(unit){
+	let img = getById('imgEffortUnit');
+	img.src = effortUnit[unit].src; 
+	img.title = effortUnit[unit].title
 }
  
 function newRelation(){
@@ -102,14 +109,19 @@ function setChildTask(setter){
 }
 
 function fillTaskDetails(id, data){
-	setValue('cmbDetailTaskType', data.taskType.taskTypeId);
-	setValue('cmbDetailContact', data.contact.contactId);
-	setValue('txtDetailTaskTitle', data.title);
-	setValue('txtDetailTaskEffort', data.effort);
+	taskObj.taskTypeId.dom.value = data.taskType.taskTypeId;
+	taskObj.contactId.dom.value = data.contact.contactId;
+	taskObj.title.dom.value = data.title;
+	taskObj.effortUnit.dom.value = data.effortUnit;
+	taskObj.effort.dom.value = data.effort;
 	
-	setValue('effortUnit', data.effortUnit);
-	let effortUnitImg = getById('imgEffortUnit');
-	effortUnitImg.src = effortUnit[data.effortUnit].src;
+//	setValue('cmbDetailTaskType', data.taskType.taskTypeId);
+//	setValue('cmbDetailContact', data.contact.contactId);
+//	setValue('txtDetailTaskTitle', data.title);
+//	setValue('txtDetailTaskEffort', data.effort);
+//	setValue('effortUnit', data.effortUnit);
+	
+	setEffortUnit(data.effortUnit);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
 		toggleState(getById('addChildTask'));
@@ -176,7 +188,6 @@ function fillTaskLogDetails(id, data){
 	setValue('cmbTaskLogContact', data.contact.contactId);
 	setValue('cmbTaskLogType', data.taskLogType.taskLogTypeId);  
 	setValue('taskLogId', data.taskLogId);
-	setValue('taskLogTaskId', data.task.taskId);
 	setValue('sysDate', data.sysdate);
 }
 
@@ -285,6 +296,7 @@ function saveTask(){
 		.then(()=>{if(method == 'POST' && getById('addChildTask').getAttribute('data-parentTask') != 0){
 			saveRelation(getById('addChildTask').getAttribute('data-parentTask'), getValue('taskId'), 1);
 			getById('addChildTask').setAttribute('data-parentTask', 0);
+			toggleState(getById('addChildTask'));
 		}})
 		.then(function(){prepareSearchTask()})
 		.then(function(){setTab(prepareSearchTask)})

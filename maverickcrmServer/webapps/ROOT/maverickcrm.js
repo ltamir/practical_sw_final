@@ -284,6 +284,7 @@ function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHand
 
 function init(){
 
+	initJsonObj();
 	toggleSearchTaskStatus();
 	getDataEx('', 'authenticate', '?actionId=16', setLoggedinUser, 'Customers:', null, null, null);
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers:', 
@@ -318,6 +319,13 @@ function init(){
     setValue('txtSearchDueDate', '');
     
     getById('txtDetailDueDate').valueAsDate = new Date(); 
+}
+
+function initJsonObj(){
+	Object.keys(taskObj).forEach(function(item){
+		taskObj[item].dom = getById(taskObj[item].domField);
+	});	
+		
 }
 
 function logout(){

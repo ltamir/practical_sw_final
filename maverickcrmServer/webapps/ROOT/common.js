@@ -6,9 +6,9 @@ var msgType = {ok:1, nok:2};
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8}
 var activeTaskTab = tabEnum.taskLog;
 var effortUnit = {
-		1:{src:"images/effortUnit_hours.png", unit:'h'},
-			2:{src:"images/effortUnit_days.png", unit:'d'},
-			3:{src:"images/effortUnit_months.png", unit:'m'}
+		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours'},
+			2:{src:"images/effortUnit_days.png", unit:'d', title:'days'},
+			3:{src:"images/effortUnit_months.png", unit:'m', title:'months'}
 }
 var taskTypeImg = {
 		1:{src:"images/tasklist/project.png", title:"Project"},
@@ -27,7 +27,24 @@ var taskStatusImg = {
 		5:{src:"images/status/onhold.png", title:"On Hold"}
 	}
 
-var taskLog = {taskId:0, contactId:0, taskLogTypeId:0}
+var taskLogObj = {
+		taskLogId:{value:0, domField:'taskLogId', dom:null},
+		sysdate:{value:0, domField:'sysDate', dom:null},
+		taskId:{value:0, domField:'taskId', dom:null},
+		contactId:{value:0, domField:'cmbTaskLogContact', dom:null},
+		description:{value:'', domField:'txtTaskLogDescription', dom:null},
+		taskLogTypeId:{value:0, domField:'cmbTaskLogType', dom:null}
+		}
+var taskObj={
+		taskId:{value:0, domField:'taskId', dom:null}, 
+		taskTypeId:{value:0, domField:'cmbDetailTaskType', dom:null}, 
+		contactId:{value:0, domField:'cmbDetailContact', dom:null}, 
+		title:{value:'', domField:'txtDetailTaskTitle', dom:null}, 
+		effort:{value:1, domField:'txtDetailTaskEffort', dom:null}, 
+		effortUnit:{value:1, domField:'effortUnit', dom:null}, 
+		dueDate:{value:'', domField:'txtDetailDueDate', dom:null}, 
+		statusId:{value:0, domField:'cmbDetailStatus', dom:null} 
+		}
 var loggedContact;
 function setDebugModule(moduleNum){
 	dbg = getValue('cmbDebug');

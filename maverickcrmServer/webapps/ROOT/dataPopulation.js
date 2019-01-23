@@ -7,63 +7,115 @@ function getTaskTypeImg(taskType){
 	return img;
 }
 
+function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler){
+
+	let parentTable = getById(id);
+    
+    let firstRow = 0;
+    let lastRow = data.array.length-1;
+    let rowPos = 0;
+    
+    data.array.forEach(function (item) {
+    	var row = parentTable.insertRow(rowIndex+1+rowPos);
+    	if(rowPos == firstRow){
+    		row.style.borderTop='4px inset #898989';	
+    	}
+    	if(rowPos == lastRow){
+    		row.style.borderBottom='4px inset #898989';
+    	}
+    	row.setAttribute('data-isTaskChild', 1);
+    	row.style.borderLeft='4px inset #121212';
+    	row.style.borderRight='4px inset #121212';
+    	createTaskRow(row, item.childTask, parentTable); 
+    	rowPos++;
+    }); 
+}
+
 function fillTaskList(id, data){
 	//taskListBody
-	var selectElement = getById(id);
+	let selectElement = getById(id);
     for (var i = selectElement.rows.length - 1; i >= 0; i--) {
         selectElement.deleteRow(i);
     }
 
-    var newText;
-    var input;
     selectElement.removeAttribute('data-selected')
     data.array.forEach(function (item) {
     	var newRow = selectElement.insertRow(selectElement.rows.length);
-    	newRow.id = 'taskList' + item.taskId;
-    	newRow.addEventListener("click", function(){
-    		if(selectElement.hasAttribute('data-selected')){
-    			let prevRow = getById(selectElement.getAttribute('data-selected'));
-    			prevRow.style.backgroundColor = prevRow.getAttribute('data-backgroundColor');
-    			prevRow.style.color = '#000000';
-    		}
-    			
-    		newRow.setAttribute('data-backgroundColor', newRow.style.backgroundColor);
-    		newRow.style.backgroundColor = '#424f5a';
-    		newRow.style.color = '#FFFFFF';
-    		selectElement.setAttribute('data-selected', newRow.id);
-    		getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);
-    		});
-    	
-    	var customerNameCell  = newRow.insertCell(0);
-        customerNameCell.classList.add("cssTaskListCustomer");
-        let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
-
-    	customerNameCell.appendChild(typeImg);
-    	customerNameCell.classList.add("cssTaskListType");   
-    	
-    	var titleCell  = newRow.insertCell(1);
-    	titleCell.innerHTML = item.title;
-        titleCell.classList.add("cssTaskListTitle");         
-
-    	var dueDateCell  = newRow.insertCell(2);
-        let day = (item.dueDate.day<10)?'0'+item.dueDate.day:item.dueDate.day;
-        let month = (item.dueDate.month<10)?'0'+item.dueDate.month:item.dueDate.month;
-        dueDateCell.innerHTML = day + "/" + month + "/" + item.dueDate.year;
-        dueDateCell.classList.add("cssTaskListDueDate");
-    	
-    	var effortCell  = newRow.insertCell(3);
-    	effortCell.classList.add("cssTaskListEffort");
-    	var strEffort = new String(item.effort)
-    	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
-
-    	effortCell.innerHTML +=' ' + effortUnit[item.effortUnit].unit;
-
-    	
-    	var statusNameCell  = newRow.insertCell(4);
-    	statusNameCell.classList.add("cssTaskListStatus");
-    	statusNameCell.innerHTML = item.status.statusName;
-    	
+    	createTaskRow(newRow, item, selectElement);    	
     }); 
+}
+
+function createTaskRow(row, item, parent){
+	row.id = 'taskList' + item.taskId;
+	row.addEventListener("click", function(){
+		if(parent.hasAttribute('data-selected')){
+			let prevRow = getById(parent.getAttribute('data-selected'));
+			prevRow.style.backgroundColor = prevRow.getAttribute('data-backgroundColor');
+			prevRow.style.color = '#000000';
+		}
+			
+		row.setAttribute('data-backgroundColor', row.style.backgroundColor);
+		row.style.backgroundColor = '#424f5a';
+		row.style.color = '#FFFFFF';
+		parent.setAttribute('data-selected', row.id);
+		getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);
+		});
+	
+	let taskTypeCell  = row.insertCell(0);
+	taskTypeCell.classList.add("cssTaskListCustomer");
+    let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
+
+    taskTypeCell.appendChild(typeImg);
+
+    let expandImg = document.createElement("IMG");
+
+    expandImg.src="images/row_expand.png";
+    expandImg.title = "show children"; 
+    expandImg.addEventListener("click", function(evt){
+    	evt = window.event || evt; 
+	    if(this === evt.target) {
+	    	
+	    	if(row.hasAttribute('data-isTaskParent')){
+	    	    for (var i = parent.rows.length - 1; i >= 0; i--) {
+	    	    	if(parent.rows[i].hasAttribute('data-isTaskChild'))
+	    	    		parent.deleteRow(i);
+	    	    }	    		
+	    	    expandImg.src="images/row_expand.png";
+	    	    expandImg.title = "show children";
+	    	    row.removeAttribute('data-isTaskParent');
+	    	}else{
+		    	row.setAttribute('data-isTaskParent', 1);
+		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillChildTaskList, row.rowIndex, null, null, null);
+		        expandImg.src="images/row_collapse.png";
+		        expandImg.title = "hide children";	    		
+	    	}
+	    }
+    });
+    taskTypeCell.appendChild(expandImg);
+    taskTypeCell.classList.add("cssTaskListType");   
+	
+    let titleCell  = row.insertCell(1);
+	titleCell.innerHTML = item.title;
+    titleCell.classList.add("cssTaskListTitle");         
+
+    let dueDateCell  = row.insertCell(2);
+    let day = (item.dueDate.day<10)?'0'+item.dueDate.day:item.dueDate.day;
+    let month = (item.dueDate.month<10)?'0'+item.dueDate.month:item.dueDate.month;
+    dueDateCell.innerHTML = day + "/" + month + "/" + item.dueDate.year;
+    dueDateCell.classList.add("cssTaskListDueDate");
+	
+    let effortCell  = row.insertCell(3);
+	effortCell.classList.add("cssTaskListEffort");
+	let strEffort = new String(item.effort)
+	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
+
+	effortCell.innerHTML +=' ' + effortUnit[item.effortUnit].unit;
+
+	
+	let statusNameCell  = row.insertCell(4);
+	statusNameCell.classList.add("cssTaskListStatus");
+	statusNameCell.innerHTML = item.status.statusName;
+	
 }
 
 function fillAttachmentList(id, data){

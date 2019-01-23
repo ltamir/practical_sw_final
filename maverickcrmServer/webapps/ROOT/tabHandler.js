@@ -82,7 +82,9 @@ function activateTabTaskLog(){
 	.then(()=>{
 		if(getValue('taskId') > 0)
 			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
-	})
+	}).then(()=>{	Object.keys(taskLogObj).forEach(function(item){
+		taskLogObj[item].dom = getById(taskLogObj[item].domField);
+	});	})
 
 }
 
@@ -101,12 +103,7 @@ function activateTabRelation(){
 		if(getValue('taskId') > 0)
 			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
 	})
-	.then(()=>searchProjectTask('cmbTabRelationProject')
-//	getDataEx('cmbTabRelationProject', 'customertask', '?actionId=2', fillSelect, 'projects',
-//	(opt, item)=>opt.value = item.task.taskId,
-//	(opt, item)=>opt.text = item.customer.customerName,
-//	(opt, item)=>opt.title = item.task.title)
-	);
+	.then(()=>searchProjectTask('cmbTabRelationProject'));
 	getById('divTaskTab').removeAttribute('data-selected');
 	
 }
