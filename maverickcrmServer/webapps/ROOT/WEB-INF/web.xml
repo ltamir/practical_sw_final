@@ -22,19 +22,20 @@
   version="3.1"
   metadata-complete="true">
 
-  <display-name>Maverick CRM</display-name>
-  <description>
-     Maverick CRM
-  </description>
-<security-constraint>
-    <web-resource-collection>
-        <web-resource-name>maverick</web-resource-name>
-        <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <user-data-constraint>
-        <transport-guarantee>NONE</transport-guarantee>
-    </user-data-constraint>
-</security-constraint>
+	  <display-name>Maverick CRM</display-name>
+	  <description>
+	     Maverick CRM
+	  </description>
+	  
+	<security-constraint>
+	    <web-resource-collection>
+	        <web-resource-name>maverick</web-resource-name>
+	        <url-pattern>/*</url-pattern>
+	    </web-resource-collection>
+	    <user-data-constraint>
+	        <transport-guarantee>NONE</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
 
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
