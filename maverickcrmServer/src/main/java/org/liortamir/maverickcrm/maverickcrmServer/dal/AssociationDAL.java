@@ -67,7 +67,7 @@ public class AssociationDAL {
 	public void update(int associationId, int customerId, int contactId, int contactTypeId, int addressId) throws SQLException {
 
 		try(Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("update association set customerId=?, contactId=?, contactTypeId=? addressId=? where associationId=?");
+			PreparedStatement ps = conn.prepareStatement("update association set customerId=?, contactId=?, contactTypeId=?, addressId=? where associationId=?");
 			ps.setInt(1, customerId);
 			ps.setInt(2, contactId);
 			ps.setInt(3, contactTypeId);
