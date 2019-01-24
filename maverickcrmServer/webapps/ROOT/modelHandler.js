@@ -243,6 +243,10 @@ function saveTask(){
 		setMsg(msgType.nok, 'Please enter a task title');
 		return;
 	}	
+	if(getValue('txtDetailTaskTitle').length > 120){
+		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
+		return;
+	}		
 	if(getValue('txtDetailTaskEffort') == ''){
 		setMsg(msgType.nok, 'Please fill Effort');
 		return;
