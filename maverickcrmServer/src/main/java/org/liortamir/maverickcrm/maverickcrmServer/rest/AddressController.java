@@ -158,7 +158,8 @@ public class AddressController extends HttpServlet {
 			json.addProperty("addressId", addressId);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Error saving address. please check the log");
+			json.addProperty("err",  e.getMessage());
 			json.addProperty("status",  "nack");
 			json.addProperty("addressId", "0");
 		}

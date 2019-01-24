@@ -104,6 +104,8 @@ public class AssociationController extends HttpServlet {
 			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
 			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
 			
+			
+			
 			int connectionId = AssociationDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
 			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
@@ -111,11 +113,12 @@ public class AssociationController extends HttpServlet {
 			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Save failed. Please check the log");
 			json.addProperty("status",  "nack");
+			json.addProperty("err",  e.getMessage());
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
-				json.addProperty("msg", "customer already exist");
+				json.addProperty("msg", "association already exist");
 			}	
 		}
 		response = jsonHelper.toJson(json);	
@@ -128,20 +131,45 @@ public class AssociationController extends HttpServlet {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
 		try {
-			int connectionId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ID)); 
-			int customerId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CUSTOMERID));
-			int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACTID));
-			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
-			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
+			int associationId = 0; 
+			int customerId = 0;
+			int contactId = 0;
+			int contactTypeId = 0;	
+			int addressId = 0;
 
-			AssociationDAL.getInstance().update(connectionId, customerId, contactId, contactTypeId, addressId);
+			for(Part part : req.getParts()) {
+
+				switch(part.getName()) {
+				case APIConst.FLD_ASSOCIATION_ID:
+					associationId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_ASSOCIATION_CUSTOMERID:
+					customerId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_ASSOCIATION_CONTACTID:
+					contactId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID:
+					contactTypeId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+				case APIConst.FLD_ASSOCIATION_ADDRESS_ID:
+					addressId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					break;
+						
+					default:
+						System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + part.getName());
+				}
+				
+			}			
+			AssociationDAL.getInstance().update(associationId, customerId, contactId, contactTypeId, addressId);
 			
-			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
+			json.addProperty(APIConst.FLD_ASSOCIATION_ID, associationId);
 			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Error updating association. Please check the log");
 			json.addProperty("status",  "nack");
+			json.addProperty("err",  e.toString());
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
