@@ -115,12 +115,6 @@ function fillTaskDetails(id, data){
 	taskObj.effortUnit.dom.value = data.effortUnit;
 	taskObj.effort.dom.value = data.effort;
 	
-//	setValue('cmbDetailTaskType', data.taskType.taskTypeId);
-//	setValue('cmbDetailContact', data.contact.contactId);
-//	setValue('txtDetailTaskTitle', data.title);
-//	setValue('txtDetailTaskEffort', data.effort);
-//	setValue('effortUnit', data.effortUnit);
-	
 	setEffortUnit(data.effortUnit);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
@@ -325,6 +319,7 @@ function validateTaskLog(){
 			 getValue('txtTaskLogDescription'),
 			 getValue('taskId'));
 } 
+
 function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 	let formData = new FormData();
 	let method;
@@ -553,14 +548,19 @@ function saveAssociation(action){
 			setMsg(msgType.nok, 'Please select a Contact type');
 			return;
 		}
-		if(getValue('cmbConnectedAddress') == 0 || getValue('cmbConnectedAddress') == ''){
+		if(getValue('addressId') == 0){
 			setMsg(msgType.nok, 'Please select an address');
 			return;
-		}		
+		}
+		if(getValue('ConnectionAssociationId') > 0)
+			method = 'PUT';
+		else
+			method = 'POSTT';
 		formData.append('customerId',  getValue('cmbConnectedCustomer'));
 		formData.append('contactId', getValue('ConnectionContactId'))
 		formData.append('contactTypeId', getValue('cmbContactType'))
-		formData.append('addressId', getValue('cmbConnectedAddress'))
+		formData.append('addressId', getValue('addressId'))
+		formData.append('associationId', getValue('ConnectionAssociationId'))
 	}else{				//delete
 		if(getValue('cmbConnectedCustomer') == 0 || getValue('cmbConnectedCustomer') == ''){
 			setMsg(msgType.nok, 'Please select a customer to remove from the contact');
@@ -575,18 +575,22 @@ function saveAssociation(action){
 			return;
 		}		
 		
-		formData.append('associationId', getValue('ConnectionAssociationId'))
+		formData.append('associationId', getValue('ConnectionAssociationId'));
+		method = 'DELETE';
 	}
 	if(dbg == dbgModule.contact)
-		debugFormData(formData);
-	
-	if(action == '1'){
-		method = 'POST';
-	}else{
-		method = 'DELETE';
-	}	
+		debugFormData(formData);	
 	
 	setData(method, formData, 'association')
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok,  resp.msg);
+			console.log('error ' + resp.err);
+			return;
+		}else{
+			setMsg(msgType.ok, 'Connection change saved')
+			}
+		})
 	.then(getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
 			(opt,item)=>opt.value = item.contact.contactId, 
 			(opt,item)=>{
@@ -596,12 +600,11 @@ function saveAssociation(action){
 			(opt, item)=>{
 				opt.addEventListener("click", ()=>{
 					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-					cmbConnectedAddress.value=item.address.addressId
+					setValue('addressId', item.address.addressId);
 					})
 				}
 			)
-		)
-		.then(function(){setMsg(msgType.ok, 'Connection change saved')});
+		);
 
 }   
 
@@ -649,11 +652,28 @@ function saveAddress(){
 		formData.append('addressId', addressId);
 	}
 
-	if(dbg == dbgModule.contact)
+	if(dbg == dbgModule.address)
 	debugFormData(formData);
 	
-	setData(method, formData, 'address');
-	setMsg(msgType.ok, 'Address saved');
+	setData(method, formData, 'address')
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok,  resp.msg);
+			console.log('error ' + resp.err);
+			return;
+		}else{
+			setMsg(msgType.ok, 'Address saved');
+			
+			let event = new MouseEvent('click', {
+			    view: window,
+			    bubbles: true,
+			    cancelable: true
+			});
+			var cb = getById('cmbConnectedCustomer').options[getById('cmbConnectedCustomer').selectedIndex]; 
+			var cancelled = !cb.dispatchEvent(event);
+		}
+	});
+	
 }
 
 function saveAttachment(){

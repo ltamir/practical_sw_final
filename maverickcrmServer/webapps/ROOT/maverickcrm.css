@@ -6,8 +6,11 @@
 	input, select, textarea, button, span{
 		border-radius: 3px;
 		color: #112211;
-		font-family: arial, sans-serif;
+		font-family: Tahoma, Geneva, sans-serif;
 		
+	}
+	textarea{
+		resize: none;
 	}
 	input, select, button{
 		background-color: #FEFEFE; 
@@ -306,7 +309,7 @@
 	}
 	.parent-grid-container{
 		display: grid;
-		grid-template-columns: 17em 12em;	
+		grid-template-columns: 17em 12em;
 	}    
 	.contact-details-grd {
 		display: grid;
@@ -322,7 +325,6 @@
 	}
 	  
 	.cssCard{
-		border: 1px solid #000000;
 		background-color: LightGoldenRodYellow;
 	}
 
@@ -332,7 +334,7 @@
 		border-color: black;
 		font-family: arial, sans-serif;
 		background-color: LightGoldenRodYellow;
-		font-size: 1em;
+		font-size: 0.9em;
 		background-image: none;
 	}
 	
@@ -342,46 +344,50 @@
 		border-color: LightGoldenRodYellow;
 		vertical-align: bottom;
 	}
-	#cmbConnectedAddress{
-		font-family: arial, sans-serif;
-        min-width: 29em;	
+	
+	#divAddressList{
+		width: 28em;
+		height: 3em;
+		overflow-y: scroll;
+		font-family: Tahoma, Geneva, sans-serif;
+		font-size: 0.8em;
+		border-bottom: 1px inset #000000;	
+		cursor: pointer;	
 	}	
 	
 	#txtAddressHouseNum.cssCardInput {
 		max-width: 2em;
 	}
-	#divConnectedEditContact{
-		max-width: 24em;
+	
+	#cssConnectedEditContact{
+		width: 28em;
+		border-radius: 8px;
+		border: 1px solid #000000;
 	}
+	#cssConnectedEditContact tr{
+		background-color: LightGoldenRodYellow;
+	}	
+	#cssConnectedEditContact td{
+		border-spacing: 0px;
+		padding: 0px;
+	}		
+	
 	#divConnectedEditAddress{
-		max-width: 24em;
+		max-width: 28em;
 	}
-	.cssConnectedCustomers{grid-area: connectedCustomers;
-		max-width: 14em;
-		min-width: 14em;}
-		
-	#lblCRMContacts{
-		grid-area: connectedContactsLabel;
-		border-style: outset;
-		text-align: center;
-		width: 14em;
-		cursor: pointer;
+	
+	#cssConnectionList{
+		width: 29em;
 	}
-
-	.cssConncetedContacts{grid-area: conncetedContacts;
-		max-width: 14em;
-		min-width: 14em;
+	#cssConnectionList td{
+		width: 50%;
 	}
-	.cssAllContactsLabel{grid-area: allContactsLabel;}
-	.cssAllContacts{grid-area: allContacts;
-	max-width: 12em;
-	min-width: 12em;}
-
-	.connection-grd{
-		display: grid;
-		grid-template-areas: 'connectedCustomers connectedContactsLabel allContactsLabel'
-			'connectedCustomers conncetedContacts allContacts';
-	}
+	#cssConnectionList select{
+		width: 90%;
+	}	
+	#cssConnectionList input[type="text"]{
+		width: 75%;
+	}		
 
 	.cssLoginList{
 		width: 14em;

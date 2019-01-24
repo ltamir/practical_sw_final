@@ -143,13 +143,18 @@ function activateTabConnection(){
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName,
 			(opt, item)=>opt.addEventListener("click", ()=>{
-				if(getById('lblCRMContacts').getAttribute("data-state") == 1)
-					return;
-				showAssociatedContacts();
-				getDataEx('cmbConnectedAddress', 'address', '?actionId=13&customerId='+item.customerId, fillSelect, null, 
-						(opt,item)=>opt.value = item.addressId, 
-						(opt,item)=>opt.text = item.street + ' ' + item.houseNum + ' ' + item.city, 
-						(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
+				if(getById('imgFilterContact').getAttribute("data-state") == 1)
+					showAssociatedContacts();
+				newAddress();
+				getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
+						(opt,item)=>{
+							opt.setAttribute('data-addressId', item.addressId);
+							opt.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+							}, 
+							null,
+						(opt, item)=>opt.addEventListener("click", ()=>{
+							getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));				
+
 				})
 			))
 	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
@@ -162,13 +167,13 @@ function activateTabConnection(){
 
 function toggleShowContacts(obj){
 	toggleAsBotton(obj);
-	if(obj.getAttribute("data-state") == 1){
+	if(obj.getAttribute("data-state") == 0){
 		showAssociatedContacts();
 		obj.innerHTML = 'Associated contacts';
-		obj.setAttribute("data-state", 2);
+		obj.setAttribute("data-state", 1);
 		obj.title="Click to show all contacts"
 	}else{
-		obj.setAttribute("data-state", 1);
+		obj.setAttribute("data-state", 0);
 		obj.innerHTML = 'All contacts';
 		obj.title="Click to filter by selected customer"
 		showAllContacts();
@@ -187,7 +192,16 @@ function showAssociatedContacts(){
 		(opt, item)=>{
 			opt.addEventListener("click", ()=>{
 				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-				cmbConnectedAddress.value=item.address.addressId
+				let addressList = getById('divAddressList');
+				for(let i = addressList.childNodes.length-1; i > -1; i--){
+					let addressNode = addressList.childNodes[i];
+					if(addressNode.hasAttribute('data-addressId') && addressNode.getAttribute('data-addressId') == item.address.addressId){
+						addressNode.scrollIntoView();
+						addressNode.childNodes[1].style.fontWeight = 'bold';
+					}else
+						addressNode.childNodes[1].style.fontWeight = 'normal';
+				}
+						
 				cmbContactType.value=item.contactType.contactTypeId;
 				ConnectionAssociationId.value=item.associationId;
 			})

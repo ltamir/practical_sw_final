@@ -18,14 +18,14 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     data.array.forEach(function (item) {
     	var row = parentTable.insertRow(rowIndex+1+rowPos);
     	if(rowPos == firstRow){
-    		row.style.borderTop='2px outset #696969';	
+    		row.style.borderTop='3px outset #8B8B8B';	
     	}
     	if(rowPos == lastRow){
-    		row.style.borderBottom='2px inset #b1b1b0';
+    		row.style.borderBottom='3px inset #b1b1b0';
     	}
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
-    	row.style.borderLeft='2px outset #696969';
-    	row.style.borderRight='2px inset #b1b1b0';
+    	row.style.borderLeft='3px outset #8B8B8B';
+    	row.style.borderRight='3px inset #b1b1b0';
     	createTaskRow(row, item.childTask, parentTable); 
     	rowPos++;
     }); 
@@ -55,7 +55,7 @@ function createTaskRow(row, item, parent){
 		}
 			
 		row.setAttribute('data-backgroundColor', row.style.backgroundColor);
-		row.style.backgroundColor = '#424f5a';
+		row.style.backgroundColor = '#8899AA' //'#424f5a';
 		row.style.color = '#FFFFFF';
 		parent.setAttribute('data-selected', row.id);
 		getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);
@@ -215,6 +215,32 @@ function fillTaskRelationSearchResult(id, data){
         selectElement.appendChild(opt);
     });            
 }
+function fillDivList(id, data, defaultOption, funcValue, funcText, eventHandler){
+	let parentElement = getById(id);
+	
+	for(let i = parentElement.childNodes.length-1; i > -1; i--)
+		parentElement.removeChild(parentElement.childNodes[i]);
+	
+	if(dbg==dbgModule.address)
+    	console.log(data);
+	
+	data.array.forEach(function (item) {
+		let divRow = document.createElement('DIV');
+		divRow.setAttribute('data-addressId', item.addressId);
+		parentElement.appendChild(divRow);
+		
+		let addressImg = document.createElement("IMG");
+		addressImg.src='images/address.png';
+		addressImg.title = 'Click to edit address';
+		divRow.appendChild(addressImg);
+		
+		let addressTxt = document.createElement("SPAN");
+		funcValue(addressTxt, item);
+		if(eventHandler != undefined)
+			eventHandler(addressTxt, item);
+		divRow.appendChild(addressTxt);
+	});
+}
 
 function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let parentElement = getById(id);
@@ -224,8 +250,10 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 	
 	if(dbg==dbgModule.relation)
     	console.log(data);
+	
 	data.array.forEach(function (item) {
 		let divRow = document.createElement('DIV');
+
 		divRow.style.zIndex = 0;
 		parentElement.appendChild(divRow);
 		
@@ -249,8 +277,6 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     		let popup = getById('divRelationTypeList');
     		if(popup.style.display == 'none'){
     			divRow.insertBefore(popup, divRow.childNodes[2]);
-//    			popup.style.top = divRow.offsetTop;
-//				popup.style.left = divRow.offsetLeft;
     			popup.style.display='inline';
     			popup.setAttribute('data-taskrelationId', item.taskRelationId);
     		}else{

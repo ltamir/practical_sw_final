@@ -48,7 +48,7 @@ function searchRelationTask(){
 	searchTaskParams += '&projectId=' + getValue('cmbTabRelationProject');
 	searchTaskParams += '&tasktypeId=0';
 	searchTaskParams += '&showclosed=0';
-	searchTaskParams += '&title=';
+	searchTaskParams += '&title=' + getValue('txtTabRelatoinSearchTitle');
 	
 	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
 	
@@ -148,26 +148,29 @@ function connectionFilterOn(element){
 	(opt,item)=>opt.value = item.customerId, 
 	(opt,item)=>opt.text = item.customerName,
 	(opt, item)=>opt.addEventListener("click", ()=>{
-		if(getById('lblCRMContacts').getAttribute("data-state") == 1)
-			return;
-		showAssociatedContacts();
-		getDataEx('cmbConnectedAddress', 'address', '?actionId=13&customerId='+item.customerId, fillSelect, null, 
-				(opt,item)=>opt.value = item.addressId, 
-				(opt,item)=>opt.text = item.street + ' ' + item.houseNum + ' ' + item.city, 
-				(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
+		if(getById('imgFilterContact').getAttribute("data-state") == 1)
+			showAssociatedContacts();
+		getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
+				(opt,item)=>{
+					opt.setAttribute('data-addressId', item.addressId);
+					opt.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+					}, 
+					null,
+				(opt, item)=>opt.addEventListener("click", ()=>{
+					getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
 		})
 	);
 	setMsg(msgType.ok, 'Filtering on task');
 }
 
 function connectionFilterOff(element){
-	let statusImg = getById('searchTaskStatus');
-	element.value='0';
+
+	
 	element.style.borderStyle='outset';
 	element.title = 'All customers';
 
 	activateTabConnection();
-	setMsg(msgType.ok, 'Task filter removed');
+	setMsg(msgType.ok, 'Filter removed');
 }
 
 function toggleAsBotton(img){
@@ -188,12 +191,15 @@ function toggleSearchTaskStatus(id){
 }
 
 function toggleHandler(id, implA, implB){
-	if(id.value == undefined)
-		id.value='0';
-	if(id.value == '0')
+	
+	if(id.getAttribute('data-state') == '0'){
 		implA(id);
-	else
+		id.setAttribute('data-state', 1);
+	}
+	else{
 		implB(id);
+		id.setAttribute('data-state', 0);
+	}
 }
 
 function toggleImgMenu(imgId, menuId){
