@@ -28,9 +28,11 @@ public class DatabaseDAL {
     		ResultSet rs = null;
     		int updatedRows = 0;
 
-    		if(sql.contains("insert") || sql.contains("update") || sql.contains("alter")) {
+    		if(sql.contains("insert") || sql.contains("update")) {
     			updatedRows = ps.executeUpdate();
     			System.out.println("updated " + updatedRows + " rows");
+    		}else if(sql.contains("alter")) {
+    			updatedRows = ps.executeUpdate();
     		}
     		else {
     			rs= ps.executeQuery();
