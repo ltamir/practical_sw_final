@@ -24,17 +24,63 @@ public class BusinessDAL {
 		int entity = 0;
 
 		try (Connection conn = DBHandler.getConnection()){
-			
-			PreparedStatement stmt = conn.prepareStatement("select sum(effort) from task where effortUnit = 2 and taskId = ? or effortUnit = 2 and taskId in(select taskId from taskrelation where parentTaskId = 1)"
-					+ " union select sum(effort)*9 from task where effortUnit = 1 and taskId = ? or effortUnit = 1 and taskId in(select taskId from taskrelation where parentTaskId = 1");
-			stmt.setInt(1, taskId);
-			ResultSet rs = stmt.executeQuery();
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 3 and taskId = ? or effortUnit = 3 and taskId in(select taskId from taskrelation where parentTaskId = ?)"
+				+ " union select sum(effort)/20 from task where effortUnit = 2 and taskId = ? or effortUnit = 2 and taskId in(select taskId from taskrelation where parentTaskId = ?");
+			ps.setInt(1, taskId);
+			ps.setInt(2, taskId);
+			ps.setInt(3, taskId);
+			ps.setInt(4, taskId);
+			ps.setInt(5, taskId);
+			ps.setInt(6, taskId);
+			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = rs.getInt(0);
 		}
 		return entity;
 	}
 	
+	public int getHours(int taskId) throws SQLException {
+		int entity = 0;
+
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 1 and taskId = ? or effortUnit = 1 and taskId in(select taskId from taskrelation where parentTaskId = ?)");
+			ps.setInt(1, taskId);
+			ps.setInt(2, taskId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = rs.getInt(1);
+		}
+		return entity;
+	}
+
+	public int getDays(int taskId) throws SQLException {
+		int entity = 0;
+
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 2 and taskId = ? or effortUnit = 2 and taskId in(select taskId from taskrelation where parentTaskId = ?)");
+			ps.setInt(1, taskId);
+			ps.setInt(2, taskId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = rs.getInt(1);
+		}
+		return entity;
+	}	
+
+	public int getMonths(int taskId) throws SQLException {
+		int entity = 0;
+
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 3 and taskId = ? or effortUnit = 3 and taskId in(select taskId from taskrelation where parentTaskId = ?)");
+			ps.setInt(1, taskId);
+			ps.setInt(2, taskId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = rs.getInt(1);
+		}
+		return entity;
+	}	
+
 	public List<Status> getAll() throws SQLException {
 		List<Status> entityList = null;
 

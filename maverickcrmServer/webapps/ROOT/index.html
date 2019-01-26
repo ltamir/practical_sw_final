@@ -32,7 +32,7 @@
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)">            
             </td> 
             <td width="20%">
-            	<span id="lblSearchDueDate" title="Set due date"onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Due date</span>
+            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Due date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
  
             	<img src="images/task_open.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" value="1" onclick="toggleSearchTaskStatus()">
@@ -96,6 +96,7 @@
 	            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 5)"><br>
 	            	</div>	
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
+	            	<span class="cssFieldLabel">Total effort:</span><span id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divNewTaskType'); toggleAsBotton(this)">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="toggleState(this); setChildTask(this)">
 	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
@@ -127,9 +128,9 @@
 					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1">
 					<span onclick="showEffortUnits()"><img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png"></span>
 					<div id="divEffortUnit">
-						<img title="Effort is in hours" src="images/effortUnit_hours.png" onclick="setEffortUnit(this, 1)">
-						<img title="Effort is in days" src="images/effortUnit_days.png" onclick="setEffortUnit(this, 2)">
-						<img title="Effort is in months" src="images/effortUnit_months.png" onclick="setEffortUnit(this, 3)">
+						<img title="Effort is in hours" src="images/effortUnit_hours.png" onclick="setEffortUnit(1); hideEffortUnit()">
+						<img title="Effort is in days" src="images/effortUnit_days.png" onclick="setEffortUnit(2); hideEffortUnit()">
+						<img title="Effort is in months" src="images/effortUnit_months.png" onclick="setEffortUnit(3); hideEffortUnit()">
 					</div>
 					<input type="hidden" id="effortUnit" value="1">
 	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, getById('txtDetailDueDate'))">Due Date</span>				

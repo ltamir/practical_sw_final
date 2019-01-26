@@ -45,7 +45,6 @@ function newTask(taskType){
 	setValue('cmbDetailContact', loggedContact.contactId);
 	setValue('txtDetailTaskTitle', '');
 	setValue('txtDetailTaskEffort', 1);
-	setValue('effortUnit', 1);
 	setEffortUnit(1);
 	setValue('txtDetailDueDate', '');
 	setValue('cmbDetailStatus', 1);
@@ -59,6 +58,7 @@ function newTask(taskType){
 }
 
 function setEffortUnit(unit){
+	setValue('effortUnit', unit);
 	let img = getById('imgEffortUnit');
 	img.src = effortUnit[unit].src; 
 	img.title = effortUnit[unit].title
@@ -173,6 +173,7 @@ function fillTaskDetails(id, data){
 	}else{
 		getById('TabLinkedCustomer').style.display='none';		
 	}
+	getDataEx('', 'business', '?taskId=' + data.taskId, function(id, data, defaultOption, funcValue, funcText, eventHandler){getById('totalTaskEffort').innerHTML = data.total}, null, null, null, null);
 	setMsg(msgType.ok, 'Ready');
 }
 

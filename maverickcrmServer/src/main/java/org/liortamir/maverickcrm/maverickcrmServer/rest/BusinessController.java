@@ -33,17 +33,39 @@ public class BusinessController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		String response = APIConst.ERROR;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
+		int hours = 0;
+		int days = 0;
+		int months = 0;
+		int totalEffort = 0;
 		
 		try {
-			int taskId = Integer.parseInt(req.getParameter("taskId"));
-			int totalDays = BusinessDAL.getInstance().get(taskId);
-			json = new JsonObject();
-			json.addProperty("total", totalDays);
+			int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
+
+			hours = BusinessDAL.getInstance().getHours(taskId);
+			json.addProperty("hours", hours);
+			days = BusinessDAL.getInstance().getDays(taskId);
+			json.addProperty("days", days);
+			months = BusinessDAL.getInstance().getMonths(taskId);
+			json.addProperty("months", months);
+
+			if(hours > 9){
+				days += hours/9;
+				hours = hours % 9;
+			}
+
+			if(days > 20){
+				months += days/20;
+				days = days % 20;
+			}
+			json.addProperty("total", months + ":" + days + ":" + hours);			
 			response = jsonHelper.toJson(json);
 
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println("BusinessController.doGet: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
+			json.addProperty("status",  "nack");
 		}
 		
 		PrintWriter out = resp.getWriter();
@@ -71,13 +93,15 @@ public class BusinessController extends HttpServlet {
 			}
 
 		}catch(SQLException | NullPointerException e) {
-			System.out.println("ContactController.doPost: " + e.getStackTrace()[0] + " " +  e.getMessage());
+			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
+			json.addProperty("status",  "nack");			
 			json.addProperty("customerTaskId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "Internal error");
 			}			
 		}
-
 
 	}
 }
