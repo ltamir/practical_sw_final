@@ -264,10 +264,10 @@ function showEffortUnits(){
 	getById('divEffortUnit').style.display='inline';
 }
 
-function setEffortUnit(selectedImg, unit){
-	setValue('effortUnit', unit);
-	getById('imgEffortUnit').src = selectedImg.src;
-	getById('imgEffortUnit').title = selectedImg.title;
+function hideEffortUnit(){
+	// setValue('effortUnit', unit);
+	// getById('imgEffortUnit').src = selectedImg.src;
+	// getById('imgEffortUnit').title = selectedImg.title;
 	getById('divEffortUnit').style.display = 'none';
 }
 
@@ -309,7 +309,7 @@ function init(){
     getDataEx('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
+    		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
     
     getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, null, 
     		(opt,item)=>opt.value = item.statusId, 
