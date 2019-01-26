@@ -33,6 +33,8 @@ public class DatabaseDAL {
     			System.out.println("updated " + updatedRows + " rows");
     		}else if(sql.contains("alter")) {
     			updatedRows = ps.executeUpdate();
+    		}else if(sql.contains("CALL")) {
+    			ps.execute();
     		}
     		else {
     			rs= ps.executeQuery();
