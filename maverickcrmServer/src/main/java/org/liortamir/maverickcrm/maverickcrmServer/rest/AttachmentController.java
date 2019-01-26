@@ -55,7 +55,7 @@ public class AttachmentController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		Attachment attachment = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();;
 		int actionId = 0;
 		
 		try {
@@ -64,20 +64,18 @@ public class AttachmentController extends HttpServlet {
 			if(actionId == ActionEnum.ACT_ALL.ordinal()){
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<Attachment> bulk = AttachmentDAL.getInstance().getByTask(taskId);
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);	
 			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
 
 				int attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
 				attachment = AttachmentDAL.getInstance().get(attachmentId);
-
-				json = new JsonObject();
 				response = jsonHelper.toJson(attachment);	
 			}
 		}catch(NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 		}
 		
@@ -126,12 +124,14 @@ public class AttachmentController extends HttpServlet {
 			json.addProperty("status",  "ack");
 		}catch(NumberFormatException  | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", "0");
 		} catch (Exception e) {
 			System.out.println("AttachmentController.doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", "0");
 		}
@@ -188,7 +188,8 @@ public class AttachmentController extends HttpServlet {
 			json.addProperty("status",  "ack");
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
 			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			json.addProperty("attachmentId", 0);
 		}

@@ -50,7 +50,6 @@ public class AddressController extends HttpServlet {
 			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
 				resp.setContentType("application/json");
 				List<Address> bulk = AddressDAL.getInstance().getAll();
-				json = new JsonObject();
 
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);
@@ -66,9 +65,11 @@ public class AddressController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				response = jsonHelper.toJson(json);				
 			}
+			json.addProperty("status",  "ack");
 		}catch(NullPointerException | NumberFormatException | SQLException e) {			
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			response = jsonHelper.toJson(json);	
 		}
@@ -107,7 +108,8 @@ public class AddressController extends HttpServlet {
 			json.addProperty("addressId", addressId);
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			json.addProperty("addressId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {

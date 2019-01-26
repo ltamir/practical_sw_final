@@ -53,7 +53,8 @@ public class AttachmentTypeController extends HttpServlet {
 			}
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 		}
 		

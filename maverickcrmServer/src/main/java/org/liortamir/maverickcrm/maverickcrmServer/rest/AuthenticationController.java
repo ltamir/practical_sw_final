@@ -27,7 +27,7 @@ public class AuthenticationController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		
 		try {
 			int actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
@@ -45,7 +45,6 @@ public class AuthenticationController extends HttpServlet {
 				resp.sendRedirect("login.html");
 				break;
 				default:
-					json = new JsonObject();
 					json.addProperty("msg", "invalid state " + actionId);
 					json.addProperty("status",  "nack");
 					response = jsonHelper.toJson(json);
@@ -55,9 +54,10 @@ public class AuthenticationController extends HttpServlet {
 
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json = new JsonObject();
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
+			response = jsonHelper.toJson(json);
 		}
 		
 		PrintWriter out = resp.getWriter();
@@ -92,7 +92,8 @@ public class AuthenticationController extends HttpServlet {
 
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "Internal error");

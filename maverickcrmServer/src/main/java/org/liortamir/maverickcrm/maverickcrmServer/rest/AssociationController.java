@@ -45,12 +45,16 @@ public class AssociationController extends HttpServlet {
 		this.jsonHelper = gsonBuilder.create();
 	}
 
+	protected String toJson(Object obj){
+		return jsonHelper.toJson(obj);
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		Association association = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();;
 		int id = 0;
 		int actionId = 0;
 
@@ -60,32 +64,31 @@ public class AssociationController extends HttpServlet {
 			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
 				resp.setContentType("application/json");
 				List<Customer> bulk = CustomerDAL.getInstance().getAll();
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
+				response = toJson(json);
 				
 			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				association = AssociationDAL.getInstance().get(id);	
-				json = new JsonObject();
-				response = jsonHelper.toJson(association);									
+				response = toJson(association);									
 			}else if(actionId == ActionEnum.ACT_CUSTOMER_BY_CONTACT.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByContact(id);	
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);									
+				response = toJson(json);									
 			}else if(actionId == ActionEnum.ACT_CONTACT_BY_CUSTOMER.ordinal()){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByCustomer(id);	
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);									
+				response = toJson(json);									
 			}
+			json.addProperty("status",  "ack");
 		}catch(NumberFormatException | SQLException e) {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
+			response = jsonHelper.toJson(json);	
 		}
 		
 		//boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
@@ -104,8 +107,6 @@ public class AssociationController extends HttpServlet {
 			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
 			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
 			
-			
-			
 			int connectionId = AssociationDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
 			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
@@ -115,7 +116,7 @@ public class AssociationController extends HttpServlet {
 			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
 			json.addProperty("msg",  "Save failed. Please check the log");
 			json.addProperty("status",  "nack");
-			json.addProperty("err",  e.getMessage());
+			json.addProperty("err",  e.toString());
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "association already exist");
@@ -201,7 +202,8 @@ public class AssociationController extends HttpServlet {
 			json.addProperty("status",  "ack");
 		}catch(SQLException | NullPointerException e) {
 			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
+			json.addProperty("msg",  "Internal error, please check the log");
+			json.addProperty("err",  e.toString());
 			json.addProperty("status",  "nack");
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
