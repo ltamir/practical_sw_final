@@ -61,9 +61,10 @@ function setTab(tab){
 		getById('tabTimeline').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";
 		activateTabConnection();
-		break;		
+		break;
+	default:
+		console.log('error received: ' + tab);
 	}
-
 }
 	
 function activateTabTaskLog(){
@@ -82,8 +83,9 @@ function activateTabTaskLog(){
 	.then(()=>{
 		if(getValue('taskId') > 0)
 			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
-	}).then(()=>{	Object.keys(taskLogObj).forEach(function(item){
-		taskLogObj[item].dom = getById(taskLogObj[item].domField);
+	}).then(()=>{	
+		Object.keys(taskLogModel).forEach(function(item){
+		taskLogModel[item].dom = getById(taskLogModel[item].domField);
 	});	})
 
 }
@@ -119,7 +121,12 @@ function activateTabAttachment(){
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 			null))
-	.then(()=>setValue('txtAttachmentNotes', ''))
+	.then(()=>setValue('txtAttachmentNotes', '')).
+	then(()=>{
+				Object.keys(notes).forEach(function(item){
+					notes[item].dom = getById(notes[item].domField);
+				});		
+	})
 //	if(getValue('taskId') > 0)
 
 }
@@ -162,6 +169,14 @@ function activateTabConnection(){
 			(opt,item)=>opt.text = item.contactTypeName, 
 			null))
 			.then(()=>showAllContacts())
+			.then(()=>{
+				Object.keys(contactModel).forEach(function(item){
+					contactModel[item].dom = getById(contactModel[item].domField);
+				});	
+				Object.keys(customerModel).forEach(function(item){
+					customerModel[item].dom = getById(customerModel[item].domField);
+				});
+			});
 	
 }
 
@@ -242,6 +257,11 @@ function activateTabLogin(){
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
 		.then(()=>fillLoginList())
+		.then(()=>{
+			Object.keys(loginModel).forEach(function(item){
+				loginModel[item].dom = getById(loginModel[item].domField);
+			});			
+		})
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
 function fillLoginList(){

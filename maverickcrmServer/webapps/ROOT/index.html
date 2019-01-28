@@ -8,11 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
     <link rel="stylesheet" type="text/css" href="maverickcrm.css?7">
-    <script src="common.js?10"></script>
-    <script src="dataPopulation.js?16"></script>
-    <script src="maverickcrm.js?17"></script>
-    <script src="tabHandler.js?15"></script>
-    <script src="modelHandler.js?8"></script>
+    <script src="scripts/dataModel.js"></script>
+    <script src="scripts/common.js?10"></script>
+    <script src="scripts/dataPopulation.js?16"></script>
+    <script src="scripts/maverickcrm.js?17"></script>
+    <script src="scripts/tabHandler.js?15"></script>
+    <script src="scripts/modelHandler.js?8"></script>
 
 </head>
 <body onload="init()">
@@ -35,8 +36,8 @@
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Due date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
  
-            	<img src="images/task_open.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus" value="1" onclick="toggleSearchTaskStatus()">
-            	<img src="images/task_search.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="prepareSearchTask();toggleAsBotton(this)">
+            	<img src="images/task_open.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus"  data-state="0" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
+            	<img src="images/task_search.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
             	<img src="images/refresh_search.png" style="margin-left:0.5em; margin-right:0.5em" title="Reset search (all open tasks)" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>
             <td width="30%" align="right" valign="bottom">
@@ -84,53 +85,54 @@
 		<tr>
 			<td width="50%" valign="top">
 				<div id="divTaskDetailsTop">
-					<img src="images/task.png" id="imgTaskType" title="select Task type" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divTaskType'); toggleAsBotton(this)">
+					<img src="images/site.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType)">
 					<select title="Task Type" id="cmbDetailTaskType" style="display:none;"></select>
 					<select title="Task Status" id="cmbDetailStatus" style="display:none;"></select>
-					<img src="images/status/new.png" id="imgTaskStatus" title="New" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divTaskStatus'); toggleAsBotton(this)">
-	            	<div id="divTaskStatus">
-	            		<img src="images/status/new.png" title="New" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 1)"><br>
-	            		<img src="images/status/running.png" title="Running" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this,2)"><br>
-	            		<img src="images/status/delivered.png" title="Delivered" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 3)"><br>
-	            		<img src="images/status/closed.png" title="Closed" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 4)"><br>
-	            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(this, 5)"><br>
+					<img src="images/status/new.png" id="imgTaskStatus" title="New" data-state="0" onclick="menuHandler(menuData.taskStatus)">
+	            	<div id="divMenuTaskStatus">
+	            		<img src="images/status/new.png" title="New" onmousedown="toggleAsBotton(this)"onmouseup="toggleAsBotton(this); setTaskStatus(1, menuData.taskStatus); menuHandler(menuData.taskStatus)"><br>
+	            		<img src="images/status/running.png" title="Running" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(2, menuData.taskStatus); menuHandler(menuData.taskStatus)"><br>
+	            		<img src="images/status/delivered.png" title="Delivered" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(3, menuData.taskStatus); menuHandler(menuData.taskStatus)"><br>
+	            		<img src="images/status/closed.png" title="Closed" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(4, menuData.taskStatus); menuHandler(menuData.taskStatus)"><br>
+	            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskStatus(5, menuData.taskStatus); menuHandler(menuData.taskStatus)"><br>
 	            	</div>	
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
-	            	<span class="cssFieldLabel">Total effort:</span><span id="totalTaskEffort" title="Total effort for task and child tasks"></span>
-	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleImgMenu(this, 'divNewTaskType'); toggleAsBotton(this)">
+	            	<span id="lblTotalEffort" class="cssFieldLabel">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
+	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
+	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTask)">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="toggleState(this); setChildTask(this)">
 	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 	            	<br>
-	            	<div style="margin-left:25.9em;" id="divNewTaskType">
-	            		<img src="images/tasklist/project.png" title="new project task" onclick="setNewTaskType(this, 1); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="setNewTaskType(this, 2); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/design.png" title="new design task" onclick="setNewTaskType(this, 3); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/develop.png" title="new development task" onclick="setNewTaskType(this, 4); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="setNewTaskType(this, 5); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="setNewTaskType(this, 6); toggleNewTaskTypeMenu(getById('addTask'))"><br>
-	            		<img src="images/tasklist/support.png" title="new support task" onclick="setNewTaskType(this, 7); toggleNewTaskTypeMenu(getById('addTask'))">
+	            	<div style="margin-left:25.9em;" id="divMenuNewTaskType">
+	            		<img src="images/tasklist/project.png" title="new project task" onclick="setNewTaskType(1, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="setNewTaskType(2, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/design.png" title="new design task" onclick="setNewTaskType(3, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/develop.png" title="new development task" onclick="setNewTaskType(4, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="setNewTaskType(5, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="setNewTaskType(6, menuData.newTask); menuHandler(menuData.newTask)"><br>
+	            		<img src="images/tasklist/support.png" title="new support task" onclick="setNewTaskType(7, menuData.newTask); menuHandler(menuData.newTask)	">
 	            	</div>	            	
 				</div>
 				
-            	<div id="divTaskType">
-            		<img src="images/tasklist/project.png" title="new project task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 1)"><br>
-            		<img src="images/tasklist/requirements.png" title="new requirement task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this,2)"><br>
-            		<img src="images/tasklist/design.png" title="new design task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 3)"><br>
-            		<img src="images/tasklist/develop.png" title="new development task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 4)"><br>
-            		<img src="images/tasklist/qa.png" title="new qa task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 5)"><br>
-            		<img src="images/tasklist/delivery.png" title="new delivery task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 6)"><br>
-            		<img src="images/tasklist/support.png" title="new support task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(this, 7)">
+            	<div id="divMenuTaskType">
+            		<img src="images/tasklist/project.png" title="new project task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(1, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/requirements.png" title="new requirement task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(2, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/design.png" title="new design task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(3, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/develop.png" title="new development task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(4, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/qa.png" title="new qa task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(5, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/delivery.png" title="new delivery task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(6, menuData.taskType); menuHandler(menuData.taskType)"><br>
+            		<img src="images/tasklist/support.png" title="new support task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setTaskType(7, menuData.taskType); menuHandler(menuData.taskType)">
             	</div>				
 				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="80" tabindex="1"></textarea>
 				<br>
 				<div id="divTaskDetailsBottom">
 					<label for="txtDetailEffort" class="cssFieldLabel" tabindex="2">Effort</label>
 					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1">
-					<span onclick="showEffortUnits()"><img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png"></span>
-					<div id="divEffortUnit">
-						<img title="Effort is in hours" src="images/effortUnit_hours.png" onclick="setEffortUnit(1); hideEffortUnit()">
-						<img title="Effort is in days" src="images/effortUnit_days.png" onclick="setEffortUnit(2); hideEffortUnit()">
-						<img title="Effort is in months" src="images/effortUnit_months.png" onclick="setEffortUnit(3); hideEffortUnit()">
+					<img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.taskEffortUnit)">
+					<div id="divMenuEffortUnit">
+						<img title="Effort is in hours" src="images/effortUnit_hours.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setEffortUnit(1, menuData.taskEffortUnit); menuHandler(menuData.taskEffortUnit)">
+						<img title="Effort is in days" src="images/effortUnit_days.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setEffortUnit(2, menuData.taskEffortUnit); menuHandler(menuData.taskEffortUnit)">
+						<img title="Effort is in months" src="images/effortUnit_months.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); setEffortUnit(3, menuData.taskEffortUnit); menuHandler(menuData.taskEffortUnit)">
 					</div>
 					<input type="hidden" id="effortUnit" value="1">
 	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, getById('txtDetailDueDate'))">Due Date</span>				

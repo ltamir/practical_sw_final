@@ -2,8 +2,8 @@
 function getTaskTypeImg(taskType){
 	let img = document.createElement("IMG");
 
-	img.src = taskTypeImg[taskType].src;
-	img.title = taskTypeImg[taskType].title;
+	img.src = taskTypeList[taskType].src;
+	img.title = taskTypeList[taskType].title;
 	return img;
 }
 
@@ -109,7 +109,7 @@ function createTaskRow(row, item, parent){
 	let strEffort = new String(item.effort)
 	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
 
-	effortCell.innerHTML +=' ' + effortUnit[item.effortUnit].unit;
+	effortCell.innerHTML +=' ' + effortUnitList[item.effortUnit].unit;
 
 	
 	let statusNameCell  = row.insertCell(4);
@@ -136,36 +136,15 @@ function fillAttachmentList(id, data){
     }); 	
 }
 
-function fillContactList(id, data){
-	var element = getById(id);
-	
-    for (var i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}
-	if(dbg==dbgModule.contact)
-		console.log(data);
-    data.array.forEach(function (item) {
-        let opt = document.createElement("OPTION");
-        let phone = (item.officePhone == '')?((item.cellPhone == '')?'':item.cellPhone):item.officePhone
-        let txtValue = item.firstName + " " + item.lastName + " : " + new String((phone == null)?"  -  ":phone);
-        opt.value = item.contactId;
-        opt.text = txtValue; 
-        opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'contact', '?actionId=3&contactId='+item.contactId, fillContactDetails);});
-        element.appendChild(opt);                        
-    });         	
-}
-
 function fillContactCard(id, item){
 	let card = getById(id);
-	
-	setValue('txtFirstName', item.firstName);
-	setValue('txtLastName', item.lastName);
-	setValue('txtOfficePhone', item.officePhone);
-	setValue('txtMobilePhone', item.mobilePhone);
-	setValue('txtEmail', item.email);
-	setValue('txtNotes', item.notes);
-	setValue('ConnectionContactId', item.contactId);
+	contactModel.firstName.setValue(item.firstName);
+	contactModel.lastName.setValue(item.lastName);
+	contactModel.officePhone.setValue(item.officePhone);
+	contactModel.mobilePhone.setValue(item.mobilePhone);
+	contactModel.email.setValue(item.email);
+	contactModel.notes.setValue(item.notes);
+	contactModel.contactId.setValue(item.contactId);
 }
 
 function fillAddressCard(id, item){

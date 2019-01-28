@@ -245,53 +245,22 @@
 		color: FireBrick;
 	}
 
-/* 	#cmbRelationTaskList{
-		font-family: arial, sans-serif;
-		background-color: AliceBlue;
-		min-width: 34em;	
-	}	 */
-/* 	#cmbAttachmentList	 {
-		font-family: arial, sans-serif;
-        min-width: 32em;	
-	} */
-	
 	.tabRow{
 		border-style: outset;
 		border-color: Snow;
 	}
-	
-	#divEffortUnit{
-		display: none;
-		position: fixed;
-		z-index: 2;
-		background-color: oldlace;
-	}
 
 	#imgEffortUnit{
-		border-style: inset;
+		border-style: outset;
 	}
 
-	#divNewTaskType{
+	#divMenuNewTaskType, #divMenuTaskType, #divMenuEffortUnit, #divMenuTaskStatus{
 		display: none;
 		position: fixed;
 		z-index: 2;
 		background-color: oldlace;
 	}
-	
-	#divTaskType{
-		display: none;
-		position: fixed;
-		z-index: 2;
-		background-color: oldlace;
-	}
-
-	#divTaskStatus{
-		display: none;
-		position: fixed;
-		z-index: 2;
-		background-color: oldlace;
-	}
-	
+		
 	#cmbDetailStatus option[value="0"]{
 		background-color: SlateGray;
 	}
@@ -302,6 +271,10 @@
 		font-weight: bold;	
 		width: 3.5em;
 		display: inline-block;
+	}
+	
+	#lblTotalEffort.cssFieldLabel{
+		width: 5.5em;
 	}
 
 	#txtDetailTaskEffort{

@@ -1,53 +1,58 @@
 // ***** new model ***** //
 
 function newAttachment(){
-	setValue('txtAttachmentNotes', '');
-	setValue('cmbAttachmentType', 0);
-	setValue('cmbAttachmenContact', 0);
-	setValue('attachmentFile', '');
-	setValue('attachmentId', '0');
+	attachmentModel.attachmentId.setValue(0);
+	attachmentModel.type.setValue(0);
+	attachmentModel.file.setValue('');
+	attachmentModel.contact.setValue(0);
+	attachmentModel.notes.setValue('');
+	
 	setMsg(msgType.ok, 'Ready');
 }
 
 function newCustomer(){	
-	setValue('txtCustomerName', '');
-	setValue('txtCustomerNotes', '');
-	setValue('detailCustomerId', '0');
+	customerModel.customerId.serValue(0);
+	customerModel.customerName.serValue('');
+	customerModel.customerNotes.serValue('');
+
 	setMsg(msgType.ok, 'Ready');
 }
 
 function newContact(){
-	setValue('txtFirstName', '');
-	setValue('txtLastName', '');
-	setValue('txtOfficePhone', '');
-	setValue('txtMobilePhone', '');
-	setValue('txtEmail', '');
-	setValue('txtNotes', '');
-	setValue('ConnectionContactId', '0');
+	contact.firstName.setValue('');
+	contact.lastName.setValue('');
+	contact.officePhone.setValue('');
+	contact.mobilePhone.setValue('');
+	contact.email.setValue('');
+	contact.notes.setValue('');
+	contact.contactId.setValue(0);
+
 	setMsg(msgType.ok, 'Ready');
 }
 
 function newLogin(){
-	setValue('txtUserName', '');
-	setValue('txtPassword', '');
-	setValue('loginId', 0);
-	setValue('cmbLoginContactList', 0);
+	login.loginId.setValue(0);
+	login.userName.setValue('');
+	login.password.setValue('');
+	login.contact.setValue('');
 	setValue('cmbAvailableLogins', 0);
-	
 }
 
 
 function newTask(taskType){
 	if(taskType == null)
 		taskType = 0;
-	setValue('taskId', '0');
-	setValue('cmbDetailTaskType', taskType);
-	setValue('cmbDetailContact', loggedContact.contactId);
-	setValue('txtDetailTaskTitle', '');
-	setValue('txtDetailTaskEffort', 1);
-	setEffortUnit(1);
-	setValue('txtDetailDueDate', '');
-	setValue('cmbDetailStatus', 1);
+	taskModel.taskId.setValue(0);
+	taskModel.taskType.setValue(0);
+	menuSetter(menuData.taskType, taskTypeList, 1);
+	taskModel.contact.setValue(loggedContact.contactId);
+	taskModel.title.setValue('');
+	taskModel.effort.setValue(1);
+	taskModel.effortUnit.setValue(1);
+	menuSetter(menuData.taskEffortUnit, effortUnitList, 1);
+	taskModel.dueDate.setValue('');
+	taskModel.status.setValue(1);
+	menuSetter(menuData.taskStatus, taskStatusList, 1);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
 		setChildTask(getById('addChildTask'));
@@ -57,12 +62,6 @@ function newTask(taskType){
 	setMsg(msgType.ok, 'Ready');
 }
 
-function setEffortUnit(unit){
-	setValue('effortUnit', unit);
-	let img = getById('imgEffortUnit');
-	img.src = effortUnit[unit].src; 
-	img.title = effortUnit[unit].title
-}
  
 function newRelation(){
     element = getById('divParentTaskList');
@@ -81,10 +80,10 @@ function newRelation(){
 }
 
 function newTaskLog(){
-	setValue('taskLogId', '0');
-	setValue('cmbTaskLogContact', loggedContact.contactId);
-	setValue('cmbTaskLogType', 0);
-	setValue('txtTaskLogDescription', '');
+	taskLogModel.taskLogId.setValue(0);
+	taskLogModel.contact.setValue(loggedContact.contactId);
+	taskLogModel.taskLogType.setValue(0);
+	taskLogModel.description.setValue('');
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -97,119 +96,74 @@ function setChildTask(setter){
 		return;
 	}
 
-	if(getValue('taskId') == 0){
+	if(taskModel.taskId.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a task');
 		toggleAsBotton(getById('addChildTask'));
 		return;
 	}
-	let parentTaskId = getValue('taskId');
-	newTask(getValue('cmbDetailTaskType'));
+	let parentTaskId = taskModel.taskId.getValue();
+	newTask(taskModel.taskTypeId.getValue());
 	setter.setAttribute('data-parentTask', parentTaskId);
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
 function fillTaskDetails(id, data){
-	taskObj.taskTypeId.dom.value = data.taskType.taskTypeId;
-	taskObj.contactId.dom.value = data.contact.contactId;
-	taskObj.title.dom.value = data.title;
-	taskObj.effortUnit.dom.value = data.effortUnit;
-	taskObj.effort.dom.value = data.effort;
+	setTaskType(data.taskType.taskTypeId, menuData.taskType);
+	taskModel.contact.setValue(data.contact.contactId);
+	taskModel.title.setValue(data.title);
+	setEffortUnit(data.effortUnit, menuData.taskEffortUnit);
+	taskModel.effort.setValue(data.effort);
 	
-	setEffortUnit(data.effortUnit);
-	
-	if(getById('addChildTask').getAttribute('data-state') == 1){
-		toggleState(getById('addChildTask'));
-		setChildTask(getById('addChildTask'));
+	let addChildTaskState = getById('addChildTask');
+	if(addChildTaskState.getAttribute('data-state') == 1){
+		toggleState(addChildTaskState);
+		setChildTask(addChildTaskState);
 	}
-
-	let taskTypeImg = getTaskTypeImg(data.taskType.taskTypeId);
-	getById('imgTaskType').src = taskTypeImg.src;
-	getById('imgTaskType').title = taskTypeImg.title;
 	
-	if(getById('addTask').getAttribute('data-state') == 1)
-		toggleNewTaskTypeMenu(getById('addTask'));
-	let statusImg = taskStatusImg[data.status.statusId];
-	getById('imgTaskStatus').src = statusImg.src;
-	getById('imgTaskStatus').title = statusImg.title;	
+	taskModel.dueDate.dom.value = taskModel.dueDate.getISODate(data.dueDate);
+	getById('lblDetailDueDate').innerHTML = taskModel.dueDate.getDate(taskModel.dueDate.dom.value);
+	setTaskStatus(data.status.statusId, menuData.taskStatus);
+	taskModel.taskId.setValue(data.taskId); 
 	
-	let date = data.dueDate.year + "-";
-	date += (data.dueDate.month<10)?"0":"";
-	date += data.dueDate.month + "-";
-	date += (data.dueDate.day<10)?"0":"";
-	date += data.dueDate.day;
-	setValue('txtDetailDueDate', date);
+	setTab(activeTaskTab);
 	
-	let lblDate = getById('lblDetailDueDate');
-	
-	let formattedDate = (data.dueDate.day<10)?"0":"";
-	formattedDate += data.dueDate.day + "/";	
-	formattedDate += (data.dueDate.month<10)?"0":"";
-	formattedDate += data.dueDate.month + "/";
-	formattedDate += data.dueDate.year;
-
-	lblDate.innerHTML = formattedDate;
-	
-	setValue('cmbDetailStatus', data.status.statusId);
-	setValue('taskId', data.taskId);        	
-	
-	switch(activeTaskTab){
-	case tabEnum.taskLog:
-		activateTabTaskLog();
-		break;
-	case tabEnum.relation:
-		activateTabRelation();
-		break;
-	case tabEnum.attachment:
-		activateTabAttachment();
-		break;
-	case tabEnum.linkedCustomer:
-		activateTabLinkedCustomer();
-		break;		
-		default:
-			console.log('invalid tab number' + activeTaskTab);
-	}
 	if(data.taskType.taskTypeId==1){
 		getById('TabLinkedCustomer').style.display='inline';
 	}else{
 		getById('TabLinkedCustomer').style.display='none';		
 	}
-	getDataEx('', 'business', '?taskId=' + data.taskId, function(id, data, defaultOption, funcValue, funcText, eventHandler){getById('totalTaskEffort').innerHTML = data.total}, null, null, null, null);
+	getDataEx('', 'business', '?taskId=' + data.taskId, 
+			function(id, data, defaultOption, funcValue, funcText, eventHandler){
+				getById('totalTaskEffort').innerHTML = data.total;
+				let effortState = getById('imgEffortStatus');
+				let taskEffort = effortUnitList[taskModel.effortUnit.dom.value].getHours(taskModel.effort.dom.value);
+
+				if(taskEffort < data.totalHours){
+					effortState.src='images/state_alert.png';
+					effortState.title = 'effort is smaller than total effort';
+				}else{
+					effortState.src='images/state_success.png';
+					effortState.title = 'effort is correct';			
+				}
+			}, null, null, null, null);
+	
+	menuData.newTask.menuid.src='images/add_task.png';
 	setMsg(msgType.ok, 'Ready');
 }
 
 
 function fillTaskLogDetails(id, data){
-	setValue('txtTaskLogDescription', data.description);
-	setValue('cmbTaskLogContact', data.contact.contactId);
-	setValue('cmbTaskLogType', data.taskLogType.taskLogTypeId);  
-	setValue('taskLogId', data.taskLogId);
-	setValue('sysDate', data.sysdate);
-}
-
-function fillContactDetails(id, data){
-	setValue('txtContactFirstName', data.firstName);
-
-	setValue('txtContactLastName', data.lastName);
-	setValue('txtContactOfficePhone', data.officePhone);
-	setValue('txtContactCellPhone', data.cellPhone);
-	setValue('txtContactEmail', data.email);
-	setValue('txtContactNotes', data.notes);
-	setValue('detailContactId', data.contactId);
-
-	getDataEx('cmbConnectedCustomers', 'association', '?actionId=8&contactId='+data.contactId, fillSelect, null,
-			(opt,item)=>opt.value = item.associationId, 
-			(opt,item)=>opt.text = item.customer.customerName + ' ' + item.contactType.contactTypeName, 
-			null);
-	getDataEx('cmbAvailableCustomers', 'customer', '?actionId=11&contactId='+data.contactId, fillSelect, null, 
-			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName, 
-			null);	
+	taskLogModel.description.setValue(data.description);
+	taskLogModel.contact.setValue(data.contact.contactId);
+	taskLogModel.taskLogType.setValue(data.taskLogType.taskLogTypeId);
+	taskLogModel.sysdate.setValue(data.sysdate);
+	taskLogModel.taskLogId.setValue(data.taskLogId);
 }
         
 function fillCustomerDetails(id, data){
-	setValue('txtCustomerName', data.customerName);
-	setValue('txtCustomerNotes', data.customerNotes);
-	setValue('detailCustomerId', data.customerId);
+	customerModel.customerId.setValue(data.customerId);
+	customerModel.customerName.setValue(data.customerName);
+	customerModel.customerNotes.setValue(data.customerNotes);
 }
 
 function fillAttachmentDetails(id, data){
@@ -232,51 +186,47 @@ function fillLoginDetails(id, data){
 function saveTask(){
 	let method;
 	let formData = new FormData();
-	if(getValue('cmbDetailTaskType') == 0){
+	if(taskModel.taskType.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a task type');
 		return;
 	}
-	if(getValue('cmbDetailContact') == 0){
+	if(taskModel.contact.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a contact');
 		return;
 	}
-	if(getValue('txtDetailTaskTitle') == ''){
+	if(taskModel.title.getValue() == ''){
 		setMsg(msgType.nok, 'Please enter a task title');
 		return;
 	}	
-	if(getValue('txtDetailTaskTitle').length > 120){
+	if(taskModel.title.getValue().length > 120){
 		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
 		return;
 	}		
-	if(getValue('txtDetailTaskEffort') == ''){
+	if(taskModel.effort.getValue() == ''){
 		setMsg(msgType.nok, 'Please fill Effort');
 		return;
 	}
-	if(getValue('txtDetailDueDate') == ''){
+	if(taskModel.dueDate.getValue() == ''){
 		setMsg(msgType.nok, 'Please select a due date');
 		return;
 	}
-	if(getValue('cmbDetailTaskType') == 0){
-		setMsg(msgType.nok, 'Please select a task type');
-		return;
-	}
-	formData.append('taskTypeId', getValue('cmbDetailTaskType'));
-	formData.append('contactId', getValue('cmbDetailContact'));
-	formData.append('title', getValue('txtDetailTaskTitle'));
-	formData.append('effort', getValue('txtDetailTaskEffort'));
-	formData.append('effortUnit',getValue('effortUnit'));
-	formData.append('dueDate', getValue('txtDetailDueDate'));
-	formData.append('statusId', getValue('cmbDetailStatus'));
+
+	formData.append(taskModel.taskType.api, taskModel.taskType.getValue());
+	formData.append(taskModel.contact.api, taskModel.contact.getValue());
+	formData.append(taskModel.title.api, taskModel.title.getValue());
+	formData.append(taskModel.effort.api, taskModel.effort.getValue());
+	formData.append(taskModel.effortUnit.api, taskModel.effortUnit.getValue());
+	formData.append(taskModel.dueDate.api, taskModel.dueDate.getValue());
+	formData.append(taskModel.status.api, taskModel.status.getValue());
 	
-	let taskId = getValue('taskId');
-	if(taskId == 0){
+	if(taskModel.taskId.getValue() == 0){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-    	formData.append('taskId', taskId);
+    	formData.append('taskId', taskModel.taskId.getValue());
 	}
 	
-	if(dbg == dbgModule.tasklog)
+	if(dbg == dbgModule.task)
 		debugFormData(formData);
 	
 	setData(method, formData, 'task')
@@ -289,64 +239,65 @@ function saveTask(){
 				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', newId.taskId); 
 			}
 			getById('taskId').value = newId.taskId; 
-			if(getValue('cmbDetailTaskType') ==1)
+			if(taskModel.taskType.getValue() ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
-		.then(()=>{if(method == 'POST' && getById('addChildTask').getAttribute('data-parentTask') != 0){
-			saveRelation(getById('addChildTask').getAttribute('data-parentTask'), getValue('taskId'), 1);
-			getById('addChildTask').setAttribute('data-parentTask', 0);
-			toggleState(getById('addChildTask'));
+		.then(()=>{
+			let addChildTask = getById('addChildTask');
+			if(method == 'POST' && addChildTask.getAttribute('data-parentTask') != 0){
+			saveRelation(addChildTask.getAttribute('data-parentTask'), taskModel.taskId.getValue(), 1);
+			addChildTask.setAttribute('data-parentTask', 0);
+			toggleState(addChildTask);
 		}})
-		.then(function(){prepareSearchTask()})
-		.then(function(){setTab(prepareSearchTask)})
+		.then(function(){searchTask(prepareSearchTask())})
 		.then(function(){setMsg(msgType.ok, 'Task saved')});
 }
 
 function validateTaskLog(){
-	if( getValue('taskId') == '0' || getValue('taskId') == ''){
+	if( taskLogModel.taskId.getValue() == '0' || taskModel.taskId.getValue() == ''){
 		setMsg(msgType.nok, 'Please select a task from the list');
 		return;
 	}	
-	if( getValue('txtTaskLogDescription') == ''){
+	if( taskLogModel.description.getValue() == ''){
 		setMsg(msgType.nok, 'Description cannot be empty');
 		return;
 	}
-	if( getValue('cmbTaskLogType') == 0){
+	if( taskLogModel.taskLogType.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a log type');
 		return;
 	}
-	if( getValue('cmbTaskLogContact') == 0){
+	if( taskLogModel.contact.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a contact');
 		return;
 	}	
-	saveTaskLog(getValue('cmbTaskLogContact'),
-			 getValue('cmbTaskLogType'),
-			 getValue('txtTaskLogDescription'),
-			 getValue('taskId'));
+	saveTaskLog(taskLogModel.contact.getValue(),
+			taskLogModel.taskLogType.getValue(),
+			taskLogModel.description.getValue(),
+			taskLogModel.taskId.getValue());
 } 
 
 function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 	let formData = new FormData();
 	let method;
 		
-	formData.append('contactId', contactId);
-	formData.append('taskLogTypeId',taskLogTypeId);
-	formData.append('description', description);
-	formData.append('taskId', taskId);
+	formData.append(taskLogModel.contact.api, contactId);
+	formData.append(taskLogModel.taskLogType.api ,taskLogTypeId);
+	formData.append(taskLogModel.description.api, description);
+	formData.append(taskLogModel.taskId.api, taskId);
 	
-	let taskLogId = getValue('taskLogId');
-	if(taskLogId == 0){
+	if(taskLogModel.taskLogId.getValue() == 0){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-    	formData.append('taskLogId', taskLogId);
+    	formData.append('taskLogId', taskLogModel.taskLogId.getValue());
 	}
 	
 	if(dbg==dbgModule.tasklog)
 		debugFormData(formData);
 
 	setData(method, formData, 'tasklog')
-		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getById('taskId').value, fillTaskLogList)})
+		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+taskLogModel.taskId.getValue(), fillTaskLogList)})
+		.then(newTaskLog())
 		.then(function(){setMsg(msgType.ok, 'Log saved')});
 }
 
@@ -498,41 +449,46 @@ function saveContact(){
 	let formData = new FormData();
 	let element;
 	let method;
-	if(getValue('txtFirstName') == ''){
+	if(contactModel.firstName.getValue() == ''){
 		setMsg(msgType.nok, 'Contact missing First Name');
 		return;
 	}
-	if(getValue('txtLastName') == ''){
+	if(contactModel.lastName.getValue() == ''){
 		setMsg(msgType.nok, 'Contact missing Last Name');
 		return;
 	}	
-	formData.append('firstName', getValue('txtFirstName'))
-	formData.append('lastName', getValue('txtLastName'))
-	formData.append('officePhone', getValue('txtOfficePhone'))
-	formData.append('mobilePhone', getValue('txtMobilePhone'))
-	formData.append('email', getValue('txtEmail'))
-	formData.append('notes', getValue('txtNotes'))
+	formData.append(contactModel.firstName.api, contactModel.firstName.getValue());
+	formData.append(contactModel.lastName.api, contactModel.lastName.getValue());
+	formData.append(contactModel.officePhone.api, contactModel.officePhone.getValue());
+	formData.append(contactModel.mobilePhone.api, contactModel.mobilePhone.getValue());
+	formData.append(contactModel.email.api, contactModel.email.getValue());
+	formData.append(contactModel.notes.api, contactModel.notes.getValue());
 	
-	let contactId = getValue('ConnectionContactId');
-	if(contactId == 0){
+	if(contactModel.contactId.getValue() == 0){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-    	formData.append('contactId', contactId);
+    	formData.append(contactModel.contactId.api, contactModel.contactId.getValue());
 	}
 
 	if(dbg==dbgModule.contact)
 		debugFormData(formData);
 
 	setData(method, formData, 'contact')
-		.then(()=>{
-			if(getById('lblCRMContacts').getAttribute("data-state") == 1){
-				showAllContacts();
-			}else{
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok,  resp.msg);
+			console.log('error ' + resp.err);
+			return;
+		}else{
+			if(getById('imgFilterContact').getAttribute("data-state") == 1){
 				showAssociatedContacts();
+			}else{
+				showAllContacts();
 			}			
+			setMsg(msgType.ok, 'Contact saved')
+			}
 		});
-	setMsg(msgType.ok, 'Contact saved');
 }
 
 function saveAssociation(action){

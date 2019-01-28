@@ -13,27 +13,30 @@ function setSearchPredicate(searchElement){
  * @returns
  */
 function prepareSearchTask(){
-
-	searchTask(
-		getValue('cmbSearchCustomer'),
-		getValue('txtSearchDueDate'),
-		getValue('txtSearchTitle'),
-		getValue('cmbSearchProject'),
-		getValue('cmbSearchTaskType'),
-		getValue('searchTaskStatus')
-	);
+	let searchString = '?actionId=2';
+	searchString += '&customerId=' + searchModel.customer.getValue();
+	searchString += '&duedate=' + searchModel.dueDate.getValue();
+	searchString += '&projectId=' + searchModel.project.getValue();
+	searchString += '&tasktypeId=' + searchModel.taskType.getValue();
+	searchString += '&showclosed=' + searchModel.status.getValue();
+	searchString += '&title=' + searchModel.title.getValue();
+	
+	return searchString;
 }
 
-function searchTask(customerId, dueDate, txtSearchTitle, projectId, cmbSearchTaskType, showClosed){
-	let searchTaskParams = '?actionId=2';
-	searchTaskParams += '&customerId=' + customerId;
-	searchTaskParams += '&duedate=' + dueDate;
-	searchTaskParams += '&projectId=' + projectId;
-	searchTaskParams += '&tasktypeId=' + cmbSearchTaskType;
-	searchTaskParams += '&showclosed=' + showClosed;
-	searchTaskParams += '&title=' + txtSearchTitle;
+function searchTask(searchString, customerId, dueDate, txtSearchTitle, projectId, cmbSearchTaskType, showClosed){
+
+	if(searchString == null){
+		searchString = '?actionId=2';
+		searchString += '&customerId=' + customerId;
+		searchString += '&duedate=' + dueDate;
+		searchString += '&projectId=' + projectId;
+		searchString += '&tasktypeId=' + cmbSearchTaskType;
+		searchString += '&showclosed=' + showClosed;
+		searchString += '&title=' + txtSearchTitle;
+	}
 	
-	getData('taskList', 'task', searchTaskParams, fillTaskList);
+	getData('taskList', 'task', searchString, fillTaskList);
 }
 
 /**
@@ -41,7 +44,7 @@ function searchTask(customerId, dueDate, txtSearchTitle, projectId, cmbSearchTas
  * @returns
  */
 function searchRelationTask(){
-//	searchTask(0,'',getValue('cmbTabRelationProject'),0,0,'');
+
 	let searchTaskParams = '?actionId=2';
 	searchTaskParams += '&customerId=0';
 	searchTaskParams += '&duedate=';
@@ -59,7 +62,7 @@ function searchRelationTask(){
  * @returns
  */
 function searchProjectTask(id){
-//	searchTask(0,'',getValue('cmbTabRelationProject'),0,0,'');
+
 	let searchTaskParams = '?actionId=2';
 	searchTaskParams += '&customerId=0';
 	searchTaskParams += '&duedate=';
@@ -78,17 +81,17 @@ function searchProjectTask(id){
 
 /**
  * Resets the Task search in the main menu.
- * The checkbox 'Open Tasks' is set to checked
  * @returns
  */
 function resetTaskSearch(){
-	getById('cmbSearchCustomer').value=0;
-	getById('cmbSearchTaskType').value=0;
-	getById('cmbSearchProject').value=0;
-	getById('txtSearchDueDate').valueAsDate=null;
-	getById('lblSearchDueDate').innerHTML = 'Due date';
-	setValue('txtSearchTitle', '');
-	setSearchTaskStatusOpen();
+	searchModel.customer.setValue(0);
+	searchModel.dueDate.setValue(null);
+	searchModel.project.setValue(0);
+	searchModel.taskType.setValue(0);
+	searchModel.status.setValue(0);
+	searchModel.title.setValue('');
+		
+//	getById('txtSearchDueDate').valueAsDate=null;
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -117,25 +120,29 @@ function toggleSearchDate(lbl, field){
 	}
 	
 }
+function toggleSearchTaskStatus(statusImg){
+	if(statusImg.getAttribute('data-state') == '0')
+		setSearchTaskStatusClosed(statusImg);
+	else
+		setSearchTaskStatusOpen(statusImg);
+}
 
-function setSearchTaskStatusClosed(){
-	let statusImg = getById('searchTaskStatus');
+function setSearchTaskStatusClosed(statusImg){
 	statusImg.src='images/task_done.png';
-	statusImg.value='1';
-	statusImg.style.borderStyle='inset';
+	statusImg.setAttribute('data-state', 1);
+	toggleAsBotton(statusImg);
 	statusImg.title = 'Closed tasks';
 }
 
-function setSearchTaskStatusOpen(){
-	let statusImg = getById('searchTaskStatus');
+function setSearchTaskStatusOpen(statusImg){
 	statusImg.src='images/task_open.png';
-	statusImg.value='0';
-	statusImg.style.borderStyle='outset';
+	statusImg.setAttribute('data-state', 0);
+	toggleAsBotton(statusImg);
 	statusImg.title = 'Open tasks';
 }
 
 function connectionFilterOn(element){
-	if(getValue('taskId') == 0){
+	if(taskModel.taskId.getValue() == 0){
 		setMsg(msgType.nok, 'No task selected. cancelling thre filter');
 		return;
 	}
@@ -144,7 +151,7 @@ function connectionFilterOn(element){
 	element.style.borderStyle='inset';
 	element.title = 'Customers of selected task';
 
-	getDataEx('cmbConnectedCustomer', 'customer', '?actionId=14&taskId='+getValue('taskId'), fillSelect, null, 
+	getDataEx('cmbConnectedCustomer', 'customer', '?actionId=14&taskId='+taskModel.taskId.getValue(), fillSelect, null, 
 	(opt,item)=>opt.value = item.customerId, 
 	(opt,item)=>opt.text = item.customerName,
 	(opt, item)=>opt.addEventListener("click", ()=>{
@@ -163,9 +170,7 @@ function connectionFilterOn(element){
 	setMsg(msgType.ok, 'Filtering on task');
 }
 
-function connectionFilterOff(element){
-
-	
+function connectionFilterOff(element){	
 	element.style.borderStyle='outset';
 	element.title = 'All customers';
 
@@ -176,100 +181,87 @@ function connectionFilterOff(element){
 function toggleAsBotton(img){
 	if(img.style.borderStyle=='inset'){
 		img.style.borderStyle='outset';
-	}
-	else{
+	}else{
 		img.style.borderStyle='inset';
 	}
 }
 
-function toggleSearchTaskStatus(id){
-	let statusImg = getById('searchTaskStatus');
-	if(statusImg.value == '0')
-		setSearchTaskStatusClosed();
-	else
-		setSearchTaskStatusOpen();
+
+var menuData = {
+		taskType:{menuid:null, menuDiv:null, on:null, off:null, set:null},
+		taskStatus:{menuid:null, menuDiv:null, on:null, off:null, set:null},
+		taskEffortUnit:{menuid:null, menuDiv:null, on:null, off:null, set:null},
+		newTask:{menuid:null, menuDiv:null, on:null, off:null, set:null}
 }
 
-function toggleHandler(id, implA, implB){
+function initMenuData(){
+	menuData.taskType.menuid = getById('imgTaskType');
+	menuData.taskType.menuDiv = getById('divMenuTaskType');
+	menuData.taskType.on = menuHandler;
+	menuData.taskType.off = menuHandler;
+	menuData.taskType.set = setTaskType;
 	
-	if(id.getAttribute('data-state') == '0'){
-		implA(id);
-		id.setAttribute('data-state', 1);
-	}
-	else{
-		implB(id);
-		id.setAttribute('data-state', 0);
-	}
-}
-
-function toggleImgMenu(imgId, menuId){
-	menu = getById(menuId);
-	if(imgId.getAttribute('data-state') == 0){
-		menu.style.display = 'inline';
-		imgId.setAttribute('data-state', 1);
-	}else{
-		menu.style.display = 'none';
-		imgId.setAttribute('data-state', 0);
-	}
-}
-
-function toggleState(img){
-	if(img.getAttribute('data-state') == 0){
-		setPressed(img);
-	}else{
-		setUnpressed(img);
-	}
-}
-function setPressed(img){
-	img.style.borderStyle='inset';
-	img.setAttribute('data-state', 1);
-}
-
-function setUnpressed(img){
-	img.style.borderStyle='outset';
-	img.setAttribute('data-state', 0);
-}
-
-function setTaskType(selectedImg, taskType){
-	setValue('cmbDetailTaskType', taskType);
-	getById('imgTaskType').src = selectedImg.src;
-	getById('imgTaskType').title = selectedImg.title;	
-	toggleImgMenu(getById('imgTaskType'), 'divTaskType');
-}
-
-function setTaskStatus(selectedImg, taskStatus){
-	setValue('cmbDetailStatus', taskStatus);
-	getById('imgTaskStatus').src = selectedImg.src;
-	getById('imgTaskStatus').title = selectedImg.title;	
-	toggleImgMenu(getById('imgTaskStatus'), 'divTaskStatus');
-}
-
-function toggleNewTaskTypeMenu(imgId){
-	if(imgId.getAttribute('data-state') == 1){
-		getById('divNewTaskType').style.display='inline';
-	}else{
-		getById('divNewTaskType').style.display='none';
-	}	
+	menuData.taskStatus.menuid = getById('imgTaskStatus');
+	menuData.taskStatus.menuDiv = getById('divMenuTaskStatus');
+	menuData.taskStatus.on = menuHandler;
+	menuData.taskStatus.off = menuHandler;
+	menuData.taskStatus.set = setTaskStatus;
 	
+	menuData.taskEffortUnit.menuid = getById('imgEffortUnit');
+	menuData.taskEffortUnit.menuDiv = getById('divMenuEffortUnit');
+	menuData.taskEffortUnit.on = menuHandler;
+	menuData.taskEffortUnit.off = menuHandler;
+	menuData.taskEffortUnit.set = setEffortUnit;	
+	
+	menuData.newTask.menuid = getById('addTask');
+	menuData.newTask.menuDiv = getById('divMenuNewTaskType');
+	menuData.newTask.on = menuHandler;
+	menuData.newTask.off = menuHandler;
+	menuData.newTask.set = setTaskType;
+}
+// handle image as two-state button
+function menuHandler(menu){
+	
+	if(menu.menuid.getAttribute('data-state') == '0'){
+		menu.menuid.setAttribute('data-state', 1);
+		menu.menuid.style.borderStyle='inset';
+		menu.menuDiv.style.display = 'inline';
+	}else{
+		menu.menuid.setAttribute('data-state', 0);
+		menu.menuid.style.borderStyle='outset';
+		menu.menuDiv.style.display = 'none';
+	}
 }
 
-function setNewTaskType(selectedImg ,taskType){
-	newTask(taskType);
-	getById('imgTaskType').src = selectedImg.src;
-	getById('imgTaskType').title = selectedImg.title;
-	toggleImgMenu(getById('addTask'), 'divNewTaskType')
+function menuSetter(menu, menuList, pos){
+	menu.menuid.src = menuList[pos].src;
+	menu.menuid.title = menuList[pos].title;
 }
 
-function showEffortUnits(){
-	getById('divEffortUnit').style.display='inline';
+function setTaskType(taskTypeId, menu){
+	setValue('cmbDetailTaskType', taskTypeId);
+	menu.menuid.src = taskTypeList[taskTypeId].src;
+	menu.menuid.title = taskTypeList[taskTypeId].title;	
 }
 
-function hideEffortUnit(){
-	// setValue('effortUnit', unit);
-	// getById('imgEffortUnit').src = selectedImg.src;
-	// getById('imgEffortUnit').title = selectedImg.title;
-	getById('divEffortUnit').style.display = 'none';
+function setTaskStatus(statusId, menu){
+	setValue('cmbDetailStatus', statusId);
+	menu.menuid.src = taskStatusList[statusId].src;
+	menu.menuid.title = taskStatusList[statusId].title;	
 }
+
+function setEffortUnit(effortUnitId, menu){
+	setValue('effortUnit', effortUnitId);
+	menu.menuid.src = effortUnitList[effortUnitId].src; 
+	menu.menuid.title = effortUnitList[effortUnitId].title
+}
+
+function setNewTaskType(taskTypeId, menu){
+	newTask(taskTypeId);
+	menu.menuid.src = taskTypeList[taskTypeId].src;
+	menu.menuid.title = taskTypeList[taskTypeId].title;	
+}
+
 
 function dropOnParent(ev){
 	ev.preventDefault();
@@ -280,44 +272,45 @@ function allowDrop(ev) {
 	ev.preventDefault();
 }
 
-function setLoggedinUser(id, body, defaultOption, funcValue, funcText, eventHandler){
-	if(body == null)
-		window.location.replace('login.html');
-	
-	loggedContact = body.contact;
-	setValue('user', body.username);
+function execSync(funcA, funcB){
+	getDataEx('', 'authenticate', '?actionId=16', function(id, body, defaultOption, funcValue, funcText, eventHandler){
+		if(body == null)
+			window.location.replace('login.html');
+		loggedContact = body.contact;
+		}, 'Customers:', null, null, null);
+	funcA('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
+    		(opt,item)=>opt.value = item.contactId, 
+    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+    		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
+	funcB('cmbSearchTaskType', 'taskType', '?actionId=2', fillSelect, 'Task Type:', 
+			(opt,item)=>opt.value = item.taskTypeId, 
+			(opt,item)=>opt.text = item.taskTypeName, 
+			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
 }
-
 function init(){
 
-	initJsonObj();
-	toggleSearchTaskStatus();
-	getDataEx('', 'authenticate', '?actionId=16', setLoggedinUser, 'Customers:', null, null, null);
+	initModels();
+	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers:', 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
 			null);
-	getDataEx('cmbSearchTaskType', 'taskType', '?actionId=2', fillSelect, 'Task Type:', 
-			(opt,item)=>opt.value = item.taskTypeId, 
-			(opt,item)=>opt.text = item.taskTypeName, 
-			null);
+
 	getDataEx('cmbDetailTaskType', 'taskType', '?actionId=2', fillSelect, 'Task Type:', 
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 
 			null);
 
-    getDataEx('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
-    		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
-    
+	execSync(getDataEx, getDataEx);
+	
     getDataEx('cmbDetailStatus', 'status', '?actionId=2', fillSelect, null, 
     		(opt,item)=>opt.value = item.statusId, 
     		(opt,item)=>opt.text = item.statusName, 
     		null);    
 
 	searchProjectTask('cmbSearchProject');
-    searchTask(0, '','', 0, 1, 0);
+	
+	searchTask(null, 0, '', '', 0, 1, 0);
     
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
@@ -327,11 +320,14 @@ function init(){
     getById('txtDetailDueDate').valueAsDate = new Date(); 
 }
 
-function initJsonObj(){
-	Object.keys(taskObj).forEach(function(item){
-		taskObj[item].dom = getById(taskObj[item].domField);
+function initModels(){
+	Object.keys(taskModel).forEach(function(item){
+		taskModel[item].dom = getById(taskModel[item].domField);
+	});
+	Object.keys(searchModel).forEach(function(item){
+		searchModel[item].dom = getById(searchModel[item].domField);
 	});	
-		
+	
 }
 
 function logout(){

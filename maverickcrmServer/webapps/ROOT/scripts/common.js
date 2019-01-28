@@ -5,46 +5,9 @@ var dbg = 0;
 var msgType = {ok:1, nok:2};
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8}
 var activeTaskTab = tabEnum.taskLog;
-var effortUnit = {
-		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours'},
-			2:{src:"images/effortUnit_days.png", unit:'d', title:'days'},
-			3:{src:"images/effortUnit_months.png", unit:'m', title:'months'}
-}
-var taskTypeImg = {
-		1:{src:"images/tasklist/project.png", title:"Project"},
-		2:{src:"images/tasklist/requirements.png", title:"Requirement"},
-		3:{src:"images/tasklist/design.png", title:"Design"},
-		4:{src:"images/tasklist/develop.png", title:"Development"},
-		5:{src:"images/tasklist/qa.png", title:"QA"},
-		6:{src:"images/tasklist/delivery.png", title:"Delivery"},
-		7:{src:"images/tasklist/support.png", title:"Support"}
-	}
-var taskStatusImg = {
-		1:{src:"images/status/new.png", title:"New"},
-		2:{src:"images/status/running.png", title:"Running"},
-		3:{src:"images/status/delivered.png", title:"Delivered"},
-		4:{src:"images/status/closed.png", title:"Closed"},
-		5:{src:"images/status/onhold.png", title:"On Hold"}
-	}
 
-var taskLogObj = {
-		taskLogId:{value:0, domField:'taskLogId', dom:null},
-		sysdate:{value:0, domField:'sysDate', dom:null},
-		taskId:{value:0, domField:'taskId', dom:null},
-		contactId:{value:0, domField:'cmbTaskLogContact', dom:null},
-		description:{value:'', domField:'txtTaskLogDescription', dom:null},
-		taskLogTypeId:{value:0, domField:'cmbTaskLogType', dom:null}
-		}
-var taskObj={
-		taskId:{value:0, domField:'taskId', dom:null}, 
-		taskTypeId:{value:0, domField:'cmbDetailTaskType', dom:null}, 
-		contactId:{value:0, domField:'cmbDetailContact', dom:null}, 
-		title:{value:'', domField:'txtDetailTaskTitle', dom:null}, 
-		effort:{value:1, domField:'txtDetailTaskEffort', dom:null}, 
-		effortUnit:{value:1, domField:'effortUnit', dom:null}, 
-		dueDate:{value:'', domField:'txtDetailDueDate', dom:null}, 
-		statusId:{value:0, domField:'cmbDetailStatus', dom:null} 
-		}
+
+
 var loggedContact;
 function setDebugModule(moduleNum){
 	dbg = getValue('cmbDebug');
@@ -104,7 +67,7 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     		impl(id, body, defaultOption, funcValue, funcText, eventHandler);
         }
     )
-    .then(function(body){return body;})
+//    .then(function(body){return body;})
     //.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
@@ -214,6 +177,10 @@ function setValue(elementId, value){
 
 function getValue(elementId){
 	return document.getElementById(elementId).value;
+}
+
+function getState(elementId){
+	return document.getElementById(elementId).getAttribute('data-state');
 }
 
 function getById(id){
