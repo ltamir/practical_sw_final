@@ -81,7 +81,7 @@ public class TaskDAL {
 		int[] paramIndex = new int[6];
 		boolean whereUsed = false;
 		final String baseSQL = "select * from task";
-		final String orderBy = " order by duedate";
+		final String orderBy = " order by duedate asc, statusId asc";
 		final String closedPredicate = " statusId=4";
 		final String dueDatePredicate = " dueDate <= ?";
 		final String titlePredicate = " title like ?";
