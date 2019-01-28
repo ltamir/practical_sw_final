@@ -164,7 +164,7 @@ function connectionFilterOn(element){
 					}, 
 					null,
 				(opt, item)=>opt.addEventListener("click", ()=>{
-					getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));
+					getData('', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));
 		})
 	);
 	setMsg(msgType.ok, 'Filtering on task');
@@ -197,27 +197,27 @@ var menuData = {
 function initMenuData(){
 	menuData.taskType.menuid = getById('imgTaskType');
 	menuData.taskType.menuDiv = getById('divMenuTaskType');
+	menuData.taskType.model = taskModel.taskType;
 	menuData.taskType.on = menuHandler;
 	menuData.taskType.off = menuHandler;
-	menuData.taskType.set = setTaskType;
 	
 	menuData.taskStatus.menuid = getById('imgTaskStatus');
 	menuData.taskStatus.menuDiv = getById('divMenuTaskStatus');
+	menuData.taskStatus.model = taskModel.status;
 	menuData.taskStatus.on = menuHandler;
 	menuData.taskStatus.off = menuHandler;
-	menuData.taskStatus.set = setTaskStatus;
 	
 	menuData.taskEffortUnit.menuid = getById('imgEffortUnit');
 	menuData.taskEffortUnit.menuDiv = getById('divMenuEffortUnit');
+	menuData.taskEffortUnit.model = taskModel.effortUnit;
 	menuData.taskEffortUnit.on = menuHandler;
-	menuData.taskEffortUnit.off = menuHandler;
-	menuData.taskEffortUnit.set = setEffortUnit;	
+	menuData.taskEffortUnit.off = menuHandler;	
 	
 	menuData.newTask.menuid = getById('addTask');
 	menuData.newTask.menuDiv = getById('divMenuNewTaskType');
+	menuData.newTask.model = taskModel.taskType;
 	menuData.newTask.on = menuHandler;
 	menuData.newTask.off = menuHandler;
-	menuData.newTask.set = setTaskType;
 }
 // handle image as two-state button
 function menuHandler(menu){
@@ -233,27 +233,10 @@ function menuHandler(menu){
 	}
 }
 
-function menuSetter(menu, menuList, pos){
-	menu.menuid.src = menuList[pos].src;
-	menu.menuid.title = menuList[pos].title;
-}
-
-function setTaskType(taskTypeId, menu){
-	setValue('cmbDetailTaskType', taskTypeId);
-	menu.menuid.src = taskTypeList[taskTypeId].src;
-	menu.menuid.title = taskTypeList[taskTypeId].title;	
-}
-
-function setTaskStatus(statusId, menu){
-	setValue('cmbDetailStatus', statusId);
-	menu.menuid.src = taskStatusList[statusId].src;
-	menu.menuid.title = taskStatusList[statusId].title;	
-}
-
-function setEffortUnit(effortUnitId, menu){
-	setValue('effortUnit', effortUnitId);
-	menu.menuid.src = effortUnitList[effortUnitId].src; 
-	menu.menuid.title = effortUnitList[effortUnitId].title
+function menuSetter(menu, menuList, val){
+	menu.menuid.src = menuList[val].src;
+	menu.menuid.title = menuList[val].title;
+	menu.model.setValue(val);
 }
 
 function setNewTaskType(taskTypeId, menu){
@@ -261,7 +244,6 @@ function setNewTaskType(taskTypeId, menu){
 	menu.menuid.src = taskTypeList[taskTypeId].src;
 	menu.menuid.title = taskTypeList[taskTypeId].title;	
 }
-
 
 function dropOnParent(ev){
 	ev.preventDefault();
@@ -276,7 +258,7 @@ function execSync(funcA, funcB){
 	getDataEx('', 'authenticate', '?actionId=16', function(id, body, defaultOption, funcValue, funcText, eventHandler){
 		if(body == null)
 			window.location.replace('login.html');
-		loggedContact = body.contact;
+		loggedContact = body.login.contact;
 		}, 'Customers:', null, null, null);
 	funcA('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
     		(opt,item)=>opt.value = item.contactId, 
