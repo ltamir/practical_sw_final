@@ -59,7 +59,9 @@ function newTask(taskType){
 	taskModel.effort.setValue(1);
 	taskModel.effortUnit.setValue(1);
 	menuSetter(menuData.taskEffortUnit, 1);
-	taskModel.dueDate.setValue('');
+//	getById('txtDetailDueDate').valueAsDate = new Date(); 
+	taskModel.dueDate.setValue(new Date());
+	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
 	taskModel.status.setValue(1);
 	menuSetter(menuData.taskStatus, 1);
 	
