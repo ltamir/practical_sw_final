@@ -183,33 +183,30 @@ function fillLoginDetails(id, data){
 
 //***** save model ***** //
 
+//formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
+function validate(modelKey, value, errorMessage){
+	if(modelKey.getValue() == value){
+		if(errorMessage != null)
+			setMsg(msgType.nok, errorMessage);
+		return false;
+	}
+	return true;
+}
+
 function saveTask(){
 	let method;
 	let formData = new FormData();
-	if(taskModel.taskType.getValue() == 0){
-		setMsg(msgType.nok, 'Please select a task type');
-		return;
-	}
-	if(taskModel.contact.getValue() == 0){
-		setMsg(msgType.nok, 'Please select a contact');
-		return;
-	}
-	if(taskModel.title.getValue() == ''){
-		setMsg(msgType.nok, 'Please enter a task title');
-		return;
-	}	
+	
 	if(taskModel.title.getValue().length > 120){
 		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
 		return;
-	}		
-	if(taskModel.effort.getValue() == ''){
-		setMsg(msgType.nok, 'Please fill Effort');
-		return;
 	}
-	if(taskModel.dueDate.getValue() == ''){
-		setMsg(msgType.nok, 'Please select a due date');
-		return;
-	}
+	
+	if(!validate(taskModel.taskType, 0, 'Please select a task type')) return;
+	if(!validate(taskModel.contact, 0, 'Please select a contact')) return;
+	if(!validate(taskModel.title, 0, 'Please enter a task title')) return;
+	if(!validate(taskModel.effort, '', 'Please enter an effort')) return;
+	if(!validate(taskModel.dueDate, '', 'Please select a due date')) return;
 
 	formData.append(taskModel.taskType.api, taskModel.taskType.getValue());
 	formData.append(taskModel.contact.api, taskModel.contact.getValue());
@@ -253,23 +250,13 @@ function saveTask(){
 		.then(function(){setMsg(msgType.ok, 'Task saved')});
 }
 
+
 function validateTaskLog(){
-	if( taskLogModel.taskId.getValue() == '0' || taskModel.taskId.getValue() == ''){
-		setMsg(msgType.nok, 'Please select a task from the list');
-		return;
-	}	
-	if( taskLogModel.description.getValue() == ''){
-		setMsg(msgType.nok, 'Description cannot be empty');
-		return;
-	}
-	if( taskLogModel.taskLogType.getValue() == 0){
-		setMsg(msgType.nok, 'Please select a log type');
-		return;
-	}
-	if( taskLogModel.contact.getValue() == 0){
-		setMsg(msgType.nok, 'Please select a contact');
-		return;
-	}	
+	if(!validate(taskLogModel.taskId, 0, 'Please select a task from the list')) return;
+	if(!validate(taskLogModel.description, '', 'Description cannot be empty')) return;
+	if(!validate(taskLogModel.taskLogType, 0, 'Please select a log type')) return;
+	if(!validate(taskLogModel.contact, 0, 'Please select a contact')) return;
+	
 	saveTaskLog(taskLogModel.contact.getValue(),
 			taskLogModel.taskLogType.getValue(),
 			taskLogModel.description.getValue(),
@@ -301,20 +288,14 @@ function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 		.then(function(){setMsg(msgType.ok, 'Log saved')});
 }
 
+
 function prepareSaveRelation(asParent){
 	let relationTaskList;
+	let relName = (asParent == 1)?'parent':'child';
 	
-	if(getValue('taskId') == 0){
-		setMsg(msgType.nok, 'Please select a task');
-		return;
-	}
-	if(getValue('taskRelationSelectedTaskId') == '' || getValue('taskRelationSelectedTaskId') == 0){
-		if(asParent == 1)
-			setMsg(msgType.nok, 'Please select a task to set as parent');
-		else
-			setMsg(msgType.nok, 'Please select a task to set as child');
-		return;
-	}
+	if(!validate(taskModel.taskId, 0, 'Please select a task')) return;
+	if(!validate(taskRelationModel.selectedTask, 0, 'Please select a task to set as ' + relName)) return;
+	if(!validate(taskRelationModel.selectedTask, '', 'Please select a task to set as ' + relName)) return;
 	
 	let selectedTaskId = getValue('taskRelationSelectedTaskId');
 	if(asParent == 1)
@@ -322,26 +303,20 @@ function prepareSaveRelation(asParent){
 	else
 		relationTaskList = getById('divChildTaskList');
     for (let i = relationTaskList.childNodes.length - 1; i >= 0; i--) {
-    	if(relationTaskList.childNodes[i].hasAttribute("data-taskId")){
-    		if(relationTaskList.childNodes[i].getAttribute("data-taskId") == selectedTaskId){
-    			if(asParent == 1)
-    				setMsg(msgType.nok, 'This task is already set as a parent');
-    			else
-    				setMsg(msgType.nok, 'This task is already set as a child');
-        		return;
-    		}
+    	if(relationTaskList.childNodes[i].hasAttribute("data-taskId") && relationTaskList.childNodes[i].getAttribute("data-taskId") == selectedTaskId){
+			setMsg(msgType.nok, 'This task is already set as a ' + relName);
+    		return;
     	}
 	}	
 	
-	if(getValue('cmbTaskRelationType') == 0){
-		setMsg(msgType.nok, 'Please select a relation type');
-		return;
-	}
+    if(!validate(taskRelationModel.taskRelationType, 0, 'Please select a relation type')) return;
+
 	if(asParent == 1)
 		saveRelation(getValue('taskRelationSelectedTaskId'), getValue('taskId'), getValue('cmbTaskRelationType'));
 	else
 		saveRelation(getValue('taskId'), getValue('taskRelationSelectedTaskId'), getValue('cmbTaskRelationType'));
 }
+
 
 function saveRelation(parent, child, relationType){
 	let method;
@@ -373,12 +348,13 @@ function saveRelation(parent, child, relationType){
 	.then(function(){setMsg(msgType.ok, 'Relation saved')});
 }
 
+
 function saveRelationType(relationTypeId){
 	let taskRelationId = getById('divRelationTypeList').getAttribute('data-taskrelationId');
 	let formData = new FormData();
 	
-	formData.append('taskRelationId', taskRelationId);
-	formData.append('taskRelationTypeId', relationTypeId);
+	formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
+	formData.append(taskRelationTypeId.taskRelationType.api, taskRelationTypeId.taskRelationType.getValue());
 	setData('PUT', formData, 'taskrelation')
 	.then(function(resp){
 		if(resp.status == 'nack'){
@@ -400,12 +376,9 @@ function removeTaskRelation(){
 	let method='DELETE';
 	let formData = new FormData();
 	
-	if(getValue('taskRelationId') == 0){
-		setMsg(msgType.nok, 'Please select a task to remove');
-		return;
-	}
+	if(!validate(taskRelationTypeId.taskRelationId, '', 'Please select a task to remove from the relation')) return;
 	
-	formData.append('taskRelationId', getValue('taskRelationId'));
+	formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
 	
 	setData(method, formData, 'taskrelation')
 	
@@ -420,18 +393,17 @@ function saveCustomer(){
 	let method;
 	let formData = new FormData();
 	
-	if(getValue('txtCustomerName') == ''){
-		setMsg(msgType.nok, 'Please fill customer name');
-		return;
-	}
-	formData.append('customerName', getValue('txtCustomerName'));
-	formData.append('customerNotes', getValue('txtCustomerNotes'));  		
-	if(getValue('detailCustomerId') == 0){
+	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return;
+
+	formData.append(customerModel.customerName.api, customerModel.customerName.getValue());
+	formData.append(customerModel.customerNotes.api, customerModel.customerNotes.getValue());
+	 		
+	if(customerModel.customerId.getValue() == 0){
 		method = 'POST';
 	}
 	else{
 		method = 'PUT';
-    	formData.append('customerId', getValue('detailCustomerId'));
+    	formData.append(customerModel.customerId.api, customerModel.customerId.getValue());
 	}
 
 	if(dbg==dbgModule.customer)
@@ -444,19 +416,15 @@ function saveCustomer(){
 
 }
 
-      	
+
 function saveContact(){
 	let formData = new FormData();
 	let element;
 	let method;
-	if(contactModel.firstName.getValue() == ''){
-		setMsg(msgType.nok, 'Contact missing First Name');
-		return;
-	}
-	if(contactModel.lastName.getValue() == ''){
-		setMsg(msgType.nok, 'Contact missing Last Name');
-		return;
-	}	
+	
+	if(!validate(contactModel.firstName, '', 'Contact missing First Name')) return;
+	if(!validate(contactModel.lastName, '', 'Contact missing Last Name')) return;
+
 	formData.append(contactModel.firstName.api, contactModel.firstName.getValue());
 	formData.append(contactModel.lastName.api, contactModel.lastName.getValue());
 	formData.append(contactModel.officePhone.api, contactModel.officePhone.getValue());
@@ -481,62 +449,47 @@ function saveContact(){
 			console.log('error ' + resp.err);
 			return;
 		}else{
-			if(getById('imgFilterContact').getAttribute("data-state") == 1){
+			if(getById('imgFilterContact').getAttribute("data-state") == 1)
 				showAssociatedContacts();
-			}else{
+			else
 				showAllContacts();
-			}			
+			
 			setMsg(msgType.ok, 'Contact saved')
 			}
 		});
 }
+
 
 function saveAssociation(action){
 	let formData = new FormData();
 	let method;
 	
 	if(action == 1){	//add
-		
-		if(getValue('cmbConnectedCustomer') == 0 || getValue('cmbConnectedCustomer') == ''){
-			setMsg(msgType.nok, 'Please select a customer');
-			return;
-		}
-		if(getValue('ConnectionContactId') == 0 || getValue('ConnectionContactId') == ''){
-			setMsg(msgType.nok, 'Please select a contact');
-			return;
-		}		
-		if(getValue('cmbContactType') == 0){
-			setMsg(msgType.nok, 'Please select a Contact type');
-			return;
-		}
-		if(getValue('addressId') == 0){
-			setMsg(msgType.nok, 'Please select an address');
-			return;
-		}
-		if(getValue('ConnectionAssociationId') > 0)
+		if(!validate(associationModel.customer, 0, 'Please select a customer')) return;
+		if(!validate(associationModel.customer, '', 'Please select a customer')) return;
+		if(!validate(associationModel.contact, 0, 'Please select a contact')) return;
+		if(!validate(associationModel.contact, '', 'Please select a contact')) return;
+		if(!validate(associationModel.contactType, 0, 'Please select a Contact type')) return;		
+		if(!validate(associationModel.address, 0, 'Please select an address')) return;
+
+		if(associationModel.associationId.getValue() > 0)
 			method = 'PUT';
 		else
-			method = 'POSTT';
-		formData.append('customerId',  getValue('cmbConnectedCustomer'));
-		formData.append('contactId', getValue('ConnectionContactId'))
-		formData.append('contactTypeId', getValue('cmbContactType'))
-		formData.append('addressId', getValue('addressId'))
-		formData.append('associationId', getValue('ConnectionAssociationId'))
+			method = 'POST';
+		formData.append(associationModel.customer.api,  associationModel.customer.getValue());
+		formData.append(associationModel.contact.api, associationModel.contact.getValue())
+		formData.append(associationModel.contactType.api, associationModel.contactType.getValue())
+		formData.append(associationModel.address.api, associationModel.address.getValue())
+		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
 	}else{				//delete
-		if(getValue('cmbConnectedCustomer') == 0 || getValue('cmbConnectedCustomer') == ''){
-			setMsg(msgType.nok, 'Please select a customer to remove from the contact');
-			return;
-		}
-		if(getValue('ConnectionContactId') == 0 || getValue('ConnectionContactId') == ''){
-			setMsg(msgType.nok, 'Please select a contact to remove the connection');
-			return;
-		}	
-		if(getValue('ConnectionAssociationId') == 0 || getValue('ConnectionAssociationId') == ''){
-			setMsg(msgType.nok, 'Contact is not connected');
-			return;
-		}		
+		if(!validate(associationModel.customer, 0, 'Please select a customer to remove from the contact')) return;
+		if(!validate(associationModel.customer, '', 'Please select a customer to remove from the contact')) return;
+		if(!validate(associationModel.contact, 0, 'Please select a contact to remove the connection')) return;
+		if(!validate(associationModel.contact, '', 'Please select a contact to remove the connection')) return;
+		if(!validate(associationModel.associationId, 0, 'Contact is not connected')) return;
+		if(!validate(associationModel.associationId, '', 'Contact is not connected')) return;	
 		
-		formData.append('associationId', getValue('ConnectionAssociationId'));
+		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
 		method = 'DELETE';
 	}
 	if(dbg == dbgModule.contact)
@@ -549,24 +502,13 @@ function saveAssociation(action){
 			console.log('error ' + resp.err);
 			return;
 		}else{
+			if(getById('imgFilterContact').getAttribute("data-state") == 1)
+				showAssociatedContacts();
+			else
+				showAllContacts();			
 			setMsg(msgType.ok, 'Connection change saved')
 			}
-		})
-	.then(getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+cmbConnectedCustomer.value, fillSelect, null, 
-			(opt,item)=>opt.value = item.contact.contactId, 
-			(opt,item)=>{
-			let phone = (item.contact.officePhone == '')?((item.contact.cellPhone == '')?'':item.contact.cellPhone):item.contact.officePhone;
-			opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-			},
-			(opt, item)=>{
-				opt.addEventListener("click", ()=>{
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
-					setValue('addressId', item.address.addressId);
-					})
-				}
-			)
-		);
-
+		});
 }   
 
 function newAddress(){
@@ -581,36 +523,23 @@ function newAddress(){
 function saveAddress(){
 	let formData;
 	let method;
-	if(getValue('txtAddressStreet') == ''){
-		setMsg(msgType.nok, 'Please fill the street name');
-		return;
-	}
-	if(getValue('txtAddressHouseNum') == ''){
-		setMsg(msgType.nok, 'Please fill the building number');
-		return;
-	}
-	if(getValue('txtAddressCity') == ''){
-		setMsg(msgType.nok, 'Please fill the city name');
-		return;
-	}
-	if(getValue('cmbConnectedCustomer') == ''){
-		setMsg(msgType.nok, 'Please select a Customer');
-		return;
-	}	
-	
+	if(!validate(addressModel.street, '', 'Please fill the street name')) return;
+	if(!validate(addressModel.houseNum, '', 'Please fill the building number')) return;
+	if(!validate(addressModel.city, '', 'Please fill the city name')) return;
+	if(!validate(associationModel.customer, '', 'Please select a Customer')) return;
+
 	formData = new FormData();
-	formData.append('street', getValue('txtAddressStreet'));
-	formData.append('houseNum', getValue('txtAddressHouseNum'));
-	formData.append('city', getValue('txtAddressCity'));
-	formData.append('country', getValue('txtAddressCountry'));
-	formData.append('customerId', getValue('cmbConnectedCustomer'));
+	formData.append(addressModel.street.api, addressModel.street.getValue());
+	formData.append(addressModel.houseNum.api, addressModel.houseNum.getValue());
+	formData.append(addressModel.city.api, addressModel.city.getValue());
+	formData.append(addressModel.country.api, addressModel.country.getValue());
+	formData.append(associationModel.customer.api, associationModel.customer.getValue());
 	
-	let addressId = getValue('addressId');
-	if(addressId == '0'){
+	if(addressModel.addressId.getValue() == '0'){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-		formData.append('addressId', addressId);
+		formData.append(addressModel.addressId.api, addressModel.addressId.getValue());
 	}
 
 	if(dbg == dbgModule.address)
@@ -644,22 +573,16 @@ function saveAttachment(){
 	let attachmentType = getById('cmbAttachmentType');
 	let attachmentId = getValue('attachmentId');
 
-	if(getValue('taskId') == '0'){
-		setMsg(msgType.nok, 'Please select a task before inserting an attachment');
-		return;
-	}
-	if(attachmentType.value == 0){
-		setMsg(msgType.nok, 'Please select attachment type');
-		return;
-	}
-	if(getValue('cmbAttachmenContact') == 0){
-		setMsg(msgType.nok, 'Please select a contact');
-		return;
-	}
-	if(attachmentId == '0' && getValue('attachmentFile') == 0){
-		setMsg(msgType.nok, 'Please select a file');
-		return;
-	}
+	if(!validate(taskModel.taskId, 0, 'Please select a task before inserting an attachment')) return;
+	if(!validate(attachmentModel.type, 0, 'Please select attachment type')) return;
+	if(!validate(attachmentModel.contact, 0, 'Please select a contact')) return;
+
+	if(!validate(attachmentModel.attachmentId, 0, null) && 
+			!validate(attachmentModel.contact, 0, 'Please select a file'))
+//	if(attachmentId == '0' && getValue('attachmentFile') == 0){
+//		setMsg(msgType.nok, 'Please select a file');
+//		return;
+//	}
 	
 	oFormData.append('contactId', getValue('cmbAttachmenContact'));
 	let notes = (getValue('txtAttachmentNotes') == '')?attachmentType.options[attachmentType.selectedIndex].text:getValue('txtAttachmentNotes');
@@ -709,6 +632,7 @@ function addLinkedCustomer(){
 function removeLinkedCustomer(){
 	let formData = new FormData();
 	let method = 'DELETE';	
+	
     if(getValue('cmbLinkedCustomer') == ''){
 		setMsg(msgType.nok, 'Please select a customer');
 		return;
@@ -728,24 +652,16 @@ function saveLogin(){
 	let formData = new FormData();
 	let method;	
 
-    if(getValue('cmbLoginContactList') == '' || getValue('cmbLoginContactList') == 0){
-		setMsg(msgType.nok, 'Please select a contact');
-		return;
-    }	
-
-    if(getValue('txtUserName') == ''){
-		setMsg(msgType.nok, 'Please type a username');
-		return;
-    }	
+	if(!validate(loginModel.contact, '', 'Please select a contact')) return;
+	if(!validate(loginModel.contact, 0, 'Please select a contact')) return;
+	if(!validate(loginModel.username, '', 'Please type a username')) return;
+	if(!validate(loginModel.password, '', 'Please type a password')) return;
+	
     if(getValue('txtUserName').length < 4){
 		setMsg(msgType.nok, 'username must contain at least 4 letters');
 		return;
     }    
-    
-    if(getValue('txtPassword') == ''){
-		setMsg(msgType.nok, 'Please type a password');
-		return;
-    }	
+    	
     if(getValue('txtPassword').length < 4){
 		setMsg(msgType.nok, 'password must contain at least 5 letters');
 		return;
