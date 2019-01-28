@@ -211,3 +211,25 @@ function debugFormData(formData){
 		console.log(pair[0]+ ', ' + pair[1]); 
 	}
 }
+
+function getDate(isoDate){
+	let dateObject = {day:0, month:0, year:0};
+	let dateArr = isoDate.split("-");
+	dateObject.day = dateArr[2];
+	dateObject.month = dateArr[1];
+	dateObject.year = dateArr[0];
+	let formattedDate = (dateObject.day.length == 1)?"0":"";
+	formattedDate += dateObject.day + "/";	
+	formattedDate += (dateObject.month.length == 1)?"0":"";
+	formattedDate += dateObject.month + "/";
+	formattedDate += dateObject.year;			
+	return formattedDate;
+}
+function getISODate(dateObject){	//ISO 8601
+	let date = dateObject.year + "-";
+	date += (dateObject.month<10)?"0":"";
+	date += dateObject.month + "-";
+	date += (dateObject.day<10)?"0":"";
+	date += dateObject.day;			
+	return date;
+}
