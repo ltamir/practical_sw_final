@@ -312,9 +312,9 @@ function prepareSaveRelation(asParent){
     if(!validate(taskRelationModel.taskRelationType, 0, 'Please select a relation type')) return;
 
 	if(asParent == 1)
-		saveRelation(getValue('taskRelationSelectedTaskId'), getValue('taskId'), getValue('cmbTaskRelationType'));
+		saveRelation(taskRelationModel.selectedTask.getValue(), taskModel.taskId.getValue(), taskRelationModel.taskRelationType.getValue());
 	else
-		saveRelation(getValue('taskId'), getValue('taskRelationSelectedTaskId'), getValue('cmbTaskRelationType'));
+		saveRelation(taskModel.taskId.getValue(), taskRelationModel.selectedTask.getValue(), taskRelationModel.taskRelationType.getValue());
 }
 
 
@@ -329,21 +329,19 @@ function saveRelation(parent, child, relationType){
 	
 	if(dbg==dbgModule.relation)
 		debugFormData(formData);
-	try{
-		taskRelationId = getValue('taskRelationId');
-	}catch(err){taskRelationId = 0;}
-	if(taskRelationId == 0){
+
+	if(taskRelationModel.taskRelationId.getValue() == 0){
 		method = 'POST';
 	}else{
 		method = 'PUT';
-    	formData.append('taskRelationId', taskRelationId)
+    	formData.append('taskRelationId', taskRelationModel.taskRelationId.getValue())
 	}		
 	setData(method, formData, 'taskrelation')
 	.then(function(){
 		if(activeTaskTab != tabEnum.relation)
 			return;
-		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
+		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
+		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
 		})
 	.then(function(){setMsg(msgType.ok, 'Relation saved')});
 }
