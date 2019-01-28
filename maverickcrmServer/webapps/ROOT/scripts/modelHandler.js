@@ -239,13 +239,9 @@ function saveTask(){
 	if(!validate(taskModel.effort, '', 'Please enter an effort')) return;
 	if(!validate(taskModel.dueDate, '', 'Please select a due date')) return;
 
-	formData.append(taskModel.taskType.api, taskModel.taskType.getValue());
-	formData.append(taskModel.contact.api, taskModel.contact.getValue());
-	formData.append(taskModel.title.api, taskModel.title.getValue());
-	formData.append(taskModel.effort.api, taskModel.effort.getValue());
-	formData.append(taskModel.effortUnit.api, taskModel.effortUnit.getValue());
-	formData.append(taskModel.dueDate.api, taskModel.dueDate.getValue());
-	formData.append(taskModel.status.api, taskModel.status.getValue());
+	Object.keys(taskModel).forEach(function(item){
+		formData.append(taskModel[item].api, taskModel[item].getValue())
+	});
 	
 	if(taskModel.taskId.getValue() == 0){
 		method = 'POST';
@@ -298,10 +294,9 @@ function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 	let formData = new FormData();
 	let method;
 		
-	formData.append(taskLogModel.contact.api, contactId);
-	formData.append(taskLogModel.taskLogType.api ,taskLogTypeId);
-	formData.append(taskLogModel.description.api, description);
-	formData.append(taskLogModel.taskId.api, taskId);
+	Object.keys(taskLogModel).forEach(function(item){
+		formData.append(taskLogModel[item].api, taskLogModel[item].getValue())
+	});
 	
 	if(taskLogModel.taskLogId.getValue() == 0){
 		method = 'POST';
@@ -454,12 +449,9 @@ function saveContact(){
 	if(!validate(contactModel.firstName, '', 'Contact missing First Name')) return;
 	if(!validate(contactModel.lastName, '', 'Contact missing Last Name')) return;
 
-	formData.append(contactModel.firstName.api, contactModel.firstName.getValue());
-	formData.append(contactModel.lastName.api, contactModel.lastName.getValue());
-	formData.append(contactModel.officePhone.api, contactModel.officePhone.getValue());
-	formData.append(contactModel.mobilePhone.api, contactModel.mobilePhone.getValue());
-	formData.append(contactModel.email.api, contactModel.email.getValue());
-	formData.append(contactModel.notes.api, contactModel.notes.getValue());
+	Object.keys(contactModel).forEach(function(item){
+		formData.append(contactModel[item].api, contactModel[item].getValue())
+	});	
 	
 	if(contactModel.contactId.getValue() == 0){
 		method = 'POST';
@@ -505,11 +497,10 @@ function saveAssociation(action){
 			method = 'PUT';
 		else
 			method = 'POST';
-		formData.append(associationModel.customer.api,  associationModel.customer.getValue());
-		formData.append(associationModel.contact.api, associationModel.contact.getValue())
-		formData.append(associationModel.contactType.api, associationModel.contactType.getValue())
-		formData.append(associationModel.address.api, associationModel.address.getValue())
-		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
+		Object.keys(associationModel).forEach(function(item){
+			formData.append(associationModel[item].api, associationModel[item].getValue())
+		});	
+				
 	}else{				//delete
 		if(!validate(associationModel.customer, 0, 'Please select a customer to remove from the contact')) return;
 		if(!validate(associationModel.customer, '', 'Please select a customer to remove from the contact')) return;
@@ -558,11 +549,10 @@ function saveAddress(){
 	if(!validate(associationModel.customer, '', 'Please select a Customer')) return;
 
 	formData = new FormData();
-	formData.append(addressModel.street.api, addressModel.street.getValue());
-	formData.append(addressModel.houseNum.api, addressModel.houseNum.getValue());
-	formData.append(addressModel.city.api, addressModel.city.getValue());
-	formData.append(addressModel.country.api, addressModel.country.getValue());
-	formData.append(associationModel.customer.api, associationModel.customer.getValue());
+	
+	Object.keys(addressModel).forEach(function(item){
+		formData.append(addressModel[item].api, addressModel[item].getValue())
+	});
 	
 	if(addressModel.addressId.getValue() == '0'){
 		method = 'POST';
@@ -695,9 +685,9 @@ function saveLogin(){
 		setMsg(msgType.nok, 'password must contain at least 5 letters');
 		return;
     }       
-	formData.append('username', getValue('txtUserName'));
-	formData.append('password', getValue('txtPassword'));
-	formData.append('contactId', getValue('cmbLoginContactList'));
+	Object.keys(loginModel).forEach(function(item){
+		formData.append(loginModel[item].api, loginModel[item].getValue())
+	});
 	
 	let loginId = getValue('loginId');
 	if(loginId == 0){
