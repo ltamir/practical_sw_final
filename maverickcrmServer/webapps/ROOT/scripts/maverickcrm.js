@@ -95,31 +95,7 @@ function resetTaskSearch(){
 	setMsg(msgType.ok, 'Ready');
 }
 
-function flagToggle(lbl, field, ev){
-	if(ev.keyCode == 27)
-		toggleSearchDate(lbl, field);
-}
 
-function toggleSearchDate(lbl, field){
-	if(field.getAttribute('data-isActive') == '0'){
-		field.style.display='inline';
-		lbl.style.display='none';
-		field.setAttribute('data-isActive', '1');
-	}else{
-		let formattedDate = 'Due date';
-		field.style.display='none';
-		let dateval = field.value;
-		if(dateval.split("-")[2] != undefined){
-			formattedDate = dateval.split("-")[2];
-			formattedDate += '/' + dateval.split("-")[1];
-			formattedDate += '/' + dateval.split("-")[0];	
-		}
-		lbl.innerHTML = formattedDate;
-		lbl.style.display='inline';
-		field.setAttribute('data-isActive', '0');
-	}
-	
-}
 function toggleSearchTaskStatus(statusImg){
 	if(statusImg.getAttribute('data-state') == '0')
 		setSearchTaskStatusClosed(statusImg);
@@ -186,6 +162,30 @@ function toggleAsBotton(img){
 	}
 }
 
+function flagToggle(lbl, field, ev){
+	if(ev.keyCode == 27)
+		toggleSearchDate(lbl, field);
+}
+
+function toggleSearchDate(lbl, field){
+	if(field.getAttribute('data-isActive') == '0'){
+		field.style.display='inline';
+		lbl.style.display='none';
+		field.setAttribute('data-isActive', '1');
+	}else{
+		let formattedDate = 'Due date';
+		field.style.display='none';
+		let dateval = field.value;
+		if(dateval.split("-")[2] != undefined){
+			formattedDate = dateval.split("-")[2];
+			formattedDate += '/' + dateval.split("-")[1];
+			formattedDate += '/' + dateval.split("-")[0];	
+		}
+		lbl.innerHTML = formattedDate;
+		lbl.style.display='inline';
+		field.setAttribute('data-isActive', '0');
+	}
+}
 
 var menuData = {
 		taskType:{menuid:null, menuDiv:null, on:null, off:null, set:null},
@@ -198,28 +198,29 @@ function initMenuData(){
 	menuData.taskType.menuid = getById('imgTaskType');
 	menuData.taskType.menuDiv = getById('divMenuTaskType');
 	menuData.taskType.model = taskModel.taskType;
-	menuData.taskType.on = menuHandler;
-	menuData.taskType.off = menuHandler;
+	menuData.taskType.menuList = taskTypeList;
+	menuData.taskType.action = dummyAction;
 	
 	menuData.taskStatus.menuid = getById('imgTaskStatus');
 	menuData.taskStatus.menuDiv = getById('divMenuTaskStatus');
 	menuData.taskStatus.model = taskModel.status;
-	menuData.taskStatus.on = menuHandler;
-	menuData.taskStatus.off = menuHandler;
+	menuData.taskStatus.menuList = taskStatusList;
+	menuData.taskStatus.action = dummyAction;
 	
 	menuData.taskEffortUnit.menuid = getById('imgEffortUnit');
 	menuData.taskEffortUnit.menuDiv = getById('divMenuEffortUnit');
 	menuData.taskEffortUnit.model = taskModel.effortUnit;
-	menuData.taskEffortUnit.on = menuHandler;
-	menuData.taskEffortUnit.off = menuHandler;	
+	menuData.taskEffortUnit.menuList = effortUnitList;
+	menuData.taskEffortUnit.action = dummyAction;	
 	
 	menuData.newTask.menuid = getById('addTask');
 	menuData.newTask.menuDiv = getById('divMenuNewTaskType');
 	menuData.newTask.model = taskModel.taskType;
-	menuData.newTask.on = menuHandler;
-	menuData.newTask.off = menuHandler;
+	menuData.newTask.menuList = taskTypeList;
+	menuData.newTask.action = newTask;
 }
 // handle image as two-state button
+function dummyAction(val){}
 function menuHandler(menu){
 	
 	if(menu.menuid.getAttribute('data-state') == '0'){
@@ -233,16 +234,11 @@ function menuHandler(menu){
 	}
 }
 
-function menuSetter(menu, menuList, val){
-	menu.menuid.src = menuList[val].src;
-	menu.menuid.title = menuList[val].title;
+function menuSetter(menu, val){
+	menu.menuid.src = menu.menuList[val].src;
+	menu.menuid.title = menu.menuList[val].title;
 	menu.model.setValue(val);
-}
-
-function setNewTaskType(taskTypeId, menu){
-	newTask(taskTypeId);
-	menu.menuid.src = taskTypeList[taskTypeId].src;
-	menu.menuid.title = taskTypeList[taskTypeId].title;	
+	menu.action(val);
 }
 
 function dropOnParent(ev){

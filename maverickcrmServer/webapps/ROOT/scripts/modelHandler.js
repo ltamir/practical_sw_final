@@ -44,15 +44,15 @@ function newTask(taskType){
 		taskType = 0;
 	taskModel.taskId.setValue(0);
 	taskModel.taskType.setValue(taskType);
-	menuSetter(menuData.taskType, taskTypeList, taskModel.taskType.getValue());
+	menuSetter(menuData.taskType, taskModel.taskType.getValue());
 	taskModel.contact.setValue(loggedContact.contactId);
 	taskModel.title.setValue('');
 	taskModel.effort.setValue(1);
 	taskModel.effortUnit.setValue(1);
-	menuSetter(menuData.taskEffortUnit, effortUnitList, 1);
+	menuSetter(menuData.taskEffortUnit, 1);
 	taskModel.dueDate.setValue('');
 	taskModel.status.setValue(1);
-	menuSetter(menuData.taskStatus, taskStatusList, 1);
+	menuSetter(menuData.taskStatus, 1);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
 		setChildTask(getById('addChildTask'));
@@ -132,11 +132,11 @@ function setChildTask(setter){
 
 function viewTask(id, data){
 	let task = data.task;
-	menuSetter(menuData.taskType, taskTypeList, task.taskType.taskTypeId);
+	menuSetter(menuData.taskType, task.taskType.taskTypeId);
 	
 	taskModel.contact.setValue(task.contact.contactId);
 	taskModel.title.setValue(task.title);
-	menuSetter(menuData.taskEffortUnit, effortUnitList, task.effortUnit);
+	menuSetter(menuData.taskEffortUnit, task.effortUnit);
 
 	taskModel.effort.setValue(task.effort);
 	
@@ -148,7 +148,7 @@ function viewTask(id, data){
 	
 	taskModel.dueDate.dom.value = taskModel.dueDate.getISODate(task.dueDate);
 	getById('lblDetailDueDate').innerHTML = taskModel.dueDate.getDate(taskModel.dueDate.dom.value);
-	menuSetter(menuData.taskStatus, taskStatusList, task.status.statusId);
+	menuSetter(menuData.taskStatus, task.status.statusId);
 	taskModel.taskId.setValue(task.taskId); 
 	
 	setTab(activeTaskTab);
