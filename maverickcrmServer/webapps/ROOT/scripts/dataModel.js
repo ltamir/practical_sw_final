@@ -65,7 +65,7 @@ var taskModel={
 		}
 
 var contactModel = {
-		contactId:{getValue:getDomValue, setValue:setDomValue, domField:'ConnectionContactId', dom:null, api:'contactId'},
+		contactId:{getValue:getDomValue, setValue:setDomValue, domField:'connectionContactId', dom:null, api:'contactId'},
 		firstName:{getValue:getDomValue, setValue:setDomValue, domField:'txtFirstName', dom:null, api:'firstName'},
 		lastName:{getValue:getDomValue, setValue:setDomValue, domField:'txtLastName', dom:null, api:'lastName'},
 		officePhone:{getValue:getDomValue, setValue:setDomValue, domField:'txtOfficePhone', dom:null, api:'officePhone'},
@@ -82,7 +82,7 @@ var customerModel = {
 
 var loginModel = {
 		loginId:{getValue:getDomValue, setValue:setDomValue, domField:'detailCustomerId', dom:null, api:'loginId'},
-		userName:{getValue:getDomValue, setValue:setDomValue, domField:'txtUserName', dom:null, api:'username'},
+		username:{getValue:getDomValue, setValue:setDomValue, domField:'txtUserName', dom:null, api:'username'},
 		password:{getValue:getDomValue, setValue:setDomValue, domField:'txtPassword', dom:null, api:'password'},
 		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbLoginContactList', dom:null, api:'contactId'}
 }
@@ -93,6 +93,30 @@ var attachmentModel = {
 		file:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentFile', dom:null, api:'fileName'},
 		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbAttachmenContact', dom:null, api:'contactId'},
 		notes:{getValue:getDomValue, setValue:setDomValue, domField:'txtAttachmentNotes', dom:null, api:'attachmentNotes'}
+}
+
+var associationModel = {
+		associationId:{getValue:getDomValue, setValue:setDomValue, domField:'connectionAssociationId', dom:null, api:'associationId'},
+		contact:{getValue:getDomValue, setValue:setDomValue, domField:'connectionContactId', dom:null, api:'contactId'},
+		customer:{getValue:getDomValue, setValue:setDomValue, domField:'cmbConnectedCustomer', dom:null, api:'customerId'},
+		contactType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbContactType', dom:null, api:'contactTypeId'},
+		address:{getValue:getDomValue, setValue:setDomValue, domField:'addressId', dom:null, api:'addressId'}
+}
+
+var taskRelationModel = {
+		taskRelationId:{getValue:getDomValue, setValue:setDomValue, domField:'taskRelationId', dom:null, api:'taskRelationId'},
+		task:{getValue:getDomValue, setValue:setDomValue, domField:'taskId', dom:null, api:'parentTaskId'},
+		taskRelationType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbTaskRelationType', dom:null, api:'taskRelationTypeId'},
+		selectedTask:{getValue:getDomValue, setValue:setDomValue, domField:'taskRelationSelectedTaskId', dom:null, api:''}
+	// NOT used in API	
+}
+
+var addressModel = {
+		addressId:{getValue:getDomValue, setValue:setDomValue, domField:'addressId', dom:null, api:'addressId'},
+		street:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressStreet', dom:null, api:'street'},
+		houseNum:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressHouseNum', dom:null, api:'houseNum'},
+		city:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressCity', dom:null, api:'city'},
+		country:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressCountry', dom:null, api:'country'}
 }
 
 var searchModel = {

@@ -105,7 +105,12 @@ function activateTabRelation(){
 		if(getValue('taskId') > 0)
 			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
 	})
-	.then(()=>searchProjectTask('cmbTabRelationProject'));
+	.then(()=>searchProjectTask('cmbTabRelationProject'))
+	.then(()=>{
+		Object.keys(taskRelationModel).forEach(function(item){
+			taskRelationModel[item].dom = getById(taskRelationModel[item].domField);
+		});	
+	});
 	getById('divTaskTab').removeAttribute('data-selected');
 	
 }
@@ -123,9 +128,9 @@ function activateTabAttachment(){
 			null))
 	.then(()=>setValue('txtAttachmentNotes', '')).
 	then(()=>{
-				Object.keys(notes).forEach(function(item){
-					notes[item].dom = getById(notes[item].domField);
-				});		
+		Object.keys(attachmentModel).forEach(function(item){
+			attachmentModel[item].dom = getById(attachmentModel[item].domField);
+		});		
 	})
 //	if(getValue('taskId') > 0)
 
@@ -176,8 +181,14 @@ function activateTabConnection(){
 				Object.keys(customerModel).forEach(function(item){
 					customerModel[item].dom = getById(customerModel[item].domField);
 				});
+				Object.keys(associationModel).forEach(function(item){
+					associationModel[item].dom = getById(associationModel[item].domField);
+				});
+				Object.keys(addressModel).forEach(function(item){
+					addressModel[item].dom = getById(addressModel[item].domField);
+				});				
+				
 			});
-	
 }
 
 function toggleShowContacts(obj){
@@ -218,7 +229,7 @@ function showAssociatedContacts(){
 				}
 						
 				cmbContactType.value=item.contactType.contactTypeId;
-				ConnectionAssociationId.value=item.associationId;
+				connectionAssociationId.value=item.associationId;
 			})
 		}
 	)
