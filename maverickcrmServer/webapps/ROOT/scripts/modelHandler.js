@@ -173,7 +173,7 @@ function viewTask(id, data){
 				}
 			}, null, null, null, null);
 	
-	menuData.newTask.menuid.src='images/add_task.png';
+	menuData.newTaskType.menuid.src='images/add_task.png';
 	setMsg(msgType.ok, 'Ready');
 }
 

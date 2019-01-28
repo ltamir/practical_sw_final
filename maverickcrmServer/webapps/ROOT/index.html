@@ -99,18 +99,18 @@
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
 	            	<span id="lblTotalEffort" class="cssFieldLabel">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
-	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTask)">
+	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="toggleState(this); setChildTask(this)">
 	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 	            	<br>
 	            	<div style="margin-left:25.9em;" id="divMenuNewTaskType">
-	            		<img src="images/tasklist/project.png" title="new project task" onclick="menuSetter(menuData.newTask, 1); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="menuSetter(menuData.newTask, 2); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/design.png" title="new design task" onclick="menuSetter(menuData.newTask, 3); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/develop.png" title="new development task" onclick="menuSetter(menuData.newTask, 4); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="menuSetter(menuData.newTask, 5); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="menuSetter(menuData.newTask, 6); menuHandler(menuData.newTask)"><br>
-	            		<img src="images/tasklist/support.png" title="new support task" onclick="menuSetter(menuData.newTask, 7); menuHandler(menuData.newTask)	">
+	            		<img src="images/tasklist/project.png" title="new project task" onclick="menuSetter(menuData.newTaskType, 1); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="menuSetter(menuData.newTaskType, 2); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/design.png" title="new design task" onclick="menuSetter(menuData.newTaskType, 3); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/develop.png" title="new development task" onclick="menuSetter(menuData.newTaskType, 4); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="menuSetter(menuData.newTaskType, 5); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="menuSetter(menuData.newTaskType, 6); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/support.png" title="new support task" onclick="menuSetter(menuData.newTaskType, 7); menuHandler(menuData.newTaskType)	">
 	            	</div>	            	
 				</div>
 				

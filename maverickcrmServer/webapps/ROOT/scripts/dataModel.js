@@ -133,3 +133,12 @@ var searchModel = {
 			},
 			domField:'searchTaskStatus', dom:null}
 };
+
+function MenuItem(menuid, menuDiv, model, menuList, action ){
+	this.menuid = menuid;
+	this.menuDiv = menuDiv;
+	this.model = model;
+	this.menuList = menuList;
+	this.action = action;
+}
+var menuData = {}

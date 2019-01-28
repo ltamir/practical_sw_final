@@ -187,58 +187,32 @@ function toggleSearchDate(lbl, field){
 	}
 }
 
-var menuData = {
-		taskType:{menuid:null, menuDiv:null, on:null, off:null, set:null},
-		taskStatus:{menuid:null, menuDiv:null, on:null, off:null, set:null},
-		taskEffortUnit:{menuid:null, menuDiv:null, on:null, off:null, set:null},
-		newTask:{menuid:null, menuDiv:null, on:null, off:null, set:null}
-}
-
 function initMenuData(){
-	menuData.taskType.menuid = getById('imgTaskType');
-	menuData.taskType.menuDiv = getById('divMenuTaskType');
-	menuData.taskType.model = taskModel.taskType;
-	menuData.taskType.menuList = taskTypeList;
-	menuData.taskType.action = dummyAction;
-	
-	menuData.taskStatus.menuid = getById('imgTaskStatus');
-	menuData.taskStatus.menuDiv = getById('divMenuTaskStatus');
-	menuData.taskStatus.model = taskModel.status;
-	menuData.taskStatus.menuList = taskStatusList;
-	menuData.taskStatus.action = dummyAction;
-	
-	menuData.taskEffortUnit.menuid = getById('imgEffortUnit');
-	menuData.taskEffortUnit.menuDiv = getById('divMenuEffortUnit');
-	menuData.taskEffortUnit.model = taskModel.effortUnit;
-	menuData.taskEffortUnit.menuList = effortUnitList;
-	menuData.taskEffortUnit.action = dummyAction;	
-	
-	menuData.newTask.menuid = getById('addTask');
-	menuData.newTask.menuDiv = getById('divMenuNewTaskType');
-	menuData.newTask.model = taskModel.taskType;
-	menuData.newTask.menuList = taskTypeList;
-	menuData.newTask.action = newTask;
+	menuData.taskType = new MenuItem(getById('imgTaskType'), getById('divMenuTaskType'), taskModel.taskType, taskTypeList, dummyAction);	
+	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, dummyAction);
+	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction);	
+	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask);
 }
 // handle image as two-state button
 function dummyAction(val){}
-function menuHandler(menu){
+function menuHandler(menuItem){
 	
-	if(menu.menuid.getAttribute('data-state') == '0'){
-		menu.menuid.setAttribute('data-state', 1);
-		menu.menuid.style.borderStyle='inset';
-		menu.menuDiv.style.display = 'inline';
+	if(menuItem.menuid.getAttribute('data-state') == '0'){
+		menuItem.menuid.setAttribute('data-state', 1);
+		menuItem.menuid.style.borderStyle='inset';
+		menuItem.menuDiv.style.display = 'inline';
 	}else{
-		menu.menuid.setAttribute('data-state', 0);
-		menu.menuid.style.borderStyle='outset';
-		menu.menuDiv.style.display = 'none';
+		menuItem.menuid.setAttribute('data-state', 0);
+		menuItem.menuid.style.borderStyle='outset';
+		menuItem.menuDiv.style.display = 'none';
 	}
 }
 
-function menuSetter(menu, val){
-	menu.menuid.src = menu.menuList[val].src;
-	menu.menuid.title = menu.menuList[val].title;
-	menu.model.setValue(val);
-	menu.action(val);
+function menuSetter(MenuItem, val){
+	MenuItem.menuid.src = MenuItem.menuList[val].src;
+	MenuItem.menuid.title = MenuItem.menuList[val].title;
+	MenuItem.model.setValue(val);
+	MenuItem.action(val);
 }
 
 function dropOnParent(ev){
