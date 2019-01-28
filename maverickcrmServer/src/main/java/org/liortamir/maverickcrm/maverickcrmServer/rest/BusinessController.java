@@ -11,11 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.liortamir.maverickcrm.maverickcrmServer.dal.BusinessDAL;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
-import org.liortamir.maverickcrm.maverickcrmServer.model.Contact;
-import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -63,49 +59,14 @@ public class BusinessController extends HttpServlet {
 				days = days % 20;
 			}
 			json.addProperty("total", months + ":" + days + ":" + hours);			
-			response = jsonHelper.toJson(json);
-
+			
+			ServletHelper.doSuccess(json);
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		JsonObject json = new JsonObject();
-		Login login = null;
-		String nextURL = "/";
-		try {
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-			login = LoginDAL.getInstance().authenticate(username, password);
-			if(login == null) {
-				json.addProperty("msg", "Invalid user or password. Please try Again");
-				nextURL = "/login.html";
-				String response = jsonHelper.toJson(json);	
-				PrintWriter out = resp.getWriter();
-				out.println(response);	
-
-			}else {
-				req.getSession().setAttribute("username", login.getUsername());
-			}
-
-		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");			
-			json.addProperty("customerTaskId", "0");
-			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
-				json.addProperty("msg", "Internal error");
-			}			
-		}
-
-	}
 }

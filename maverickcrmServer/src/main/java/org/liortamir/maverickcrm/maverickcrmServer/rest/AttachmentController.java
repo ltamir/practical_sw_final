@@ -56,29 +56,26 @@ public class AttachmentController extends HttpServlet {
 		String response = null;
 		Attachment attachment = null;
 		JsonObject json = new JsonObject();;
-		int actionId = 0;
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()){
+			if(action == ActionEnum.ACT_ALL){
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<Attachment> bulk = AttachmentDAL.getInstance().getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			}else if(action == ActionEnum.ACT_SINGLE){
 
 				int attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
 				attachment = AttachmentDAL.getInstance().get(attachmentId);
-				response = jsonHelper.toJson(attachment);	
+				json.add("attachment", jsonHelper.toJsonTree(attachment));
 			}
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = ServletHelper.toJson(jsonHelper, json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
@@ -96,7 +93,6 @@ public class AttachmentController extends HttpServlet {
 			String fileName = null;
 			String storageFileName = null;
 
-			
 			Part filePart = req.getPart("attachmentFile");
 			fileName = filePart.getSubmittedFileName();
 			
@@ -121,18 +117,9 @@ public class AttachmentController extends HttpServlet {
 			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
 			json.addProperty("taskLogId", taskLogId);
 			json.addProperty("attachmentId", attachmentId);
-			json.addProperty("status",  "ack");
-		}catch(NumberFormatException  | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
-			json.addProperty("attachmentId", "0");
-		} catch (Exception e) {
-			System.out.println("AttachmentController.doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException  | NullPointerException | SQLException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			json.addProperty("attachmentId", "0");
 		}
 		String response = jsonHelper.toJson(json);	
@@ -185,12 +172,9 @@ public class AttachmentController extends HttpServlet {
 			AttachmentDAL.getInstance().update(attachmentId, attachmentTypeId);	
 			TaskLogDAL.getInstance().update(attachmentTaskLogId, attachmentNotes, contactId);
 			json.addProperty("attachmentId", attachmentId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty("attachmentId", 0);
 		}
 		String response = jsonHelper.toJson(json);	

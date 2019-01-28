@@ -16,6 +16,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 
 import com.google.gson.Gson;
@@ -44,50 +45,43 @@ public class CustomerController extends HttpServlet {
 		int actionId = 0;
 
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			switch(APIConst.ACTION_LIST[actionId]) {
+			ActionEnum action = ServletHelper.getAction(req);
+
+			switch(action) {
 			case ACT_ALL:
 				resp.setContentType("application/json");
 				bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
 				break;
 			case ACT_SINGLE:
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-				customer = CustomerDAL.getInstance().get(id);	
-				response = jsonHelper.toJson(customer);	
+				customer = CustomerDAL.getInstance().get(id);
+				ServletHelper.addJsonTree(jsonHelper, json, "customer", customer);
 				break;
 			case ACT_CUSTOMER_NOT_LINKED_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerDAL.getInstance().getNonLinkedToTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
 				break;
 			case ACT_CUSTOMER_LINKED_BY_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerDAL.getInstance().getAllByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
 				break;				
 			case ACT_CUSTOMER_NOT_LINKED_CONTACT:
 				id = Integer.parseInt(req.getParameter("contactId"));
 				bulk = CustomerDAL.getInstance().getNonLinkedToContact(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
 				break;
 			default:
-				json.addProperty("msg",  this.getClass().getName() + ".doGet: invalid State");
-				json.addProperty("status",  "nack");
-				break;
+				throw new InvalidActionException(actionId);
 			}
-
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
-		//boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -111,17 +105,14 @@ public class CustomerController extends HttpServlet {
 
 			customerId = CustomerDAL.getInstance().insert(customerName, customerNotes);
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("customerId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_CUSTOMER_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);		
-//		req.getRequestDispatcher("/").include(req, resp);
 	}
 
 	@Override
@@ -149,18 +140,14 @@ public class CustomerController extends HttpServlet {
 				customerId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}	
-//			boolean isMultipart = ServletFileUpload.isMultipartContent(req);
-//			System.out.println("isMultipart :" + isMultipart);
 		     
 			CustomerDAL.getInstance().update(customerId, customerName, customerNotes);
 			
 			json.addProperty("customerId", customerId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("customerId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_CUSTOMER_ID, "0");
 		}
 		
 		String response = jsonHelper.toJson(json);	
@@ -185,13 +172,11 @@ public class CustomerController extends HttpServlet {
 			}
 			//TODO check if customer is in relation with task or contact
 			CustomerDAL.getInstance().delete(customerId);
-			json.addProperty("customerId", customerId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("customerId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_CUSTOMER_ID, 0);
 		}
 		response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();

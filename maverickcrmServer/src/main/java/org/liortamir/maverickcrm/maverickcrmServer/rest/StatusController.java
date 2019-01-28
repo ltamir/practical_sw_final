@@ -33,32 +33,29 @@ public class StatusController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		Status status = null;
-		JsonObject json = null;
-		int actionId = 0;	
+		JsonObject json = new JsonObject();
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
+			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
 				List<Status> bulk = StatusDAL.getInstance().getAll();
 				json = new JsonObject();
-
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+				
+			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter("statusId"));
 				status = StatusDAL.getInstance().get(id);
-				json = new JsonObject();
-				response = jsonHelper.toJson(status);					
+				ServletHelper.addJsonTree(jsonHelper, json, "status", status);
 			}
-		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}

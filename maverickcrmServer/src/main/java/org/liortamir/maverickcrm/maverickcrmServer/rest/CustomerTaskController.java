@@ -15,6 +15,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerTaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.CustomerTask;
 
 import com.google.gson.Gson;
@@ -42,40 +43,36 @@ public class CustomerTaskController extends HttpServlet {
 		
 		try {
 			
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			switch(APIConst.ACTION_LIST[actionId]) {
+			ActionEnum action = ServletHelper.getAction(req);
+
+			switch(action) {
 			case ACT_SINGLE:
 				id = Integer.parseInt(req.getParameter("customerTaskId"));
 				customerTask = CustomerTaskDAL.getInstance().get(id);
-				response = jsonHelper.toJson(customerTask);
+				ServletHelper.addJsonTree(jsonHelper, json, "customerTask", customerTask);
 				break;
 			case ACT_CUSTOMER_TASK_BY_CUSTOMER:
 				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("customerId"));
 				bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
 				break;
 			case ACT_CUSTOMER_TASK_BY_TASK:
 				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerTaskDAL.getInstance().getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);	
 				break;
 			case ACT_ALL:
 				bulk = CustomerTaskDAL.getInstance().getAll(false);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 				default:
-					json.addProperty("msg",  this.getClass().getName() + ".doGet: invalid State");
-					json.addProperty("status",  "nack");
-					break;				
+					throw new InvalidActionException(actionId);
 			}
-		}catch(SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(SQLException | NullPointerException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		response = jsonHelper.toJson(json);			
 		PrintWriter out = resp.getWriter();
@@ -92,13 +89,12 @@ public class CustomerTaskController extends HttpServlet {
 			int customerId = Integer.parseInt(req.getParameter("customerId"));
 			int taskId = Integer.parseInt(req.getParameter("taskId"));
 			int customerTaskId = CustomerTaskDAL.getInstance().insert(customerId, taskId);
-			json.addProperty("customerTaskId", customerTaskId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_CUSTOMERTASK_ID, customerTaskId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
-				json.addProperty("customerTaskId", "0");
+				json.addProperty(APIConst.FLD_CUSTOMERTASK_ID, "0");
 				json.addProperty("msg", "customer already exist");
 			}
 		}
@@ -113,7 +109,7 @@ public class CustomerTaskController extends HttpServlet {
 		String response =null;
 		JsonObject json = new JsonObject();
 		try {
-			int customerTaskId = 0; // = Integer.parseInt(req.getParameter("customerTaskId"));
+			int customerTaskId = 0;
 			
 			Part filePart = req.getPart("customerTaskId");
 			int multiplier = 1;
@@ -124,12 +120,10 @@ public class CustomerTaskController extends HttpServlet {
 			}
 			CustomerTaskDAL.getInstance().delete(customerTaskId);
 			json.addProperty("customerTaskId", customerTaskId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("customerTaskId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
+			json.addProperty(APIConst.FLD_CUSTOMERTASK_ID, 0);
 		}
 		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();

@@ -42,40 +42,36 @@ public class TaskRelationController extends HttpServlet {
 		TaskRelation taskRelation = null;
 		int id = 0;
 		int taskId = 0;
-		int actionId = 0;
 		JsonObject json = null;
 		
 		try {
 			
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			if(actionId == ActionEnum.ACT_SINGLE.ordinal()) {
+			ActionEnum action = ServletHelper.getAction(req);
+			if(action == ActionEnum.ACT_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter("taskRelationId"));
 				taskRelation = TaskRelationDAL.getInstance().get(id);
-				response = jsonHelper.toJson(taskRelation);	
-			}else if(actionId == ActionEnum.ACT_RELATION_PARENTS.ordinal()) {
+				ServletHelper.addJsonTree(jsonHelper, json, "taskRelation", taskRelation);
+			
+			}else if(action == ActionEnum.ACT_RELATION_PARENTS) {
 				
 				json = new JsonObject();
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);	
 				
-			}else if(actionId == ActionEnum.ACT_RELATION_CHILDREN.ordinal()) {
+			}else if(action == ActionEnum.ACT_RELATION_CHILDREN) {
 				json = new JsonObject();
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getChildren(taskId);
-				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);		
+				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
 			}
-		}catch(SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",   "Internal error. Please check the log");
-			json.addProperty("err",   e.toString());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			ServletHelper.doSuccess(json);
+		}catch(SQLException | InvalidActionException | NullPointerException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -92,13 +88,11 @@ public class TaskRelationController extends HttpServlet {
 			int taskRelationTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID));
 			
 			int taskRelationId = TaskRelationDAL.getInstance().insert(parentTaskId, childTaskId, taskRelationTypeId);
-			json.addProperty("taskRelationId", taskRelationId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("taskRelationId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, 0);
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "relation already exist");
 			}	
@@ -154,19 +148,15 @@ public class TaskRelationController extends HttpServlet {
 				TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
 			else
 				TaskRelationDAL.getInstance().update(taskRelationId, taskRelationTypeId);
-			json.addProperty("taskRelationId", taskRelationId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | FileUploadException |NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("status",  "nack");
-			json.addProperty("err",  e.toString());
-			json.addProperty("taskRelationId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, 0);
 			if( e instanceof SQLException) {
 				SQLException sqe = (SQLException)e;
 				if(sqe.getSQLState().equals("23505"))
 					json.addProperty("msg", "relation already exist");
-			}else {
-				json.addProperty("msg", "Internal error");
 			}
 		}
 		String response = jsonHelper.toJson(json);
@@ -201,13 +191,11 @@ public class TaskRelationController extends HttpServlet {
 				}
 			}			
 			TaskRelationDAL.getInstance().delete(taskRelationId);
-			json.addProperty("taskRelationId", taskRelationId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("taskRelationId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_TASKRELATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();

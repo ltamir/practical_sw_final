@@ -14,11 +14,14 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -45,39 +48,33 @@ public class TaskLogController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		TaskLog taskLog = null;
-		JsonObject json = null;
-		int taskLogId = 0;
-		int actionId = 0;		
+		JsonObject json = new JsonObject();
+		int taskLogId = 0;	
 
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 						
-			if(actionId == ActionEnum.ACT_ALL.ordinal()){
+			if(action == ActionEnum.ACT_ALL){
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskLog> bulk = null;
-				json = new JsonObject();
-				bulk = TaskLogDAL.getInstance().getByTask(taskId);
+				List<TaskLog> bulk = TaskLogDAL.getInstance().getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));			
-				response = jsonHelper.toJson(json);	
-
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				taskLogId = Integer.parseInt(req.getParameter("taskLogId"));
 				taskLog = TaskLogDAL.getInstance().get(taskLogId);
-				json = new JsonObject();
-				response = jsonHelper.toJson(taskLog);	
-
+				ServletHelper.addJsonTree(jsonHelper, json, "taskLog", taskLog);
 			}
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
 
+	//TODO split if longer than 500 chars
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
@@ -90,18 +87,17 @@ public class TaskLogController extends HttpServlet {
 			int taskLogTypeId = Integer.parseInt(req.getParameter("taskLogTypeId"));
 			
 			int taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);
-			json.addProperty("taskId", taskLogId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
+			ServletHelper.doSuccess(json);
 		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 		}
 		String response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
 
+	//TODO split if longer than 500 chars
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		JsonObject json = new JsonObject();
@@ -112,7 +108,6 @@ public class TaskLogController extends HttpServlet {
 			int contactId = 0;
 			String description = null;
 			int taskLogTypeId = 0;
-			
 			
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			ServletContext servletContext = this.getServletConfig().getServletContext();
@@ -150,19 +145,45 @@ public class TaskLogController extends HttpServlet {
 				}
 			}			
 			TaskLogDAL.getInstance().update(taskLogId, taskId, contactId, description, taskLogTypeId);
-			json.addProperty("taskLogId", taskLogId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | FileUploadException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("taskId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
 
+	//TODO implement task log deletion 
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("application/json");
+		String response;
+		JsonObject json = new JsonObject();
+		try {
+			int contactId = 0;
+			
+			Part filePart = req.getPart("contactId");
+			int multiplier = 1;
+			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
+			for(int i= bytes.length-1; i>=0; i--) {
+				contactId += (bytes[i]-48) * multiplier;
+				multiplier *= 10;
+			}
+			ContactDAL.getInstance().delete(contactId);
+			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
+			ServletHelper.doSuccess(json);
+		}catch(SQLException | NumberFormatException | NullPointerException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
+		}
+		response = jsonHelper.toJson(json);	
+		PrintWriter out = resp.getWriter();
+		out.println(response);
+	}
+	
 	@Override
 	public void init() throws ServletException {
 		super.init();

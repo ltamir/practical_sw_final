@@ -35,32 +35,28 @@ public class TaskRelationTypeController extends HttpServlet {
 		TaskRelationType taskRelationType = null;
 		JsonObject json = null;
 		int id = 0;
-		int actionId = 0;
 		
 		try {
 			
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			if(actionId == ActionEnum.ACT_SINGLE.ordinal()) {
+			ActionEnum action = ServletHelper.getAction(req);
+			if(action == ActionEnum.ACT_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter("taskRelationTypeId"));
 				taskRelationType = TaskRelationTypeDAL.getInstance().get(id);
 				json = new JsonObject();
-				response = jsonHelper.toJson(taskRelationType);	
-				
-			}else if(actionId == ActionEnum.ACT_ALL.ordinal()) {
+				ServletHelper.addJsonTree(jsonHelper, json, "taskRelatoinType", taskRelationType);
+			}else if(action == ActionEnum.ACT_ALL) {
 				
 				json = new JsonObject();;
 				List<TaskRelationType> taskRelationList = TaskRelationTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);	
-				
 			}
-		}catch(SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(SQLException | NullPointerException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}

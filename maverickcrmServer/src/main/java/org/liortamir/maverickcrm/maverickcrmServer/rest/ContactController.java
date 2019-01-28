@@ -39,38 +39,34 @@ public class ContactController extends HttpServlet {
 		Contact contact = null;
 		JsonObject json = new JsonObject();
 		int id = 0;
-		int actionId = 0;
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId ==ActionEnum.ACT_LOGIN_CONTACT_ALL.ordinal()) {
+			if(action ==ActionEnum.ACT_LOGIN_CONTACT_ALL) {
 				
 				List<Contact> bulk=null;
 				bulk = ContactDAL.getInstance().getAllLogin();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
 				
-			}else if(actionId == ActionEnum.ACT_ALL.ordinal()){
+			}else if(action == ActionEnum.ACT_ALL){
 				
 				List<Contact> bulk;
 				bulk = ContactDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
-				response = jsonHelper.toJson(json);	
 				
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				id = Integer.parseInt(req.getParameter("contactId"));
 				contact = ContactDAL.getInstance().get(id);
-				response = jsonHelper.toJson(contact);							
+				json.add("contact", jsonHelper.toJsonTree(contact));					
 			}
-
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException |InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
+		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -104,12 +100,10 @@ public class ContactController extends HttpServlet {
 			}
 			
 			int contactId = ContactDAL.getInstance().insert(contact);
-			json.addProperty("contactId", contactId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_CONTACT_ID, contactId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "contact already exist");
 			}			
@@ -154,17 +148,14 @@ public class ContactController extends HttpServlet {
 					default:
 						System.out.println(this.getClass().getName() + ".doPut: Invalid field: Name:" + part.getName());
 				}
-				
 			}
 			
 			ContactDAL.getInstance().update(contact);
-			json.addProperty("contactId", contact.getContactId());
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_CONTACT_ID, contact.getContactId());
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("contactId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_CONTACT_ID, "0");
 		}
 		
 		String response = jsonHelper.toJson(json);
@@ -189,13 +180,11 @@ public class ContactController extends HttpServlet {
 				multiplier *= 10;
 			}
 			ContactDAL.getInstance().delete(contactId);
-			json.addProperty("contactId", contactId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_CONTACT_ID, contactId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("contactId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
+			json.addProperty(APIConst.FLD_CONTACT_ID, "0");
 		}
 		response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();

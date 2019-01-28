@@ -42,38 +42,31 @@ public class AddressController extends HttpServlet {
 		String response = null;
 		Address address = null;
 		JsonObject json = new JsonObject();
-		int actionId = 0;	
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
+			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
 				List<Address> bulk = AddressDAL.getInstance().getAll();
-
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
 				
+			}else if(action == ActionEnum.ACT_SINGLE){
 				int id = Integer.parseInt(req.getParameter("addressId"));
 				address = AddressDAL.getInstance().get(id);
-				response = jsonHelper.toJson(address);					
-			}else if(actionId == ActionEnum.ACT_BY_CUSTOMER.ordinal()){
-				
+				json.add("address", jsonHelper.toJsonTree(address));					
+			}else if(action == ActionEnum.ACT_BY_CUSTOMER){
 				int id = Integer.parseInt(req.getParameter("customerId"));
 				List<Address> bulk = AddressDAL.getInstance().getByCustomer(id);
-				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);				
+				json.add("array", jsonHelper.toJsonTree(bulk));			
 			}
-			json.addProperty("status",  "ack");
-		}catch(NullPointerException | NumberFormatException | SQLException e) {			
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);	
+			ServletHelper.doSuccess(json);
+			
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidActionException e) {			
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
@@ -105,12 +98,11 @@ public class AddressController extends HttpServlet {
 			
 			int addressId = AddressDAL.getInstance().insert(new Address(0, street, houseNum, city, country));
 			CustomerAddressDAL.getInstance().insert(customerId, addressId);
-			json.addProperty("addressId", addressId);
+			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
+			
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			json.addProperty("addressId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "addressId already exists");
@@ -157,13 +149,11 @@ public class AddressController extends HttpServlet {
 			}			
 			
 			AddressDAL.getInstance().update(new Address(addressId, street, houseNum, city, country));
-			json.addProperty("addressId", addressId);
+			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Error saving address. please check the log");
-			json.addProperty("err",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("addressId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_ADDRESS_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
@@ -185,12 +175,11 @@ public class AddressController extends HttpServlet {
 			}
 			
 			AddressDAL.getInstance().delete(addressId);
-			json.addProperty("addressId", addressId);
+			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			json.addProperty("addressId", "0");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
+			json.addProperty(APIConst.FLD_ADDRESS_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();

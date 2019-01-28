@@ -33,21 +33,16 @@ public class DatabaseController extends HttpServlet {
 		JsonObject json = new JsonObject();;
 		
 		try {
-			
 			String sql = req.getParameter("sql");
 			List<DatabaseRow> bulk = DatabaseDAL.getInstance().executeSQL(sql);
 			json.add("array", jsonHelper.toJsonTree(bulk));
-			json.addProperty("status",  "ack");
-			response = jsonHelper.toJson(json);
-
+			
+			ServletHelper.doSuccess(json);
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("err",  e.toString());
-			json.addProperty("msg",  "Internal error. please check the log");
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
+			
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}	

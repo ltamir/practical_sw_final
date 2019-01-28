@@ -41,19 +41,16 @@ public class LoginController extends HttpServlet {
 		Login login = null;
 		JsonObject json = new JsonObject();
 		int id = 0;
-		int actionId = 0;
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == APIConst.ACT_ALL) {
+			if(action == ActionEnum.ACT_ALL) {
 				
 				List<Login> bulk = LoginDAL.getInstance().getAll();
-
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
-				
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			
+			}else if(action == ActionEnum.ACT_SINGLE){
 				String username = (String)req.getSession().getAttribute("username");
 				
 				id = Integer.parseInt(req.getParameter("loginId"));
@@ -61,15 +58,14 @@ public class LoginController extends HttpServlet {
 				if(!login.getUsername().equals(username))
 					login.setPassword("*****");
 				json = new JsonObject();
-				response = jsonHelper.toJson(login);					
+				ServletHelper.addJsonTree(jsonHelper, json, "login", login);
 			}
-		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			
+			ServletHelper.doSuccess(json);
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -103,13 +99,11 @@ public class LoginController extends HttpServlet {
 				}
 			}
 			loginId = LoginDAL.getInstance().insert(username, password, contactId);
-			json.addProperty("loginId", loginId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_LOGIN_ID, loginId);
+			ServletHelper.doSuccess(json);
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString());
-			json.addProperty("err",  this.getClass().getName() + ".doPost: " + e.toString());
-			json.addProperty("msg",  "Internal error");
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_LOGIN_ID, 0);
 		}
 		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
@@ -138,7 +132,6 @@ public class LoginController extends HttpServlet {
 					password = new String(IOUtils.toByteArray(part.getInputStream()));
 					break;
 				case APIConst.FLD_LOGIN_CONTACT_ID:
-
 					InputStream is = part.getInputStream();
 					int b;
 					while((b = is.read()) != -1) {
@@ -156,13 +149,12 @@ public class LoginController extends HttpServlet {
 			int loggedInId = (Integer)req.getSession().getAttribute("loginId");
 			if(loggedInId == loginId)
 				req.getSession().setAttribute("username", username);
-			json.addProperty("loginId", loginId);
-			json.addProperty("status",  "ack");
+			
+			json.addProperty(APIConst.FLD_LOGIN_ID, loginId);
+			ServletHelper.doSuccess(json);
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("err",  this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "An error has occured. Plaese check the log for technical details");
-			json.addProperty("status",  "nack");		
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			json.addProperty(APIConst.FLD_LOGIN_ID, 0);
 		}
 		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();

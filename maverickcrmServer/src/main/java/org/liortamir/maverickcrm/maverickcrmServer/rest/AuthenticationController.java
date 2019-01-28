@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 
 import com.google.gson.Gson;
@@ -30,36 +31,31 @@ public class AuthenticationController extends HttpServlet {
 		JsonObject json = new JsonObject();
 		
 		try {
-			int actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			switch(APIConst.ACTION_LIST[actionId]) {
+			ActionEnum action = ServletHelper.getAction(req);
+			
+			switch(action) {
 			case ACT_GET_LOGGED_IN:
 				String user = (String) req.getSession().getAttribute("username");
 				if(user == null)
 					throw new NullPointerException();
 
 				Login login = LoginDAL.getInstance().get(user);
-				response = jsonHelper.toJson(login);				
+				json.add("login", jsonHelper.toJsonTree(login));
+	
 				break;
 			case ACT_LOGOUT:
 				req.getSession().removeAttribute("username");
 				resp.sendRedirect("login.html");
 				break;
 				default:
-					json.addProperty("msg", "invalid state " + actionId);
-					json.addProperty("status",  "nack");
-					response = jsonHelper.toJson(json);
-					break;
+					throw new InvalidActionException(action.ordinal());
 			}
 
-
-		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			ServletHelper.doSuccess(json);
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}	
@@ -74,32 +70,20 @@ public class AuthenticationController extends HttpServlet {
 			String password = req.getParameter("password");
 			login = LoginDAL.getInstance().authenticate(username, password);
 			if(login == null) {
-				json.addProperty("msg", "Invalid user or password. Please try Again");
-				String response = jsonHelper.toJson(json);	
-				PrintWriter out = resp.getWriter();
-				out.println(response);	
+				json.addProperty("msg", "Invalid user or password. Please try Again");	
 				
 			}else {
 				req.getSession().setAttribute("username", login.getUsername());
 				req.getSession().setAttribute("loginId", login.getLoginId());
 				json.addProperty("msg", "ok");
 				json.addProperty("redirect", "index.html");
-				String response = jsonHelper.toJson(json);	
-				PrintWriter out = resp.getWriter();
-				out.println(response);
-
 			}
-
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
-			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
-				json.addProperty("msg", "Internal error");
-			}			
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);		
 		}
 
-
+		String response = jsonHelper.toJson(json);	
+		PrintWriter out = resp.getWriter();
+		out.println(response);
 	}
 }

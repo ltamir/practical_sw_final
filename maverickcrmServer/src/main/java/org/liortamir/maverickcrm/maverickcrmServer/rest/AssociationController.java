@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerAddressDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.AssociationDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerAddressDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
-import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Association;
+import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,42 +56,35 @@ public class AssociationController extends HttpServlet {
 		Association association = null;
 		JsonObject json = new JsonObject();;
 		int id = 0;
-		int actionId = 0;
 
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
+			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
 				List<Customer> bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = toJson(json);
 				
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			}else if(action == ActionEnum.ACT_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				association = AssociationDAL.getInstance().get(id);	
-				response = toJson(association);									
-			}else if(actionId == ActionEnum.ACT_CUSTOMER_BY_CONTACT.ordinal()){
+				json.add("association", jsonHelper.toJsonTree(association));	
+				
+			}else if(action == ActionEnum.ACT_CUSTOMER_BY_CONTACT){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByContact(id);	
-				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = toJson(json);									
-			}else if(actionId == ActionEnum.ACT_CONTACT_BY_CUSTOMER.ordinal()){
+				json.add("array", jsonHelper.toJsonTree(bulk));									
+			}else if(action == ActionEnum.ACT_CONTACT_BY_CUSTOMER){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByCustomer(id);	
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = toJson(json);									
 			}
-			json.addProperty("status",  "ack");
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);	
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
-		//boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
+		response = toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -111,12 +104,10 @@ public class AssociationController extends HttpServlet {
 			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
-			json.addProperty("status",  "ack");
+			
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Save failed. Please check the log");
-			json.addProperty("status",  "nack");
-			json.addProperty("err",  e.toString());
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
 				json.addProperty("msg", "association already exist");
@@ -165,14 +156,12 @@ public class AssociationController extends HttpServlet {
 			AssociationDAL.getInstance().update(associationId, customerId, contactId, contactTypeId, addressId);
 			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, associationId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Error updating association. Please check the log");
-			json.addProperty("status",  "nack");
-			json.addProperty("err",  e.toString());
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
+		
 		String response = jsonHelper.toJson(json);	
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
@@ -197,14 +186,10 @@ public class AssociationController extends HttpServlet {
 				CustomerAddressDAL.getInstance().insert(association.getCustomer().getCustomerId(), association.getAddress().getAddressId());
 			AssociationDAL.getInstance().delete(connectionId);
 			
-			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
-			json.addProperty("status",  "ack");
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
-			System.out.println(this.getClass().getName() + ".doDelete: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  "Internal error, please check the log");
-			json.addProperty("err",  e.toString());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);	

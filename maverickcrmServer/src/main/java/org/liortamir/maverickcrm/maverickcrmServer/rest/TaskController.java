@@ -3,7 +3,6 @@ package org.liortamir.maverickcrm.maverickcrmServer.rest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,12 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.CustomerDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
-import org.liortamir.maverickcrm.maverickcrmServer.model.Customer;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
-import org.liortamir.maverickcrm.maverickcrmServer.model.TaskCustomerView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -44,65 +41,46 @@ public class TaskController extends HttpServlet {
 		List<Task> taskRelationList;
 		JsonObject json = new JsonObject();
 		int taskId = 0;
-		int actionId = 0;
 
 		try {
 
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-			switch(APIConst.ACTION_LIST[actionId]) {
+			ActionEnum action = ServletHelper.getAction(req);
+			switch(action) {
 			case ACT_ALL:
-				List<Task> taskList = null;
-				List<TaskCustomerView> bulk = new ArrayList<>();
-				
+				List<Task> taskList = null;			
 				int customerId = Integer.parseInt(req.getParameter("customerId"));
 				String dueDate = req.getParameter("duedate");
 				String title = req.getParameter("title");
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
 				boolean isClosed = (req.getParameter("showclosed").equals("1"))?true:false;
-				
 				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, isClosed);
+				json.add("array", jsonHelper.toJsonTree(taskList));
 				
-				for(Task item : taskList){
-					Customer customer = CustomerDAL.getInstance().getByTask(item.getTaskId());
-					if(customer== null)
-						customer = new Customer(0, "No Customer", null);
-					bulk.add(new TaskCustomerView(item, customer));
-				}
-				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
 				break;
 			case ACT_SINGLE:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				task = TaskDAL.getInstance().get(taskId);
-				response = jsonHelper.toJson(task);
+				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
 				break;
 			case ACT_RELATION_PARENTS:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				taskRelationList = TaskDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);
 				break;
 			case ACT_RELATION_CHILDREN:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				taskRelationList = TaskDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
-				response = jsonHelper.toJson(json);
 				break;
 			default:
-				json.addProperty("msg", "invalid state " + actionId);
-				json.addProperty("status",  "nack");
-				response = jsonHelper.toJson(json);
-				break;
+				throw new InvalidActionException(action.ordinal());
 			}
-
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
-			response = jsonHelper.toJson(json);
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
@@ -149,12 +127,10 @@ public class TaskController extends HttpServlet {
 		
 		try {
 			int taskId = TaskDAL.getInstance().insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
-			json.addProperty("taskId", taskId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASK_ID, taskId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("err",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			if(e instanceof SQLException && ((SQLException)e).getSQLState().equals("22001"))
 				json.addProperty("msg",  "title too long");
 		}
@@ -209,13 +185,10 @@ public class TaskController extends HttpServlet {
 			
 
 			TaskDAL.getInstance().update(taskId, taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
-			json.addProperty("taskId", taskId);
-			json.addProperty("status",  "ack");
+			json.addProperty(APIConst.FLD_TASK_ID, taskId);
+			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
-			System.out.println(this.getClass().getName() + ".doPut: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("err",  e.getMessage());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 		}
 		
 		String response = jsonHelper.toJson(json);	

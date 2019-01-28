@@ -34,33 +34,29 @@ public class ContactTypeController extends HttpServlet {
 		ContactType contactType = null;
 		JsonObject json = null;
 		int id = 0;
-		int actionId = 0;
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()){
+			if(action == ActionEnum.ACT_ALL){
 				
 				List<ContactType> bulk;
 				json = new JsonObject();
 				bulk = ContactTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
-				response = jsonHelper.toJson(json);	
-				
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+					
+			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				id = Integer.parseInt(req.getParameter("contactId"));
 				contactType = ContactTypeDAL.getInstance().get(id);
-				json = new JsonObject();
-				response = jsonHelper.toJson(contactType);									
+				ServletHelper.addJsonTree(jsonHelper, json, "contactType", contactType);								
 			}
-
-		}catch(NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doPost: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}

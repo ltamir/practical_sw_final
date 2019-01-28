@@ -35,29 +35,26 @@ public class TaskTypeController extends HttpServlet {
 		TaskType taskType = null;
 		JsonObject json = new JsonObject();
 		int id = 0;
-		int actionId = 0;	
 		
 		try {
-			actionId = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
+			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(actionId == ActionEnum.ACT_ALL.ordinal()) {
+			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
 				json = new JsonObject();
 				List<TaskType> bulk = TaskTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-				response = jsonHelper.toJson(json);
-			}else if(actionId == ActionEnum.ACT_SINGLE.ordinal()){
+			}else if(action == ActionEnum.ACT_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
 				taskType = TaskTypeDAL.getInstance().get(id);	
 				json = new JsonObject();
-				response = jsonHelper.toJson(taskType);					
+				ServletHelper.addJsonTree(jsonHelper, json, "taskType", taskType);
 			}
-		}catch(NullPointerException | NumberFormatException | SQLException e) {
-			System.out.println(this.getClass().getName() + ".doGet: " + e.toString() + " " + req.getQueryString());
-			json.addProperty("msg",  e.getMessage());
-			json.addProperty("status",  "nack");
+			ServletHelper.doSuccess(json);
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidActionException e) {
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
-		
+		response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);	
 	}
