@@ -40,7 +40,16 @@ function setData(method, formData, resource){
         method: method,
         body: formData
     })
-      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
+    .then(function(response) {
+		if(response.redirected)
+			window.location.replace(response.url);
+		if(resource.endsWith('html')){
+			return response.text();
+		}
+		else
+			return response.json();
+    })
+    .then(data => ({status: r.status, body: data}))
 	.then(function(obj){return obj.body;})
 }
 
