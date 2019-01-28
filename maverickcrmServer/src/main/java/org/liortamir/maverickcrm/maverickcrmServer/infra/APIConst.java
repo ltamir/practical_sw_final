@@ -10,6 +10,10 @@ public class APIConst {
 	public static final String FLD_CUSTOMER_NAME = "customerName";
 	public static final String FLD_CUSTOMER_NOTES = "customerNotes";
 	
+	public static final String FLD_CUSTOMERTASK_ID = "customerTaskId";
+	public static final String FLD_CUSTOMERTASK_CUSTOMER_ID = "customerId";
+	public static final String FLD_CUSTOMERTASK_TASK_ID = "taskId";
+	
 	public static final String FLD_CONTACT_ID = "contactId";
 	public static final String FLD_CONTACT_FIRST_NAME = "firstName";
 	public static final String FLD_CONTACT_LAST_NAME = "lastName";
