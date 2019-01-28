@@ -37,18 +37,22 @@ public class BusinessController extends HttpServlet {
 		int hours = 0;
 		int days = 0;
 		int months = 0;
-		int totalEffort = 0;
+		int totalHours = 0;
 		
 		try {
 			int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 
 			hours = BusinessDAL.getInstance().getHours(taskId);
+			totalHours += hours;
 			json.addProperty("hours", hours);
 			days = BusinessDAL.getInstance().getDays(taskId);
+			totalHours += days*9;
 			json.addProperty("days", days);
 			months = BusinessDAL.getInstance().getMonths(taskId);
+			totalHours += months * 20 * 9;
 			json.addProperty("months", months);
 
+			json.addProperty("totalHours", totalHours);
 			if(hours > 9){
 				days += hours/9;
 				hours = hours % 9;
