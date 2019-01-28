@@ -43,8 +43,8 @@ function newTask(taskType){
 	if(taskType == null)
 		taskType = 0;
 	taskModel.taskId.setValue(0);
-	taskModel.taskType.setValue(0);
-	menuSetter(menuData.taskType, taskTypeList, 1);
+	taskModel.taskType.setValue(taskType);
+	menuSetter(menuData.taskType, taskTypeList, taskModel.taskType.getValue());
 	taskModel.contact.setValue(loggedContact.contactId);
 	taskModel.title.setValue('');
 	taskModel.effort.setValue(1);
@@ -87,8 +87,31 @@ function newTaskLog(){
 	setMsg(msgType.ok, 'Ready');
 }
 
-// ***** edit model ***** //
+// ***** view model ***** //
 
+function viewContact(id, item){
+	let contact = item.contact;
+	let card = getById(id);
+	contactModel.firstName.setValue(contact.firstName);
+	contactModel.lastName.setValue(contact.lastName);
+	contactModel.officePhone.setValue(contact.officePhone);
+	contactModel.mobilePhone.setValue(contact.mobilePhone);
+	contactModel.email.setValue(contact.email);
+	contactModel.notes.setValue(contact.notes);
+	contactModel.contactId.setValue(contact.contactId);
+}
+
+function viewAddress(id, item){
+	let address = item.address;
+	let card = getById(id);
+	addressModel.street.setValue(address.street);
+	addressModel.houseNum.setValue(address.houseNum);
+	addressModel.city.setValue(address.city);
+	addressModel.country.setValue(address.country);
+	addressModel.addressId.setValue(address.addressId);
+}
+
+//TODO fix child task state - cancellation, view other task, implementation
 function setChildTask(setter){
 	if(setter.getAttribute('data-state') == 0){
 		setter.setAttribute('data-parentTask', 0);
@@ -107,12 +130,15 @@ function setChildTask(setter){
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
-function fillTaskDetails(id, data){
-	setTaskType(data.taskType.taskTypeId, menuData.taskType);
-	taskModel.contact.setValue(data.contact.contactId);
-	taskModel.title.setValue(data.title);
-	setEffortUnit(data.effortUnit, menuData.taskEffortUnit);
-	taskModel.effort.setValue(data.effort);
+function viewTask(id, data){
+	let task = data.task;
+	menuSetter(menuData.taskType, taskTypeList, task.taskType.taskTypeId);
+	
+	taskModel.contact.setValue(task.contact.contactId);
+	taskModel.title.setValue(task.title);
+	menuSetter(menuData.taskEffortUnit, effortUnitList, task.effortUnit);
+
+	taskModel.effort.setValue(task.effort);
 	
 	let addChildTaskState = getById('addChildTask');
 	if(addChildTaskState.getAttribute('data-state') == 1){
@@ -120,19 +146,19 @@ function fillTaskDetails(id, data){
 		setChildTask(addChildTaskState);
 	}
 	
-	taskModel.dueDate.dom.value = taskModel.dueDate.getISODate(data.dueDate);
+	taskModel.dueDate.dom.value = taskModel.dueDate.getISODate(task.dueDate);
 	getById('lblDetailDueDate').innerHTML = taskModel.dueDate.getDate(taskModel.dueDate.dom.value);
-	setTaskStatus(data.status.statusId, menuData.taskStatus);
-	taskModel.taskId.setValue(data.taskId); 
+	menuSetter(menuData.taskStatus, taskStatusList, task.status.statusId);
+	taskModel.taskId.setValue(task.taskId); 
 	
 	setTab(activeTaskTab);
 	
-	if(data.taskType.taskTypeId==1){
+	if(task.taskType.taskTypeId==1){
 		getById('TabLinkedCustomer').style.display='inline';
 	}else{
 		getById('TabLinkedCustomer').style.display='none';		
 	}
-	getDataEx('', 'business', '?taskId=' + data.taskId, 
+	getDataEx('', 'business', '?taskId=' + task.taskId, 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
 				getById('totalTaskEffort').innerHTML = data.total;
 				let effortState = getById('imgEffortStatus');
@@ -152,33 +178,38 @@ function fillTaskDetails(id, data){
 }
 
 
-function fillTaskLogDetails(id, data){
-	taskLogModel.description.setValue(data.description);
-	taskLogModel.contact.setValue(data.contact.contactId);
-	taskLogModel.taskLogType.setValue(data.taskLogType.taskLogTypeId);
-	taskLogModel.sysdate.setValue(data.sysdate);
-	taskLogModel.taskLogId.setValue(data.taskLogId);
+function viewTaskLog(id, data){
+	let taskLog = data.taskLog;
+	taskLogModel.description.setValue(taskLog.description);
+	taskLogModel.contact.setValue(taskLog.contact.contactId);
+	taskLogModel.taskLogType.setValue(taskLog.taskLogType.taskLogTypeId);
+	taskLogModel.sysdate.setValue(taskLog.sysdate);
+	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
 }
         
-function fillCustomerDetails(id, data){
-	customerModel.customerId.setValue(data.customerId);
-	customerModel.customerName.setValue(data.customerName);
-	customerModel.customerNotes.setValue(data.customerNotes);
+function viewCustomer(id, data){
+	let customer = data.customer;
+	customerModel.customerId.setValue(customer.customerId);
+	customerModel.customerName.setValue(customer.customerName);
+	customerModel.customerNotes.setValue(customer.customerNotes);
 }
 
-function fillAttachmentDetails(id, data){
-	setValue('cmbAttachmentType', data.attachmentType.attachmentTypeId);
-	setValue('cmbAttachmenContact', data.taskLog.contact.contactId);
-	setValue('txtAttachmentNotes', data.taskLog.description);
-	setValue('attachmentTaskLogId', data.taskLog.taskLogId);
-	setValue('attachmentId', data.attachmentId);
+function viewAttachment(id, data){
+	let attachment = data.attachment;
+	attachmentModel.attachmentId.setValue(attachment.attachmentId);
+	attachmentModel.type.setValue(attachment.attachmentType.attachmentTypeId);
+	attachmentModel.contact.setValue(attachment.taskLog.contact.contactId);
+	attachmentModel.notes.setValue(attachment.taskLog.description);
+	attachmentModel.taskLogId.setValue(attachment.taskLog.taskLogId);
+
 }
 
-function fillLoginDetails(id, data){
-	setValue('txtUserName', data.username);
-	setValue('txtPassword', data.password);
-	setValue('loginId', data.loginId);
-	setValue('cmbLoginContactList', data.contact.contactId);
+function viewLogin(id, data){
+	let login = data.login;
+	loginModel.username.setValue(login.username);
+	loginModel.password.setValue(login.password);
+	loginModel.loginId.setValue(login.loginId);
+	loginModel.contact.setValue(login.contact.contactId);
 }
 
 //***** save model ***** //

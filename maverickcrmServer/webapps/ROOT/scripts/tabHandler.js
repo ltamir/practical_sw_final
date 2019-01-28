@@ -165,7 +165,7 @@ function activateTabConnection(){
 							}, 
 							null,
 						(opt, item)=>opt.addEventListener("click", ()=>{
-							getData('', 'address', '?actionId=3&addressId='+item.addressId, fillAddressCard)}));				
+							getData('', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));				
 
 				})
 			))
@@ -217,7 +217,7 @@ function showAssociatedContacts(){
 		},
 		(opt, item)=>{
 			opt.addEventListener("click", ()=>{
-				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, fillContactCard);
+				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, viewContact);
 				let addressList = getById('divAddressList');
 				for(let i = addressList.childNodes.length-1; i > -1; i--){
 					let addressNode = addressList.childNodes[i];
@@ -243,7 +243,7 @@ function showAllContacts(){
 			},
 			(opt, item)=>{
 				opt.addEventListener("click", ()=>{
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, fillContactCard);
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
 					})
 				}
 			)
@@ -251,7 +251,12 @@ function showAllContacts(){
 
 function activateTabCustomer(){
 	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList));
+	.then(()=>getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList))
+	.then(()=>{
+		Object.keys(customerModel).forEach(function(item){
+			customerModel[item].dom = getById(customerModel[item].domField);
+		});
+	})
 }
 
 function activateTabTimeline(){
@@ -279,6 +284,6 @@ function fillLoginList(){
 	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
 		(opt,item)=>opt.value = item.loginId, 
 		(opt,item)=>opt.text = item.username,
-		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, fillLoginDetails)})
+		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, viewLogin)})
 	)
 }

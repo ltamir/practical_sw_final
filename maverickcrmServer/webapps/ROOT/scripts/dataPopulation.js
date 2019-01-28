@@ -58,7 +58,7 @@ function createTaskRow(row, item, parent){
 		row.style.backgroundColor = '#8899AA' //'#424f5a';
 		row.style.color = '#FFFFFF';
 		parent.setAttribute('data-selected', row.id);
-		getData('', 'task', '?actionId=3&taskId='+item.taskId, fillTaskDetails);
+		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);
 		});
 	
 	let taskTypeCell  = row.insertCell(0);
@@ -131,31 +131,11 @@ function fillAttachmentList(id, data){
         opt.text = item.fileName + " " + item.attachmentType.attachmentTypeName;
         opt.title = item.taskLog.description;
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, fillAttachmentDetails);});
+        opt.addEventListener("click", function(){getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);});
         element.appendChild(opt);                        
     }); 	
 }
 
-function fillContactCard(id, item){
-	let card = getById(id);
-	contactModel.firstName.setValue(item.firstName);
-	contactModel.lastName.setValue(item.lastName);
-	contactModel.officePhone.setValue(item.officePhone);
-	contactModel.mobilePhone.setValue(item.mobilePhone);
-	contactModel.email.setValue(item.email);
-	contactModel.notes.setValue(item.notes);
-	contactModel.contactId.setValue(item.contactId);
-}
-
-function fillAddressCard(id, item){
-	let card = getById(id);
-	
-	setValue('txtAddressStreet', item.street);
-	setValue('txtAddressHouseNum', item.houseNum);
-	setValue('txtAddressCity', item.city);
-	setValue('txtAddressCountry', item.country);
-	setValue('addressId', item.addressId);
-}
 
 function fillCustomerList(id, data){
     let selectElement = getById(id);
@@ -169,7 +149,7 @@ function fillCustomerList(id, data){
         opt.value = item.customerId;
         opt.text = item.customerName;
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'customer', '?actionId=3&customerId='+item.customerId, fillCustomerDetails);});
+        opt.addEventListener("click", function(){getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);});
         selectElement.appendChild(opt);                        
     });        	
 }
@@ -271,7 +251,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     	gotoImg.src="images/goto_task.png";
     	gotoImg.title="goto task";
     	gotoImg.style.marginLeft = '0.5em';
-    	gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+taskId, fillTaskDetails)});
+    	gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+taskId, viewTask)});
     	divRow.appendChild(gotoImg);
     	
     	
@@ -337,7 +317,7 @@ function fillTaskLogList(id, data){
         opt.value = item.taskLogId;
         opt.text = thisDate.toLocaleDateString() + ", " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description ;
         opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, fillTaskLogDetails);});
+        opt.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});
         selectElement.appendChild(opt);
     });        	
 }

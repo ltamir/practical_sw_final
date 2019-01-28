@@ -81,7 +81,7 @@ var customerModel = {
 }
 
 var loginModel = {
-		loginId:{getValue:getDomValue, setValue:setDomValue, domField:'detailCustomerId', dom:null, api:'loginId'},
+		loginId:{getValue:getDomValue, setValue:setDomValue, domField:'loginId', dom:null, api:'loginId'},
 		username:{getValue:getDomValue, setValue:setDomValue, domField:'txtUserName', dom:null, api:'username'},
 		password:{getValue:getDomValue, setValue:setDomValue, domField:'txtPassword', dom:null, api:'password'},
 		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbLoginContactList', dom:null, api:'contactId'}
@@ -92,7 +92,9 @@ var attachmentModel = {
 		type:{getValue:getDomValue, setValue:setDomValue, domField:'cmbAttachmentType', dom:null, api:'attachmentTypeId'},
 		file:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentFile', dom:null, api:'fileName'},
 		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbAttachmenContact', dom:null, api:'contactId'},
-		notes:{getValue:getDomValue, setValue:setDomValue, domField:'txtAttachmentNotes', dom:null, api:'attachmentNotes'}
+		notes:{getValue:getDomValue, setValue:setDomValue, domField:'txtAttachmentNotes', dom:null, api:'attachmentNotes'},
+		taskLogId:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentTaskLogId', dom:null, api:'taskLogId'}
+		
 }
 
 var associationModel = {
