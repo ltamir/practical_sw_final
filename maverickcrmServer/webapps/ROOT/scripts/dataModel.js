@@ -23,116 +23,109 @@ var taskStatusList = {
 		5:{src:"images/status/onhold.png", title:"On Hold"}
 	}
 
+function Model(getter, setter, domField, dom, api ){
+	this.getValue = getter;
+	this.setValue = setter;
+	this.domField = domField;
+	this.dom = dom;
+	this.api = api;
+}
+function Model(domField, dom, api ){
+	this.getValue = getDomValue;
+	this.setValue = setDomValue;
+	this.domField = domField;
+	this.dom = dom;
+	this.api = api;
+}
+var ddd = {values:[{val:0}, {val:''}], err:'Please fill the street name'}
 var taskLogModel = {
-		taskLogId:{getValue:getDomValue, setValue:setDomValue, domField:'taskLogId', dom:null, api:'taskLogId'}, 
-		sysdate:{getValue:getDomValue, setValue:setDomValue, domField:'sysDate', dom:null, api:'sysdate'}, 
-		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbTaskLogContact', dom:null, api:'contactId'}, 
-		description:{getValue:getDomValue, setValue:setDomValue, domField:'txtTaskLogDescription', dom:null, api:'description'}, 
-		taskLogType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbTaskLogType', dom:null, api:'taskLogTypeId'},
-		taskId:{getValue:getDomValue, setValue:setDomValue, domField:'taskId', dom:null, api:'taskId'}
-		}
+		taskLogId:new Model('taskLogId', null, 'taskLogId'),
+		sysdate:new Model('sysDate', null, 'sysdate'),
+		contact:new Model('cmbTaskLogContact', null, 'contactId'),
+		description:new Model('txtTaskLogDescription', null, 'description'),
+		taskLogType:new Model('cmbTaskLogType', null, 'taskLogTypeId'),
+		taskId:new Model('taskId', null, 'taskId')
+	}
+
 var taskModel={
-		taskId:{getValue:getDomValue, setValue:setDomValue, domField:'taskId', dom:null, api:'taskId'}, 
-		taskType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbDetailTaskType', dom:null, api:'taskTypeId'}, 
-		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbDetailContact', dom:null, api:'contactId'}, 
-		title:{getValue:getDomValue, setValue:setDomValue, domField:'txtDetailTaskTitle', dom:null, api:'title'}, 
-		effort:{getValue:getDomValue, setValue:setDomValue, domField:'txtDetailTaskEffort', dom:null, api:'effort'}, 
-		effortUnit:{getValue:getDomValue, setValue:setDomValue, domField:'effortUnit', dom:null, api:'effortUnit'}, 
-		dueDate:{getValue:getDomValue, setValue:setDomValue, domField:'txtDetailDueDate', dom:null, api:'dueDate', 
-			getDate:function(isoDate){
-				let dateObject = {day:0, month:0, year:0};
-				let dateArr = isoDate.split("-");
-				dateObject.day = dateArr[2];
-				dateObject.month = dateArr[1];
-				dateObject.year = dateArr[0];
-				let formattedDate = (dateObject.day.length == 1)?"0":"";
-				formattedDate += dateObject.day + "/";	
-				formattedDate += (dateObject.month.length == 1)?"0":"";
-				formattedDate += dateObject.month + "/";
-				formattedDate += dateObject.year;			
-				return formattedDate;
-			},
-			getISODate:function(dateObject){	//ISO 8601
-				let date = dateObject.year + "-";
-				date += (dateObject.month<10)?"0":"";
-				date += dateObject.month + "-";
-				date += (dateObject.day<10)?"0":"";
-				date += dateObject.day;			
-				return date;
-			}
-		}, 
-		status:{getValue:function(){return this.dom.value}, setValue:setDomValue, domField:'cmbDetailStatus', dom:null, api:'statusId'} 
-		}
+		taskId:new Model('taskId', null, 'taskId'), 
+		taskType:new Model('cmbDetailTaskType', null, 'taskTypeId'), 
+		contact:new Model('cmbDetailContact', null, 'contactId'), 
+		title:new Model('txtDetailTaskTitle', null, 'title'), 
+		effort:new Model('txtDetailTaskEffort', null, 'effort'), 
+		effortUnit:new Model('effortUnit', null, 'effortUnit'), 
+		dueDate:new Model('txtDetailDueDate', null, 'dueDate'),
+		status:new Model('cmbDetailStatus', null, 'statusId') 
+	}
 
 var contactModel = {
-		contactId:{getValue:getDomValue, setValue:setDomValue, domField:'connectionContactId', dom:null, api:'contactId'},
-		firstName:{getValue:getDomValue, setValue:setDomValue, domField:'txtFirstName', dom:null, api:'firstName'},
-		lastName:{getValue:getDomValue, setValue:setDomValue, domField:'txtLastName', dom:null, api:'lastName'},
-		officePhone:{getValue:getDomValue, setValue:setDomValue, domField:'txtOfficePhone', dom:null, api:'officePhone'},
-		mobilePhone:{getValue:getDomValue, setValue:setDomValue, domField:'txtMobilePhone', dom:null, api:'mobilePhone'},
-		email:{getValue:getDomValue, setValue:setDomValue, domField:'txtEmail', dom:null, api:'email'},
-		notes:{getValue:getDomValue, setValue:setDomValue, domField:'txtNotes', dom:null, api:'notes'}
+		contactId:new Model('connectionContactId', null, 'contactId'),
+		firstName:new Model('txtFirstName', null, 'firstName'),
+		lastName:new Model('txtLastName', null, 'lastName'),
+		officePhone:new Model('txtOfficePhone', null, 'officePhone'),
+		mobilePhone:new Model('txtMobilePhone', null, 'mobilePhone'),
+		email:new Model('txtEmail', null, 'email'),
+		notes:new Model('txtNotes', null, 'notes')
 }
 
 var customerModel = {
-		customerId:{getValue:getDomValue, setValue:setDomValue, domField:'detailCustomerId', dom:null, api:'customerId'},
-		customerName:{getValue:getDomValue, setValue:setDomValue, domField:'txtCustomerName', dom:null, api:'customerName'},
-		customerNotes:{getValue:getDomValue, setValue:setDomValue, domField:'txtCustomerNotes', dom:null, api:'customerNotes'}
+		customerId:new Model('detailCustomerId', null, 'customerId'),
+		customerName:new Model('txtCustomerName', null, 'customerName'),
+		customerNotes:new Model('txtCustomerNotes', null, 'customerNotes')
 }
 
 var loginModel = {
-		loginId:{getValue:getDomValue, setValue:setDomValue, domField:'loginId', dom:null, api:'loginId'},
-		username:{getValue:getDomValue, setValue:setDomValue, domField:'txtUserName', dom:null, api:'username'},
-		password:{getValue:getDomValue, setValue:setDomValue, domField:'txtPassword', dom:null, api:'password'},
-		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbLoginContactList', dom:null, api:'contactId'}
+		loginId:new Model('loginId', null, 'loginId'),
+		username:new Model('txtUserName', null, 'username'),
+		password:new Model('txtPassword', null, 'password'),
+		contact:new Model('cmbLoginContactList', null, 'contactId')
 }
 
 var attachmentModel = {
-		attachmentId:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentId', dom:null, api:'attachmentId'},
-		type:{getValue:getDomValue, setValue:setDomValue, domField:'cmbAttachmentType', dom:null, api:'attachmentTypeId'},
-		file:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentFile', dom:null, api:'fileName'},
-		contact:{getValue:getDomValue, setValue:setDomValue, domField:'cmbAttachmenContact', dom:null, api:'contactId'},
-		notes:{getValue:getDomValue, setValue:setDomValue, domField:'txtAttachmentNotes', dom:null, api:'attachmentNotes'},
-		taskLogId:{getValue:getDomValue, setValue:setDomValue, domField:'attachmentTaskLogId', dom:null, api:'taskLogId'}
-		
+		attachmentId:new Model('attachmentId', null, 'attachmentId'),
+		type:new Model('cmbAttachmentType', null, 'attachmentTypeId'),
+		file:new Model('attachmentFile', null, 'fileName'),
+		contact:new Model('cmbAttachmenContact', null, 'contactId'),
+		notes:new Model('txtAttachmentNotes', null, 'attachmentNotes'),
+		taskLogId:new Model('attachmentTaskLogId', null, 'taskLogId')		
 }
 
 var associationModel = {
-		associationId:{getValue:getDomValue, setValue:setDomValue, domField:'connectionAssociationId', dom:null, api:'associationId'},
-		contact:{getValue:getDomValue, setValue:setDomValue, domField:'connectionContactId', dom:null, api:'contactId'},
-		customer:{getValue:getDomValue, setValue:setDomValue, domField:'cmbConnectedCustomer', dom:null, api:'customerId'},
-		contactType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbContactType', dom:null, api:'contactTypeId'},
-		address:{getValue:getDomValue, setValue:setDomValue, domField:'addressId', dom:null, api:'addressId'}
+		associationId:new Model('connectionAssociationId', null, 'associationId'),
+		contact:new Model('connectionContactId', null, 'contactId'),
+		customer:new Model('cmbConnectedCustomer', null, 'customerId'),
+		contactType:new Model('cmbContactType', null, 'contactTypeId'),
+		address:new Model('addressId', null, 'addressId')
 }
 
 var taskRelationModel = {
-		taskRelationId:{getValue:getDomValue, setValue:setDomValue, domField:'taskRelationId', dom:null, api:'taskRelationId'},
-		task:{getValue:getDomValue, setValue:setDomValue, domField:'taskId', dom:null, api:'parentTaskId'},
-		taskRelationType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbTaskRelationType', dom:null, api:'taskRelationTypeId'},
-		selectedTask:{getValue:getDomValue, setValue:setDomValue, domField:'taskRelationSelectedTaskId', dom:null, api:''}
+		taskRelationId:new Model('taskRelationId', null, 'taskRelationId'),
+		task:new Model('taskId', null, 'parentTaskId'),
+		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId'),
+		selectedTask:new Model('taskRelationSelectedTaskId', null, '')
 	// NOT used in API	
 }
 
 var addressModel = {
-		addressId:{getValue:getDomValue, setValue:setDomValue, domField:'addressId', dom:null, api:'addressId'},
-		street:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressStreet', dom:null, api:'street'},
-		houseNum:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressHouseNum', dom:null, api:'houseNum'},
-		city:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressCity', dom:null, api:'city'},
-		country:{getValue:getDomValue, setValue:setDomValue, domField:'txtAddressCountry', dom:null, api:'country'}
+		addressId:new Model('addressId', null, 'addressId'),
+		street:new Model('txtAddressStreet', null, 'street'),
+		houseNum:new Model('txtAddressHouseNum', null, 'houseNum'),
+		city:new Model('txtAddressCity', null, 'city'),
+		country:new Model('txtAddressCountry', null, 'country')
 }
 
 var searchModel = {
-		customer:{getValue:getDomValue, setValue:setDomValue, domField:'cmbSearchCustomer', dom:null},
-		taskType:{getValue:getDomValue, setValue:setDomValue, domField:'cmbSearchTaskType', dom:null},
-		project:{getValue:getDomValue, setValue:setDomValue, domField:'cmbSearchProject', dom:null},
-		title:{getValue:getDomValue, setValue:setDomValue, domField:'txtSearchTitle', dom:null},
-		dueDate:{getValue:getDomValue, setValue:setDomValue, domField:'txtSearchDueDate', dom:null},
-		status:{getValue:function(){return this.dom.getAttribute('data-state')},
-			setValue:function(val){
+		customer:new Model('cmbSearchCustomer', null, ''),
+		taskType:new Model('cmbSearchTaskType', null, ''),
+		project:new Model('cmbSearchProject', null, ''),
+		title:new Model('txtSearchTitle', null, ''),
+		dueDate:new Model('txtSearchDueDate', null, ''),
+		status:new Model(()=>{return this.dom.getAttribute('data-state')},
+			(val)=>{
 				this.dom.setAttribute('data-state', val);
 			},
-			domField:'searchTaskStatus', dom:null}
-};
+			'searchTaskStatus', null, '')
+}
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
 	this.menuid = menuid;
