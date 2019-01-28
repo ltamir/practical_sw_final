@@ -30,6 +30,15 @@ function newContact(){
 	setMsg(msgType.ok, 'Ready');
 }
 
+function newAddress(){
+	setValue('txtAddressStreet', '');
+	setValue('txtAddressHouseNum', '');
+	setValue('txtAddressCity', '');
+	setValue('txtAddressCountry', '');
+	setValue('addressId', 0);
+	setMsg(msgType.ok, 'Ready');
+}
+
 function newLogin(){
 	login.loginId.setValue(0);
 	login.userName.setValue('');
@@ -133,11 +142,9 @@ function setChildTask(setter){
 function viewTask(id, data){
 	let task = data.task;
 	menuSetter(menuData.taskType, task.taskType.taskTypeId);
-	
 	taskModel.contact.setValue(task.contact.contactId);
 	taskModel.title.setValue(task.title);
 	menuSetter(menuData.taskEffortUnit, task.effortUnit);
-
 	taskModel.effort.setValue(task.effort);
 	
 	let addChildTaskState = getById('addChildTask');
@@ -146,8 +153,8 @@ function viewTask(id, data){
 		setChildTask(addChildTaskState);
 	}
 	
-	taskModel.dueDate.dom.value = taskModel.dueDate.getISODate(task.dueDate);
-	getById('lblDetailDueDate').innerHTML = taskModel.dueDate.getDate(taskModel.dueDate.dom.value);
+	taskModel.dueDate.dom.value = getISODate(task.dueDate);
+	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
 	menuSetter(menuData.taskStatus, task.status.statusId);
 	taskModel.taskId.setValue(task.taskId); 
 	
@@ -254,15 +261,16 @@ function saveTask(){
 		debugFormData(formData);
 	
 	setData(method, formData, 'task')
-		.then(function(newId){
-			if(newId.status == 'nack'){
-				setMsg(msgType.nok, newId.msg);
+		.then(function(resp){
+			if(resp.status == 'nack'){
+				setMsg(msgType.nok, resp.msg);
+				console.log(resp.err);
 				return;
 			}
-			if(taskId == 0){
-				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', newId.taskId); 
+			if(taskModel.taskId.getValue() == 0){	// if this is a new task
+				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', resp.taskId); 
 			}
-			getById('taskId').value = newId.taskId; 
+			taskModel.taskId.setValue(resp.taskId); 
 			if(taskModel.taskType.getValue() ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
@@ -287,7 +295,8 @@ function validateTaskLog(){
 	saveTaskLog(taskLogModel.contact.getValue(),
 			taskLogModel.taskLogType.getValue(),
 			taskLogModel.description.getValue(),
-			taskLogModel.taskId.getValue());
+			taskLogModel.taskId.getValue()
+		);
 } 
 
 function saveTaskLog(contactId, taskLogTypeId, description, taskId){
@@ -309,9 +318,17 @@ function saveTaskLog(contactId, taskLogTypeId, description, taskId){
 		debugFormData(formData);
 
 	setData(method, formData, 'tasklog')
-		.then(function(){getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+taskLogModel.taskId.getValue(), fillTaskLogList)})
-		.then(newTaskLog())
-		.then(function(){setMsg(msgType.ok, 'Log saved')});
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok, resp.msg);
+			console.log(resp.err);
+			return;
+		}else{
+			setMsg(msgType.ok, 'Log saved');
+			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+taskLogModel.taskId.getValue(), fillTaskLogList);
+			newTaskLog()
+		}
+	});
 }
 
 
@@ -531,14 +548,6 @@ function saveAssociation(action){
 		});
 }   
 
-function newAddress(){
-	setValue('txtAddressStreet', '');
-	setValue('txtAddressHouseNum', '');
-	setValue('txtAddressCity', '');
-	setValue('txtAddressCountry', '');
-	setValue('addressId', 0);
-	setMsg(msgType.ok, 'Ready');
-}
 
 function saveAddress(){
 	let formData;
