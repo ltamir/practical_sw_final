@@ -53,7 +53,7 @@ public class TaskRelationDAL {
 		List<TaskRelation> taskRelationList = null;
 		
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from taskRelation where parentTaskId=?");
+			PreparedStatement ps = conn.prepareStatement("select * from taskRelation inner join task on taskId = childTaskId where parentTaskId=? order by task.duedate, task.statusId");
 			ps.setInt(1, parentTaskId);
 			ResultSet rs = ps.executeQuery();
 			taskRelationList = new ArrayList<>(7);
