@@ -25,6 +25,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.Reference;
 import org.liortamir.maverickcrm.maverickcrmServer.model.TaskLog;
 
 import com.google.gson.Gson;
@@ -42,6 +43,8 @@ public class TaskLogController extends HttpServlet {
 	private Gson jsonHelper = new GsonBuilder()
 			   .setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private SimpleDateFormat frm=  new SimpleDateFormat();
+	private Reference ref = Reference.getInstance();
+	private int maxlog = 0;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -79,6 +82,7 @@ public class TaskLogController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
+		int taskLogId = 0;
 		try {
 			String sysdate = frm.format(new Date());
 			int taskId = Integer.parseInt(req.getParameter("taskId"));
@@ -86,12 +90,24 @@ public class TaskLogController extends HttpServlet {
 			String description = req.getParameter("description");
 			int taskLogTypeId = Integer.parseInt(req.getParameter("taskLogTypeId"));
 			
-			int taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);
+			if(description.length() > maxlog) {
+				StringBuilder sb  = new StringBuilder(description);
+				while(sb.length() > 0) {
+					int end = (sb.length()>maxlog)?maxlog-1:sb.length()-1;
+					taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, sb.substring(0, end), taskLogTypeId);
+					sb.delete(0, maxlog-1);
+				}
+			}else {
+				taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);	
+			}
+			
 			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
 			ServletHelper.doSuccess(json);
 		}catch(NumberFormatException | SQLException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
 		}
+		
 		String response = jsonHelper.toJson(json);
 		PrintWriter out = resp.getWriter();
 		out.println(response);
@@ -188,6 +204,7 @@ public class TaskLogController extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		frm.applyPattern("yyyy-MM-dd HH:mm:ss");
+		maxlog = ref.getAsInt("app.maxlog", 500);
 	}
 
 	
