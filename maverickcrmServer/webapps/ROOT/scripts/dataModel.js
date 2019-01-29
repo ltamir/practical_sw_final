@@ -23,13 +23,7 @@ var taskStatusList = {
 		5:{src:"images/status/onhold.png", title:"On Hold"}
 	}
 
-function Model(getter, setter, domField, dom, api ){
-	this.getValue = getter;
-	this.setValue = setter;
-	this.domField = domField;
-	this.dom = dom;
-	this.api = api;
-}
+
 function Model(domField, dom, api ){
 	this.getValue = getDomValue;
 	this.setValue = setDomValue;
@@ -120,12 +114,10 @@ var searchModel = {
 		project:new Model('cmbSearchProject', null, ''),
 		title:new Model('txtSearchTitle', null, ''),
 		dueDate:new Model('txtSearchDueDate', null, ''),
-		status:new Model(()=>{return this.dom.getAttribute('data-state')},
-			(val)=>{
-				this.dom.setAttribute('data-state', val);
-			},
-			'searchTaskStatus', null, '')
+		status:new Model('searchTaskStatus', null, '')
 }
+searchModel.status.getValue = function(){return this.dom.getAttribute('data-state')};
+searchModel.status.setValue = function(val){this.dom.setAttribute('data-state', val);};
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
 	this.menuid = menuid;
