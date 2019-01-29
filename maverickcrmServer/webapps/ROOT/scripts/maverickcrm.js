@@ -301,7 +301,8 @@ function toggleDatabase(){
 	}
 }
 function executeSQL(){
-	getDataEx('', 'database', '?sql=' + getValue('txtSQL'), fillDataBase, null, null, null, null)
+	console.log(escape(getValue('txtSQL')));
+	getDataEx('', 'database', '?sql=' + escape(getValue('txtSQL')), fillDataBase, null, null, null, null)
 }
 
 function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler){
