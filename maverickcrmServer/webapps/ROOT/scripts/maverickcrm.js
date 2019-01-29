@@ -266,9 +266,8 @@ function init(){
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
     
-    searchModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+//    searchModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
     taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
-//    getById('lblSearchDueDate').innerHTML = getDate(searchModel.dueDate.getValue());
     getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
 //    getById('txtDetailDueDate').valueAsDate = new Date(); 
 }
@@ -280,7 +279,6 @@ function initModels(){
 	Object.keys(searchModel).forEach(function(item){
 		searchModel[item].dom = getById(searchModel[item].domField);
 	});	
-	
 }
 
 function logout(){
@@ -301,13 +299,11 @@ function toggleDatabase(){
 		sqlState.setAttribute('data-state', 0);
 		getById('divCRM').style.display='inline';
 	}
-	
-	
 }
 function executeSQL(){
 	getDataEx('', 'database', '?sql=' + getValue('txtSQL'), fillDataBase, null, null, null, null)
-//	.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
+
 function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let resultHeader = getById('resultHeader');
 	let resultBody = getById('resultBody');
@@ -318,7 +314,9 @@ function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler
     
     for (var i = resultBody.rows.length - 1; i >= 0; i--) {
     	resultBody.deleteRow(i);
-    }    
+    }
+    if(data == null)
+    	return;
 	
 	let headerCols = data.array[0].row;
 	let row = document.createElement('TR');
