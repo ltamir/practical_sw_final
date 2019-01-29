@@ -48,8 +48,6 @@ private Map<String, String> referenceMap = new HashMap<String, String>();
 		for(File configFile : files){
 			Properties prop = new Properties();
 			
-			// TODO call readConfig with the directory as str param to iterate over all sub dirs in recursion
-			
 			// handle XML files
 			if(configFile.getName().toUpperCase().endsWith("XML")){
 				this.referenceMap.put(configFile.getName(), configFile.getAbsolutePath());
