@@ -421,9 +421,9 @@ function removeTaskRelation(){
 	let method='DELETE';
 	let formData = new FormData();
 	
-	if(!validate(taskRelationTypeId.taskRelationId, '', 'Please select a task to remove from the relation')) return;
+	if(!validate(taskRelationModel.taskRelationId, '', 'Please select a task to remove from the relation')) return;
 	
-	formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
+	formData.append(taskRelationModel.taskRelationId.api, taskRelationModel.taskRelationId.getValue());
 	
 	setData(method, formData, 'taskrelation')
 	
