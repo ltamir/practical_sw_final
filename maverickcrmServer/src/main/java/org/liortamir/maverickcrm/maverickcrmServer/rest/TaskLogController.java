@@ -93,9 +93,9 @@ public class TaskLogController extends HttpServlet {
 			if(description.length() > maxlog) {
 				StringBuilder sb  = new StringBuilder(description);
 				while(sb.length() > 0) {
-					int end = (sb.length()>maxlog)?maxlog-1:sb.length()-1;
+					int end = (sb.length()>maxlog)?maxlog-1:sb.length();
 					taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, sb.substring(0, end), taskLogTypeId);
-					sb.delete(0, maxlog-1);
+					sb.delete(0, end);
 				}
 			}else {
 				taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);	
