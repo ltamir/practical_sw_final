@@ -49,8 +49,6 @@ function setData(method, formData, resource){
 		else
 			return response.json();
     })
-    .then(data => ({status: r.status, body: data}))
-	.then(function(obj){return obj.body;})
 }
 
 function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcText, eventHandler){
