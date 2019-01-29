@@ -42,7 +42,7 @@ public class TaskRelationController extends HttpServlet {
 		TaskRelation taskRelation = null;
 		int id = 0;
 		int taskId = 0;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		
 		try {
 			
@@ -54,14 +54,12 @@ public class TaskRelationController extends HttpServlet {
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelation", taskRelation);
 			
 			}else if(action == ActionEnum.ACT_RELATION_PARENTS) {
-				
-				json = new JsonObject();
+
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				
 			}else if(action == ActionEnum.ACT_RELATION_CHILDREN) {
-				json = new JsonObject();
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
