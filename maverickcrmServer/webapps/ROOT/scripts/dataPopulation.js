@@ -298,9 +298,9 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 }    
     	
 function fillTaskRelationDetails(id, data){
-	getById('cmbTaskRelationType').value = data.taskRelationType.taskRelationTypeId;
-	getById('taskRelationId').value=data.taskRelationId;
-
+	let taskRelation = data.taskRelation;
+	taskRelationModel.taskRelationType.setValue(taskRelation.taskRelationType.taskRelationTypeId);
+	taskRelationModel.taskRelationId.setValue(taskRelation.taskRelationId);
 }
         
 function fillTaskLogList(id, data){
