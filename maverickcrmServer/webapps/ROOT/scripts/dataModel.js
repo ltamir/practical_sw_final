@@ -81,7 +81,7 @@ var attachmentModel = {
 		file:new Model('attachmentFile', null, 'fileName'),
 		contact:new Model('cmbAttachmenContact', null, 'contactId'),
 		notes:new Model('txtAttachmentNotes', null, 'attachmentNotes'),
-		taskLogId:new Model('attachmentTaskLogId', null, 'taskLogId')		
+		taskLogId:new Model('attachmentTaskLogId', null, 'taskLogId')
 }
 
 var associationModel = {

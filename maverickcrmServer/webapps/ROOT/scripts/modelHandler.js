@@ -267,11 +267,18 @@ function saveTask(){
 				setMsg(msgType.nok, resp.msg);
 				console.log(resp.err);
 				return;
+			}else{
+				setMsg(msgType.ok, 'Task saved');
 			}
-			if(taskModel.taskId.getValue() == 0){	// if this is a new task
-				saveTaskLog(getValue('cmbDetailContact'), 4, 'Task created', resp.taskId); 
+			if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
+				taskModel.taskId.setValue(resp.taskId);
+				taskLogModel.contact.setValue(taskModel.contact.getValue());
+				taskLogModel.taskLogType.setValue(4);
+				taskLogModel.description.setValue('Task created');
+				
+				saveTaskLog(); 
 			}
-			taskModel.taskId.setValue(resp.taskId); 
+			
 			if(taskModel.taskType.getValue() ==1)
 				getById('TabLinkedCustomer').style.display='inline';
 			})
@@ -282,8 +289,8 @@ function saveTask(){
 			addChildTask.setAttribute('data-parentTask', 0);
 			toggleState(addChildTask);
 		}})
-		.then(function(){searchTask(prepareSearchTask())})
-		.then(function(){setMsg(msgType.ok, 'Task saved')});
+		.then(function(){searchTask(prepareSearchTask())});
+
 }
 
 
@@ -293,14 +300,10 @@ function validateTaskLog(){
 	if(!validate(taskLogModel.taskLogType, 0, 'Please select a log type')) return;
 	if(!validate(taskLogModel.contact, 0, 'Please select a contact')) return;
 	
-	saveTaskLog(taskLogModel.contact.getValue(),
-			taskLogModel.taskLogType.getValue(),
-			taskLogModel.description.getValue(),
-			taskLogModel.taskId.getValue()
-		);
+	saveTaskLog();
 } 
 
-function saveTaskLog(contactId, taskLogTypeId, description, taskId){
+function saveTaskLog(){
 	let formData = new FormData();
 	let method;
 		
@@ -607,7 +610,7 @@ function saveAttachment(){
 	if(!validate(attachmentModel.contact, 0, 'Please select a contact')) return;
 
 	if(!validate(attachmentModel.attachmentId, 0, null) && 
-			!validate(attachmentModel.contact, 0, 'Please select a file'))
+			!validate(attachmentModel.contact, 0, 'Please select a file')) return;
 //	if(attachmentId == '0' && getValue('attachmentFile') == 0){
 //		setMsg(msgType.nok, 'Please select a file');
 //		return;
