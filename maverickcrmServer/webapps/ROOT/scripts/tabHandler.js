@@ -125,7 +125,7 @@ function activateTabAttachment(){
 	.then(()=>getDataEx('cmbAttachmenContact', 'contact', '?actionId=2', fillSelect, 'Contacts',
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-			null))
+			(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;}))
 	.then(()=>setValue('txtAttachmentNotes', '')).
 	then(()=>{
 		Object.keys(attachmentModel).forEach(function(item){
