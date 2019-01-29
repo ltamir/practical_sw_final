@@ -172,6 +172,7 @@ function toggleSearchDate(lbl, field){
 		field.style.display='inline';
 		lbl.style.display='none';
 		field.setAttribute('data-isActive', '1');
+		field.focus();
 	}else{
 		let formattedDate = 'Due date';
 		field.style.display='none';
@@ -261,15 +262,15 @@ function init(){
     		null);    
 
 	searchProjectTask('cmbSearchProject');
-	
 	searchTask(null, 0, '', '', 0, 1, 0);
-    
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
     
-    setValue('txtSearchDueDate', '');
-    
-    getById('txtDetailDueDate').valueAsDate = new Date(); 
+    searchModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+    taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+//    getById('lblSearchDueDate').innerHTML = getDate(searchModel.dueDate.getValue());
+    getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
+//    getById('txtDetailDueDate').valueAsDate = new Date(); 
 }
 
 function initModels(){

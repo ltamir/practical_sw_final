@@ -58,10 +58,9 @@ function newTask(taskType){
 	taskModel.title.setValue('');
 	taskModel.effort.setValue(1);
 	taskModel.effortUnit.setValue(1);
-	menuSetter(menuData.taskEffortUnit, 1);
-//	getById('txtDetailDueDate').valueAsDate = new Date(); 
-	taskModel.dueDate.setValue(new Date());
-	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
+	menuSetter(menuData.taskEffortUnit, 1);	
+	taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
 	taskModel.status.setValue(1);
 	menuSetter(menuData.taskStatus, 1);
 	
@@ -155,7 +154,7 @@ function viewTask(id, data){
 		setChildTask(addChildTaskState);
 	}
 	
-	taskModel.dueDate.dom.value = getISODate(task.dueDate);
+	taskModel.dueDate.setValue(getISODate(task.dueDate));
 	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
 	menuSetter(menuData.taskStatus, task.status.statusId);
 	taskModel.taskId.setValue(task.taskId); 

@@ -34,7 +34,7 @@
             </td> 
             <td width="20%">
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Due date</span>
-                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
+                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
  
             	<img src="images/task_open.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTaskStatus"  data-state="0" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
             	<img src="images/task_search.png" style="margin-left:0.5em; margin-right:0.5em" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
@@ -136,7 +136,7 @@
 					</div>
 					<input type="hidden" id="effortUnit" value="1">
 	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, getById('txtDetailDueDate'))">Due Date</span>				
-					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeyup="flagToggle(getById('lblDetailDueDate'),this, event)" onchange="toggleSearchDate(getById('lblDetailDueDate'),this)"/> 
+					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeyup="flagToggle(getById('lblDetailDueDate'),this, event)" onblur="toggleSearchDate(getById('lblDetailDueDate'), getById('txtDetailDueDate'))" onchange="toggleSearchDate(getById('lblDetailDueDate'),this)"/> 
 					<input type="hidden" id="taskId" value="0">    
 	            	<img align="right" src="images/save_blue.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
             	</div>
