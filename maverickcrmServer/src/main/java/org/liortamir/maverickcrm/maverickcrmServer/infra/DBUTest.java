@@ -24,12 +24,34 @@ public class DBUTest implements Runnable{
 	    		sql=scanner.nextLine();
 	    		try {
 	    		List<DatabaseRow> bulk = DatabaseDAL.getInstance().executeSQL(sql);
-	    		bulk.forEach((item) -> {
-	    			item.getRow().forEach((row) ->{
-	    				System.out.print(row.toString());	
-	    				});
-	    				System.out.println();
-	    			});
+	    		if(bulk.isEmpty()) {
+	    			System.out.println("no results");
+	    			continue;
+	    		}
+	    			
+	    		int[] lengths = new int[bulk.get(0).getRow().size()];
+
+	    		for(int i = 0; i < bulk.size(); i++) {
+	    			for(int j = 0; j < bulk.get(0).getRow().size(); j++) {
+	    				int len = bulk.get(i).getRow().get(j).length();
+	    				if(len > lengths[j] && len < 51)
+	    					lengths[j] = len;
+	    			}
+	    		}
+	    		
+	    		for(int i = 0; i < bulk.size(); i++) {
+	    			for(int j = 0; j < bulk.get(0).getRow().size(); j++) {
+	    				String ggg = String.format("|%-" + lengths[j] + "s|", bulk.get(i).getRow().get(j));
+	    				System.out.print(ggg);
+	    			}
+	    			System.out.println();
+	    		}	    		
+//	    		bulk.forEach((item) -> {
+//	    			item.getRow().forEach((row) ->{
+//	    				System.out.print(String.format("%-" + lengths[j] + "s", row.toString()));	
+//	    				});
+//	    				System.out.println();
+//	    			});
 	    		}catch(SQLException | NullPointerException e) {
 	    			System.out.println("Error: " + e.getMessage() + " try again");
 	    		}
