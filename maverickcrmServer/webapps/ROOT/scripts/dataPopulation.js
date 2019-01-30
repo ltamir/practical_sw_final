@@ -48,16 +48,7 @@ function fillTaskList(id, data){
 function createTaskRow(row, item, parent){
 	row.id = 'taskList' + item.taskId;
 	row.addEventListener("click", function(){
-		if(parent.hasAttribute('data-selected')){
-			let prevRow = getById(parent.getAttribute('data-selected'));
-			prevRow.style.backgroundColor = prevRow.getAttribute('data-backgroundColor');
-			prevRow.style.color = '#000000';
-		}
-			
-		row.setAttribute('data-backgroundColor', row.style.backgroundColor);
-		row.style.backgroundColor = '#8899AA' //'#424f5a';
-		row.style.color = '#FFFFFF';
-		parent.setAttribute('data-selected', row.id);
+		selectedTaskList.toggle(row);
 		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);
 		});
 	

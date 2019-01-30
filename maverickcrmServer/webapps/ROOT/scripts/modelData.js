@@ -49,7 +49,44 @@ var taskListItemStat = {
 	    collapseImg:{src:"images/row_collapse.png", title:"hide children"}
 }
 
+function taskListItem(taskId){
+	this.id = taskId;
+	this.nextItem = null;
+}
+var taskListItem = {
+	head:{id:null, next:null},
+	
+	add:function(item, taskId){
+		if(item.id != null){
+			
+			this.add(item.nextItem, taskId);
+		} else{
+			item.id = taskId;
+		}
+	}
+}
+
+
+
 var taskListSet = new Set([]);
+var selectedTaskList = {
+	selectedRow:null,
+	origColor:null,
+	origBackgroundColor:null,
+	toggle:function(row){
+		if(row == this.selectedRow)
+			return;
+		this.origBackgroundColor = row.style.backgroundColor;
+		this.origColor = row.style.color
+		row.style.backgroundColor = '#8899AA' //'#424f5a';
+		row.style.color = '#FFFFFF';
+		if(this.selectedRow !=null){
+			this.selectedRow.style.color = this.origColor;
+			this.selectedRow.style.backgroundColor = (this.origbackgroundColor == undefined)?'':this.origbackgroundColor;
+		}
+		this.selectedRow = row;
+	}
+}
 
 var taskList = {
 	taskSet:new Set([]),
