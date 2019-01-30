@@ -336,7 +336,24 @@ function saveTaskLog(){
 			return;
 		}else{
 			setMsg(msgType.ok, 'Log saved');
-			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+taskLogModel.taskId.getValue(), fillTaskLogList);
+	    	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
+	        		(divRow,item)=>{
+	        			divRow.setAttribute('data-taskLogId', item.taskLogId);
+						let taskLogImg = document.createElement("IMG");
+						taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
+						taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
+						divRow.appendChild(taskLogImg);
+					}, 
+	        		(txtPart,item)=>{
+	        			if(dbg==dbgModule.tasklog)
+	        		    	console.log(item);
+	        			var thisDate = new Date(item.sysdate);
+	        			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
+	        			}, 
+	        		(txtPart,item)=>{
+	        			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+	        			txtPart.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});	
+	        		});
 			newTaskLog()
 		}
 	});
