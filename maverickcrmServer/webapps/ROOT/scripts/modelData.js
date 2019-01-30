@@ -1,6 +1,8 @@
 function setDomValue(val){this.dom.value = val;}
 function getDomValue(){return this.dom.value}
 
+// ***** image to id mapping ***** //
+
 var effortUnitList = {
 		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
 			2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
@@ -23,12 +25,55 @@ var taskStatusList = {
 		5:{src:"images/status/onhold.png", title:"On Hold"}
 	}
 
+var relationTypeList = {
+		1:{src:"images/derived.png", title:"Derived from task"},
+		2:{src:"images/process.png", title:"Process"},
+		3:{src:"images/dependency.png", title:"Depends on"}
+	}
+
 var taskLogTypeList = {
-	1:{src:"images/tasklog_analysis.png", title:"Analysis"},
-	2:{src:"images/tasklog_solution.png", title:"Solution"},
-	3:{src:"images/tasklog_attachment.png", title:"Attachment"},
-	4:{src:"images/tasklog_statuschange.png", title:"Status change"}
+		1:{src:"images/tasklog_analysis.png", title:"Analysis"},
+		2:{src:"images/tasklog_solution.png", title:"Solution"},
+		3:{src:"images/tasklog_attachment.png", title:"Attachment"},
+		4:{src:"images/tasklog_statuschange.png", title:"Status change"}
+	}
+
+
+//***** TaskList expand / collapse handling ***** //
+function ExpandedTask(taskId){
+	this.taskId = taskId;
 }
+
+var taskListItemStat = {
+	    expandImg:{src:"images/row_expand.png", title:"show children"},
+	    collapseImg:{src:"images/row_collapse.png", title:"hide children"}
+}
+
+var taskListSet = new Set([]);
+
+var taskList = {
+	taskSet:new Set([]),
+	toggle:function(img, row, taskId){
+    	if(row.hasAttribute('data-isTaskParent')){
+    	    for (var i = parent.rows.length - 1; i >= 0; i--) {
+    	    	if(parent.rows[i].hasAttribute('data-isTaskChild') && parent.rows[i].getAttribute('data-isTaskChild') == item.taskId)
+    	    		parent.deleteRow(i);
+    	    }	    		
+	    	img.src = expandImg.src;
+	    	img.title = expandImg.title;
+	    	taskSet.delete(taskId);
+    	}else{
+    		taskSet.add(taskId);
+	    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
+	    	img.src = collapseImg.src;
+	    	img.title = collapseImg.title;	    		
+    	}		
+	}	    
+}
+
+
+//***** Model definition and construction ***** //
+
 function Model(domField, dom, api ){
 	this.getValue = getDomValue;
 	this.setValue = setDomValue;
@@ -37,6 +82,7 @@ function Model(domField, dom, api ){
 	this.api = api;
 }
 var ddd = {values:[{val:0}, {val:''}], err:'Please fill the street name'}
+
 var taskLogModel = {
 		taskLogId:new Model('taskLogId', null, 'taskLogId'),
 		sysdate:new Model('sysDate', null, 'sysdate'),

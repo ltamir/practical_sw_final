@@ -69,10 +69,10 @@ function createTaskRow(row, item, parent){
 
     let expandImg = document.createElement("IMG");
 
-    expandImg.src="images/row_expand.png";
-    expandImg.title = "show children"; 
-    expandImg.addEventListener("click", function(evt){
-    	evt = window.event || evt; 
+    expandImg.src = taskListItemStat.expandImg.src;
+    expandImg.title = taskListItemStat.expandImg.title; 
+    expandImg.addEventListener("click", function(event){
+    	evt = window.event || event; 
 	    if(this === evt.target) {
 	    	
 	    	if(row.hasAttribute('data-isTaskParent')){
@@ -80,14 +80,16 @@ function createTaskRow(row, item, parent){
 	    	    	if(parent.rows[i].hasAttribute('data-isTaskChild') && parent.rows[i].getAttribute('data-isTaskChild') == item.taskId)
 	    	    		parent.deleteRow(i);
 	    	    }	    		
-	    	    expandImg.src="images/row_expand.png";
-	    	    expandImg.title = "show children";
+	    	    expandImg.src = taskListItemStat.expandImg.src;
+	    	    expandImg.title = taskListItemStat.expandImg.title; 
 	    	    row.removeAttribute('data-isTaskParent');
+	    	    taskListSet.delete(item.taskId);
 	    	}else{
+	    		taskListSet.add(item.taskId);
 		    	row.setAttribute('data-isTaskParent', item.taskId);
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
-		        expandImg.src="images/row_collapse.png";
-		        expandImg.title = "hide children";	    		
+		        expandImg.src = taskListItemStat.collapseImg.src;
+		        expandImg.title = taskListItemStat.collapseImg.title; ;	    		
 	    	}
 	    }
     });
@@ -192,20 +194,9 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 		parentElement.appendChild(divRow);
 		
     	let relType = document.createElement("IMG");
-    	switch(item.taskRelationType.taskRelationTypeId){
-    	case 2:
-    		relType.src="images/process.png";
-    		relType.title="process";
-    		break;
-    	case 1:
-    		relType.src="images/derived.png";
-    		relType.title="derived from task";
-    		break;
-    	case 3:
-    		relType.src="images/dependency.png";
-    		relType.title="depends on";
-    		break;    		
-    	}
+    	relType.src = relationTypeList[item.taskRelationType.taskRelationTypeId].src;
+    	relType.title = relationTypeList[item.taskRelationType.taskRelationTypeId].title;
+
     	relType.addEventListener("click", function(){
     		let containerDiv = getById('divTaskTab');
     		let popup = getById('divRelationTypeList');

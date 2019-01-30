@@ -142,11 +142,11 @@ function setChildTask(setter){
 
 function viewTask(id, data){
 	let task = data.task;
-	menuSetter(menuData.taskType, task.taskType.taskTypeId);
+	taskModel.taskId.setValue(task.taskId);
 	taskModel.contact.setValue(task.contact.contactId);
 	taskModel.title.setValue(task.title);
-	menuSetter(menuData.taskEffortUnit, task.effortUnit);
 	taskModel.effort.setValue(task.effort);
+	taskModel.dueDate.setValue(getISODate(task.dueDate));
 	
 	let addChildTaskState = getById('addChildTask');
 	if(addChildTaskState.getAttribute('data-state') == 1){
@@ -154,11 +154,11 @@ function viewTask(id, data){
 		setChildTask(addChildTaskState);
 	}
 	
-	taskModel.dueDate.setValue(getISODate(task.dueDate));
 	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
-	menuSetter(menuData.taskStatus, task.status.statusId);
-	taskModel.taskId.setValue(task.taskId); 
 	
+	menuSetter(menuData.taskType, task.taskType.taskTypeId);
+	menuSetter(menuData.taskEffortUnit, task.effortUnit);
+	menuSetter(menuData.taskStatus, task.status.statusId);
 	setTab(activeTaskTab);
 	
 	if(task.taskType.taskTypeId==1){
@@ -166,6 +166,7 @@ function viewTask(id, data){
 	}else{
 		getById('TabLinkedCustomer').style.display='none';		
 	}
+	
 	getDataEx('', 'business', '?taskId=' + task.taskId, 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
 				getById('totalTaskEffort').innerHTML = data.total;
@@ -195,7 +196,7 @@ function viewTaskLog(id, data){
 	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
 }
 
-//TODO rename to be with prefix view
+
 function viewTaskRelationDetails(id, data){
 	let taskRelation = data.taskRelation;
 	taskRelationModel.taskRelationType.setValue(taskRelation.taskRelationType.taskRelationTypeId);
@@ -229,7 +230,6 @@ function viewLogin(id, data){
 
 //***** save model ***** //
 
-//formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
 function validate(modelKey, value, errorMessage){
 	if(modelKey.getValue() == value){
 		if(errorMessage != null)
