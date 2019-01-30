@@ -194,7 +194,14 @@ function viewTaskLog(id, data){
 	taskLogModel.sysdate.setValue(taskLog.sysdate);
 	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
 }
-        
+
+//TODO rename to be with prefix view
+function viewTaskRelationDetails(id, data){
+	let taskRelation = data.taskRelation;
+	taskRelationModel.taskRelationType.setValue(taskRelation.taskRelationType.taskRelationTypeId);
+	taskRelationModel.taskRelationId.setValue(taskRelation.taskRelationId);
+}
+  
 function viewCustomer(id, data){
 	let customer = data.customer;
 	customerModel.customerId.setValue(customer.customerId);

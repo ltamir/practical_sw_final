@@ -151,6 +151,25 @@ function fillTab(id, data, defaultOption, funcValue, funcText, eventHandler){
 	getById(id).innerHTML = data;
 }
 
+function fillDivList(id, data, defaultOption, funcValue, funcText, eventHandler){
+	let parentElement = getById(id);
+	
+	for(let i = parentElement.childNodes.length-1; i > -1; i--)
+		parentElement.removeChild(parentElement.childNodes[i]);
+	
+	data.array.forEach(function (item) {
+		let divRow = document.createElement('DIV');
+		parentElement.appendChild(divRow);	
+		funcValue(divRow, item); 
+			
+		let txtPart = document.createElement("SPAN");
+		funcText(txtPart, item);
+		if(eventHandler != undefined)
+			eventHandler(txtPart, item);
+		divRow.appendChild(txtPart);
+	});
+}
+
 /**
  * Search (case insensitive) for the given text in the given select.
  * Display on the Option elements that contains this search

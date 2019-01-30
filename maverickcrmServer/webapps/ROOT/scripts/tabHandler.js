@@ -82,7 +82,24 @@ function activateTabTaskLog(){
     })
 	.then(()=>{
 		if(getValue('taskId') > 0)
-			getData('taskLogBody', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillTaskLogList)
+	    	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
+        		(divRow,item)=>{
+        			divRow.setAttribute('data-taskLogId', item.taskLogId);
+					let taskLogImg = document.createElement("IMG");
+					taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
+					taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
+					divRow.appendChild(taskLogImg);
+				}, 
+        		(txtPart,item)=>{
+        			if(dbg==dbgModule.tasklog)
+        		    	console.log(item);
+        			var thisDate = new Date(item.sysdate);
+        			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
+        			}, 
+        		(txtPart,item)=>{
+        			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+        			txtPart.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});	
+        		});
 	}).then(()=>{	
 		Object.keys(taskLogModel).forEach(function(item){
 		taskLogModel[item].dom = getById(taskLogModel[item].domField);
@@ -159,13 +176,20 @@ function activateTabConnection(){
 					showAssociatedContacts();
 				newAddress();
 				getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
-						(opt,item)=>{
-							opt.setAttribute('data-addressId', item.addressId);
-							opt.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+						(divRow,item)=>{
+							divRow.setAttribute('data-addressId', item.addressId);
+							divRow.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+							let addressImg = document.createElement("IMG");
+							addressImg.src='images/address.png';
+							addressImg.title = 'Click to edit address';
+							divRow.appendChild(addressImg);
 							}, 
-							null,
-						(opt, item)=>opt.addEventListener("click", ()=>{
-							getData('', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));				
+						(txtPart,item)=>{
+							txtPart.setAttribute('data-addressId', item.addressId);
+							txtPart.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+							},
+						(txtPart, item)=>txtPart.addEventListener("click", ()=>{
+							getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));				
 
 				})
 			))
