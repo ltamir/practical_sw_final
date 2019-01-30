@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
-    <link rel="stylesheet" type="text/css" href="maverickcrm.css?7">
+    <link rel="stylesheet" type="text/css" href="maverickcrm.css?8">
     <script src="scripts/dataModel.js"></script>
     <script src="scripts/common.js?10"></script>
     <script src="scripts/dataPopulation.js?16"></script>
@@ -97,7 +97,7 @@
 	            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskStatus, 5); menuHandler(menuData.taskStatus)"><br>
 	            	</div>	
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
-	            	<span id="lblTotalEffort" class="cssFieldLabel">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
+	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="toggleState(this); setChildTask(this)">

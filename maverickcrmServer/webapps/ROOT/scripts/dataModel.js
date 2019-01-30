@@ -23,7 +23,12 @@ var taskStatusList = {
 		5:{src:"images/status/onhold.png", title:"On Hold"}
 	}
 
-
+var taskLogTypeList = {
+	1:{src:"images/tasklog_analysis.png", title:"Analysis"},
+	2:{src:"images/tasklog_solution.png", title:"Solution"},
+	3:{src:"images/tasklog_attachment.png", title:"Attachment"},
+	4:{src:"images/tasklog_statuschange.png", title:"Status change"}
+}
 function Model(domField, dom, api ){
 	this.getValue = getDomValue;
 	this.setValue = setDomValue;

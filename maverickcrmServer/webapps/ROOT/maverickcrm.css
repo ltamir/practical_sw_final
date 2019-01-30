@@ -7,8 +7,8 @@
 		border-radius: 3px;
 		color: #112211;
 		font-family: Tahoma, Geneva, sans-serif;
-		
 	}
+	
 	textarea{
 		resize: none;
 	}
@@ -187,13 +187,8 @@
         background-color: GhostWhite;
         min-width: 23em;	
 	}
-		
-	#cmbTaskLogList{
-		font-family: arial, sans-serif;
-        background-color: WhiteSmoke;
-        	
-	}	
-	#txtDetailTaskTitle, #cmbTaskLogList, #txtTaskLogDescription, #cmbRelationTaskList, #cmbAttachmentList{
+			
+	#txtDetailTaskTitle, #txtTaskLogDescription, #cmbRelationTaskList, #cmbAttachmentList{
 		width: 37em;
 	}
 	#divTaskDetailsTop{
@@ -202,36 +197,31 @@
 	#divTaskDetailsBottom{
 		width: 31em;
 	}
-	#divParentTaskList{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList{
 		height: 2em;
-		width: 31em;
+		max-width: 37em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
-	}
-
-	#divParentTaskList span{
-		font-family: arial, sans-serif;
-		font-size:10pt;
-		cursor: pointer;
-		
-	}
-	#divParentTaskList img{
-		border-style: outset;
-		border-width: 1px;
 	}
 	
 	#divChildTaskList{
 		height: 3.5em;
-		width: 31em;
-		overflow-y: scroll;
+		border-bottom:none;
 	}
+	
+	#divTaskLogList{
+		font-family: arial, sans-serif;
+        background-color: WhiteSmoke;
+        max-width: 31em;
+        height: 4.5em;
+	}	
 
-	#divChildTaskList span{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList span{
 		font-family: arial, sans-serif;
 		font-size:10pt;
 		cursor: pointer;
 	}
-	#divChildTaskList img{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList img{
 		border-style: outset;
 		border-width: 1px;
 	}
@@ -328,6 +318,17 @@
 		cursor: pointer;	
 	}	
 	
+	#divAddressList span{
+		font-family: arial, sans-serif;
+		font-size:10pt;
+		cursor: pointer;
+		
+	}
+	#divAddressList img{
+		border-style: outset;
+		border-width: 1px;
+	}
+		
 	#txtAddressHouseNum.cssCardInput {
 		max-width: 2em;
 	}

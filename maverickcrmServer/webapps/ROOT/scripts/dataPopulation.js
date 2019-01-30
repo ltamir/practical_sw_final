@@ -174,32 +174,7 @@ function fillTaskRelationSearchResult(id, data){
         selectElement.appendChild(opt);
     });            
 }
-function fillDivList(id, data, defaultOption, funcValue, funcText, eventHandler){
-	let parentElement = getById(id);
-	
-	for(let i = parentElement.childNodes.length-1; i > -1; i--)
-		parentElement.removeChild(parentElement.childNodes[i]);
-	
-	if(dbg==dbgModule.address)
-    	console.log(data);
-	
-	data.array.forEach(function (item) {
-		let divRow = document.createElement('DIV');
-		divRow.setAttribute('data-addressId', item.addressId);
-		parentElement.appendChild(divRow);
-		
-		let addressImg = document.createElement("IMG");
-		addressImg.src='images/address.png';
-		addressImg.title = 'Click to edit address';
-		divRow.appendChild(addressImg);
-		
-		let addressTxt = document.createElement("SPAN");
-		funcValue(addressTxt, item);
-		if(eventHandler != undefined)
-			eventHandler(addressTxt, item);
-		divRow.appendChild(addressTxt);
-	});
-}
+
 
 function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let parentElement = getById(id);
@@ -287,7 +262,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     		relTask.classList.add("cssTaskRelationTitleSelected");
     		relTask.parentElement.classList.add("cssTaskRelationTitleSelected");
     		containerDiv.setAttribute('data-selected', relTask.id);    		
-    		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, fillTaskRelationDetails); setValue('taskRelationSelectedTaskId', taskId);
+    		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, viewTaskRelationDetails); setValue('taskRelationSelectedTaskId', taskId);
     		});
     		
     	divRow.appendChild(relTask);
@@ -295,29 +270,4 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     	divRow.classList.add("cssTaskRelationTitle");
 	});
 		
-}    
-    	
-function fillTaskRelationDetails(id, data){
-	let taskRelation = data.taskRelation;
-	taskRelationModel.taskRelationType.setValue(taskRelation.taskRelationType.taskRelationTypeId);
-	taskRelationModel.taskRelationId.setValue(taskRelation.taskRelationId);
-}
-        
-function fillTaskLogList(id, data){
-	let selectElement = getById('cmbTaskLogList');
-	
-    for (let i = selectElement.length - 1; i >= 0; i--) {
-        selectElement.remove(i);
-	}
-	if(dbg==dbgModule.tasklog)
-   		console.log(data);
-    data.array.forEach(function (item) {
-        var thisDate = new Date(item.sysdate);
-        var opt = document.createElement("OPTION");
-        opt.value = item.taskLogId;
-        opt.text = thisDate.toLocaleDateString() + ", " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description ;
-        opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});
-        selectElement.appendChild(opt);
-    });        	
 }
