@@ -301,7 +301,8 @@ function toggleDatabase(){
 	}
 }
 function executeSQL(){
-	console.log(escape(getValue('txtSQL')));
+	if(dbg==dbgModule.common)
+	console.log('executeSQL(): ' + escape(getValue('txtSQL')));
 	getDataEx('', 'database', '?sql=' + escape(getValue('txtSQL')), fillDataBase, null, null, null, null)
 }
 
