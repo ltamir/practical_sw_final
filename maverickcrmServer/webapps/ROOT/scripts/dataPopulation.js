@@ -77,16 +77,15 @@ function createTaskRow(row, item, parent){
     expandImg.addEventListener("click", function(event){
     	evt = window.event || event; 
 	    if(this === evt.target) {
-	    	
-	    	if(row.hasAttribute('data-isTaskParent')){
-	    		let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
+	    	let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
+	    	if(parentTaskItem.hasChildren){
 	    		taskItemList.deleteRow(parent, parentTaskItem);
-    		
+	    		parentTaskItem.hasChildren = false;
 	    	    expandImg.src = taskListItemStat.expandImg.src;
 	    	    expandImg.title = taskListItemStat.expandImg.title; 
-	    	    row.removeAttribute('data-isTaskParent');
+//	    	    row.removeAttribute('data-isTaskParent');
 	    	}else{
-		    	row.setAttribute('data-isTaskParent', item.taskId);
+//		    	row.setAttribute('data-isTaskParent', item.taskId);
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
 		        expandImg.src = taskListItemStat.collapseImg.src;
 		        expandImg.title = taskListItemStat.collapseImg.title; ;	    		

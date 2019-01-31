@@ -60,19 +60,18 @@ var taskItemList = {
 	root:{},
 	add:function(parentItem, taskItem){
 		parentItem[taskItem.id] = taskItem;
-		if(!(parentItem === this.root))
-			parentItem.hasChildren = true;
+		parentItem.hasChildren = true;
 	},
 	get:function(parentItem, taskId){
-		let found = null;
 		if(parentItem == null)return;
-		for(let itm in parentItem){
-			if(parentItem[taskId] != null)
-				return parentItem[taskId];
-			else{
-				return this.get(parentItem[itm], taskId);
-			}
-		}
+		if(parentItem.hasChildren == undefined || parentItem.hasChildren == false)return;
+
+		if(parentItem[taskId] != null)
+			return parentItem[taskId];
+		for(let child in parentItem){
+			if(parentItem[child].hasChildren != undefined && parentItem[child].hasChildren == true)
+				return this.get(parentItem[child], taskId);
+		}		
 	},
 	remove:function(parentItem, taskId){
 		let found = this.get(parentItem, taskId);
