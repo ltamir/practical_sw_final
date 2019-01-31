@@ -49,15 +49,19 @@ var taskListItemStat = {
 	    collapseImg:{src:"images/row_collapse.png", title:"hide children"}
 }
 
-function taskItem(taskId){
+function taskItem(taskId, row){
 	this.id = taskId;
-	this.nextItem = null;
+	this.row = row;
+//	this.nextItem = null;
+	this.hasChildren = false;
 }
 
 var taskItemList = {
 	root:{},
 	add:function(parentItem, taskItem){
 		parentItem[taskItem.id] = taskItem;
+		if(!(parentItem === this.root))
+			parentItem.hasChildren = true;
 	},
 	get:function(parentItem, taskId){
 		let found = null;
@@ -68,7 +72,6 @@ var taskItemList = {
 			else{
 				return this.get(parentItem[itm], taskId);
 			}
-				
 		}
 	},
 	remove:function(parentItem, taskId){
@@ -78,13 +81,23 @@ var taskItemList = {
 	},	
 	clear:function(item){
 		this.root = {};
-	}	
+	},
+	rowIdx:function(row){return row.rowIndex;},
+	deleteRow:function(table, taskItem){
+		for(let child in taskItem){
+			if(taskItem[child].hasChildren != undefined && taskItem[child].hasChildren)
+				this.deleteRow(table, taskItem[child])
+			if(taskItem[child].row != undefined){
+				table.deleteRow(taskItem[child].row.rowIndex);
+				delete taskItem[child];
+			}
+		}
+	}
 }
 
 var taskItemLinkedList = {
-	head:{id:null, nextItem:null},
-	size:1,
-	root:{},
+
+	size:0,
 	ctor:function(taskId){
 		this.add(new taskItem(taskId));
 	},
@@ -95,9 +108,7 @@ var taskItemLinkedList = {
 		i.nextItem = taskItem;
 		taskItemList.size++;
 	},
-	getRoot:function(taskId){
-		return this.root[taskId];
-	},
+
 	get:function(head, taskId){
 		let i = head;
 
