@@ -49,24 +49,55 @@ var taskListItemStat = {
 	    collapseImg:{src:"images/row_collapse.png", title:"hide children"}
 }
 
-function taskListItem(taskId){
+function taskItem(taskId){
 	this.id = taskId;
 	this.nextItem = null;
 }
-var taskListItem = {
-	head:{id:null, next:null},
+
+var taskItemList = {
+	item:{id:null, nextItem:null},
+	size:1,
 	
-	add:function(item, taskId){
-		if(item.id != null){
-			
-			this.add(item.nextItem, taskId);
-		} else{
-			item.id = taskId;
-		}
+	ctor:function(taskId){
+		this.add(new taskItem(taskId));
+		
+	},
+	add:function(taskItem){
+		let i = this.item;
+		for(; i.nextItem != null; i = i.nextItem);
+		i.nextItem = taskItem;
+		taskItemList.size++;
+	},
+	get:function(taskId){
+		let i = this.item;
+		for(; i.id != taskId; i = i.nextItem);
+		if(i.id == taskId)
+			return i;
+		return null;
+	},	
+	remove:function(taskId){
+		let i = this.item;
+		let prev;
+		for(; i.id != taskId; prev = i, i = i.nextItem);
+		if(i.id == null)
+			return;
+		if(i.id == taskId){
+			if(i.nextItem != null)
+				prev.nextItem = i.nextItem;
+			else
+				prev.nextItem = null;
+			delete i;
+			taskItemList.size--;
+		}	
+	},
+	clear:function(item){
+		if(item.nextItem != null)
+			taskItemList.clear(item.nextItem);
+		delete item.nextItem;
+		delete item;
+		taskItemList.size--;
 	}
 }
-
-
 
 var taskListSet = new Set([]);
 var selectedTaskList = {
@@ -78,7 +109,7 @@ var selectedTaskList = {
 			return;
 		this.origBackgroundColor = row.style.backgroundColor;
 		this.origColor = row.style.color
-		row.style.backgroundColor = '#8899AA' //'#424f5a';
+		row.style.backgroundColor = '#8899AA';
 		row.style.color = '#FFFFFF';
 		if(this.selectedRow !=null){
 			this.selectedRow.style.color = this.origColor;

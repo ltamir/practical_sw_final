@@ -14,6 +14,8 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     let firstRow = 0;
     let lastRow = data.array.length-1;
     let rowPos = 0;
+    data.array.length > 0
+    	taskItemList.ctor(data.array[0].parentTask.taskId);
     
     data.array.forEach(function (item) {
     	var row = parentTable.insertRow(rowIndex+1+rowPos);
@@ -23,6 +25,8 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	if(rowPos == lastRow){
     		row.style.borderBottom='3px inset #b1b1b0';
     	}
+    	parentItem = taskItemList.get(item.parentTask.taskId);
+    	parentItem[rowPos] = item.childTask.taskId;
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
     	row.style.borderLeft='3px outset #8B8B8B';
     	row.style.borderRight='3px inset #b1b1b0';
@@ -37,8 +41,7 @@ function fillTaskList(id, data){
     for (var i = selectElement.rows.length - 1; i >= 0; i--) {
         selectElement.deleteRow(i);
     }
-
-    selectElement.removeAttribute('data-selected')
+    taskItemList.clear(taskItemList.item);
     data.array.forEach(function (item) {
     	var newRow = selectElement.insertRow(selectElement.rows.length);
     	createTaskRow(newRow, item, selectElement);    	
@@ -47,10 +50,14 @@ function fillTaskList(id, data){
 
 function createTaskRow(row, item, parent){
 	row.id = 'taskList' + item.taskId;
-	row.addEventListener("click", function(){
+	row.addEventListener("click", function(event){
+		evt = window.event || event; 
+		if(row.childNodes[0].childNodes[1] === evt.target)
+			return;
 		selectedTaskList.toggle(row);
-		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);
-		});
+		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);		
+	
+	});
 	
 	let taskTypeCell  = row.insertCell(0);
 	taskTypeCell.classList.add("cssTaskListCustomer");
@@ -75,6 +82,7 @@ function createTaskRow(row, item, parent){
 	    	    expandImg.title = taskListItemStat.expandImg.title; 
 	    	    row.removeAttribute('data-isTaskParent');
 	    	    taskListSet.delete(item.taskId);
+	    	    taskItemList.remove(item.taskId);
 	    	}else{
 	    		taskListSet.add(item.taskId);
 		    	row.setAttribute('data-isTaskParent', item.taskId);
