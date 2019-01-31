@@ -55,28 +55,59 @@ function taskItem(taskId){
 }
 
 var taskItemList = {
-	item:{id:null, nextItem:null},
+	root:{},
+	add:function(parentItem, taskItem){
+		parentItem[taskItem.id] = taskItem;
+	},
+	get:function(parentItem, taskId){
+		let found = null;
+		if(parentItem == null)return;
+		for(let itm in parentItem){
+			if(parentItem[taskId] != null)
+				return parentItem[taskId];
+			else{
+				return this.get(parentItem[itm], taskId);
+			}
+				
+		}
+	},
+	remove:function(parentItem, taskId){
+		let found = this.get(parentItem, taskId);
+		delete found;
+		if(parentItem == null)return;
+	},	
+	clear:function(item){
+		this.root = {};
+	}	
+}
+
+var taskItemLinkedList = {
+	head:{id:null, nextItem:null},
 	size:1,
-	
+	root:{},
 	ctor:function(taskId){
 		this.add(new taskItem(taskId));
-		
 	},
-	add:function(taskItem){
-		let i = this.item;
+	
+	add:function(parentItem, taskItem){
+		let i = parentItem;
 		for(; i.nextItem != null; i = i.nextItem);
 		i.nextItem = taskItem;
 		taskItemList.size++;
 	},
-	get:function(taskId){
-		let i = this.item;
-		for(; i.id != taskId; i = i.nextItem);
-		if(i.id == taskId)
-			return i;
-		return null;
+	getRoot:function(taskId){
+		return this.root[taskId];
+	},
+	get:function(head, taskId){
+		let i = head;
+
+		for(; i.nextItem != null && i.id != taskId; i = i.nextItem);
+		if(i.id == null || i.id != taskId)
+			return null;
+		return i;
 	},	
 	remove:function(taskId){
-		let i = this.item;
+		let i = this.head.nextItem;
 		let prev;
 		for(; i.id != taskId; prev = i, i = i.nextItem);
 		if(i.id == null)

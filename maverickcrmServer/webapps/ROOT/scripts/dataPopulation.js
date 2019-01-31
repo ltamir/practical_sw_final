@@ -14,9 +14,16 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     let firstRow = 0;
     let lastRow = data.array.length-1;
     let rowPos = 0;
-    data.array.length > 0
-    	taskItemList.ctor(data.array[0].parentTask.taskId);
-    
+    let parentItem = null;
+    if(data.array.length > 0){
+    	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
+//    	parentItem = taskItemList.root[data.array[0].parentTask.taskId];
+//    	if(parentItem == null){
+//    		for(let o = Object.keys(taskItemList.root).length-1; o>-1 && parentItem == null; o-- )
+//    			parentItem = taskItemList.get(taskItemList.root[Object.keys(taskItemList.root)[o]], data.array[0].parentTask.taskId);
+//    	}
+    }
+    	
     data.array.forEach(function (item) {
     	var row = parentTable.insertRow(rowIndex+1+rowPos);
     	if(rowPos == firstRow){
@@ -25,8 +32,9 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	if(rowPos == lastRow){
     		row.style.borderBottom='3px inset #b1b1b0';
     	}
-    	parentItem = taskItemList.get(item.parentTask.taskId);
-    	parentItem[rowPos] = item.childTask.taskId;
+    	
+    	taskItemList.add(parentItem, new taskItem(item.childTask.taskId))
+
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
     	row.style.borderLeft='3px outset #8B8B8B';
     	row.style.borderRight='3px inset #b1b1b0';
@@ -41,8 +49,9 @@ function fillTaskList(id, data){
     for (var i = selectElement.rows.length - 1; i >= 0; i--) {
         selectElement.deleteRow(i);
     }
-    taskItemList.clear(taskItemList.item);
+    taskItemList.clear(taskItemList.head);
     data.array.forEach(function (item) {
+    	taskItemList.add(taskItemList.root, new taskItem(item.taskId));
     	var newRow = selectElement.insertRow(selectElement.rows.length);
     	createTaskRow(newRow, item, selectElement);    	
     }); 
@@ -81,10 +90,8 @@ function createTaskRow(row, item, parent){
 	    	    expandImg.src = taskListItemStat.expandImg.src;
 	    	    expandImg.title = taskListItemStat.expandImg.title; 
 	    	    row.removeAttribute('data-isTaskParent');
-	    	    taskListSet.delete(item.taskId);
-	    	    taskItemList.remove(item.taskId);
+	    	    taskItemList.remove(taskItemList.root, item.taskId);
 	    	}else{
-	    		taskListSet.add(item.taskId);
 		    	row.setAttribute('data-isTaskParent', item.taskId);
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
 		        expandImg.src = taskListItemStat.collapseImg.src;
