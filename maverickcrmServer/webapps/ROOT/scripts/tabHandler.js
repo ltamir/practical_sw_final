@@ -98,7 +98,10 @@ function activateTabTaskLog(){
         			}, 
         		(txtPart,item)=>{
         			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        			txtPart.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});	
+        			txtPart.addEventListener("click", function(){
+        				selectedTaskList.toggle(txtPart);
+        				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
+        			});	
         		});
 	}).then(()=>{	
 		Object.keys(taskLogModel).forEach(function(item){
@@ -178,7 +181,6 @@ function activateTabConnection(){
 				getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
 						(divRow,item)=>{
 							divRow.setAttribute('data-addressId', item.addressId);
-							divRow.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
 							let addressImg = document.createElement("IMG");
 							addressImg.src='images/address.png';
 							addressImg.title = 'Click to edit address';
@@ -189,7 +191,10 @@ function activateTabConnection(){
 							txtPart.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
 							},
 						(txtPart, item)=>txtPart.addEventListener("click", ()=>{
-							getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));				
+							selectedTaskList.toggle(txtPart);
+							getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)
+							})
+						);				
 
 				})
 			))
