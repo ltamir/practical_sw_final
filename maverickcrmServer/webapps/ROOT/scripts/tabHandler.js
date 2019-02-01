@@ -91,7 +91,7 @@ function activateTabTaskLog(){
 					divRow.appendChild(taskLogImg);
 				}, 
         		(txtPart,item)=>{
-        			if(dbg==dbgModule.tasklog)
+        			if(dbg==Module.tasklog)
         		    	console.log(item);
         			var thisDate = new Date(item.sysdate);
         			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
