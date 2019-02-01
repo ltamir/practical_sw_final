@@ -1,12 +1,18 @@
 // globals
 
-var dbgModule = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9, address:10}
+var Module = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9, address:10}
 var dbg = 0;
 var msgType = {ok:1, nok:2};
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8}
 var activeTaskTab = tabEnum.taskLog;
 
-
+function subscriber(module, listener){
+	this.module = module;
+	this.listener = listener
+}
+var eventBroker = {
+		subscribers:{}
+}
 
 var loggedContact;
 function setDebugModule(moduleNum){
@@ -125,7 +131,7 @@ function fillSelect(id, data, defaultOption, funcValue, funcText, eventHandler){
         selectElement.remove(i);
     }
 
-    if(dbg == dbgModule.common)
+    if(dbg == Module.common)
     	console.log(data);
     
     if(defaultOption != undefined){

@@ -147,7 +147,7 @@ function fillAttachmentList(id, data){
     for (var i = element.length - 1; i >= 0; i--) {
     	element.remove(i);
 	}
-	if(dbg==dbgModule.attachment)
+	if(dbg==Module.attachment)
 		console.log(data);
     data.array.forEach(function (item) {
         let opt = document.createElement("OPTION");
@@ -166,7 +166,7 @@ function fillCustomerList(id, data){
     for (let i = selectElement.length - 1; i >= 0; i--) {
         selectElement.remove(i);
 	}
-	if(dbg==dbgModule.customer)
+	if(dbg==Module.customer)
     	console.log(data);
     data.array.forEach(function (item) {
     	let opt = document.createElement("OPTION");
@@ -181,7 +181,7 @@ function fillCustomerList(id, data){
 function fillTaskRelationSearchResult(id, data){
 	let selectElement = getById(id);
 	
-	if(dbg==dbgModule.tasklog)
+	if(dbg==Module.tasklog)
    		console.log(data);
 	
     for (let i = selectElement.length - 1; i >= 0; i--) {
@@ -206,7 +206,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 	for(let i = parentElement.childNodes.length-1; i > -1; i--)
 		parentElement.removeChild(parentElement.childNodes[i]);
 	
-	if(dbg==dbgModule.relation)
+	if(dbg==Module.relation)
     	console.log(data);
 	
 	data.array.forEach(function (item) {
