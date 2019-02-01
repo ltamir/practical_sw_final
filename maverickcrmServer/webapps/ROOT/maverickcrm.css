@@ -76,6 +76,7 @@
 		border: 1px inset;
 		font-family: Tahoma, Geneva, sans-serif;
 		font-style: oblique;
+		font-size: 0.9em;
 		color: #fbfbfb;
 		background-color: #112233;
 		border-right: 1px inset #dddddd;
@@ -86,7 +87,7 @@
 	.Fixed
 	{
 	    position: fixed;
-	    top: 3.8em;
+	    top: 4em;
 	    width: 100%;
 	    font-family: Tahoma, Geneva, sans-serif;
 	    font-size: 0.9em;
