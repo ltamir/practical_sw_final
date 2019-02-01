@@ -44,13 +44,36 @@ function fillTaskList(id, data){
     for (var i = selectElement.rows.length - 1; i >= 0; i--) {
         selectElement.deleteRow(i);
     }
+    let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
+    
     data.array.forEach(function (item) {
     	
     	var newRow = selectElement.insertRow(selectElement.rows.length);
     	taskItemList.add(taskItemList.root, new taskItem(item.taskId, newRow));
     	createTaskRow(newRow, item, selectElement);    	
     }); 
+    
+    restoreHierarchy(prevItemList.root, taskItemList);
+    prevItemList.clear();
+}
+
+function restoreHierarchy(prevItemList, newTaskItemList){
+	for(let child in prevItemList){
+		if(prevItemList[child].hasChildren != undefined && prevItemList[child].hasChildren == true){
+			let parentItem = newTaskItemList.get(newTaskItemList.root, prevItemList[child].id);
+			if(parentItem != null){
+				let event = new MouseEvent('click', {
+				    view: window,
+				    bubbles: true,
+				    cancelable: true
+				});
+				parentItem.row.cells[0].childNodes[1].dispatchEvent(event);			
+			}
+
+		}
+//			return this.get(prevItemList[child], taskId);
+	}
 }
 
 function createTaskRow(row, item, parent){
