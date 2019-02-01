@@ -265,7 +265,7 @@ function saveTask(){
     	formData.append('taskId', taskModel.taskId.getValue());
 	}
 	
-	if(dbg == dbgModule.task)
+	if(dbg == Module.task)
 		debugFormData(formData);
 	
 	setData(method, formData, 'task')
@@ -325,7 +325,7 @@ function saveTaskLog(){
     	formData.append('taskLogId', taskLogModel.taskLogId.getValue());
 	}
 	
-	if(dbg==dbgModule.tasklog)
+	if(dbg==Module.tasklog)
 		debugFormData(formData);
 
 	setData(method, formData, 'tasklog')
@@ -345,7 +345,7 @@ function saveTaskLog(){
 						divRow.appendChild(taskLogImg);
 					}, 
 	        		(txtPart,item)=>{
-	        			if(dbg==dbgModule.tasklog)
+	        			if(dbg==Module.tasklog)
 	        		    	console.log(item);
 	        			var thisDate = new Date(item.sysdate);
 	        			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
@@ -398,7 +398,7 @@ function saveRelation(parent, child, relationType){
 	formData.append('parentTaskId', parent);
 	formData.append('taskRelationTypeId', relationType);
 	
-	if(dbg==dbgModule.relation)
+	if(dbg==Module.relation)
 		debugFormData(formData);
 
 	if(taskRelationModel.taskRelationId.getValue() == 0){
@@ -475,11 +475,11 @@ function saveCustomer(){
     	formData.append(customerModel.customerId.api, customerModel.customerId.getValue());
 	}
 
-	if(dbg==dbgModule.customer)
+	if(dbg==Module.customer)
 		debugFormData(formData);
 
 	setData(method, formData, 'customer')
-		.then(function(data){if(dbg==dbgModule.customer){console.logdata}})
+		.then(function(data){if(dbg==Module.customer){console.logdata}})
 		.then(function(){getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);})
 			.then(function(){setMsg(msgType.ok, 'Customer saved')});
 
@@ -505,7 +505,7 @@ function saveContact(){
     	formData.append(contactModel.contactId.api, contactModel.contactId.getValue());
 	}
 
-	if(dbg==dbgModule.contact)
+	if(dbg==Module.contact)
 		debugFormData(formData);
 
 	setData(method, formData, 'contact')
@@ -557,7 +557,7 @@ function saveAssociation(action){
 		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
 		method = 'DELETE';
 	}
-	if(dbg == dbgModule.contact)
+	if(dbg == Module.contact)
 		debugFormData(formData);	
 	
 	setData(method, formData, 'association')
@@ -598,7 +598,7 @@ function saveAddress(){
 		formData.append(addressModel.addressId.api, addressModel.addressId.getValue());
 	}
 
-	if(dbg == dbgModule.address)
+	if(dbg == Module.address)
 	debugFormData(formData);
 	
 	setData(method, formData, 'address')
@@ -656,7 +656,7 @@ function saveAttachment(){
 		oFormData.append('taskLogId', getValue('attachmentTaskLogId'));
 	}
 	
-	if(dbg==dbgModule.attachment)
+	if(dbg==Module.attachment)
 		debugFormData(oFormData);
 	
 	setData(method, oFormData, 'attachment')
@@ -696,7 +696,7 @@ function removeLinkedCustomer(){
 	
     formData.append('customerTaskId', getValue('cmbLinkedCustomer'));
     
-	if(dbg==dbgModule.task)
+	if(dbg==Module.task)
 		debugFormData(formData);
 	
     setData(method, formData, 'customertask')
@@ -734,7 +734,7 @@ function saveLogin(){
 		formData.append('loginId', getValue('loginId'));
 	}
 	
-	if(dbg==dbgModule.login){
+	if(dbg==Module.login){
 		debugFormData(formData);
 		console.log('method ' + method);
 	}
