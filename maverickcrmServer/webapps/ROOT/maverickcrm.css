@@ -109,9 +109,10 @@
 	    height: 150px;
 	    background-color: WhiteSmoke;
 	    color: #121212;
-	    cursor: pointer;
-	    
 	}
+	table.cssTaskList tr {
+      cursor: pointer;
+    }	
 	tbody tr:nth-child(even) {
       background-color: Snow;
     }	
