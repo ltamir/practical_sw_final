@@ -1,4 +1,4 @@
-package org.liortamir.maverickcrm.maverickcrmServer.dal;
+package org.liortamir.maverickcrm.maverickcrmServer.dal.predicate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

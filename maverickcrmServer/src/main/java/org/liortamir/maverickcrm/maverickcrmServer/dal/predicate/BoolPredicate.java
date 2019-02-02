@@ -1,4 +1,4 @@
-package org.liortamir.maverickcrm.maverickcrmServer.dal;
+package org.liortamir.maverickcrm.maverickcrmServer.dal.predicate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -11,7 +11,6 @@ public class BoolPredicate extends AbstractPredicate<Boolean>{
 
 	@Override
 	public void setParam(PreparedStatement ps, int pos, Boolean value) throws SQLException {
-		for(int i = 1; i <= paramCount; i++)
 			ps.setBoolean(pos, value);
 	}
 

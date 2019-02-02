@@ -1,4 +1,4 @@
-package org.liortamir.maverickcrm.maverickcrmServer.dal;
+package org.liortamir.maverickcrm.maverickcrmServer.dal.predicate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,9 +13,7 @@ public abstract class AbstractPredicate <T>{
 	protected final static String NONE = "";
 	protected final T ALL;
 	
-	protected T param;
-	protected int paramPosition;
-	protected boolean hasPredicate = false; 
+//	protected int paramPosition;
 	
 	public AbstractPredicate(T all, String predicate, int paramIndex) {
 		this.predicateString = predicate;
@@ -29,40 +27,29 @@ public abstract class AbstractPredicate <T>{
 		return false;
 	}
 	
-	public int prepare(T value, int totalParams, StringBuilder sb) {
+	public void prepare(T value, MutableBool whereUsed, StringBuilder sb) {
 		
 		if(hasPredicate(value)) {
-			if(totalParams == 0)
+			if(!whereUsed.get()) {
 				sb.append(WHERE);
+				whereUsed.flag();
+			}
 			else
 				sb.append(AND);
-			
 			sb.append(predicateString);
-			this.hasPredicate = true;
-			this.param = value;
-			this.paramPosition = totalParams;
-			return paramPosition + this.paramCount;
 		}
 		sb.append(NONE);
-		return 0;
 	}
 	
-	public int set(PreparedStatement ps, int paramPosition, T value)  throws SQLException{
-		if(!this.hasPredicate(value)) return 0;
+	public void set(PreparedStatement ps, MutableInt paramPosition, T value)  throws SQLException{
+		if(!this.hasPredicate(value))return;
 		
 		for(int i = 1; i <= this.paramCount; i++) {
-			setParam(ps, i+paramPosition, value);
+			setParam(ps, i+paramPosition.get(), value);
 		}
-		return paramCount;
+		paramPosition.add(paramCount);
 	}
 	
-	public void set(PreparedStatement ps)  throws SQLException{
-		if(!this.hasPredicate) return;
-		
-		for(int i = 1; i <= this.paramCount; i++) {
-			setParam(ps, i+paramPosition, this.param);
-		}
-	}	
 	
 	protected abstract void setParam(PreparedStatement ps, int pos, T value) throws SQLException;
 }
