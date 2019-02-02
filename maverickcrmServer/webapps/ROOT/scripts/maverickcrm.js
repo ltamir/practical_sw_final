@@ -1,4 +1,7 @@
-
+function submitOnEnter(event){
+	if((event.which || event.keyCode) == 13)
+		searchTask(prepareSearchTask());
+}
 
 function setSearchPredicate(searchElement){
 	let predicateName;
