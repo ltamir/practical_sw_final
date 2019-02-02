@@ -174,7 +174,7 @@ function toggleSearchDate(lbl, field){
 		field.setAttribute('data-isActive', '1');
 		field.focus();
 	}else{
-		let formattedDate = 'Due date';
+		let formattedDate = 'date not selected';
 		field.style.display='none';
 		let dateval = field.value;
 		if(dateval.split("-")[2] != undefined){

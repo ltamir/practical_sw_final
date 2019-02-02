@@ -58,6 +58,8 @@
     
 	#lblSearchDueDate{
 		cursor: pointer;
+		float: left;
+		width: 8.5em;
 	}
 	#txtSearchDueDate{
 		display: none;
