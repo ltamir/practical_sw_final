@@ -266,10 +266,7 @@ function init(){
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
     
-//    searchModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
     taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
-    getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
-//    getById('txtDetailDueDate').valueAsDate = new Date(); 
 }
 
 function initModels(){

@@ -140,7 +140,6 @@ var taskItemLinkedList = {
 	}
 }
 
-var taskListSet = new Set([]);
 var selectedTaskList = {
 	selectedRow:null,
 	origColor:null,
@@ -158,26 +157,6 @@ var selectedTaskList = {
 		}
 		this.selectedRow = row;
 	}
-}
-
-var taskList = {
-	taskSet:new Set([]),
-	toggle:function(img, row, taskId){
-    	if(row.hasAttribute('data-isTaskParent')){
-    	    for (var i = parent.rows.length - 1; i >= 0; i--) {
-    	    	if(parent.rows[i].hasAttribute('data-isTaskChild') && parent.rows[i].getAttribute('data-isTaskChild') == item.taskId)
-    	    		parent.deleteRow(i);
-    	    }	    		
-	    	img.src = expandImg.src;
-	    	img.title = expandImg.title;
-	    	taskSet.delete(taskId);
-    	}else{
-    		taskSet.add(taskId);
-	    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
-	    	img.src = collapseImg.src;
-	    	img.title = collapseImg.title;	    		
-    	}		
-	}	    
 }
 
 
@@ -209,8 +188,11 @@ var taskModel={
 		effort:new Model('txtDetailTaskEffort', null, 'effort'), 
 		effortUnit:new Model('effortUnit', null, 'effortUnit'), 
 		dueDate:new Model('txtDetailDueDate', null, 'dueDate'),
+		dueDateLabel:new Model('lblDetailDueDate', null, null),
 		status:new Model('cmbDetailStatus', null, 'statusId') 
 	}
+
+taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
 
 var contactModel = {
 		contactId:new Model('connectionContactId', null, 'contactId'),
@@ -274,10 +256,12 @@ var searchModel = {
 		project:new Model('cmbSearchProject', null, ''),
 		title:new Model('txtSearchTitle', null, ''),
 		dueDate:new Model('txtSearchDueDate', null, ''),
+		dueDateLabel:new Model('lblSearchDueDate', null, ''),
 		status:new Model('searchTaskStatus', null, '')
 }
 searchModel.status.getValue = function(){return this.dom.getAttribute('data-state')};
 searchModel.status.setValue = function(val){this.dom.setAttribute('data-state', val);};
+searchModel.dueDate.setValue = function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'date not selected';}
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
 	this.menuid = menuid;

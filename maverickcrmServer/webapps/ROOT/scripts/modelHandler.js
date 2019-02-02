@@ -154,8 +154,6 @@ function viewTask(id, data){
 		setChildTask(addChildTaskState);
 	}
 	
-	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.dom.value);
-	
 	menuSetter(menuData.taskType, task.taskType.taskTypeId);
 	menuSetter(menuData.taskEffortUnit, task.effortUnit);
 	menuSetter(menuData.taskStatus, task.status.statusId);
@@ -255,7 +253,8 @@ function saveTask(){
 	if(!validate(taskModel.dueDate, '', 'Please select a due date')) return;
 
 	Object.keys(taskModel).forEach(function(item){
-		formData.append(taskModel[item].api, taskModel[item].getValue())
+		if(taskModel[item].api != null)
+			formData.append(taskModel[item].api, taskModel[item].getValue())
 	});
 	
 	if(taskModel.taskId.getValue() == 0){
