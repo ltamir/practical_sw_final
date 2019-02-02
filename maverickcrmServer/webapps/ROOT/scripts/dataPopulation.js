@@ -39,6 +39,11 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
 }
 
 function fillTaskList(id, data){
+	if(data.status == 'nack'){
+		console.log(data.err);
+		setMsg(msgType.nok, data.msg);
+		return;
+	}
 	//taskListBody
 	let selectElement = getById(id);
     for (var i = selectElement.rows.length - 1; i >= 0; i--) {
