@@ -1,4 +1,4 @@
-package org.liortamir.maverickcrm.maverickcrmServer.dal;
+package org.liortamir.maverickcrm.maverickcrmServer.dal.predicate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,13 +15,13 @@ public class PredicateContainer {
 		predicateMap.put(name, predicate);
 	}
 	
-	public <T> int prepare(String predicateName, T value, int totalParams, StringBuilder sb) {
+	public <T> void prepare(String predicateName, T value, MutableBool whereUsed, StringBuilder sb) {
 		AbstractPredicate<T> p = this.predicateMap.get(predicateName);
-		return p.prepare(value, totalParams, sb);
+		p.prepare(value, whereUsed, sb);
 	}
 	
-	public <T> int set(String predicateName, PreparedStatement ps, int paramPosition, T value) throws SQLException{
+	public <T> void set(String predicateName, PreparedStatement ps, MutableInt paramPosition, T value) throws SQLException{
 		AbstractPredicate<T> p = this.predicateMap.get(predicateName);
-		return p.set(ps, paramPosition, value);
+		p.set(ps, paramPosition, value);
 	}	
 }
