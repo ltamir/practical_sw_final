@@ -9,6 +9,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.DatePredicate;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.IntPredicate;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.MutableBool;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.MutableInt;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.PredicateContainer;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.StringPredicate;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Contact;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Status;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
@@ -42,8 +48,8 @@ public class TaskDAL {
 		predicate.add("status", new IntPredicate(0, 
 				" statusId=? ",
 				1));
-		predicate.add("title", new StringPredicate(null, 
-				" title like " + "%" + "?" + "%",
+		predicate.add("title", new StringPredicate("", 
+				" title like ?",
 				1));
 		predicate.add("project", new IntPredicate(0, 
 				" taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?) ",
@@ -101,59 +107,37 @@ public class TaskDAL {
 	 */
 	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
 		List<Task> entityList = null;
+		MutableInt paramCount = new MutableInt(0);
+		MutableBool whereUsed = new MutableBool(false);
 		final String baseSQL = "select * from task ";
 		final String orderBy = " order by duedate asc, statusId asc";
 
-		int paramCount = 0;
 		StringBuilder sqlStatement = new StringBuilder(baseSQL);
-	
-//		final AbstractPredicate<Integer> customerPredicate = new IntPredicate(0, 
-//				" taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))",
-//				3);
-//		
-//		final AbstractPredicate<java.sql.Date> duedatePredicate = new DatePredicate(new java.sql.Date(1), 
-//				" dueDate <= ? ",
-//				1);
-//
-//		final AbstractPredicate<Integer> isClosedPredicate = new IntPredicate(0, 
-//				" statusId=? ",
-//				1);
-//		final AbstractPredicate<String> titlePredicate = new StringPredicate("", 
-//				" title like " + "%" + "?" + "%",
-//				1);
-//		final AbstractPredicate<Integer> projectPredicate = new IntPredicate(0, 
-//				" taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?) ",
-//				2);
-//		final AbstractPredicate<Integer> taskTypePredicate = new IntPredicate(0, 
-//				" taskTypeId=? ",
-//				1);
-		
-		// customer, duedate, status, title, project, taskType, isclosed
 		
 		Date dateDueDate = null;
 		if(dueDate.equals(""))
 			dateDueDate = new java.sql.Date(1);
 		else
 			dateDueDate = java.sql.Date.valueOf(dueDate);
-		paramCount +=this.predicate.prepare("customer", customerId, paramCount, sqlStatement);
-		paramCount +=this.predicate.prepare("duedate", dateDueDate, paramCount, sqlStatement);
-		paramCount +=this.predicate.prepare("title", title, paramCount, sqlStatement);
-		paramCount +=this.predicate.prepare("project", projectTaskId, paramCount, sqlStatement);
-		paramCount +=this.predicate.prepare("taskType", taskTypeId, paramCount, sqlStatement);
-		paramCount +=this.predicate.prepare("status", (isClosed)?4:0, paramCount, sqlStatement);
+		this.predicate.prepare("customer", customerId, whereUsed, sqlStatement);
+		this.predicate.prepare("duedate", dateDueDate, whereUsed, sqlStatement);
+		this.predicate.prepare("title", title, whereUsed, sqlStatement);
+		this.predicate.prepare("project", projectTaskId, whereUsed, sqlStatement);
+		this.predicate.prepare("taskType", taskTypeId, whereUsed, sqlStatement);
+		this.predicate.prepare("status", (isClosed)?4:0, whereUsed, sqlStatement);
 		
 		sqlStatement.append(orderBy);
 
 		try (Connection conn = DBHandler.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sqlStatement.toString());
-			paramCount = 0;
-			paramCount += this.predicate.set("customer", ps, paramCount, customerId);
-			paramCount += this.predicate.set("duedate", ps, paramCount, dateDueDate);
-			paramCount += this.predicate.set("title", ps, paramCount, title);
-			paramCount += this.predicate.set("project", ps, paramCount, projectTaskId);
-			paramCount += this.predicate.set("taskType", ps, paramCount, taskTypeId);
-			paramCount += this.predicate.set("status", ps, paramCount, (isClosed)?4:0);
+
+			this.predicate.set("customer", ps, paramCount, customerId);
+			this.predicate.set("duedate", ps, paramCount, dateDueDate);
+			this.predicate.set("title", ps, paramCount, title);
+			this.predicate.set("project", ps, paramCount, projectTaskId);
+			this.predicate.set("taskType", ps, paramCount, taskTypeId);
+			this.predicate.set("status", ps, paramCount, (isClosed)?4:0);
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
