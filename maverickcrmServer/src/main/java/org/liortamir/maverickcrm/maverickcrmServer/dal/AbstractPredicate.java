@@ -47,14 +47,22 @@ public abstract class AbstractPredicate <T>{
 		return 0;
 	}
 	
+	public int set(PreparedStatement ps, int paramPosition, T value)  throws SQLException{
+		if(!this.hasPredicate(value)) return 0;
+		
+		for(int i = 1; i <= this.paramCount; i++) {
+			setParam(ps, i+paramPosition, value);
+		}
+		return paramCount;
+	}
+	
 	public void set(PreparedStatement ps)  throws SQLException{
 		if(!this.hasPredicate) return;
 		
 		for(int i = 1; i <= this.paramCount; i++) {
 			setParam(ps, i+paramPosition, this.param);
 		}
-
-	}
+	}	
 	
 	protected abstract void setParam(PreparedStatement ps, int pos, T value) throws SQLException;
 }
