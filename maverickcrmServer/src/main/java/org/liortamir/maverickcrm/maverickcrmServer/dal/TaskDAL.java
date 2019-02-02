@@ -1,6 +1,7 @@
 package org.liortamir.maverickcrm.maverickcrmServer.dal;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,12 +25,33 @@ public class TaskDAL {
 
 	
 	private static TaskDAL instance = new TaskDAL();
+//	private PredicateContainer predicate = new PredicateContainer();
 	
 	public static TaskDAL getInstance() {
 		return instance;
 	}
 	
-	private TaskDAL() {}
+	private TaskDAL() {
+	
+//		predicate.add("customer", new IntPredicate(0, 
+//				" taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))",
+//				3));
+//		predicate.add("dueDate", new StringPredicate(null, 
+//				" dueDate <= ? ",
+//				1));
+//		predicate.add("isClosed", new IntPredicate(0, 
+//				" statusId=? ",
+//				1));
+//		predicate.add("title", new StringPredicate(null, 
+//				" taskTypeId=? ",
+//				1));
+//		predicate.add("project", new IntPredicate(0, 
+//				" taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?) ",
+//				2));
+//		predicate.add("taskType", new IntPredicate(0, 
+//				" taskTypeId=? ",
+//				1));		
+	}
 	
 	/**
 	 * Get task by taskId
@@ -65,6 +87,7 @@ public class TaskDAL {
 		}
 		return entityList;
 	}
+
 	
 	/**
 	 * 
@@ -78,106 +101,57 @@ public class TaskDAL {
 	 */
 	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
 		List<Task> entityList = null;
-		int[] paramIndex = new int[6];
-		boolean whereUsed = false;
-		final String baseSQL = "select * from task";
+		final String baseSQL = "select * from task ";
 		final String orderBy = " order by duedate asc, statusId asc";
-		final String closedPredicate = " statusId=4";
-		final String dueDatePredicate = " dueDate <= ?";
-		final String titlePredicate = " title like ?";
-		final String taskTypePredicate = " taskTypeId=?";
-		final String customerPredicate = " taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))";
-		final String projectPredicate = " taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?)";
-		String sql = baseSQL;
 
-		paramIndex[1] = 0;	//customerId
-		paramIndex[2] = 0;	//dueDate
-		paramIndex[3] = 0;	//projectTaskId
-		paramIndex[4] = 0;	//taskTypeId
-		paramIndex[5] = 0;	//title
-		if(customerId != 0) {
-			sql += " where" + customerPredicate;
-			whereUsed = true;
-			paramIndex[1] += 3;
-		}
-		if(!dueDate.equals("")) {
-			if(whereUsed) {
-				paramIndex[2] +=paramIndex[1] + 1;
-				sql += " and" + dueDatePredicate;
-			}
-			else {
-				paramIndex[2] = 1;
-				sql += " where" + dueDatePredicate;
-				whereUsed = true;
-			}
-		}
-		if(projectTaskId != 0) {
-			if(whereUsed) {
-				paramIndex[3] += paramIndex[2] + paramIndex[1] + 2;
-				sql += " and" + projectPredicate;
-			}
-			else {
-				paramIndex[3] = 2;
-				sql += " where" + projectPredicate;
-				whereUsed = true;
-			}			
-		}
-		if(taskTypeId != 0) {
-			if(whereUsed) {
-				paramIndex[4] += paramIndex[3] + paramIndex[2] +  paramIndex[1]+ 1;
-				sql += " and" + taskTypePredicate;
-				}
-			else {
-				paramIndex[4] = 1;
-				sql += " where" + taskTypePredicate;
-				whereUsed = true;
-			}			
-		}
-		if(isClosed == true) {
-			if(whereUsed) {
-				sql += " and" + closedPredicate;
-				//paramIndex[5] += paramIndex[4] + 1;
-			}
-			else {
-				//paramIndex[5] = 1;
-				sql += " where" + closedPredicate;
-				whereUsed = true;
-			}			
-		}
-		if(!title.equals("")) {
-			title = "%" + title + "%";
-			if(whereUsed) {
-				paramIndex[5] += paramIndex[4] + paramIndex[3] + paramIndex[2] +  paramIndex[1]+ 1;
-				sql += " and" + titlePredicate;
-				}
-			else {
-				paramIndex[5] = 1;
-				sql += " where" + titlePredicate;
-				whereUsed = true;
-			}			
-		}		
-		sql += orderBy;
+		int paramCount = 0;
+		StringBuilder sqlStatement = new StringBuilder(baseSQL);
+	
+		final AbstractPredicate<Integer> customerPredicate = new IntPredicate(0, 
+				" taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))",
+				3);
+		
+		final AbstractPredicate<java.sql.Date> duedatePredicate = new DatePredicate(new java.sql.Date(1), 
+				" dueDate <= ? ",
+				1);
+
+		final AbstractPredicate<Integer> isClosedPredicate = new IntPredicate(0, 
+				" statusId=? ",
+				1);
+		final AbstractPredicate<String> titlePredicate = new StringPredicate("", 
+				" title like " + "%" + "?" + "%",
+				1);
+		final AbstractPredicate<Integer> projectPredicate = new IntPredicate(0, 
+				" taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?) ",
+				2);
+		final AbstractPredicate<Integer> taskTypePredicate = new IntPredicate(0, 
+				" taskTypeId=? ",
+				1);
+		
+		Date dateDueDate = null;
+		if(dueDate.equals(""))
+			dateDueDate = new java.sql.Date(1);
+		else
+			dateDueDate = java.sql.Date.valueOf(dueDate);
+		paramCount += customerPredicate.prepare(customerId, paramCount, sqlStatement);
+		paramCount += duedatePredicate.prepare(dateDueDate, paramCount, sqlStatement);
+		paramCount += titlePredicate.prepare(title, paramCount, sqlStatement);
+		paramCount += projectPredicate.prepare(projectTaskId, paramCount, sqlStatement);
+		paramCount += taskTypePredicate.prepare(taskTypeId, paramCount, sqlStatement);
+		paramCount += isClosedPredicate.prepare((isClosed)?4:0, paramCount, sqlStatement);
+		
+		sqlStatement.append(orderBy);
+
 		try (Connection conn = DBHandler.getConnection()){
 
-			PreparedStatement ps = conn.prepareStatement(sql);
-//			if(isClosed == true)
-//				ps.setInt(paramIndex[5]--, closedTask);
-
-			if(customerId != 0) {
-				ps.setInt(paramIndex[1]--, customerId);
-				ps.setInt(paramIndex[1]--, customerId);
-				ps.setInt(paramIndex[1]--, customerId);		
-			}		
-			if(!dueDate.equals(""))
-				ps.setDate(paramIndex[2], java.sql.Date.valueOf(dueDate));	
-			if(projectTaskId != 0) {
-				ps.setInt(paramIndex[3]--, projectTaskId);
-				ps.setInt(paramIndex[3]--, projectTaskId);				
-			}			
-			if(taskTypeId != 0)
-				ps.setInt(paramIndex[4]--, taskTypeId);
-			if(!title.equals(""))
-				ps.setString(paramIndex[5], title);	
+			PreparedStatement ps = conn.prepareStatement(sqlStatement.toString());
+			
+			customerPredicate.set(ps);
+			duedatePredicate.set(ps);
+			titlePredicate.set(ps);
+			projectPredicate.set(ps);
+			taskTypePredicate.set(ps);
+			isClosedPredicate.set(ps);	
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
