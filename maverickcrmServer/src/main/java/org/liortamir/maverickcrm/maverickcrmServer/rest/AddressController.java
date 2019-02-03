@@ -101,7 +101,7 @@ public class AddressController extends HttpServlet {
 			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
 			
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | NullPointerException e) {
+		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			json.addProperty("addressId", "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
