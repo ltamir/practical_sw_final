@@ -123,19 +123,21 @@ function viewAddress(id, item){
 
 //TODO fix child task state - cancellation, view other task, implementation
 function setChildTask(setter){
-	if(setter.getAttribute('data-state') == 0){
+	if(setter.getAttribute('data-parentTask') > 0){
 		setter.setAttribute('data-parentTask', 0);
+		setter.setAttribute('data-state', 0);
 		setMsg(msgType.ok, 'new Task will not be set as child');
+		toggleAsBotton(setter)
 		return;
 	}
 
 	if(taskModel.taskId.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a task');
-		toggleAsBotton(getById('addChildTask'));
+		toggleAsBotton(setter);
 		return;
 	}
 	let parentTaskId = taskModel.taskId.getValue();
-	newTask(taskModel.taskTypeId.getValue());
+	newTask(taskModel.taskType.getValue());
 	setter.setAttribute('data-parentTask', parentTaskId);
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
@@ -291,10 +293,12 @@ function saveTask(){
 		.then(()=>{
 			let addChildTask = getById('addChildTask');
 			if(method == 'POST' && addChildTask.getAttribute('data-parentTask') != 0){
-			saveRelation(addChildTask.getAttribute('data-parentTask'), taskModel.taskId.getValue(), 1);
-			addChildTask.setAttribute('data-parentTask', 0);
-			toggleState(addChildTask);
-		}})
+				taskRelationModel.taskRelationId.setValue(0);
+				saveRelation(addChildTask.getAttribute('data-parentTask'), taskModel.taskId.getValue(), 1);
+				addChildTask.setAttribute('data-parentTask', 0);
+				toggleAsBotton(addChildTask);
+			}
+		})
 		.then(function(){searchTask(prepareSearchTask())});
 
 }
@@ -335,25 +339,10 @@ function saveTaskLog(){
 			return;
 		}else{
 			setMsg(msgType.ok, 'Log saved');
-	    	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
-	        		(divRow,item)=>{
-	        			divRow.setAttribute('data-taskLogId', item.taskLogId);
-						let taskLogImg = document.createElement("IMG");
-						taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
-						taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
-						divRow.appendChild(taskLogImg);
-					}, 
-	        		(txtPart,item)=>{
-	        			if(dbg==Module.tasklog)
-	        		    	console.log(item);
-	        			var thisDate = new Date(item.sysdate);
-	        			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
-	        			}, 
-	        		(txtPart,item)=>{
-	        			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-	        			txtPart.addEventListener("click", function(){getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);});	
-	        		});
-			newTaskLog()
+			if(activeTaskTab == tabEnum.taskLog){
+				viewTaskLogList();
+				newTaskLog();
+			}
 		}
 	});
 }
