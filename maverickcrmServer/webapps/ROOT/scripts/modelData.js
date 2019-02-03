@@ -222,6 +222,12 @@ var customerModel = {
 		customerNotes:new Model('txtCustomerNotes', null, 'customerNotes')
 }
 
+var customerTaskModel = {
+		customerTaskId:new Model('cmbLinkedCustomer', null, 'customerTaskId'),
+		newcustomerId:new Model('cmbNoneLinkedCustomer', null, 'customerId'),
+		taskId:new Model('taskId', null, 'taskId')
+}
+
 var loginModel = {
 		loginId:new Model('loginId', null, 'loginId'),
 		username:new Model('txtUserName', null, 'username'),
@@ -250,8 +256,7 @@ var taskRelationModel = {
 		taskRelationId:new Model('taskRelationId', null, 'taskRelationId'),
 		task:new Model('taskId', null, 'parentTaskId'),
 		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId'),
-		selectedTask:new Model('taskRelationSelectedTaskId', null, '')
-	// NOT used in API	
+		selectedTask:new Model('taskRelationSelectedTaskId', null, null)
 }
 
 var addressModel = {
@@ -259,7 +264,8 @@ var addressModel = {
 		street:new Model('txtAddressStreet', null, 'street'),
 		houseNum:new Model('txtAddressHouseNum', null, 'houseNum'),
 		city:new Model('txtAddressCity', null, 'city'),
-		country:new Model('txtAddressCountry', null, 'country')
+		country:new Model('txtAddressCountry', null, 'country'),
+		customer:new Model('cmbConnectedCustomer', null, 'customerId')
 }
 
 var searchModel = {
