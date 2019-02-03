@@ -61,7 +61,6 @@ public class ServletHelper {
 		ActionEnum actionEnum;
 		String actionParam = req.getParameter(APIConst.PARAM_ACTION_ID);
 		try {
-			
 			int actionId = Integer.parseInt(actionParam);
 			actionEnum = APIConst.ACTION_LIST[actionId];
 		}catch(NumberFormatException | NullPointerException e) {

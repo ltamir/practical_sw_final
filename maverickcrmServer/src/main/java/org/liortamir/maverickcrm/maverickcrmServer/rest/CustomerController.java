@@ -95,13 +95,8 @@ public class CustomerController extends HttpServlet {
 			String customerName = null;
 			String customerNotes = null;
 
-			Part filePart = req.getPart(APIConst.FLD_CUSTOMER_NAME);
-			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
-			customerName = new String(bytes);
-
-			filePart = req.getPart(APIConst.FLD_CUSTOMER_NOTES);
-			bytes = IOUtils.toByteArray(filePart.getInputStream());
-			customerNotes = new String(bytes);
+			customerName = ServletHelper.getPartString(req.getPart(APIConst.FLD_CUSTOMER_NAME));
+			customerNotes = ServletHelper.getPartString(req.getPart(APIConst.FLD_CUSTOMER_NOTES));
 
 			customerId = CustomerDAL.getInstance().insert(customerName, customerNotes);
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);

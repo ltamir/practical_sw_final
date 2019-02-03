@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -82,10 +81,10 @@ public class LoginController extends HttpServlet {
 			for(Part part : req.getParts()) {
 				switch(part.getName()) {
 				case APIConst.FLD_LOGIN_USERNAME:
-					username = new String(IOUtils.toByteArray(part.getInputStream()));
+					username = ServletHelper.getPartString(part);
 					break;
 				case APIConst.FLD_LOGIN_PASSWORD:
-					password = new String(IOUtils.toByteArray(part.getInputStream()));
+					password = ServletHelper.getPartString(part);
 					break;
 				case APIConst.FLD_LOGIN_CONTACT_ID:
 
@@ -123,13 +122,13 @@ public class LoginController extends HttpServlet {
 			for(Part part : req.getParts()) {
 				switch(part.getName()) {
 				case APIConst.FLD_LOGIN_ID:
-					loginId = Integer.parseInt(new String(IOUtils.toByteArray(part.getInputStream())));
+					loginId = ServletHelper.getPartInt(part);
 					break;
 				case APIConst.FLD_LOGIN_USERNAME:
-					username = new String(IOUtils.toByteArray(part.getInputStream()));
+					username = ServletHelper.getPartString(part);
 					break;
 				case APIConst.FLD_LOGIN_PASSWORD:
-					password = new String(IOUtils.toByteArray(part.getInputStream()));
+					password = ServletHelper.getPartString(part);
 					break;
 				case APIConst.FLD_LOGIN_CONTACT_ID:
 					InputStream is = part.getInputStream();

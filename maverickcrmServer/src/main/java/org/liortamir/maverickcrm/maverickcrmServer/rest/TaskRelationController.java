@@ -1,12 +1,10 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskRelationDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -50,18 +44,18 @@ public class TaskRelationController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			if(action == ActionEnum.ACT_SINGLE) {
 				
-				id = Integer.parseInt(req.getParameter("taskRelationId"));
+				id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_ID));
 				taskRelation = TaskRelationDAL.getInstance().get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelation", taskRelation);
 			
 			}else if(action == ActionEnum.ACT_RELATION_PARENTS) {
 
-				taskId = Integer.parseInt(req.getParameter("taskId"));
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				
 			}else if(action == ActionEnum.ACT_RELATION_CHILDREN) {
-				taskId = Integer.parseInt(req.getParameter("taskId"));
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
 			}
@@ -160,29 +154,12 @@ public class TaskRelationController extends HttpServlet {
 		int taskRelationId=0;
 
 		try {
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_TASKRELATION_ID:
-						taskRelationId = Integer.parseInt(item.getString());
-						break;
-					
-						default:
-							System.out.println("TaskRelationController.doDelete: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
-				}
-			}			
+			taskRelationId = ServletHelper.getPartInt(req.getPart(APIConst.FLD_TASKRELATION_ID));
+		
 			TaskRelationDAL.getInstance().delete(taskRelationId);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | FileUploadException | NumberFormatException e) {
+		}catch(SQLException | NumberFormatException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, "0");
 		}
