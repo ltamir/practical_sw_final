@@ -18,15 +18,15 @@
 </head>
 <body onload="init()">
 	<input type="hidden" value="" id="user" data-contact="">
-    <table id="menu">
+    <table id="menu" border="0">
         <tr>
-            <td width="10%">
+            <td width="5%">
                 <select class="cssMenu" id="cmbSearchCustomer" title="Customer list" onchange="setSearchPredicate(this)"></select>                
 			</td>
-            <td width="10%">
+            <td width="5%">
                 <select class="cssMenu" title="Project list" id="cmbSearchProject" onchange="setSearchPredicate(this)"></select>
 			</td>
-            <td width="10%">
+            <td width="5%">
                 <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" onchange="setSearchPredicate(this)"></select>                
             </td>
             <td width="5%">
@@ -37,14 +37,14 @@
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">date not selected</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
             </td> 
-            <td width="10%"> 	
-            	<img src="images/task_open.png" style="margin-left:0.2em; margin-right:0.2em" id="searchTaskStatus"  data-state="0" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
-            	<img src="images/task_search.png" style="margin-left:0.2em; margin-right:0.2em; borderStyle:inset;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
-            	<img src="images/refresh_search.png" style="margin-left:0.2em; margin-right:0.2em" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            <td width="7%"> 	
+            	<img src="images/task_open.png" style="margin-left:0.2em;" id="searchTaskStatus"  data-state="0" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
+            	<img src="images/task_search.png" style="margin-left:0.2em; borderStyle:inset;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
+            	<img src="images/refresh_search.png" style="margin-left:0.2em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>
-            <td width="15%" align="right" valign="bottom">
-            	<img src="images/logout.png" style="margin-left:0.3em; margin-right:0.2em" id="searchTaskStatus" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
-            	<img src="images/database.png" style="margin-left:0.3em; margin-right:0.2em" id="showDatabase" title="Developer" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); toggleDatabase()">
+            <td width="14%" align="right" valign="bottom">
+            	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
+            	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Developer" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); toggleDatabase()">
             	<select id="cmbDebug" onchange="setDebugModule()">
             		<option value=0>None</option>
             		<option value=1>customer</option>
