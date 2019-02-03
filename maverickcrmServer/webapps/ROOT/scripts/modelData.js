@@ -173,109 +173,111 @@ var selectedTaskList = {
 
 //***** Model definition and construction ***** //
 
-function Model(domField, dom, api ){
+function Model(domField, dom, api, notValid, err ){
 	this.getValue = getDomValue;
 	this.setValue = setDomValue;
 	this.domField = domField;
 	this.dom = dom;
 	this.api = api;
 	this.value = null;
+	this.notValid = notValid;
+	this.err = err;
 }
 var ddd = {values:[{val:0}, {val:''}], err:'Please fill the street name'}
 
 var taskLogModel = {
-		taskLogId:new Model('taskLogId', null, 'taskLogId'),
-		sysdate:new Model('sysDate', null, 'sysdate'),
-		contact:new Model('cmbTaskLogContact', null, 'contactId'),
-		description:new Model('txtTaskLogDescription', null, 'description'),
-		taskLogType:new Model('cmbTaskLogType', null, 'taskLogTypeId'),
-		taskId:new Model('taskId', null, 'taskId')
+		taskLogId:new Model('taskLogId', null, 'taskLogId',[], ''),
+		sysdate:new Model('sysDate', null, 'sysdate',[], ''),
+		contact:new Model('cmbTaskLogContact', null, 'contactId', [0], 'Please select a contact'),
+		description:new Model('txtTaskLogDescription', null, 'description', [''], 'Description cannot be empty'),
+		taskLogType:new Model('cmbTaskLogType', null, 'taskLogTypeId', [0], 'Please select a log type'),
+		taskId:new Model('taskId', null, 'taskId', [0],'Please select a task from the list')
 	}
 
 var taskModel={
-		taskId:new Model('taskId', null, 'taskId'), 
-		taskType:new Model('cmbDetailTaskType', null, 'taskTypeId'), 
-		contact:new Model('cmbDetailContact', null, 'contactId'), 
-		title:new Model('txtDetailTaskTitle', null, 'title'), 
-		effort:new Model('txtDetailTaskEffort', null, 'effort'), 
-		effortUnit:new Model('effortUnit', null, 'effortUnit'), 
-		dueDate:new Model('txtDetailDueDate', null, 'dueDate'),
-		dueDateLabel:new Model('lblDetailDueDate', null, null),
-		status:new Model('cmbDetailStatus', null, 'statusId') 
+		taskId:new Model('taskId', null, 'taskId', [], ''), 
+		taskType:new Model('cmbDetailTaskType', null, 'taskTypeId', [], ''), 
+		contact:new Model('cmbDetailContact', null, 'contactId', [], ''), 
+		title:new Model('txtDetailTaskTitle', null, 'title', [], ''), 
+		effort:new Model('txtDetailTaskEffort', null, 'effort', [], ''), 
+		effortUnit:new Model('effortUnit', null, 'effortUnit', [], ''), 
+		dueDate:new Model('txtDetailDueDate', null, 'dueDate', [], ''),
+		dueDateLabel:new Model('lblDetailDueDate', null, null, [], ''),
+		status:new Model('cmbDetailStatus', null, 'statusId', [], '') 
 	}
 
 taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
 
 var contactModel = {
-		contactId:new Model('connectionContactId', null, 'contactId'),
-		firstName:new Model('txtFirstName', null, 'firstName'),
-		lastName:new Model('txtLastName', null, 'lastName'),
-		officePhone:new Model('txtOfficePhone', null, 'officePhone'),
-		mobilePhone:new Model('txtMobilePhone', null, 'mobilePhone'),
-		email:new Model('txtEmail', null, 'email'),
-		notes:new Model('txtNotes', null, 'notes')
+		contactId:new Model('connectionContactId', null, 'contactId', [], ''),
+		firstName:new Model('txtFirstName', null, 'firstName', [''], 'Contact missing First Name'),
+		lastName:new Model('txtLastName', null, 'lastName', [''], 'Contact missing Last Name'),
+		officePhone:new Model('txtOfficePhone', null, 'officePhone', [], ''),
+		mobilePhone:new Model('txtMobilePhone', null, 'mobilePhone', [], ''),
+		email:new Model('txtEmail', null, 'email', [], ''),
+		notes:new Model('txtNotes', null, 'notes', [], '')
 }
 
 var customerModel = {
-		customerId:new Model('detailCustomerId', null, 'customerId'),
-		customerName:new Model('txtCustomerName', null, 'customerName'),
-		customerNotes:new Model('txtCustomerNotes', null, 'customerNotes')
+		customerId:new Model('detailCustomerId', null, 'customerId', [], ''),
+		customerName:new Model('txtCustomerName', null, 'customerName', [''], 'Please fill customer name'),
+		customerNotes:new Model('txtCustomerNotes', null, 'customerNotes', [], '')
 }
 
 var customerTaskModel = {
-		customerTaskId:new Model('cmbLinkedCustomer', null, 'customerTaskId'),
-		newcustomerId:new Model('cmbNoneLinkedCustomer', null, 'customerId'),
-		taskId:new Model('taskId', null, 'taskId')
+		customerTaskId:new Model('cmbLinkedCustomer', null, 'customerTaskId', [], ''),
+		newcustomerId:new Model('cmbNoneLinkedCustomer', null, 'customerId', [''], 'Please select a customer'),
+		taskId:new Model('taskId', null, 'taskId', [], '')
 }
 
 var loginModel = {
-		loginId:new Model('loginId', null, 'loginId'),
-		username:new Model('txtUserName', null, 'username'),
-		password:new Model('txtPassword', null, 'password'),
-		contact:new Model('cmbLoginContactList', null, 'contactId')
+		loginId:new Model('loginId', null, 'loginId', [], ''),
+		username:new Model('txtUserName', null, 'username', [''], 'Please type a username'),
+		password:new Model('txtPassword', null, 'password', [''], 'Please type a password'),
+		contact:new Model('cmbLoginContactList', null, 'contactId', ['', 0], 'Please select a contact')
 }
 
 var attachmentModel = {
-		attachmentId:new Model('attachmentId', null, 'attachmentId'),
-		type:new Model('cmbAttachmentType', null, 'attachmentTypeId'),
-		file:new Model('attachmentFile', null, 'fileName'),
-		contact:new Model('cmbAttachmenContact', null, 'contactId'),
-		notes:new Model('txtAttachmentNotes', null, 'attachmentNotes'),
-		taskLogId:new Model('attachmentTaskLogId', null, 'taskLogId')
+		attachmentId:new Model('attachmentId', null, 'attachmentId', [], ''),
+		type:new Model('cmbAttachmentType', null, 'attachmentTypeId', [], ''),
+		file:new Model('attachmentFile', null, 'fileName', [], ''),
+		contact:new Model('cmbAttachmenContact', null, 'contactId', [], ''),
+		notes:new Model('txtAttachmentNotes', null, 'attachmentNotes', [], ''),
+		taskLogId:new Model('attachmentTaskLogId', null, 'taskLogId', [], '')
 }
 
 var associationModel = {
-		associationId:new Model('connectionAssociationId', null, 'associationId'),
-		contact:new Model('connectionContactId', null, 'contactId'),
-		customer:new Model('cmbConnectedCustomer', null, 'customerId'),
-		contactType:new Model('cmbContactType', null, 'contactTypeId'),
-		address:new Model('addressId', null, 'addressId')
+		associationId:new Model('connectionAssociationId', null, 'associationId', [], ''),
+		contact:new Model('connectionContactId', null, 'contactId', [], ''),
+		customer:new Model('cmbConnectedCustomer', null, 'customerId', [], ''),
+		contactType:new Model('cmbContactType', null, 'contactTypeId', [], ''),
+		address:new Model('addressId', null, 'addressId', [], '')
 }
 
 var taskRelationModel = {
-		taskRelationId:new Model('taskRelationId', null, 'taskRelationId'),
-		task:new Model('taskId', null, 'parentTaskId'),
-		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId'),
-		selectedTask:new Model('taskRelationSelectedTaskId', null, null)
+		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', [], ''),
+		task:new Model('taskId', null, 'parentTaskId',[], ''),
+		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId', [], ''),
+		selectedTask:new Model('taskRelationSelectedTaskId', null, null, [], '')
 }
 
 var addressModel = {
-		addressId:new Model('addressId', null, 'addressId'),
-		street:new Model('txtAddressStreet', null, 'street'),
-		houseNum:new Model('txtAddressHouseNum', null, 'houseNum'),
-		city:new Model('txtAddressCity', null, 'city'),
-		country:new Model('txtAddressCountry', null, 'country'),
-		customer:new Model('cmbConnectedCustomer', null, 'customerId')
+		addressId:new Model('addressId', null, 'addressId', [], ''),
+		street:new Model('txtAddressStreet', null, 'street', [''], 'Please fill the street name'),
+		houseNum:new Model('txtAddressHouseNum', null, 'houseNum', [''], 'Please fill the building number'),
+		city:new Model('txtAddressCity', null, 'city', [''], 'Please fill the city name'),
+		country:new Model('txtAddressCountry', null, 'country', [], ''),
+		customer:new Model('cmbConnectedCustomer', null, 'customerId', [''], 'Please select a Customer')
 }
 
 var searchModel = {
-		customer:new Model('cmbSearchCustomer', null, ''),
-		taskType:new Model('cmbSearchTaskType', null, ''),
-		project:new Model('cmbSearchProject', null, ''),
-		title:new Model('txtSearchTitle', null, ''),
-		dueDate:new Model('txtSearchDueDate', null, ''),
-		dueDateLabel:new Model('lblSearchDueDate', null, ''),
-		status:new Model('searchTaskStatus', null, '')
+		customer:new Model('cmbSearchCustomer', null, '', [], ''),
+		taskType:new Model('cmbSearchTaskType', null, '', [], ''),
+		project:new Model('cmbSearchProject', null, '', [], ''),
+		title:new Model('txtSearchTitle', null, '', [], ''),
+		dueDate:new Model('txtSearchDueDate', null, '', [], ''),
+		dueDateLabel:new Model('lblSearchDueDate', null, '', [], ''),
+		status:new Model('searchTaskStatus', null, '', [], '')
 }
 searchModel.status.getValue = function(){return this.dom.getAttribute('data-state')};
 searchModel.status.setValue = function(val){this.dom.setAttribute('data-state', val);};

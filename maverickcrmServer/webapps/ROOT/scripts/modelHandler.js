@@ -305,7 +305,12 @@ function saveTask(){
 
 function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
 	let formData;
-	if(!validation()) return;
+	
+	for(const key in model){
+		if(model[key].notValid.length > 0)
+			if(!validate(model[key], model[key].notValid[0], model[key].err)) return false;
+	}	
+	if(!validation(model)) return;
 	
 	formData = new FormData();
 	Object.keys(model).forEach(function(item){
@@ -334,17 +339,9 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	});	
 }
 
-function validateTaskLog(){
-	if(!validate(taskLogModel.taskId, 0, 'Please select a task from the list')) return false;
-	if(!validate(taskLogModel.description, '', 'Description cannot be empty')) return false;
-	if(!validate(taskLogModel.taskLogType, 0, 'Please select a log type')) return false;
-	if(!validate(taskLogModel.contact, 0, 'Please select a contact')) return false;
-	return true;
-}
-
 function saveTaskLog(){
 	
-	genericSave(validateTaskLog, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
+	genericSave(()=>{}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
 			(resp)=>{
 				setMsg(msgType.ok, 'Log saved');
 				if(activeTaskTab == tabEnum.taskLog){
@@ -442,15 +439,15 @@ function validateRemoveTaskRelation(){
 function removeTaskRelation(){
 	genericSave(validateRemoveTaskRelation, taskRelationModel, taskLogModel.taskRelationId, Module.relation, 'DELETE', 'taskrelation',
 			(resp)=>{
-				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
+				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
+				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
 				getById('divTaskTab').removeAttribute('data-selected');
 				setMsg(msgType.ok, 'Relation Removed');
 			});
 }
 
 function customerValidation(){
-	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return false;
+//	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return false;
 	return true;
 }
 function saveCustomer(){
@@ -462,13 +459,8 @@ function saveCustomer(){
 			});
 }
 
-function contactValidation(){
-	if(!validate(contactModel.firstName, '', 'Contact missing First Name')) return false;
-	if(!validate(contactModel.lastName, '', 'Contact missing Last Name')) return false;
-	return true;
-}
 function saveContact(){
-	genericSave(contactValidation, contactModel, contactModel.contactId, Module.contact, null, 'contact',
+	genericSave(()=>{}, contactModel, contactModel.contactId, Module.contact, null, 'contact',
 			(resp)=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)
 					showAssociatedContacts();
@@ -498,56 +490,30 @@ function removeAssociationValidation(){
 	return true;
 }
 function saveAssociation(action){
-	let formData = new FormData();
-	let method;
-	
-	if(action == 1){	//insert / update
-
-		saveAssociationValidation();
-		if(associationModel.associationId.getValue() > 0)
-			method = 'PUT';
-		else
-			method = 'POST';
-		Object.keys(associationModel).forEach(function(item){
-			formData.append(associationModel[item].api, associationModel[item].getValue())
-		});	
-				
-	}else{				//delete
-		removeAssociationValidation();	
-		
-		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
-		method = 'DELETE';
+	if(action == 1){
+		genericSave(saveAssociationValidation, associationModel, associationModel.associationId, Module.contact, null, 'association',
+				(resp)=>{
+					if(getById('imgFilterContact').getAttribute("data-state") == 1)
+						showAssociatedContacts();
+					else
+						showAllContacts();			
+					setMsg(msgType.ok, 'Connection change saved')		
+			});		
+	}else{
+		genericSave(removeAssociationValidation, associationModel, associationModel.associationId, Module.contact, 'DELETE', 'association',
+				(resp)=>{
+					if(getById('imgFilterContact').getAttribute("data-state") == 1)
+						showAssociatedContacts();
+					else
+						showAllContacts();			
+					setMsg(msgType.ok, 'Connection change saved')		
+			});	
 	}
-	if(dbg == Module.contact)
-		debugFormData(formData);	
 	
-	setData(method, formData, 'association')
-	.then(function(resp){
-		if(resp.status == 'nack'){
-			setMsg(msgType.nok,  resp.msg);
-			console.log('error ' + resp.err);
-			return;
-		}else{
-			if(getById('imgFilterContact').getAttribute("data-state") == 1)
-				showAssociatedContacts();
-			else
-				showAllContacts();			
-			setMsg(msgType.ok, 'Connection change saved')
-			}
-		});
-}   
-
-
-function addressValidation(){
-	if(!validate(addressModel.street, '', 'Please fill the street name')) return false;
-	if(!validate(addressModel.houseNum, '', 'Please fill the building number')) return false;
-	if(!validate(addressModel.city, '', 'Please fill the city name')) return false;
-	if(!validate(associationModel.customer, '', 'Please select a Customer')) return false;
-	return true;
 }
 
 function saveAddress(){
-	genericSave(addressValidation, addressModel, addressModel.addressId, Module.address, null, 'address',
+	genericSave(()=>{}, addressModel, addressModel.addressId, Module.address, null, 'address',
 		(resp)=>{
 		setMsg(msgType.ok, 'Address saved');
 		
@@ -603,16 +569,9 @@ function saveAttachment(){
 	.catch(function(err){setMsg(msgType.nok, 'Attachment save failed. please check the log'); console.log(err)});
 }
 
-function validateLinkedCustomer(){
-    if(getValue('cmbNoneLinkedCustomer') == ''){
-		setMsg(msgType.nok, 'Please select a customer');
-		return false;
-    }
-    return true;
-}
 function addLinkedCustomer(){
 	
-	genericSave(validateLinkedCustomer, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
+	genericSave(()=>{}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
 			(resp)=>{
 				activateTabLinkedCustomer();
 				setMsg(msgType.ok, 'customer added to project');
@@ -640,11 +599,6 @@ function removeLinkedCustomer(){
 }
 
 function validateLogin(){
-	if(!validate(loginModel.contact, '', 'Please select a contact')) return false;
-	if(!validate(loginModel.contact, 0, 'Please select a contact')) return false;
-	if(!validate(loginModel.username, '', 'Please type a username')) return false;
-	if(!validate(loginModel.password, '', 'Please type a password')) return false;
-	
     if(getValue('txtUserName').length < 4){
 		setMsg(msgType.nok, 'username must contain at least 4 letters');
 		return false;
