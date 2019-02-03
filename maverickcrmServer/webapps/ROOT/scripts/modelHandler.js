@@ -342,13 +342,13 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 function saveTaskLog(){
 	
 	genericSave(()=>{}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
-			(resp)=>{
-				setMsg(msgType.ok, 'Log saved');
-				if(activeTaskTab == tabEnum.taskLog){
-					viewTaskLogList();
-					newTaskLog();				
-				}
-			});
+		(resp)=>{
+			setMsg(msgType.ok, 'Log saved');
+			if(activeTaskTab == tabEnum.taskLog){
+				viewTaskLogList();
+				newTaskLog();				
+			}
+		});
 }
 
 
@@ -420,15 +420,14 @@ function saveRelationType(relationTypeId){
 	tmpRelationModel.taskRelationType.setValue(relationTypeId);
 	
 	genericSave(()=>{return true;}, tmpRelationModel, tmpRelationModel.taskRelationId, Module.relation, 'PUT', 'taskrelation',
-			(resp)=>{
-				setMsg(msgType.ok, 'Relation type updated');
-				getById('divRelationTypeList').style.display='none'; 
-				getById('divRelationTypeList').removeAttribute('data-taskrelationId');
-				getById('divTaskTab').appendChild(getById('divRelationTypeList'));
-				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);	
-			});
-	
+		(resp)=>{
+			setMsg(msgType.ok, 'Relation type updated');
+			getById('divRelationTypeList').style.display='none'; 
+			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
+			getById('divTaskTab').appendChild(getById('divRelationTypeList'));
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);	
+		});
 }
 
 function validateRemoveTaskRelation(){
@@ -438,12 +437,12 @@ function validateRemoveTaskRelation(){
 
 function removeTaskRelation(){
 	genericSave(validateRemoveTaskRelation, taskRelationModel, taskLogModel.taskRelationId, Module.relation, 'DELETE', 'taskrelation',
-			(resp)=>{
-				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
-				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
-				getById('divTaskTab').removeAttribute('data-selected');
-				setMsg(msgType.ok, 'Relation Removed');
-			});
+		(resp)=>{
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
+			getById('divTaskTab').removeAttribute('data-selected');
+			setMsg(msgType.ok, 'Relation Removed');
+		});
 }
 
 function customerValidation(){
@@ -461,14 +460,14 @@ function saveCustomer(){
 
 function saveContact(){
 	genericSave(()=>{}, contactModel, contactModel.contactId, Module.contact, null, 'contact',
-			(resp)=>{
-				if(getById('imgFilterContact').getAttribute("data-state") == 1)
-					showAssociatedContacts();
-				else
-					showAllContacts();
-				
-				setMsg(msgType.ok, 'Contact saved');				
-			});
+		(resp)=>{
+			if(getById('imgFilterContact').getAttribute("data-state") == 1)
+				showAssociatedContacts();
+			else
+				showAllContacts();
+			
+			setMsg(msgType.ok, 'Contact saved');				
+		});
 }
 
 function saveAssociationValidation(){
@@ -492,22 +491,22 @@ function removeAssociationValidation(){
 function saveAssociation(action){
 	if(action == 1){
 		genericSave(saveAssociationValidation, associationModel, associationModel.associationId, Module.contact, null, 'association',
-				(resp)=>{
-					if(getById('imgFilterContact').getAttribute("data-state") == 1)
-						showAssociatedContacts();
-					else
-						showAllContacts();			
-					setMsg(msgType.ok, 'Connection change saved')		
-			});		
+			(resp)=>{
+				if(getById('imgFilterContact').getAttribute("data-state") == 1)
+					showAssociatedContacts();
+				else
+					showAllContacts();			
+				setMsg(msgType.ok, 'Connection change saved')		
+		});		
 	}else{
 		genericSave(removeAssociationValidation, associationModel, associationModel.associationId, Module.contact, 'DELETE', 'association',
-				(resp)=>{
-					if(getById('imgFilterContact').getAttribute("data-state") == 1)
-						showAssociatedContacts();
-					else
-						showAllContacts();			
-					setMsg(msgType.ok, 'Connection change saved')		
-			});	
+			(resp)=>{
+				if(getById('imgFilterContact').getAttribute("data-state") == 1)
+					showAssociatedContacts();
+				else
+					showAllContacts();			
+				setMsg(msgType.ok, 'Connection change saved')		
+		});	
 	}
 	
 }
@@ -572,9 +571,9 @@ function saveAttachment(){
 function addLinkedCustomer(){
 	
 	genericSave(()=>{}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
-			(resp)=>{
-				activateTabLinkedCustomer();
-				setMsg(msgType.ok, 'customer added to project');
+		(resp)=>{
+			activateTabLinkedCustomer();
+			setMsg(msgType.ok, 'customer added to project');
 	});
 }
 
@@ -614,9 +613,9 @@ function validateLogin(){
 function saveLogin(){
 	
 	genericSave(validateLogin, loginModel, loginModel.loginId, Module.login, null, 'login',
-			(resp)=>{
-				fillLoginList();
-				setValue('loginId', resp.loginId);
-				setValue('cmbAvailableLogins', resp.loginId);
-			});
+		(resp)=>{
+			fillLoginList();
+			setValue('loginId', resp.loginId);
+			setValue('cmbAvailableLogins', resp.loginId);
+		});
 }
