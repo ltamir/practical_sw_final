@@ -80,36 +80,37 @@ function activateTabTaskLog(){
     		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
 
     })
-	.then(()=>{
-		if(getValue('taskId') > 0)
-	    	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
-        		(divRow,item)=>{
-        			divRow.setAttribute('data-taskLogId', item.taskLogId);
-					let taskLogImg = document.createElement("IMG");
-					taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
-					taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
-					divRow.appendChild(taskLogImg);
-				}, 
-        		(txtPart,item)=>{
-        			if(dbg==Module.tasklog)
-        		    	console.log(item);
-        			var thisDate = new Date(item.sysdate);
-        			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
-        			}, 
-        		(txtPart,item)=>{
-        			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        			txtPart.addEventListener("click", function(){
-        				selectedTaskList.toggle(txtPart);
-        				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
-        			});	
-        		});
-	}).then(()=>{	
+	.then(()=>{viewTaskLogList()}).then(()=>{	
 		Object.keys(taskLogModel).forEach(function(item){
 		taskLogModel[item].dom = getById(taskLogModel[item].domField);
 	});	})
 
 }
 
+function viewTaskLogList(){
+	if(getValue('taskId') > 0)
+    	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
+    		(divRow,item)=>{
+    			divRow.setAttribute('data-taskLogId', item.taskLogId);
+				let taskLogImg = document.createElement("IMG");
+				taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
+				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
+				divRow.appendChild(taskLogImg);
+			}, 
+    		(txtPart,item)=>{
+    			if(dbg==Module.tasklog)
+    		    	console.log(item);
+    			var thisDate = new Date(item.sysdate);
+    			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
+    			}, 
+    		(txtPart,item)=>{
+    			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+    			txtPart.addEventListener("click", function(){
+    				selectedTaskList.toggle(txtPart);
+    				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
+    			});	
+    		});	
+}
 
 function activateTabRelation(){
 	getHTML('tabRelation.html').then(function(response){fillTab('divTaskTab', response)})
