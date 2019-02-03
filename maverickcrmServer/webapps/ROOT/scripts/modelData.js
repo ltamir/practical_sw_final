@@ -1,5 +1,16 @@
-function setDomValue(val){this.dom.value = val;}
-function getDomValue(){return this.dom.value}
+function setDomValue(val){
+	if(this.dom != null)
+		this.dom.value = val;
+	else
+		this.value = val;
+}
+function getDomValue(){
+	if(this.dom != null)
+		return this.dom.value;
+	else
+		return this.value;	
+	
+}
 
 // ***** image to id mapping ***** //
 
@@ -168,6 +179,7 @@ function Model(domField, dom, api ){
 	this.domField = domField;
 	this.dom = dom;
 	this.api = api;
+	this.value = null;
 }
 var ddd = {values:[{val:0}, {val:''}], err:'Please fill the street name'}
 
