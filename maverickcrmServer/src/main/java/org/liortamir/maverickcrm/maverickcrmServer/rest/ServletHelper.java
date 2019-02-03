@@ -1,7 +1,11 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
+
+import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 
@@ -65,4 +69,13 @@ public class ServletHelper {
 		}
 		return actionEnum;
 	}
+	
+	public static String getPartString(Part part) throws IOException{
+		return new String(IOUtils.toByteArray(part.getInputStream()));
+	}
+	
+	public static Integer getPartInt(Part part) throws IOException{
+		String strPart = getPartString(part);
+		return (strPart.equals("null"))?0:Integer.valueOf(strPart);
+	}	
 }
