@@ -581,11 +581,11 @@ function addLinkedCustomer(){
 
 function removeLinkedCustomer(){
 	
-	genericSave(()=>{return true;}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
-			(resp)=>{
-				activateTabLinkedCustomer();
-				setMsg(msgType.ok, 'customer added to project');
-		});
+//	genericSave(()=>{return true;}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
+//			(resp)=>{
+//				activateTabLinkedCustomer();
+//				setMsg(msgType.ok, 'customer added to project');
+//		});
 	
 	let formData = new FormData();
 	let method = 'DELETE';	
