@@ -83,7 +83,8 @@ function activateTabTaskLog(){
 	.then(()=>{viewTaskLogList()}).then(()=>{	
 		Object.keys(taskLogModel).forEach(function(item){
 		taskLogModel[item].dom = getById(taskLogModel[item].domField);
-	});	})
+		});	
+	})
 
 }
 
@@ -163,11 +164,19 @@ function activateTabLinkedCustomer(){
 			null, 
 			(opt,item)=>opt.value = item.customerTaskId, 
 			(opt,item)=>opt.text = item.customer.customerName, 
-			(opt,item)=>opt.addEventListener("dblclick", ()=>removeLinkedCustomer())))
+			(opt,item)=>{
+				opt.addEventListener("dblclick", ()=>removeLinkedCustomer());
+				}))
 	.then(()=>getDataEx('cmbNoneLinkedCustomer', 'customer', '?actionId=10&taskId='+getValue('taskId'), fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
-			(opt,item)=>opt.addEventListener("dblclick", ()=>addLinkedCustomer())))	
+			(opt,item)=>opt.addEventListener("dblclick", ()=>addLinkedCustomer()))
+	).then(()=>{
+		Object.keys(customerTaskModel).forEach(function(item){
+			customerTaskModel[item].dom = getById(customerTaskModel[item].domField);
+		});	
+	})	
+						
 }
 
 function activateTabConnection(){
