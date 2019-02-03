@@ -307,9 +307,11 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	let formData;
 	
 	for(const key in model){
-		if(model[key].notValid.length > 0)
-			if(!validate(model[key], model[key].notValid[0], model[key].err)) return false;
-	}	
+		if(model[key].notValid.length > 0){
+			for(const val in model[key].notValid)
+				if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
+		}	
+	}
 	if(!validation(model)) return;
 	
 	formData = new FormData();
@@ -341,7 +343,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 
 function saveTaskLog(){
 	
-	genericSave(()=>{}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
+	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
 		(resp)=>{
 			setMsg(msgType.ok, 'Log saved');
 			if(activeTaskTab == tabEnum.taskLog){
@@ -459,7 +461,7 @@ function saveCustomer(){
 }
 
 function saveContact(){
-	genericSave(()=>{}, contactModel, contactModel.contactId, Module.contact, null, 'contact',
+	genericSave(()=>{return true;}, contactModel, contactModel.contactId, Module.contact, null, 'contact',
 		(resp)=>{
 			if(getById('imgFilterContact').getAttribute("data-state") == 1)
 				showAssociatedContacts();
@@ -512,7 +514,7 @@ function saveAssociation(action){
 }
 
 function saveAddress(){
-	genericSave(()=>{}, addressModel, addressModel.addressId, Module.address, null, 'address',
+	genericSave(()=>{return true;}, addressModel, addressModel.addressId, Module.address, null, 'address',
 		(resp)=>{
 		setMsg(msgType.ok, 'Address saved');
 		
@@ -570,7 +572,7 @@ function saveAttachment(){
 
 function addLinkedCustomer(){
 	
-	genericSave(()=>{}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
+	genericSave(()=>{return true;}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
 		(resp)=>{
 			activateTabLinkedCustomer();
 			setMsg(msgType.ok, 'customer added to project');
@@ -578,6 +580,12 @@ function addLinkedCustomer(){
 }
 
 function removeLinkedCustomer(){
+	
+	genericSave(()=>{return true;}, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
+			(resp)=>{
+				activateTabLinkedCustomer();
+				setMsg(msgType.ok, 'customer added to project');
+		});
 	
 	let formData = new FormData();
 	let method = 'DELETE';	
