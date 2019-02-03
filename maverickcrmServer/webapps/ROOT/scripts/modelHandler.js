@@ -11,9 +11,9 @@ function newAttachment(){
 }
 
 function newCustomer(){	
-	customerModel.customerId.serValue(0);
-	customerModel.customerName.serValue('');
-	customerModel.customerNotes.serValue('');
+	customerModel.customerId.setValue(0);
+	customerModel.customerName.setValue('');
+	customerModel.customerNotes.setValue('');
 
 	setMsg(msgType.ok, 'Ready');
 }
@@ -303,48 +303,55 @@ function saveTask(){
 
 }
 
-
-function validateTaskLog(){
-	if(!validate(taskLogModel.taskId, 0, 'Please select a task from the list')) return;
-	if(!validate(taskLogModel.description, '', 'Description cannot be empty')) return;
-	if(!validate(taskLogModel.taskLogType, 0, 'Please select a log type')) return;
-	if(!validate(taskLogModel.contact, 0, 'Please select a contact')) return;
+function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
+	let formData;
+	if(!validation()) return;
 	
-	saveTaskLog();
-} 
-
-function saveTaskLog(){
-	let formData = new FormData();
-	let method;
-		
-	Object.keys(taskLogModel).forEach(function(item){
-		formData.append(taskLogModel[item].api, taskLogModel[item].getValue())
-	});
+	formData = new FormData();
+	Object.keys(model).forEach(function(item){
+		formData.append(model[item].api, model[item].getValue())
+	});	
 	
-	if(taskLogModel.taskLogId.getValue() == 0){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-    	formData.append('taskLogId', taskLogModel.taskLogId.getValue());
+	if(method == null){
+		if(modelIdField.getValue() == '0' || modelIdField.getValue() == '')
+			method = 'POST';
+		else
+			method = 'PUT';		
 	}
-	
-	if(dbg==Module.tasklog)
-		debugFormData(formData);
 
-	setData(method, formData, 'tasklog')
+	if(dbg == dbgModule)
+		debugFormData(formData);
+	
+	setData(method, formData, resource)
 	.then(function(resp){
 		if(resp.status == 'nack'){
-			setMsg(msgType.nok, resp.msg);
-			console.log(resp.err);
+			setMsg(msgType.nok,  resp.msg);
+			console.log('error ' + resp.err);
 			return;
 		}else{
-			setMsg(msgType.ok, 'Log saved');
-			if(activeTaskTab == tabEnum.taskLog){
-				viewTaskLogList();
-				newTaskLog();
-			}
+			postFunc(resp);
 		}
-	});
+	});	
+}
+
+function validateTaskLog(){
+	if(!validate(taskLogModel.taskId, 0, 'Please select a task from the list')) return false;
+	if(!validate(taskLogModel.description, '', 'Description cannot be empty')) return false;
+	if(!validate(taskLogModel.taskLogType, 0, 'Please select a log type')) return false;
+	if(!validate(taskLogModel.contact, 0, 'Please select a contact')) return false;
+	return true;
+}
+
+function saveTaskLog(){
+	
+	genericSave(validateTaskLog, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
+			(resp)=>{
+				setMsg(msgType.ok, 'Log saved');
+				if(activeTaskTab == tabEnum.taskLog){
+					viewTaskLogList();
+					newTaskLog();				
+				}
+			});
 }
 
 
@@ -407,125 +414,96 @@ function saveRelation(parent, child, relationType){
 
 
 function saveRelationType(relationTypeId){
-	let taskRelationId = getById('divRelationTypeList').getAttribute('data-taskrelationId');
-	let formData = new FormData();
+	let tmpRelationModel = Object.assign({}, taskRelationModel);
 	
-	formData.append(taskRelationTypeId.taskRelationId.api, taskRelationTypeId.taskRelationId.getValue());
-	formData.append(taskRelationTypeId.taskRelationType.api, taskRelationTypeId.taskRelationType.getValue());
-	setData('PUT', formData, 'taskrelation')
-	.then(function(resp){
-		if(resp.status == 'nack'){
-			setMsg(msgType.nok, resp.msg);
-			console.log('error ' + resp.err);
-			return;
-		}else{
-			setMsg(msgType.ok, 'Relation type updated');
-			getById('divRelationTypeList').style.display='none'; 
-			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
-			getById('divTaskTab').appendChild(getById('divRelationTypeList'));
-			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);			
-		}		
-	});
+	Object.keys(tmpRelationModel).forEach(function(item){
+		tmpRelationModel[item].dom = null;
+		});	
+	tmpRelationModel.taskRelationId.setValue(getById('divRelationTypeList').getAttribute('data-taskrelationId'));
+	tmpRelationModel.taskRelationType.setValue(relationTypeId);
+	
+	genericSave(()=>{return true;}, tmpRelationModel, tmpRelationModel.taskRelationId, Module.relation, 'PUT', 'taskrelation',
+			(resp)=>{
+				setMsg(msgType.ok, 'Relation type updated');
+				getById('divRelationTypeList').style.display='none'; 
+				getById('divRelationTypeList').removeAttribute('data-taskrelationId');
+				getById('divTaskTab').appendChild(getById('divRelationTypeList'));
+				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);	
+			});
+	
+}
+
+function validateRemoveTaskRelation(){
+	if(!validate(taskRelationModel.taskRelationId, '', 'Please select a task to remove from the relation')) return false;
+	return true;
 }
 
 function removeTaskRelation(){
-	let method='DELETE';
-	let formData = new FormData();
-	
-	if(!validate(taskRelationModel.taskRelationId, '', 'Please select a task to remove from the relation')) return;
-	
-	formData.append(taskRelationModel.taskRelationId.api, taskRelationModel.taskRelationId.getValue());
-	
-	setData(method, formData, 'taskrelation')
-	
-	.then(function(){getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)})
-	.then(function(){getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)})
-	.then(getById('divTaskTab').removeAttribute('data-selected'))
-	.then(function(){setMsg(msgType.ok, 'Relation Removed')});
-	
+	genericSave(validateRemoveTaskRelation, taskRelationModel, taskLogModel.taskRelationId, Module.relation, 'DELETE', 'taskrelation',
+			(resp)=>{
+				getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+				getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);
+				getById('divTaskTab').removeAttribute('data-selected');
+				setMsg(msgType.ok, 'Relation Removed');
+			});
 }
 
+function customerValidation(){
+	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return false;
+	return true;
+}
 function saveCustomer(){
-	let method;
-	let formData = new FormData();
 	
-	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return;
-
-	formData.append(customerModel.customerName.api, customerModel.customerName.getValue());
-	formData.append(customerModel.customerNotes.api, customerModel.customerNotes.getValue());
-	 		
-	if(customerModel.customerId.getValue() == 0){
-		method = 'POST';
-	}
-	else{
-		method = 'PUT';
-    	formData.append(customerModel.customerId.api, customerModel.customerId.getValue());
-	}
-
-	if(dbg==Module.customer)
-		debugFormData(formData);
-
-	setData(method, formData, 'customer')
-		.then(function(data){if(dbg==Module.customer){console.logdata}})
-		.then(function(){getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);})
-			.then(function(){setMsg(msgType.ok, 'Customer saved')});
-
+	genericSave(customerValidation, customerModel, customerModel.customerId, Module.customer, null, 'customer',
+			(resp)=>{
+				getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);
+				setMsg(msgType.ok, 'Customer saved')				
+			});
 }
 
-
+function contactValidation(){
+	if(!validate(contactModel.firstName, '', 'Contact missing First Name')) return false;
+	if(!validate(contactModel.lastName, '', 'Contact missing Last Name')) return false;
+	return true;
+}
 function saveContact(){
-	let formData = new FormData();
-	let element;
-	let method;
-	
-	if(!validate(contactModel.firstName, '', 'Contact missing First Name')) return;
-	if(!validate(contactModel.lastName, '', 'Contact missing Last Name')) return;
-
-	Object.keys(contactModel).forEach(function(item){
-		formData.append(contactModel[item].api, contactModel[item].getValue())
-	});	
-	
-	if(contactModel.contactId.getValue() == 0){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-    	formData.append(contactModel.contactId.api, contactModel.contactId.getValue());
-	}
-
-	if(dbg==Module.contact)
-		debugFormData(formData);
-
-	setData(method, formData, 'contact')
-	.then(function(resp){
-		if(resp.status == 'nack'){
-			setMsg(msgType.nok,  resp.msg);
-			console.log('error ' + resp.err);
-			return;
-		}else{
-			if(getById('imgFilterContact').getAttribute("data-state") == 1)
-				showAssociatedContacts();
-			else
-				showAllContacts();
-			
-			setMsg(msgType.ok, 'Contact saved')
-			}
-		});
+	genericSave(contactValidation, contactModel, contactModel.contactId, Module.contact, null, 'contact',
+			(resp)=>{
+				if(getById('imgFilterContact').getAttribute("data-state") == 1)
+					showAssociatedContacts();
+				else
+					showAllContacts();
+				
+				setMsg(msgType.ok, 'Contact saved');				
+			});
 }
 
-
+function saveAssociationValidation(){
+	if(!validate(associationModel.customer, 0, 'Please select a customer')) return false;
+	if(!validate(associationModel.customer, '', 'Please select a customer')) return false;
+	if(!validate(associationModel.contact, 0, 'Please select a contact')) return false;
+	if(!validate(associationModel.contact, '', 'Please select a contact')) return false;
+	if(!validate(associationModel.contactType, 0, 'Please select a Contact type')) return false;		
+	if(!validate(associationModel.address, 0, 'Please select an address')) return false;
+	return true;
+}
+function removeAssociationValidation(){
+	if(!validate(associationModel.customer, 0, 'Please select a customer to remove from the contact')) return false;
+	if(!validate(associationModel.customer, '', 'Please select a customer to remove from the contact')) return false;
+	if(!validate(associationModel.contact, 0, 'Please select a contact to remove the connection')) return false;
+	if(!validate(associationModel.contact, '', 'Please select a contact to remove the connection')) return false;
+	if(!validate(associationModel.associationId, 0, 'Contact is not connected')) return false;
+	if(!validate(associationModel.associationId, '', 'Contact is not connected')) return false;	
+	return true;
+}
 function saveAssociation(action){
 	let formData = new FormData();
 	let method;
 	
-	if(action == 1){	//add
-		if(!validate(associationModel.customer, 0, 'Please select a customer')) return;
-		if(!validate(associationModel.customer, '', 'Please select a customer')) return;
-		if(!validate(associationModel.contact, 0, 'Please select a contact')) return;
-		if(!validate(associationModel.contact, '', 'Please select a contact')) return;
-		if(!validate(associationModel.contactType, 0, 'Please select a Contact type')) return;		
-		if(!validate(associationModel.address, 0, 'Please select an address')) return;
+	if(action == 1){	//insert / update
 
+		saveAssociationValidation();
 		if(associationModel.associationId.getValue() > 0)
 			method = 'PUT';
 		else
@@ -535,12 +513,7 @@ function saveAssociation(action){
 		});	
 				
 	}else{				//delete
-		if(!validate(associationModel.customer, 0, 'Please select a customer to remove from the contact')) return;
-		if(!validate(associationModel.customer, '', 'Please select a customer to remove from the contact')) return;
-		if(!validate(associationModel.contact, 0, 'Please select a contact to remove the connection')) return;
-		if(!validate(associationModel.contact, '', 'Please select a contact to remove the connection')) return;
-		if(!validate(associationModel.associationId, 0, 'Contact is not connected')) return;
-		if(!validate(associationModel.associationId, '', 'Contact is not connected')) return;	
+		removeAssociationValidation();	
 		
 		formData.append(associationModel.associationId.api, associationModel.associationId.getValue())
 		method = 'DELETE';
@@ -565,49 +538,27 @@ function saveAssociation(action){
 }   
 
 
+function addressValidation(){
+	if(!validate(addressModel.street, '', 'Please fill the street name')) return false;
+	if(!validate(addressModel.houseNum, '', 'Please fill the building number')) return false;
+	if(!validate(addressModel.city, '', 'Please fill the city name')) return false;
+	if(!validate(associationModel.customer, '', 'Please select a Customer')) return false;
+	return true;
+}
+
 function saveAddress(){
-	let formData;
-	let method;
-	if(!validate(addressModel.street, '', 'Please fill the street name')) return;
-	if(!validate(addressModel.houseNum, '', 'Please fill the building number')) return;
-	if(!validate(addressModel.city, '', 'Please fill the city name')) return;
-	if(!validate(associationModel.customer, '', 'Please select a Customer')) return;
-
-	formData = new FormData();
-	
-	Object.keys(addressModel).forEach(function(item){
-		formData.append(addressModel[item].api, addressModel[item].getValue())
-	});
-	
-	if(addressModel.addressId.getValue() == '0'){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-		formData.append(addressModel.addressId.api, addressModel.addressId.getValue());
-	}
-
-	if(dbg == Module.address)
-	debugFormData(formData);
-	
-	setData(method, formData, 'address')
-	.then(function(resp){
-		if(resp.status == 'nack'){
-			setMsg(msgType.nok,  resp.msg);
-			console.log('error ' + resp.err);
-			return;
-		}else{
-			setMsg(msgType.ok, 'Address saved');
-			
-			let event = new MouseEvent('click', {
-			    view: window,
-			    bubbles: true,
-			    cancelable: true
-			});
-			var cb = getById('cmbConnectedCustomer').options[getById('cmbConnectedCustomer').selectedIndex]; 
-			var cancelled = !cb.dispatchEvent(event);
-		}
-	});
-	
+	genericSave(addressValidation, addressModel, addressModel.addressId, Module.address, null, 'address',
+		(resp)=>{
+		setMsg(msgType.ok, 'Address saved');
+		
+		let event = new MouseEvent('click', {
+		    view: window,
+		    bubbles: true,
+		    cancelable: true
+		});
+		var cb = getById('cmbConnectedCustomer').options[getById('cmbConnectedCustomer').selectedIndex]; 
+		var cancelled = !cb.dispatchEvent(event);		
+	});	
 }
 
 function saveAttachment(){
@@ -623,10 +574,7 @@ function saveAttachment(){
 
 	if(!validate(attachmentModel.attachmentId, 0, null) && 
 			!validate(attachmentModel.contact, 0, 'Please select a file')) return;
-//	if(attachmentId == '0' && getValue('attachmentFile') == 0){
-//		setMsg(msgType.nok, 'Please select a file');
-//		return;
-//	}
+
 	
 	oFormData.append('contactId', getValue('cmbAttachmenContact'));
 	let notes = (getValue('txtAttachmentNotes') == '')?attachmentType.options[attachmentType.selectedIndex].text:getValue('txtAttachmentNotes');
@@ -655,25 +603,24 @@ function saveAttachment(){
 	.catch(function(err){setMsg(msgType.nok, 'Attachment save failed. please check the log'); console.log(err)});
 }
 
-function addLinkedCustomer(){
-	let formData = new FormData();
-	let method = 'POST';	
-    let selectElement = getById('cmbLinkedCustomer');
-
+function validateLinkedCustomer(){
     if(getValue('cmbNoneLinkedCustomer') == ''){
 		setMsg(msgType.nok, 'Please select a customer');
-		return;
+		return false;
     }
-    
-    formData.append('customerId', getValue('cmbNoneLinkedCustomer'));
-    formData.append('taskId', getValue('taskId'));
-    
-    setData(method, formData, 'customertask')
-    	.then(activateTabLinkedCustomer())
-			.then(function(){setMsg(msgType.ok, 'customer added to project');});
+    return true;
+}
+function addLinkedCustomer(){
+	
+	genericSave(validateLinkedCustomer, customerTaskModel, customerTaskModel.customerTaskId, Module.linkedCustomer, null, 'customertask',
+			(resp)=>{
+				activateTabLinkedCustomer();
+				setMsg(msgType.ok, 'customer added to project');
+	});
 }
 
 function removeLinkedCustomer(){
+	
 	let formData = new FormData();
 	let method = 'DELETE';	
 	
@@ -692,53 +639,30 @@ function removeLinkedCustomer(){
 		.then(function(){setMsg(msgType.ok, 'Customer removed');});
 }
 
-function saveLogin(){
-	let formData = new FormData();
-	let method;	
-
-	if(!validate(loginModel.contact, '', 'Please select a contact')) return;
-	if(!validate(loginModel.contact, 0, 'Please select a contact')) return;
-	if(!validate(loginModel.username, '', 'Please type a username')) return;
-	if(!validate(loginModel.password, '', 'Please type a password')) return;
+function validateLogin(){
+	if(!validate(loginModel.contact, '', 'Please select a contact')) return false;
+	if(!validate(loginModel.contact, 0, 'Please select a contact')) return false;
+	if(!validate(loginModel.username, '', 'Please type a username')) return false;
+	if(!validate(loginModel.password, '', 'Please type a password')) return false;
 	
     if(getValue('txtUserName').length < 4){
 		setMsg(msgType.nok, 'username must contain at least 4 letters');
-		return;
+		return false;
     }    
     	
     if(getValue('txtPassword').length < 4){
 		setMsg(msgType.nok, 'password must contain at least 5 letters');
-		return;
-    }       
-	Object.keys(loginModel).forEach(function(item){
-		formData.append(loginModel[item].api, loginModel[item].getValue())
-	});
+		return false;
+    } 	
+	return true;
+}
+
+function saveLogin(){
 	
-	let loginId = getValue('loginId');
-	if(loginId == 0){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-		formData.append('loginId', getValue('loginId'));
-	}
-	
-	if(dbg==Module.login){
-		debugFormData(formData);
-		console.log('method ' + method);
-	}
-	
-	setData(method, formData, 'login')
-		.then(function(resp){
-			if(resp.status == 'nack'){
-				setMsg(msgType.nok, resp.msg);
-				console.log('error ' + resp.err);
-				return;
-			}else{
+	genericSave(validateLogin, loginModel, loginModel.loginId, Module.login, null, 'login',
+			(resp)=>{
 				fillLoginList();
 				setValue('loginId', resp.loginId);
 				setValue('cmbAvailableLogins', resp.loginId);
-			}		
-		})
-		.catch(function(err){setMsg(msgType.nok, 'an unknown error has occured. please check the log'); console.log(err)});
-	
+			});
 }
