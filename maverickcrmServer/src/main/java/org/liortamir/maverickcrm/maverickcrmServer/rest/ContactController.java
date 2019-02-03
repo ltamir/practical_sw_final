@@ -95,7 +95,9 @@ public class ContactController extends HttpServlet {
 					break;
 				case APIConst.FLD_CONTACT_NOTES:
 					contact.setNotes(new String(IOUtils.toByteArray(part.getInputStream())));
-					break;					
+					break;
+					default:
+						break;
 				}
 			}
 			
