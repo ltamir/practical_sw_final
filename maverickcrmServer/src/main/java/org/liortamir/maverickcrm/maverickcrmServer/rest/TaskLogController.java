@@ -1,6 +1,5 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -8,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogDAL;
@@ -85,10 +79,30 @@ public class TaskLogController extends HttpServlet {
 		int taskLogId = 0;
 		try {
 			String sysdate = frm.format(new Date());
-			int taskId = Integer.parseInt(req.getParameter("taskId"));
-			int contactId = Integer.parseInt(req.getParameter("contactId"));
-			String description = req.getParameter("description");
-			int taskLogTypeId = Integer.parseInt(req.getParameter("taskLogTypeId"));
+			int taskId = 0;
+			int contactId = 0;
+			String description = null;
+			int taskLogTypeId = 0;
+			
+			for(Part part : req.getParts()) {
+
+				switch(part.getName()) {
+				case APIConst.FLD_TASKLOG_TASK_ID:
+					taskId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKLOG_CONTACT_ID:
+					contactId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKLOG_DESCRIPTION:
+					description = ServletHelper.getPartString(part);
+					break;
+				case APIConst.FLD_TASKLOG_TASKLOGTYPE_ID:
+					taskLogTypeId = ServletHelper.getPartInt(part);
+					break;						
+					default:
+						break;
+				}
+			}				
 			
 			if(description.length() > maxlog) {
 				StringBuilder sb  = new StringBuilder(description);
@@ -120,51 +134,38 @@ public class TaskLogController extends HttpServlet {
 		JsonObject json = new JsonObject();
 		try {
 			int taskLogId = 0;
-			String sysdate = null;
 			int taskId = 0;
 			int contactId = 0;
 			String description = null;
 			int taskLogTypeId = 0;
 			
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_TASKLOG_ID:
-						taskLogId = Integer.parseInt(item.getString());
+			for(Part part : req.getParts()) {
+
+				switch(part.getName()) {
+				case APIConst.FLD_TASKLOG_ID:
+					taskLogId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKLOG_TASK_ID:
+					taskId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKLOG_CONTACT_ID:
+					contactId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKLOG_DESCRIPTION:
+					description = ServletHelper.getPartString(part);
+					break;
+				case APIConst.FLD_TASKLOG_TASKLOGTYPE_ID:
+					taskLogTypeId = ServletHelper.getPartInt(part);
+					break;						
+					default:
 						break;
-					case APIConst.FLD_TASKLOG_SYSDATE:
-						sysdate = item.getString();
-						if(sysdate.contains(","))
-							sysdate = sysdate.replace(",", "");
-						break;
-					case APIConst.FLD_TASKLOG_TASK_ID:
-						taskId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASKLOG_CONTACT_ID:
-						contactId = Integer.parseInt(item.getString());
-						break;
-					case APIConst.FLD_TASKLOG_DESCRIPTION:
-						description = item.getString();
-						break;
-					case APIConst.FLD_TASKLOG_TASKLOGTYPE_ID:
-						taskLogTypeId = Integer.parseInt(item.getString());
-						break;					
-						default:
-							System.out.println("CustomerHandler.doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
 				}
 			}			
+						
 			TaskLogDAL.getInstance().update(taskLogId, taskId, contactId, description, taskLogTypeId);
 			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | FileUploadException | NumberFormatException e) {
+		}catch(SQLException | NumberFormatException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
 		}

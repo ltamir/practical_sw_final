@@ -12,6 +12,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -109,46 +110,36 @@ public class TaskRelationController extends HttpServlet {
 		int childTaskId = 0;
 		int taskRelationTypeId = 0;
 
-		String strParentTaskId = null;
-		String strChildTaskId = null;
 		try {
 	
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletContext servletContext = this.getServletConfig().getServletContext();
-			File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-			factory.setRepository(repository);
-			
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(req);
-			for(FileItem item : items) {
-				if(item.isFormField()) {
-					switch(item.getFieldName()) {
-					case APIConst.FLD_TASKRELATION_ID:
-						taskRelationId = Integer.parseInt(item.getString());
+			for(Part part : req.getParts()) {
+
+				switch(part.getName()) {
+				case APIConst.FLD_TASKRELATION_ID:
+					taskRelationId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKRELATION_PARENT_TASK_ID:
+					parentTaskId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKRELATION_CHILD_TASK_ID:
+					childTaskId = ServletHelper.getPartInt(part);
+					break;
+				case APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID:
+					taskRelationTypeId = ServletHelper.getPartInt(part);
+					break;
+						
+					default:
 						break;
-					case APIConst.FLD_TASKRELATION_PARENT_TASK_ID:
-						strParentTaskId = item.getString();
-						parentTaskId = Integer.parseInt(strParentTaskId);
-						break;
-					case APIConst.FLD_TASKRELATION_CHILD_TASK_ID:
-						strChildTaskId = item.getString();
-						childTaskId = Integer.parseInt(strChildTaskId);
-						break;
-					case APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID:
-						taskRelationTypeId = Integer.parseInt(item.getString());;
-						break;					
-						default:
-							System.out.println("TaskRelationController.doPut: Invalid field: Name:" + item.getFieldName() + " value:" + item.getString());
-					}
 				}
-			}	
-			if(strParentTaskId != null)
+			}
+
+			if(parentTaskId > 0)
 				TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
 			else
 				TaskRelationDAL.getInstance().update(taskRelationId, taskRelationTypeId);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | FileUploadException |NumberFormatException e) {
+		}catch(SQLException | NumberFormatException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, 0);
 			if( e instanceof SQLException) {
