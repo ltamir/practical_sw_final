@@ -115,9 +115,9 @@ function setChildTask(setter){
 
 	if(taskModel.taskId.getValue() == 0){
 		setMsg(msgType.nok, 'Please select a task');
-		toggleAsBotton(setter);
 		return;
 	}
+	toggleAsBotton(setter);
 	let parentTaskId = taskModel.taskId.getValue();
 	newTask(taskModel.taskType.getValue());
 	setter.setAttribute('data-parentTask', parentTaskId);
