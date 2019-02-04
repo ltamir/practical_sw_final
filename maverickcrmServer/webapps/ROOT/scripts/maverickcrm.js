@@ -249,18 +249,19 @@ function logout(){
 	getDataEx('', 'authenticate', '?actionId=15', null, null, null, null, null);
 }
 
-function toggleDatabase(){
+function toggleDatabase(btn){
 	let sqlDIV = getById('divDataFrame');
-	let sqlState = getById('showDatabase');
 	
-	if(sqlState.getAttribute('data-state') == 0){
+	if(btn.getAttribute('data-state') == 0){
 		sqlDIV.style.display='inline';
-		sqlState.setAttribute('data-state', 1);
+		toggleAsBotton(btn);
+		btn.setAttribute('data-state', 1);
 		getById('divCRM').style.display='none';
 		
 	}else{
 		sqlDIV.style.display='none';
-		sqlState.setAttribute('data-state', 0);
+		toggleAsBotton(btn);
+		btn.setAttribute('data-state', 0);
 		getById('divCRM').style.display='inline';
 	}
 }

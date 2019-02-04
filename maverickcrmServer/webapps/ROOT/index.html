@@ -44,7 +44,7 @@
             </td>
             <td width="14%" align="right" valign="bottom">
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
-            	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Developer" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); toggleDatabase()">
+            	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
             	<select id="cmbDebug" onchange="setDebugModule()">
             		<option value=0>None</option>
             		<option value=1>customer</option>
@@ -157,8 +157,8 @@
 					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
 					<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;">
-	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; position:relative; overflow-y: scroll; height:18em; width: 33m;">
-	            		<textarea rows="3" cols="70" id="txtSQL">select * from task</textarea>
+	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; position:relative; overflow-y: scroll; height:18em; width: 26m;">
+	            		<textarea rows="3" cols="60" id="txtSQL">select * from task</textarea>
 	            		<br>
 	            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
 	            		
