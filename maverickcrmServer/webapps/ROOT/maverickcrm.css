@@ -203,13 +203,18 @@
 		width: 31em;
 	}
 		
-	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList{
 		height: 2em;
 		width: 37em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
-	
+	#divAttachmentList{
+		height: 2em;
+		width: 31em;
+		overflow-y: scroll;
+		border-bottom: 1px inset #000000;
+	}
 	#divChildTaskList{
 		height: 3.5em;
 		border-bottom:none;
@@ -218,7 +223,6 @@
 	#divTaskLogList, #divAttachmentList{
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
-        max-width: 31em;
         height: 4.5em;
 	}	
 
