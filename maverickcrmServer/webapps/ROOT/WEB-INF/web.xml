@@ -20,7 +20,7 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1"
-  metadata-complete="true">
+  metadata-complete="false">
 
 	  <display-name>Maverick CRM</display-name>
 	  <description>
@@ -36,7 +36,7 @@
 	        <transport-guarantee>NONE</transport-guarantee>
 	    </user-data-constraint>
 	</security-constraint>
-
+<!--
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>org.liortamir.maverickcrm.maverickcrmServer.rest.AuthenticationFilter</filter-class>
@@ -68,7 +68,7 @@
 	   <url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
+ 	<servlet>
 	   <servlet-name>Customer</servlet-name>
 	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.CustomerController</servlet-class>
 	</servlet>
@@ -97,7 +97,7 @@
 	<servlet-mapping>
 	   <servlet-name>Association</servlet-name>
 	   <url-pattern>/association</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 	
 	
 	<servlet>
@@ -108,7 +108,7 @@
 	<servlet-mapping>
 	   <servlet-name>ContactType</servlet-name>
 	   <url-pattern>/contacttype</url-pattern>
-	</servlet-mapping>		
+	</servlet-mapping>
 	
 	
 	<servlet>
@@ -121,7 +121,16 @@
 	   <url-pattern>/address</url-pattern>
 	</servlet-mapping>	
 	
+	<servlet>
+	   <servlet-name>Task</servlet-name>
+	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.TaskController</servlet-class>
+	</servlet>
 	
+	<servlet-mapping>
+	   <servlet-name>Task</servlet-name>
+	   <url-pattern>/task</url-pattern>
+	</servlet-mapping> 
+		
 	<servlet>
 	   <servlet-name>TaskType</servlet-name>
 	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.TaskTypeController</servlet-class>
@@ -140,7 +149,7 @@
 	<servlet-mapping>
 	   <servlet-name>Status</servlet-name>
 	   <url-pattern>/status</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> 
 
 	<servlet>
 	   <servlet-name>Attachment</servlet-name>
@@ -172,16 +181,6 @@
 	   <url-pattern>/tasklog</url-pattern>
 	</servlet-mapping>
 	
-		<servlet>
-	   <servlet-name>Task</servlet-name>
-	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.TaskController</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-	   <servlet-name>Task</servlet-name>
-	   <url-pattern>/task</url-pattern>
-	</servlet-mapping>
-	
 	<servlet>
 	   <servlet-name>TaskRelation</servlet-name>
 	   <servlet-class>org.liortamir.maverickcrm.maverickcrmServer.rest.TaskRelationController</servlet-class>
@@ -190,7 +189,7 @@
 	<servlet-mapping>
 	   <servlet-name>TaskRelation</servlet-name>
 	   <url-pattern>/taskrelation</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> 
 
 	<servlet>
 	   <servlet-name>CustomerTaskController</servlet-name>
@@ -200,7 +199,7 @@
 	<servlet-mapping>
 	   <servlet-name>CustomerTaskController</servlet-name>
 	   <url-pattern>/customertask</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 	
 	
 	<servlet>
@@ -211,7 +210,7 @@
 	<servlet-mapping>
 	   <servlet-name>TaskRelationType</servlet-name>
 	   <url-pattern>/taskrelationtype</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> 
 	
 	<servlet>
 	   <servlet-name>TaskLogType</servlet-name>
@@ -241,6 +240,6 @@
 	<servlet-mapping>
 	   <servlet-name>Database</servlet-name>
 	   <url-pattern>/database</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	
 </web-app>

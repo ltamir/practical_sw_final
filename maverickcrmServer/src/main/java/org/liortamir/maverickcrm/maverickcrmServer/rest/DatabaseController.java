@@ -19,7 +19,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.DatabaseRow;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-@WebServlet
+@WebServlet(name = "Database", urlPatterns="/database")
 @MultipartConfig
 public class DatabaseController extends HttpServlet {
 

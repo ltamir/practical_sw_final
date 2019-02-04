@@ -22,7 +22,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-@WebServlet
+@WebServlet(name = "Login", urlPatterns="/login")
 @MultipartConfig
 public class LoginController extends HttpServlet {
 

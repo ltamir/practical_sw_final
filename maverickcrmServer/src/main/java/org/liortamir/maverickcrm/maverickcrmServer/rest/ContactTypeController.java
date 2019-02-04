@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.ContactType;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@WebServlet(name = "ContactType", urlPatterns="/contacttype")
 public class ContactTypeController extends HttpServlet {
 
 	/**

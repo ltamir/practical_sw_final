@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-@WebServlet
+@WebServlet(name = "Association", urlPatterns="/association")
 @MultipartConfig
 public class AssociationController extends HttpServlet {
 

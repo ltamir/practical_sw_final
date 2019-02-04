@@ -7,7 +7,10 @@ import javax.servlet.ServletException;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.webresources.DirResourceSet;
+import org.apache.catalina.webresources.StandardRoot;
 
 public class EmbeddedTomcat {
 
@@ -37,6 +40,16 @@ public class EmbeddedTomcat {
 		File configFile = new File(webappDirLocation + "WEB-INF/web.xml");
 		context.setConfigFile(configFile.toURI().toURL());
 		
+		
+		// Additions to make @WebServlet work
+		  String buildPath = "target";
+		  String webAppMount = "/WEB-INF/classes";
+
+		  File additionalWebInfClasses = new File(buildPath);
+		  WebResourceRoot resources = new StandardRoot(context);
+		  resources.addPreResources(new DirResourceSet(resources, webAppMount, additionalWebInfClasses.getAbsolutePath(), "/"));
+		  context.setResources(resources);
+		  
 		tomcat.start();
 		tomcat.getServer().await();
 	}

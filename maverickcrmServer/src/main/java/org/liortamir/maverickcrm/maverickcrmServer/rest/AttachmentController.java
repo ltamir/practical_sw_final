@@ -17,6 +17,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Attachment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@WebServlet(name = "Attachment", urlPatterns="/attachment")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
   maxFileSize = 1024 * 1024 * 5, 
   maxRequestSize = 1024 * 1024 * 5 * 5)

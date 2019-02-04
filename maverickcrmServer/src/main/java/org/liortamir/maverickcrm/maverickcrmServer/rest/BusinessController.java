@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@WebServlet(name = "Business", urlPatterns="/business")
 @MultipartConfig
 public class BusinessController extends HttpServlet {
 
