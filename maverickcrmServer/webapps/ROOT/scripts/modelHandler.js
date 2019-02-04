@@ -137,7 +137,7 @@ function viewTask(id, data){
 		toggleState(addChildTaskState);
 		setChildTask(addChildTaskState);
 	}
-	
+	taskModel.status.oldValue = task.status.statusId;
 	menuSetter(menuData.taskType, task.taskType.taskTypeId);
 	menuSetter(menuData.taskEffortUnit, task.effortUnit);
 	menuSetter(menuData.taskStatus, task.status.statusId);
@@ -267,6 +267,16 @@ function saveTask(){
 				taskLogModel.description.setValue('Task created');
 				
 				saveTaskLog(); 
+			}else if(taskModel.status.changed){ // existing task and status has changed
+				if(taskModel.status.oldValue != taskModel.status.getValue()){
+					taskModel.taskId.setValue(resp.taskId);
+					taskLogModel.contact.setValue(taskModel.contact.getValue());
+					taskLogModel.taskLogType.setValue(4);
+					let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()].text
+					taskLogModel.description.setValue(desc);
+					
+					saveTaskLog(); 
+				}
 			}
 			
 			if(taskModel.taskType.getValue() ==1)

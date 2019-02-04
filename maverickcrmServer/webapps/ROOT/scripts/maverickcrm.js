@@ -157,7 +157,7 @@ function toggleSearchDate(lbl, field){
 
 function initMenuData(){
 	menuData.taskType = new MenuItem(getById('imgTaskType'), getById('divMenuTaskType'), taskModel.taskType, taskTypeList, dummyAction);	
-	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, dummyAction);
+	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;});
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction);	
 	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask);
 }

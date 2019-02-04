@@ -211,7 +211,7 @@ var taskModel={
 		dueDateLabel:new Model('lblDetailDueDate', null, null, [], ''),
 		status:new Model('cmbDetailStatus', null, 'statusId', [], '') 
 	}
-
+taskModel.status.changed = false;
 taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
 
 var contactModel = {
