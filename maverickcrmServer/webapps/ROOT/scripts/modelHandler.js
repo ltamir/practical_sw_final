@@ -272,8 +272,9 @@ function saveTask(){
 					taskModel.taskId.setValue(resp.taskId);
 					taskLogModel.contact.setValue(taskModel.contact.getValue());
 					taskLogModel.taskLogType.setValue(4);
-					let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()].text
+					let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue-1].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()-1].text
 					taskLogModel.description.setValue(desc);
+					taskModel.status.oldValue = taskModel.status.getValue();
 					
 					saveTaskLog(); 
 				}
