@@ -120,45 +120,9 @@ function setSearchTaskStatusOpen(statusImg){
 	statusImg.title = 'Open tasks';
 }
 
-function connectionFilterOn(element){
-	if(taskModel.taskId.getValue() == 0){
-		setMsg(msgType.nok, 'No task selected. cancelling thre filter');
-		return;
-	}
-		
-	element.value='1';
-	element.style.borderStyle='inset';
-	element.title = 'Customers of selected task';
-
-	getDataEx('cmbConnectedCustomer', 'customer', '?actionId=14&taskId='+taskModel.taskId.getValue(), fillSelect, null, 
-	(opt,item)=>opt.value = item.customerId, 
-	(opt,item)=>opt.text = item.customerName,
-	(opt, item)=>opt.addEventListener("click", ()=>{
-		if(getById('imgFilterContact').getAttribute("data-state") == 1)
-			showAssociatedContacts();
-		getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
-				(opt,item)=>{
-					opt.setAttribute('data-addressId', item.addressId);
-					opt.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
-					}, 
-					null,
-				(opt, item)=>opt.addEventListener("click", ()=>{
-					getData('', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)}));
-		})
-	);
-	setMsg(msgType.ok, 'Filtering on task');
-}
-
-function connectionFilterOff(element){	
-	element.style.borderStyle='outset';
-	element.title = 'All customers';
-
-	activateTabConnection();
-	setMsg(msgType.ok, 'Filter removed');
-}
 
 function toggleAsBotton(img){
-	if(img.style.borderStyle=='inset'){
+	if(img.style.borderStyle=='inset' || img.style.borderStyle == null){
 		img.style.borderStyle='outset';
 	}else{
 		img.style.borderStyle='inset';
@@ -177,7 +141,7 @@ function toggleSearchDate(lbl, field){
 		field.setAttribute('data-isActive', '1');
 		field.focus();
 	}else{
-		let formattedDate = 'date not selected';
+		let formattedDate = 'select a date';
 		field.style.display='none';
 		let dateval = field.value;
 		if(dateval.split("-")[2] != undefined){

@@ -3,7 +3,7 @@
 	<tr>
 	<td>
 		<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
-		<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleHandler(this, connectionFilterOn, connectionFilterOff)">		
+		<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
 	</td>	
 	<td>
 		<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
@@ -13,16 +13,14 @@
 	</tr>
 	<tr>
 	<td>
-		<select id="cmbConnectedCustomer" size="4" class="cssConnectedCustomers"></select>
+		<select id="cmbConnectedCustomer" size="3" class="cssConnectedCustomers"></select>
 	</td>
 	<td>
-		<select id="cmbConnectedContact" size="4" class="cssConncetedContacts"></select>
+		<select id="cmbConnectedContact" size="3" class="cssConncetedContacts"></select>
 	</td>
 	</tr>
 </table>
 
-<img src="images/add_generic.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
-<img src="images/save_blue.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
 <img src="images/add_up.png" title="add to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(1);toggleAsBotton(this)">
 <img src="images/remove_down.png" title="Remove from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(0);toggleAsBotton(this)">
 
@@ -56,16 +54,19 @@
 <tr>
 	<td colspan="2">
 		<img title="Email address" src="images/email.png" class="cssCardInput">
-		<input type="text" id="txtEmail" tabindex="5" size="35" class="cssCardInput" placeholder="email">
+		<input type="text" id="txtEmail" tabindex="5" size="32" class="cssCardInput" placeholder="email">
+<img src="images/newitem.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+<img src="images/save_blue.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
+		
 	</td>
 </tr>
 </table>
 
 <input type="hidden" id="connectionContactId" value="0">
 <input type="hidden" id="connectionAssociationId" value="0">
-<span style="font-size: small">Address connects to the selected customer or to the selected customer and contact </span>
+<span style="font-size: small">Connect address to the selected customer or the selected customer and contact</span>
 <div id="divAddressList"></div>
-<img src="images/add_generic.png" title="New address" id="imgNewAddress" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
+<img src="images/newitem.png" title="New address" id="imgNewAddress" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
 <img src="images/save_blue.png" title="Save address" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="saveAddress(); toggleAsBotton(this)">
 <img src="images/add_up.png" title="add to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 <img src="images/remove_down.png" title="Remove from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">

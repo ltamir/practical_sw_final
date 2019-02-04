@@ -208,7 +208,70 @@ function activateTabLinkedCustomer(){
 
 function activateTabConnection(){
 	getHTML('tabConnection.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>getDataEx('cmbConnectedCustomer', 'customer', '?actionId=2', fillSelect, null, 
+	.then(()=>showCustomerConnection())
+	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
+			(opt,item)=>opt.value = item.contactTypeId, 
+			(opt,item)=>opt.text = item.contactTypeName, 
+			null))
+			.then(()=>showAllContacts())
+			.then(()=>{
+				Object.keys(contactModel).forEach(function(item){
+					contactModel[item].dom = getById(contactModel[item].domField);
+				});	
+				Object.keys(customerModel).forEach(function(item){
+					customerModel[item].dom = getById(customerModel[item].domField);
+				});
+				Object.keys(associationModel).forEach(function(item){
+					associationModel[item].dom = getById(associationModel[item].domField);
+				});
+				Object.keys(addressModel).forEach(function(item){
+					addressModel[item].dom = getById(addressModel[item].domField);
+				});				
+				
+			});
+}
+
+function toggleShowContacts(img){
+	toggleAsBotton(img);
+	if(img.getAttribute("data-state") == 0){
+		showAssociatedContacts();
+		img.setAttribute("data-state", 1);
+		img.title="Click to show all contacts"
+	}else{
+		img.setAttribute("data-state", 0);
+		img.title="Click to filter on selected customer"
+		showAllContacts();
+	}
+}
+
+function toggleFilterCustomers(img){
+	if(img.getAttribute("data-state") == 0){
+		toggleAsBotton(img);
+		if(taskModel.taskId.getValue() == 0){
+			setMsg(msgType.nok, 'No task selected. cancelling thre filter');
+			toggleAsBotton(img);
+			return;
+		}
+		
+		img.setAttribute("data-state", 1);
+		img.title="Click to show all customers"
+		img.setAttribute("data-state", 1);
+		showCustomerConnection('?actionId=14&taskId='+taskModel.taskId.getValue())
+		setMsg(msgType.ok, 'Filtering on task');
+	}else{
+		toggleAsBotton(img);
+		img.title = 'Filter on selected task';
+		img.setAttribute("data-state", 0);
+		showCustomerConnection(null);
+		setMsg(msgType.ok, 'Filter removed');		
+	}
+}
+
+
+function showCustomerConnection(param){
+	if(param == null)
+		param =  '?actionId=2';
+	getDataEx('cmbConnectedCustomer', 'customer', param, fillSelect, null, 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName,
 			(opt, item)=>opt.addEventListener("click", ()=>{
@@ -234,44 +297,8 @@ function activateTabConnection(){
 						);				
 
 				})
-			))
-	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
-			(opt,item)=>opt.value = item.contactTypeId, 
-			(opt,item)=>opt.text = item.contactTypeName, 
-			null))
-			.then(()=>showAllContacts())
-			.then(()=>{
-				Object.keys(contactModel).forEach(function(item){
-					contactModel[item].dom = getById(contactModel[item].domField);
-				});	
-				Object.keys(customerModel).forEach(function(item){
-					customerModel[item].dom = getById(customerModel[item].domField);
-				});
-				Object.keys(associationModel).forEach(function(item){
-					associationModel[item].dom = getById(associationModel[item].domField);
-				});
-				Object.keys(addressModel).forEach(function(item){
-					addressModel[item].dom = getById(addressModel[item].domField);
-				});				
-				
-			});
+			)
 }
-
-function toggleShowContacts(obj){
-	toggleAsBotton(obj);
-	if(obj.getAttribute("data-state") == 0){
-		showAssociatedContacts();
-		obj.innerHTML = 'Associated contacts';
-		obj.setAttribute("data-state", 1);
-		obj.title="Click to show all contacts"
-	}else{
-		obj.setAttribute("data-state", 0);
-		obj.innerHTML = 'All contacts';
-		obj.title="Click to filter by selected customer"
-		showAllContacts();
-	}
-}
-
 function showAssociatedContacts(){
 	if(getValue('cmbConnectedCustomer') == '')
 		return;
@@ -293,9 +320,8 @@ function showAssociatedContacts(){
 					}else
 						addressNode.childNodes[1].style.fontWeight = 'normal';
 				}
-						
-				cmbContactType.value=item.contactType.contactTypeId;
-				connectionAssociationId.value=item.associationId;
+				associationModel.contactType.setValue(item.contactType.contactTypeId);
+				associationModel.associationId.setValue(item.associationId);
 			})
 		}
 	)

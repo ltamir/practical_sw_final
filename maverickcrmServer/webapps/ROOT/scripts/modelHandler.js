@@ -164,7 +164,7 @@ function viewTask(id, data){
 				}
 			}, null, null, null, null);
 	
-	menuData.newTaskType.menuid.src='images/add_task.png';
+	menuData.newTaskType.menuid.src='images/newitem.png';
 	setMsg(msgType.ok, 'Ready');
 }
 

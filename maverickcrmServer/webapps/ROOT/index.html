@@ -34,7 +34,7 @@
             </td> 
             <td width="15%">
             	<span style="float:left;">Due:&nbsp;</span>
-            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">date not selected</span>
+            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">select a date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
             </td> 
             <td width="7%"> 	
@@ -101,7 +101,7 @@
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
 	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
-	            	<img align="right" style="margin-left:0.5em;" src="images/add_task.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
+	            	<img align="right" style="margin-left:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
 	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="setChildTask(this)">
 	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 	            	<br>
