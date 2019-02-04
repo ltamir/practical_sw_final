@@ -102,7 +102,7 @@
 	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
 	            	<img align="right" style="margin-left:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
-	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="setChildTask(this)">
+	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="setChildTask(this)">
 	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
 	            	<br>
 	            	<div style="margin-left:25.9em;" id="divMenuNewTaskType">
