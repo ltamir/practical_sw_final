@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -36,8 +35,9 @@ public class TaskLogController extends HttpServlet {
 	
 	private Gson jsonHelper = new GsonBuilder()
 			   .setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-	private SimpleDateFormat frm=  new SimpleDateFormat();
+	private SimpleDateFormat dateFormat=  new SimpleDateFormat();
 	private Reference ref = Reference.getInstance();
+	private TaskLogDAL dal = TaskLogDAL.getInstance();
 	private int maxlog = 0;
 
 	@Override
@@ -53,12 +53,12 @@ public class TaskLogController extends HttpServlet {
 						
 			if(action == ActionEnum.ACT_ALL){
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskLog> bulk = TaskLogDAL.getInstance().getByTask(taskId);
+				List<TaskLog> bulk = dal.getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				taskLogId = Integer.parseInt(req.getParameter("taskLogId"));
-				taskLog = TaskLogDAL.getInstance().get(taskLogId);
+				taskLog = dal.get(taskLogId);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskLog", taskLog);
 			}
 			ServletHelper.doSuccess(json);
@@ -71,14 +71,13 @@ public class TaskLogController extends HttpServlet {
 		out.println(response);	
 	}
 
-	//TODO split if longer than 500 chars
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("application/json");
 		JsonObject json = new JsonObject();
 		int taskLogId = 0;
 		try {
-			String sysdate = frm.format(new Date());
+			String sysdate = dateFormat.format(new Date());
 			int taskId = 0;
 			int contactId = 0;
 			String description = null;
@@ -104,16 +103,16 @@ public class TaskLogController extends HttpServlet {
 				}
 			}				
 			
-			if(description.length() > maxlog) {
+			if(description.length() > maxlog) {	//split large descriptions to several tasklog entries
 				StringBuilder sb  = new StringBuilder(description);
 				while(sb.length() > 0) {
-					sysdate = frm.format(new Date());
+					sysdate = dateFormat.format(new Date());
 					int end = (sb.length()>maxlog)?maxlog-1:sb.length();
-					taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, sb.substring(0, end), taskLogTypeId);
+					taskLogId = dal.insert(sysdate, taskId, contactId, sb.substring(0, end), taskLogTypeId);
 					sb.delete(0, end);
 				}
 			}else {
-				taskLogId = TaskLogDAL.getInstance().insert(sysdate, taskId, contactId, description, taskLogTypeId);	
+				taskLogId = dal.insert(sysdate, taskId, contactId, description, taskLogTypeId);	
 			}
 			
 			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
@@ -162,7 +161,7 @@ public class TaskLogController extends HttpServlet {
 				}
 			}			
 						
-			TaskLogDAL.getInstance().update(taskLogId, taskId, contactId, description, taskLogTypeId);
+			dal.update(taskLogId, taskId, contactId, description, taskLogTypeId);
 			json.addProperty(APIConst.FLD_TASKLOG_ID, taskLogId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
@@ -181,20 +180,20 @@ public class TaskLogController extends HttpServlet {
 		String response;
 		JsonObject json = new JsonObject();
 		try {
-			int contactId = 0;
+			int tasklogId = 0;
 			
-			Part filePart = req.getPart("contactId");
+			Part filePart = req.getPart(APIConst.FLD_TASKLOG_ID);
 			int multiplier = 1;
 			byte[] bytes = IOUtils.toByteArray(filePart.getInputStream());
 			for(int i= bytes.length-1; i>=0; i--) {
-				contactId += (bytes[i]-48) * multiplier;
+				tasklogId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			ContactDAL.getInstance().delete(contactId);
+			dal.delete(tasklogId);
 			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
 			json.addProperty(APIConst.FLD_TASKLOG_ID, 0);
 		}
 		response = jsonHelper.toJson(json);	
@@ -205,7 +204,7 @@ public class TaskLogController extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		frm.applyPattern("yyyy-MM-dd HH:mm:ss");
+		dateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
 		maxlog = ref.getAsInt("app.maxlog", 500);
 	}
 

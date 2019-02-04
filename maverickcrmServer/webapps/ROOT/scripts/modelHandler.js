@@ -344,7 +344,17 @@ function saveTaskLog(){
 			}
 		});
 }
-
+function deleteTaskLog(){
+	
+	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, 'DELETE', 'tasklog',
+			(resp)=>{
+				setMsg(msgType.ok, 'Log saved');
+				if(activeTaskTab == tabEnum.taskLog){
+					viewTaskLogList();
+					newTaskLog();				
+				}
+			});
+}
 
 function prepareSaveRelation(asParent){
 	let relationTaskList;

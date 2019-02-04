@@ -190,8 +190,15 @@ var taskLogModel = {
 		contact:new Model('cmbTaskLogContact', null, 'contactId', [0], 'Please select a contact'),
 		description:new Model('txtTaskLogDescription', null, 'description', [''], 'Description cannot be empty'),
 		taskLogType:new Model('cmbTaskLogType', null, 'taskLogTypeId', [0], 'Please select a log type'),
-		taskId:new Model('taskId', null, 'taskId', [0],'Please select a task from the list')
+		taskId:new Model('taskId', null, 'taskId', [0],'Please select a task from the list'),
+	version:2
 	}
+taskLogModel.taskLogId.validation = {DELETE:{chkValues:[0,''], err:'Cannot delete Attachment or Status change log'}};
+taskLogModel.contact.validation = {POST:{chkValues:[0], err:'Please select a contact'}};
+taskLogModel.description.validation = {POST:{chkValues:[''] ,err:'Description cannot be empty'}, PUT:{chkValues:[0,''] ,err:'Description cannot be empty'}};
+taskLogModel.taskLogType.validation = {POST:{chkValues:[0] ,err:'Please select a log type'}};
+taskLogModel.taskId.validation = {POST:{chkValues:[0] ,err:'Please select a task from the list'}};
+taskLogModel.sysdate.validation = {};
 
 var taskModel={
 		taskId:new Model('taskId', null, 'taskId', [], ''), 

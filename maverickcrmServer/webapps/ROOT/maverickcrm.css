@@ -52,10 +52,6 @@
       padding: 1px;
       cursor: pointer;
     }
-
-    #menu.tr:nth-child(even) {
-      background-color: #dddddd;
-    }
     
 	#lblSearchDueDate{
 		cursor: pointer;
@@ -217,6 +213,15 @@
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
+	
+	#divTaskLogList{
+		height: 5.5em;
+		width: 37em;
+		overflow-y: scroll;
+		border-bottom: 1px inset #000000;
+		font-family: arial, sans-serif;
+        background-color: WhiteSmoke;
+	}	
 	#divAttachmentList{
 		height: 2em;
 		width: 31em;
@@ -228,7 +233,7 @@
 		border-bottom:none;
 	}
 	
-	#divTaskLogList, #divAttachmentList{
+	#divAttachmentList{
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
         height: 4.5em;

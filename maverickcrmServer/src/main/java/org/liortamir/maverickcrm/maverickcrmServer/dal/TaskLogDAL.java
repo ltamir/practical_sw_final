@@ -95,6 +95,15 @@ public class TaskLogDAL {
 		}
 	}	
 	
+	public void delete (int taskLogId) throws SQLException{
+		try(Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("delete from tasklog where taskLogId=?");
+			ps.setInt(1, taskLogId);
+			if(ps.executeUpdate() != 1)
+				throw new SQLException("Error deleting from taskLog");		
+		}
+	}	
+	
 	private TaskLog mapFields(ResultSet rs) throws SQLException{
 		TaskLog taskLog = null;
 	
