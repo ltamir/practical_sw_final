@@ -145,22 +145,6 @@ function createTaskRow(row, item, parent){
 	
 }
 
-function fillCustomerList(id, data){
-    let selectElement = getById(id);
-    for (let i = selectElement.length - 1; i >= 0; i--) {
-        selectElement.remove(i);
-	}
-	if(dbg==Module.customer)
-    	console.log(data);
-    data.array.forEach(function (item) {
-    	let opt = document.createElement("OPTION");
-        opt.value = item.customerId;
-        opt.text = item.customerName;
-        opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);});
-        selectElement.appendChild(opt);                        
-    });        	
-}
 
 //TODO move to a div 
 function fillTaskRelationSearchResult(id, data){

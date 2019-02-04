@@ -317,12 +317,27 @@ function showAllContacts(){
 
 function activateTabCustomer(){
 	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList))
 	.then(()=>{
+		viewCustomerList();
 		Object.keys(customerModel).forEach(function(item){
 			customerModel[item].dom = getById(customerModel[item].domField);
 		});
 	})
+}
+function viewCustomerList(){
+	getDataEx('divCustomerList', 'customer', '?actionId=2', fillDivList, null,
+		(divRow,item)=>{
+			if(dbg==Module.attachment)
+		    	console.log(item);			
+			divRow.setAttribute('data-taskLogId', item.customerId);
+			divRow.innerHTML = item.customerName;
+			divRow.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+			divRow.addEventListener("click", function(){
+				selectedTaskList.toggle(divRow);
+				getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
+			});				
+		},null	, 
+		null)
 }
 
 function activateTabTimeline(){

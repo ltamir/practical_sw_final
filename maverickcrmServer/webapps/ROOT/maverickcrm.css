@@ -181,7 +181,7 @@
 	}
 
 		
-	#cmbCustomerList{
+	#divCustomerList{
 		font-family: arial, sans-serif;
         background-color: GhostWhite;
         min-width: 21em;	
@@ -203,6 +203,12 @@
 		width: 31em;
 	}
 		
+	#divCustomerList{
+		height: 6em;
+		width: 8em;
+		overflow-y: scroll;
+		border-bottom: 1px inset #000000;
+	}
 	#divParentTaskList, #divChildTaskList, #divTaskLogList{
 		height: 2em;
 		width: 37em;

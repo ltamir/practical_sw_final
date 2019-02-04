@@ -455,7 +455,7 @@ function saveCustomer(){
 	
 	genericSave(customerValidation, customerModel, customerModel.customerId, Module.customer, null, 'customer',
 			(resp)=>{
-				getData('cmbCustomerList', 'customer', '?actionId=2', fillCustomerList);
+				viewCustomerList();
 				setMsg(msgType.ok, 'Customer saved')				
 			});
 }

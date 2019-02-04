@@ -169,7 +169,7 @@ function fillDivList(id, data, defaultOption, funcValue, funcText, eventHandler)
 		funcValue(divRow, item); 
 			
 		let txtPart = document.createElement("SPAN");
-		funcText(txtPart, item);
+		if(funcText != null) funcText(txtPart, item);
 		if(eventHandler != undefined)
 			eventHandler(txtPart, item);
 		divRow.appendChild(txtPart);
