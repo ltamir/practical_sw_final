@@ -183,7 +183,6 @@ function Model(domField, dom, api, notValid, err ){
 	this.notValid = notValid;
 	this.err = err;
 }
-var ddd = {values:[{val:0}, {val:''}], err:'Please fill the street name'}
 
 var taskLogModel = {
 		taskLogId:new Model('taskLogId', null, 'taskLogId',[], ''),
@@ -232,9 +231,23 @@ var customerTaskModel = {
 
 var loginModel = {
 		loginId:new Model('loginId', null, 'loginId', [], ''),
-		username:new Model('txtUserName', null, 'username', [''], 'Please type a username'),
+		username:new Model('txtUserName', null, 'username', [''], 'Please type a username'),		
 		password:new Model('txtPassword', null, 'password', [''], 'Please type a password'),
 		contact:new Model('cmbLoginContactList', null, 'contactId', ['', 0], 'Please select a contact')
+}
+var validation = {
+		loginModel:{loginId:[
+			{PUT:{chkValues:[0], err:'Please select a login'}},
+			{DELETE:{chkValues:[0], err:'Please select a login'}}
+			]},
+		loginModel:{username:[
+			{POST:{chkValues:[''], err:'Please type a username'}},
+			{PUT:{chkValues:[''], err:'Please type a username'}}
+			]},
+		loginModel:{password:[
+			{POST:{chkValues:[''], err:'Please type a username'}},
+			{PUT:{chkValues:[''], err:'Please type a username'}}
+			]}			
 }
 
 var attachmentModel = {
@@ -251,8 +264,22 @@ var associationModel = {
 		contact:new Model('connectionContactId', null, 'contactId', [], ''),
 		customer:new Model('cmbConnectedCustomer', null, 'customerId', [], ''),
 		contactType:new Model('cmbContactType', null, 'contactTypeId', [], ''),
-		address:new Model('addressId', null, 'addressId', [], '')
+		address:new Model('addressId', null, 'addressId', [], ''),
+		version:2
 }
+associationModel.customer.validation = {POST:{chkValues:[0,''], err:'Customer not selected'}};
+associationModel.contact.validation = {POST:{chkValues:[0,''], err:'Contact not selected'}};
+associationModel.contactType.validation = {POST:{chkValues:[0,''] ,err:'Contact Type not selected'}};
+associationModel.address.validation = {POST:{chkValues:[0,''] ,err:'Address not selected'}};
+
+associationModel.customer.validation.PUT = {chkValues:[0,''],err:'Customer not selected'};
+associationModel.contact.validation.PUT = {chkValues:[0,''],err:'Contact not selected'};
+associationModel.contactType.validation.PUT = {chkValues:[0,''],err:'Contact Type not selected'};
+associationModel.address.validation.PUT = {chkValues:[0,''],err:'Address not selected'};
+
+associationModel.customer.validation.DELETE = {chkValues:[0,''],err:'Customer not selected'};
+associationModel.contact.validation.DELETE = {chkValues:[0,''],err:'Contact not selected'};
+associationModel.associationId.validation = {DELETE:{chkValues:[0,''],err:'Something not selected'}};
 
 var taskRelationModel = {
 		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', [], ''),

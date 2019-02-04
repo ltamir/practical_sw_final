@@ -72,23 +72,6 @@ function newTask(taskType){
 	setMsg(msgType.ok, 'Ready');
 }
 
- 
-function newRelation(){
-    element = getById('divParentTaskList');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}  
-    element = getById('divChildTaskList');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}  
-    element = getById('cmbRelationTaskList');
-    for (let i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}
-	
-}
-
 function newTaskLog(){
 	taskLogModel.taskLogId.setValue(0);
 	taskLogModel.contact.setValue(loggedContact.contactId);
@@ -121,7 +104,6 @@ function viewAddress(id, item){
 	addressModel.addressId.setValue(address.addressId);
 }
 
-//TODO fix child task state - cancellation, view other task, implementation
 function setChildTask(setter){
 	if(setter.getAttribute('data-parentTask') > 0){
 		setter.setAttribute('data-parentTask', 0);
@@ -306,26 +288,36 @@ function saveTask(){
 function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
 	let formData;
 	
-	for(const key in model){
-		if(model[key].notValid.length > 0){
-			for(const val in model[key].notValid)
-				if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
-		}	
-	}
-	if(!validation(model)) return;
-	
-	formData = new FormData();
-	Object.keys(model).forEach(function(item){
-		formData.append(model[item].api, model[item].getValue())
-	});	
-	
 	if(method == null){
 		if(modelIdField.getValue() == '0' || modelIdField.getValue() == '')
 			method = 'POST';
 		else
 			method = 'PUT';		
 	}
-
+	
+	if(model.version != null && model.version == 2){	//validation per API
+		for(const key in model){
+			if(key != 'version' && model[key].validation[method] != null){
+				for(const val in model[key].validation[method].chkValues)
+					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
+			}
+		}		
+	}else{
+		for(const key in model){
+			if(model[key].notValid.length > 0){
+				for(const val in model[key].notValid)
+					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
+			}	
+		}
+	}
+	if(!validation(model)) return;
+	
+	formData = new FormData();
+	Object.keys(model).forEach(function(key){
+		if(key != 'version' && model[key].api != null)
+			formData.append(model[key].api, model[key].getValue())
+	});	
+	
 	if(dbg == dbgModule)
 		debugFormData(formData);
 	
@@ -447,13 +439,10 @@ function removeTaskRelation(){
 		});
 }
 
-function customerValidation(){
-//	if(!validate(customerModel.customerName, '', 'Please fill customer name')) return false;
-	return true;
-}
+
 function saveCustomer(){
 	
-	genericSave(customerValidation, customerModel, customerModel.customerId, Module.customer, null, 'customer',
+	genericSave(()=>{return true;}, customerModel, customerModel.customerId, Module.customer, null, 'customer',
 			(resp)=>{
 				viewCustomerList();
 				setMsg(msgType.ok, 'Customer saved')				
@@ -467,32 +456,14 @@ function saveContact(){
 				showAssociatedContacts();
 			else
 				showAllContacts();
-			
 			setMsg(msgType.ok, 'Contact saved');				
 		});
 }
 
-function saveAssociationValidation(){
-	if(!validate(associationModel.customer, 0, 'Please select a customer')) return false;
-	if(!validate(associationModel.customer, '', 'Please select a customer')) return false;
-	if(!validate(associationModel.contact, 0, 'Please select a contact')) return false;
-	if(!validate(associationModel.contact, '', 'Please select a contact')) return false;
-	if(!validate(associationModel.contactType, 0, 'Please select a Contact type')) return false;		
-	if(!validate(associationModel.address, 0, 'Please select an address')) return false;
-	return true;
-}
-function removeAssociationValidation(){
-	if(!validate(associationModel.customer, 0, 'Please select a customer to remove from the contact')) return false;
-	if(!validate(associationModel.customer, '', 'Please select a customer to remove from the contact')) return false;
-	if(!validate(associationModel.contact, 0, 'Please select a contact to remove the connection')) return false;
-	if(!validate(associationModel.contact, '', 'Please select a contact to remove the connection')) return false;
-	if(!validate(associationModel.associationId, 0, 'Contact is not connected')) return false;
-	if(!validate(associationModel.associationId, '', 'Contact is not connected')) return false;	
-	return true;
-}
+
 function saveAssociation(action){
-	if(action == 1){
-		genericSave(saveAssociationValidation, associationModel, associationModel.associationId, Module.contact, null, 'association',
+	if(action == 1){	// POST  or  PUT
+		genericSave(()=>{return true;}, associationModel, associationModel.associationId, Module.contact, null, 'association',
 			(resp)=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)
 					showAssociatedContacts();
@@ -500,13 +471,15 @@ function saveAssociation(action){
 					showAllContacts();			
 				setMsg(msgType.ok, 'Connection change saved')		
 		});		
-	}else{
-		genericSave(removeAssociationValidation, associationModel, associationModel.associationId, Module.contact, 'DELETE', 'association',
+	}else{	// DELETE
+		genericSave(()=>{return true;}, associationModel, associationModel.associationId, Module.contact, 'DELETE', 'association',
 			(resp)=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)
 					showAssociatedContacts();
 				else
-					showAllContacts();			
+					showAllContacts();
+				newContact();
+				associationModel.associationId.setValue(item.associationId);
 				setMsg(msgType.ok, 'Connection change saved')		
 		});	
 	}
