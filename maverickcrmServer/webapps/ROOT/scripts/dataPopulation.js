@@ -111,9 +111,7 @@ function createTaskRow(row, item, parent){
 	    		parentTaskItem.hasChildren = false;
 	    	    expandImg.src = taskListItemStat.expandImg.src;
 	    	    expandImg.title = taskListItemStat.expandImg.title; 
-//	    	    row.removeAttribute('data-isTaskParent');
 	    	}else{
-//		    	row.setAttribute('data-isTaskParent', item.taskId);
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
 		        expandImg.src = taskListItemStat.collapseImg.src;
 		        expandImg.title = taskListItemStat.collapseImg.title; ;	    		
@@ -147,25 +145,6 @@ function createTaskRow(row, item, parent){
 	
 }
 
-function fillAttachmentList(id, data){
-	var element = getById('cmbAttachmentList');
-    for (var i = element.length - 1; i >= 0; i--) {
-    	element.remove(i);
-	}
-	if(dbg==Module.attachment)
-		console.log(data);
-    data.array.forEach(function (item) {
-        let opt = document.createElement("OPTION");
-        opt.value = item.attachmentId;
-        opt.text = item.fileName + " " + item.attachmentType.attachmentTypeName;
-        opt.title = item.taskLog.description;
-        opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);});
-        element.appendChild(opt);                        
-    }); 	
-}
-
-
 function fillCustomerList(id, data){
     let selectElement = getById(id);
     for (let i = selectElement.length - 1; i >= 0; i--) {
@@ -183,6 +162,7 @@ function fillCustomerList(id, data){
     });        	
 }
 
+//TODO move to a div 
 function fillTaskRelationSearchResult(id, data){
 	let selectElement = getById(id);
 	

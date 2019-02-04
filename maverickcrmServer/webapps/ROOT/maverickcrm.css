@@ -193,7 +193,7 @@
         min-width: 23em;	
 	}
 			
-	#txtDetailTaskTitle, #txtTaskLogDescription, #cmbRelationTaskList, #cmbAttachmentList{
+	#txtDetailTaskTitle, #txtTaskLogDescription, #cmbRelationTaskList, #divAttachmentList, #txtAttachmentNotes{
 		width: 37em;
 	}
 	#divTaskDetailsTop{
@@ -202,9 +202,10 @@
 	#divTaskDetailsBottom{
 		width: 31em;
 	}
-	#divParentTaskList, #divChildTaskList, #divTaskLogList{
+		
+	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList{
 		height: 2em;
-		max-width: 37em;
+		width: 37em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
@@ -214,19 +215,19 @@
 		border-bottom:none;
 	}
 	
-	#divTaskLogList{
+	#divTaskLogList, #divAttachmentList{
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
         max-width: 31em;
         height: 4.5em;
 	}	
 
-	#divParentTaskList, #divChildTaskList, #divTaskLogList span{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList span{
 		font-family: arial, sans-serif;
 		font-size:10pt;
 		cursor: pointer;
 	}
-	#divParentTaskList, #divChildTaskList, #divTaskLogList img{
+	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList img{
 		border-style: outset;
 		border-width: 1px;
 	}

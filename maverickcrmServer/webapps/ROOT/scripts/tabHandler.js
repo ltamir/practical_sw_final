@@ -139,7 +139,7 @@ function activateTabRelation(){
 
 function activateTabAttachment(){
 	getHTML('tabAttachment.html').then(function(response){fillTab('divTaskTab', response)})
-	.then(()=>getData('cmbAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillAttachmentList))
+	.then(viewAttachmentList())	
 	.then(()=>getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Attachment type',
 			(opt,item)=>opt.value = item.attachmentTypeId, 
 			(opt,item)=>opt.text = item.attachmentTypeName, 
@@ -154,8 +154,35 @@ function activateTabAttachment(){
 			attachmentModel[item].dom = getById(attachmentModel[item].domField);
 		});		
 	})
-//	if(getValue('taskId') > 0)
+}
 
+function viewAttachmentList(){
+	getDataEx('divAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null,
+		(divRow,item)=>{
+			divRow.setAttribute('data-taskLogId', item.attachmentId);
+			let dwImg = document.createElement("IMG");
+			dwImg.src= 'images/download.png';
+			dwImg.title = 'Download attachment';
+			let dwLink = document.createElement('a');
+			dwLink.href = 'attachment?actionId=17&attachmentId='+item.attachmentId;
+			dwLink.download = '';
+			dwLink.appendChild(dwImg);
+			divRow.appendChild(dwLink);
+		}, 
+		(txtPart,item)=>{
+			if(dbg==Module.attachment)
+		    	console.log(item);
+
+			txtPart.innerHTML = item.fileName + " " + item.attachmentType.attachmentTypeName;
+			txtPart.title = item.taskLog.description;
+			}, 
+		(txtPart,item)=>{
+			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+			txtPart.addEventListener("click", function(){
+				selectedTaskList.toggle(txtPart);
+				getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);
+			});	
+		})
 }
 	
 function activateTabLinkedCustomer(){

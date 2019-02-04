@@ -1,8 +1,11 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -49,29 +52,52 @@ public class AttachmentController extends HttpServlet {
 	private String storagePath;
 	private Reference ref = Reference.getInstance();
 	private String refPrefix = "attachment";
+	private final static int FETCH_SIZE = 128;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		Attachment attachment = null;
+		int attachmentId;
 		JsonObject json = new JsonObject();;
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
-			
-			if(action == ActionEnum.ACT_ALL){
+			switch(action){
+			case ACT_ALL:
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<Attachment> bulk = AttachmentDAL.getInstance().getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));
-			}else if(action == ActionEnum.ACT_SINGLE){
-
-				int attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
+				break;
+			case ACT_SINGLE:
+				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
 				attachment = AttachmentDAL.getInstance().get(attachmentId);
-				json.add("attachment", jsonHelper.toJsonTree(attachment));
+				json.add("attachment", jsonHelper.toJsonTree(attachment));				
+				break;
+			case ACT_GET_ATTACHMENT:
+				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
+				attachment = AttachmentDAL.getInstance().get(attachmentId);
+				resp.setContentType("application/zip");
+				resp.setHeader("Content-disposition", "attachment; filename=" + attachment.getStorageFileName());
+				File attachmentFile = new File(attachment.getStorageFilePath().substring(2) + attachment.getStorageFileName());
+
+				try(InputStream in = new FileInputStream(attachmentFile);
+					OutputStream out = resp.getOutputStream()) {
+					byte[] buffer = new byte[FETCH_SIZE];
+
+					int numBytesRead;
+					while ((numBytesRead = in.read(buffer)) > 0) {
+						out.write(buffer, 0, numBytesRead);
+					}
+				}
+				return;
+			default:
+				break;
 			}
+
 			ServletHelper.doSuccess(json);
-		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+		}catch(NumberFormatException | SQLException | NullPointerException | InvalidActionException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		

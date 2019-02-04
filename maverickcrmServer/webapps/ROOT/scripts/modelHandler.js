@@ -4,7 +4,7 @@ function newAttachment(){
 	attachmentModel.attachmentId.setValue(0);
 	attachmentModel.type.setValue(0);
 	attachmentModel.file.setValue('');
-	attachmentModel.contact.setValue(0);
+	attachmentModel.contact.setValue(loggedContact.contactId);
 	attachmentModel.notes.setValue('');
 	
 	setMsg(msgType.ok, 'Ready');
@@ -563,9 +563,11 @@ function saveAttachment(){
 		debugFormData(oFormData);
 	
 	setData(method, oFormData, 'attachment')
-	.then(function(data){setValue('attachmentId', data.attachmentId)})
-	.then(function(){getData('cmbAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillAttachmentList)})
-	.then(function(){setMsg(msgType.ok, 'Attachment saved')})
+	.then(function(data){
+		setValue('attachmentId', data.attachmentId);
+		viewAttachmentList();
+		setMsg(msgType.ok, 'Attachment saved');
+		})
 	.then(function(){setValue('txtAttachmentNotes', notes)})
 	.catch(function(err){setMsg(msgType.nok, 'Attachment save failed. please check the log'); console.log(err)});
 }
