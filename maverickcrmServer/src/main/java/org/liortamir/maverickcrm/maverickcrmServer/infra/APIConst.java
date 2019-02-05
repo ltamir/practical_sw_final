@@ -1,10 +1,6 @@
 package org.liortamir.maverickcrm.maverickcrmServer.infra;
 
 public class APIConst {
-
-	public static final ActionEnum[] ACTION_LIST = ActionEnum.values();
-	public static final String PARAM_ACTION_ID = "actionId";
-	public static final String CONTENT_TYPE = "application/json; charset=utf-8";
 	
 	public static final String FLD_CUSTOMER_ID = "customerId";
 	public static final String FLD_CUSTOMER_NAME = "customerName";
@@ -70,10 +66,11 @@ public class APIConst {
 	public static final String FLD_LOGIN_USERNAME = "username";
 	public static final String FLD_LOGIN_PASSWORD = "password";
 	public static final String FLD_LOGIN_CONTACT_ID = "contactId";
+	
+	public static final String FLD_PERMISSIONTYPE_ID = "permissiontypeId";
+	public static final String FLD_PERMISSIONTYPE_NAME = "permissiontypeName";
 
-	public static final String ERROR = "{msg:\"Internal error. Please contact your Administrator\"}"; 
-	public static final int ACT_ALL = 2;
-	public static final int ACT_SINGLE = 3;
-	public static final int ACT_LOGIN_CONTACT = 4;
+	public static final String PARAM_ACTION_ID = "actionId";
+	public static final String CONTENT_TYPE = "application/json; charset=utf-8";	
 	
 }
