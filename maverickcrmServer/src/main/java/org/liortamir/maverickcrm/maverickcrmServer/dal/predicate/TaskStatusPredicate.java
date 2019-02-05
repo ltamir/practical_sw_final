@@ -6,7 +6,7 @@ import java.sql.SQLException;
 public class TaskStatusPredicate extends IntPredicate {
 
 	private String allOpen = " statusId!=? ";
-//	private String allClosed = "";
+	private String allClosed = " statusId=? ";
 			
 	public TaskStatusPredicate(Integer all, String predicate, int paramIndex) {
 		super(all, predicate, paramIndex);
@@ -14,9 +14,21 @@ public class TaskStatusPredicate extends IntPredicate {
 
 	@Override
 	public void prepare(Integer value, MutableBool whereUsed, StringBuilder sb) {
+		String statusClause;
 		if(value != 4 && value > 0)
-			predicateString = allOpen;
-		super.prepare(value, whereUsed, sb);
+			statusClause = allOpen;
+		else
+			statusClause = allClosed;
+		if(hasPredicate(value)) {
+			if(!whereUsed.get()) {
+				sb.append(WHERE);
+				whereUsed.flag();
+			}
+			else
+				sb.append(AND);
+			sb.append(statusClause);
+		}
+		sb.append(NONE);
 	}
 
 	@Override

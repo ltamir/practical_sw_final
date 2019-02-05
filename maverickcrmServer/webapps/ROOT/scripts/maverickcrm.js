@@ -91,35 +91,21 @@ function resetTaskSearch(){
 	searchModel.dueDate.setValue(null);
 	searchModel.project.setValue(0);
 	searchModel.taskType.setValue(0);
-	searchModel.status.setValue(0);
 	searchModel.title.setValue('');
-		
-//	getById('txtSearchDueDate').valueAsDate=null;
+	toggleSearchTaskStatus(getById('searchOpenTask'))
 	setMsg(msgType.ok, 'Ready');
 }
 
 
 function toggleSearchTaskStatus(statusImg){
-	if(statusImg.getAttribute('data-state') == '1')
-		setSearchTaskStatusClosed(statusImg);
-	else
-		setSearchTaskStatusOpen(statusImg);
+	for(const [key, value] of searchTaskStatusToggle){
+		if(value == statusImg)
+			value.style.borderStyle = 'inset';
+		else
+			value.style.borderStyle = 'outset'			
+	}
+	searchModel.status.setValue(statusImg.getAttribute('data-state'));
 }
-
-function setSearchTaskStatusClosed(statusImg){
-	statusImg.src='images/task_done.png';
-	statusImg.setAttribute('data-state', 4);
-	toggleAsBotton(statusImg);
-	statusImg.title = 'Closed tasks';
-}
-
-function setSearchTaskStatusOpen(statusImg){
-	statusImg.src='images/task_open.png';
-	statusImg.setAttribute('data-state', 1);
-	toggleAsBotton(statusImg);
-	statusImg.title = 'Open tasks';
-}
-
 
 function toggleAsBotton(img){
 	if(img.style.borderStyle=='inset' || img.style.borderStyle == null){
@@ -143,13 +129,7 @@ function toggleSearchDate(lbl, field){
 	}else{
 		let formattedDate = 'Set due date';
 		field.style.display='none';
-		let dateval = field.value;
-		if(dateval.split("-")[2] != undefined){
-			formattedDate = dateval.split("-")[2];
-			formattedDate += '/' + dateval.split("-")[1];
-			formattedDate += '/' + dateval.split("-")[0];	
-		}
-		lbl.innerHTML = formattedDate;
+		lbl.innerHTML = getDate(field.value);
 		lbl.style.display='inline';
 		field.setAttribute('data-isActive', '0');
 	}
@@ -243,6 +223,10 @@ function initModels(){
 	Object.keys(searchModel).forEach(function(item){
 		searchModel[item].dom = getById(searchModel[item].domField);
 	});	
+
+	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
+	searchTaskStatusToggle.set('closed', getById('searchClosedTask'));
+	searchTaskStatusToggle.set('all', getById('searchAllTasks'));
 }
 
 function logout(){

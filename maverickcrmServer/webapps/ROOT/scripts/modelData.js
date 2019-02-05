@@ -305,16 +305,19 @@ var addressModel = {
 }
 
 var searchModel = {
-		customer:new Model('cmbSearchCustomer', null, '', [], ''),
-		taskType:new Model('cmbSearchTaskType', null, '', [], ''),
-		project:new Model('cmbSearchProject', null, '', [], ''),
-		title:new Model('txtSearchTitle', null, '', [], ''),
-		dueDate:new Model('txtSearchDueDate', null, '', [], ''),
+		customer:new Model('cmbSearchCustomer', null, 'customerId', [], ''),
+		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', [], ''),
+		project:new Model('cmbSearchProject', null, 'projectId', [], ''),
+		title:new Model('txtSearchTitle', null, 'title', [], ''),
+		dueDate:new Model('txtSearchDueDate', null, 'duedate', [], ''),
 		dueDateLabel:new Model('lblSearchDueDate', null, '', [], ''),
-		status:new Model('searchTaskStatus', null, '', [], '')
+		status:new Model('searchOpenTask', null, 'showclosed', [], '')
+
 }
-searchModel.status.getValue = function(){return this.dom.getAttribute('data-state')};
-searchModel.status.setValue = function(val){this.dom.setAttribute('data-state', val);};
+var searchTaskStatusToggle = new Map();
+
+searchModel.status.getValue = function(){return this.value};
+searchModel.status.setValue = function(val){this.value = val;};
 searchModel.dueDate.setValue = function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'Set due date';}
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
