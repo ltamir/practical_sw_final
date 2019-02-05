@@ -29,7 +29,7 @@
             <td width="4%">
                 <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" onchange="setSearchPredicate(this)"></select>                
             </td>
-            <td width="8%">
+            <td width="5%">
 	            <img src="images/task_status_open.png" id="searchOpenTask" style="border: 1px inset;" data-state="1" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
 	            <img src="images/task_status_closed.png" id="searchClosedTask"  data-state="4" title = 'Close tasks' onclick="toggleSearchTaskStatus(this)">
 	            <img src="images/task_status_all.png" id="searchAllTasks"  data-state="0" title = 'All tasks' onclick="toggleSearchTaskStatus(this)">
@@ -39,7 +39,7 @@
             </td> 
             <td width="14%">
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Set due date</span>
-                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))" onchange="toggleSearchDate(getById('lblSearchDueDate'),this)"/>
+                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
             </td> 
             <td width="27%" align="right" valign="bottom">
             	<img src="images/menu_search.png" style="float:left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
@@ -138,10 +138,10 @@
 						<img title="Effort is in months" src="images/effortUnit_months.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 3); menuHandler(menuData.taskEffortUnit)">
 					</div>
 					<input type="hidden" id="effortUnit" value="1">
-	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, getById('txtDetailDueDate'))">Due Date</span>				
-					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeyup="flagToggle(getById('lblDetailDueDate'),this, event)" onblur="toggleSearchDate(getById('lblDetailDueDate'), getById('txtDetailDueDate'))" onchange="toggleSearchDate(getById('lblDetailDueDate'),this)"/> 
+	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, taskModel.dueDate.dom)">Due Date</span>				
+					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeydown="flagToggle(taskModel.dueDateLabel.dom,this, event)" onblur="toggleSearchDate(taskModel.dueDateLabel.dom, this)"/> 
 					<input type="hidden" id="taskId" value="0">    
-	            	<img align="right" src="images/save_blue.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
+	            	<img align="right" src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
             	</div>
 				<hr align="left" style="width:31em;">
 				<span class="cssTabSelected" id="TabLog" onclick="setTab(tabEnum.taskLog)">Log</span>

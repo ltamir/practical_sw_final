@@ -116,11 +116,13 @@ function toggleAsBotton(img){
 }
 
 function flagToggle(lbl, field, ev){
-	if(ev.keyCode == 27)
+	if(ev.keyCode == 27 || ev.keyCode == 13){
 		toggleSearchDate(lbl, field);
+	}
 }
 
 function toggleSearchDate(lbl, field){
+	console.log(window.event);
 	if(field.getAttribute('data-isActive') == '0'){
 		field.style.display='inline';
 		lbl.style.display='none';
@@ -129,7 +131,10 @@ function toggleSearchDate(lbl, field){
 	}else{
 		let formattedDate = 'Set due date';
 		field.style.display='none';
-		lbl.innerHTML = getDate(field.value);
+		if(field.value != '')
+			lbl.innerHTML = getDate(field.value);
+		else
+			lbl.innerHTML = 'Set due date';
 		lbl.style.display='inline';
 		field.setAttribute('data-isActive', '0');
 	}
@@ -223,7 +228,7 @@ function initModels(){
 	Object.keys(searchModel).forEach(function(item){
 		searchModel[item].dom = getById(searchModel[item].domField);
 	});	
-
+	searchModel.status.setValue(1);
 	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
 	searchTaskStatusToggle.set('closed', getById('searchClosedTask'));
 	searchTaskStatusToggle.set('all', getById('searchAllTasks'));
