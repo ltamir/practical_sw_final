@@ -49,7 +49,6 @@ public class CustomerController extends HttpServlet {
 
 			switch(action) {
 			case ACT_ALL:
-				resp.setContentType("application/json");
 				bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
@@ -88,7 +87,7 @@ public class CustomerController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		try {
 			int customerId = 0;
@@ -112,7 +111,7 @@ public class CustomerController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int multiplier = 1;
 		try {
@@ -141,7 +140,7 @@ public class CustomerController extends HttpServlet {
 			json.addProperty("customerId", customerId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
-			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, "0");
 		}
 		
@@ -152,7 +151,7 @@ public class CustomerController extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		JsonObject json = new JsonObject();
 		try {
@@ -170,7 +169,7 @@ public class CustomerController extends HttpServlet {
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, customerId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
-			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
 			json.addProperty(APIConst.FLD_CUSTOMER_ID, 0);
 		}
 		response = jsonHelper.toJson(json);	

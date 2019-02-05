@@ -170,7 +170,7 @@ public class ContactController extends HttpServlet {
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response;
 		JsonObject json = new JsonObject();
 		try {

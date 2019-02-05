@@ -47,7 +47,6 @@ public class AddressController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				resp.setContentType("application/json");
 				List<Address> bulk = AddressDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
@@ -116,7 +115,7 @@ public class AddressController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int multiplier = 1;
 		try {
@@ -162,7 +161,7 @@ public class AddressController extends HttpServlet {
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int addressId = 0;
 		try {

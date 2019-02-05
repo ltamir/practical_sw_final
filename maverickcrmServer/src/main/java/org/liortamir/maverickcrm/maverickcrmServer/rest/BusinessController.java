@@ -29,8 +29,8 @@ public class BusinessController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		String response = APIConst.ERROR;
+		resp.setContentType(APIConst.CONTENT_TYPE);
+		String response;
 		JsonObject json = new JsonObject();
 		int hours = 0;
 		int days = 0;

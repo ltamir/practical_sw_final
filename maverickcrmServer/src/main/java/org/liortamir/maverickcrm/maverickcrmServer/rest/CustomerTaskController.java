@@ -54,13 +54,11 @@ public class CustomerTaskController extends HttpServlet {
 				ServletHelper.addJsonTree(jsonHelper, json, "customerTask", customerTask);
 				break;
 			case ACT_CUSTOMER_TASK_BY_CUSTOMER:
-				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("customerId"));
 				bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 			case ACT_CUSTOMER_TASK_BY_TASK:
-				json = new JsonObject();
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerTaskDAL.getInstance().getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
@@ -83,7 +81,7 @@ public class CustomerTaskController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		String response = null;
 
@@ -107,7 +105,7 @@ public class CustomerTaskController extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response =null;
 		JsonObject json = new JsonObject();
 		try {

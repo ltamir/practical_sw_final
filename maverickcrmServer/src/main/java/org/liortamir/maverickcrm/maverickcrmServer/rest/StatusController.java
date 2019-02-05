@@ -41,9 +41,7 @@ public class StatusController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				resp.setContentType("application/json");
 				List<Status> bulk = StatusDAL.getInstance().getAll();
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.ACT_SINGLE){

@@ -56,7 +56,6 @@ public class LoginController extends HttpServlet {
 				login = LoginDAL.getInstance().get(id);
 				if(!login.getUsername().equals(username))
 					login.setPassword("*****");
-				json = new JsonObject();
 				ServletHelper.addJsonTree(jsonHelper, json, "login", login);
 			}
 			

@@ -187,7 +187,7 @@ function execSync(funcA, funcB){
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
     		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
-	funcB('cmbSearchTaskType', 'taskType', '?actionId=2', fillSelect, 'Task Type:', 
+	funcB('cmbSearchTaskType', 'tasktype', '?actionId=2', fillSelect, 'Task Type:', 
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 
 			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
@@ -201,7 +201,7 @@ function init(){
 			(opt,item)=>opt.text = item.customerName, 
 			null);
 
-	getDataEx('cmbDetailTaskType', 'taskType', '?actionId=2', fillSelect, 'Task Type:', 
+	getDataEx('cmbDetailTaskType', 'tasktype', '?actionId=2', fillSelect, 'Task Type:', 
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 
 			null);
@@ -271,7 +271,9 @@ function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler
     for (var i = resultBody.rows.length - 1; i >= 0; i--) {
     	resultBody.deleteRow(i);
     }
-    if(data == null)
+    if(data.status == 'ack')
+    	setMsg(msgType.ok, 'SQL execution completed');
+    if(data.array == null)
     	return;
 	
 	let headerCols = data.array[0].row;

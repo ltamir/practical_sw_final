@@ -74,7 +74,7 @@ public class TaskRelationController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 
 		try {
@@ -99,7 +99,7 @@ public class TaskRelationController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int taskRelationId = 0;
 		int parentTaskId = 0;
@@ -151,7 +151,7 @@ public class TaskRelationController extends HttpServlet {
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int taskRelationId=0;
 
@@ -162,7 +162,7 @@ public class TaskRelationController extends HttpServlet {
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
-			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_DELETE, json, req);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, "0");
 		}
 		String response = jsonHelper.toJson(json);

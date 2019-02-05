@@ -61,7 +61,6 @@ public class AssociationController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				resp.setContentType("application/json");
 				List<Customer> bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
@@ -91,7 +90,7 @@ public class AssociationController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		JsonObject json = new JsonObject();
 		try {
@@ -120,7 +119,7 @@ public class AssociationController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		try {
 			int associationId = 0; 
@@ -169,7 +168,7 @@ public class AssociationController extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int connectionId = 0;
 		try {

@@ -20,7 +20,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.TaskType;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-@WebServlet(name = "TaskType", urlPatterns="/taskType")
+@WebServlet(name = "TaskType", urlPatterns="/tasktype")
 @MultipartConfig
 public class TaskTypeController extends HttpServlet {
 
@@ -43,13 +43,11 @@ public class TaskTypeController extends HttpServlet {
 			
 			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
-				json = new JsonObject();
 				List<TaskType> bulk = TaskTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			}else if(action == ActionEnum.ACT_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
 				taskType = TaskTypeDAL.getInstance().get(id);	
-				json = new JsonObject();
 				ServletHelper.addJsonTree(jsonHelper, json, "taskType", taskType);
 			}
 			ServletHelper.doSuccess(json);

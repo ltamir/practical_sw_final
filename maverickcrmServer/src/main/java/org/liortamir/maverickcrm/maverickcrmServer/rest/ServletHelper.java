@@ -19,6 +19,8 @@ public class ServletHelper {
 	public static final String METHOD_PUT = "doPut()";
 	public static final String METHOD_DELETE = "doDelete()";
 	
+	public static final ActionEnum[] ACTION_LIST = ActionEnum.values();
+	
 	public static void doError(Exception e, Object servlet, String method, JsonObject json, HttpServletRequest req) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(servlet.getClass().getName() );
@@ -62,7 +64,7 @@ public class ServletHelper {
 		String actionParam = req.getParameter(APIConst.PARAM_ACTION_ID);
 		try {
 			int actionId = Integer.parseInt(actionParam);
-			actionEnum = APIConst.ACTION_LIST[actionId];
+			actionEnum = ACTION_LIST[actionId];
 		}catch(NumberFormatException | NullPointerException e) {
 			throw new InvalidActionException(actionParam);
 		}

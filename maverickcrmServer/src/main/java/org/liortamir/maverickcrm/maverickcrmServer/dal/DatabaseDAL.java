@@ -28,10 +28,10 @@ public class DatabaseDAL {
     		ResultSet rs = null;
     		int updatedRows = 0;
 
-    		if(sql.contains("insert") || sql.contains("update") || sql.contains("delete")) {
+    		if(sql.startsWith("insert") || sql.startsWith("update") || sql.startsWith("delete")) {
     			updatedRows = ps.executeUpdate();
     			System.out.println("updated " + updatedRows + " rows");
-    		}else if(sql.contains("alter")) {
+    		}else if(sql.startsWith("alter") || sql.startsWith("create") || sql.startsWith("drop")) {
     			updatedRows = ps.executeUpdate();
     		}else if(sql.contains("CALL")) {
     			ps.execute();

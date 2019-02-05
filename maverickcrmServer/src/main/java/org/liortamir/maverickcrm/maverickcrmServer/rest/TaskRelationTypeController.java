@@ -35,7 +35,7 @@ public class TaskRelationTypeController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		TaskRelationType taskRelationType = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		int id = 0;
 		
 		try {
@@ -45,11 +45,9 @@ public class TaskRelationTypeController extends HttpServlet {
 				
 				id = Integer.parseInt(req.getParameter("taskRelationTypeId"));
 				taskRelationType = TaskRelationTypeDAL.getInstance().get(id);
-				json = new JsonObject();
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelatoinType", taskRelationType);
 			}else if(action == ActionEnum.ACT_ALL) {
 				
-				json = new JsonObject();;
 				List<TaskRelationType> taskRelationList = TaskRelationTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 			}

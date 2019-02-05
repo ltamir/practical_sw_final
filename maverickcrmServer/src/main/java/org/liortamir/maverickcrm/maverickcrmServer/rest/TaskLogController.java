@@ -75,7 +75,7 @@ public class TaskLogController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int taskLogId = 0;
 		try {
@@ -178,7 +178,7 @@ public class TaskLogController extends HttpServlet {
 	//TODO implement task log deletion 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response;
 		JsonObject json = new JsonObject();
 		try {

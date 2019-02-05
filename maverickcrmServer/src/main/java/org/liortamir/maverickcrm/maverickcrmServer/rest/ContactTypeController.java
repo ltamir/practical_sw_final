@@ -34,7 +34,7 @@ public class ContactTypeController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		ContactType contactType = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		int id = 0;
 		
 		try {
@@ -43,7 +43,6 @@ public class ContactTypeController extends HttpServlet {
 			if(action == ActionEnum.ACT_ALL){
 				
 				List<ContactType> bulk;
-				json = new JsonObject();
 				bulk = ContactTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 					

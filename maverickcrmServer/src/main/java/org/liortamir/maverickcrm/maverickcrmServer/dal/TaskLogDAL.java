@@ -60,7 +60,7 @@ public class TaskLogDAL {
 			ps.setInt(5, taskLogTypeId);
 
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error inseting record to taskLog");
+				throw new SQLException("Error inserting into taskLog");
 			
 			ResultSet rs = ps.getGeneratedKeys();
 			if(rs != null && rs.next())
@@ -79,7 +79,7 @@ public class TaskLogDAL {
 			ps.setInt(5, taskLogId);
 			
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error inseting record to taskLog");
+				throw new SQLException("Error updating table  taskLog");
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class TaskLogDAL {
 			ps.setInt(3, taskLogId);
 			
 			if(ps.executeUpdate() != 1)
-				throw new SQLException("Error inseting record to taskLog");
+				throw new SQLException("Error updating table taskLog");
 		}
 	}	
 	

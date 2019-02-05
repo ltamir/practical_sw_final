@@ -40,7 +40,6 @@ public class AttachmentTypeController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				resp.setContentType("application/json");
 				List<AttachmentType> bulk = AttachmentTypeDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				

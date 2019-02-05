@@ -89,7 +89,7 @@ public class TaskController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
+		resp.setContentType(APIConst.CONTENT_TYPE);
 		JsonObject json = new JsonObject();
 		int taskTypeId = 0;
 		int contactId = 0;
@@ -190,7 +190,7 @@ public class TaskController extends HttpServlet {
 			json.addProperty(APIConst.FLD_TASK_ID, taskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
-			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 		}
 		
 		String response = jsonHelper.toJson(json);	

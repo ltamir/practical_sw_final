@@ -33,22 +33,19 @@ public class TaskLogTypeController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response = null;
 		TaskLogType taskLogType = null;
-		JsonObject json = null;
+		JsonObject json = new JsonObject();
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				resp.setContentType("application/json");
 				List<TaskLogType> bulk = TaskLogTypeDAL.getInstance().getAll();
-				json = new JsonObject();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKLOGTYPE_ID));
 				taskLogType = TaskLogTypeDAL.getInstance().get(id);
-				json = new JsonObject();
 				ServletHelper.addJsonTree(jsonHelper, json, "taskLogType", taskLogType);					
 			}
 			ServletHelper.doSuccess(json);
