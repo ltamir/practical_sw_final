@@ -315,7 +315,7 @@ var searchModel = {
 }
 searchModel.status.getValue = function(){return this.dom.getAttribute('data-state')};
 searchModel.status.setValue = function(val){this.dom.setAttribute('data-state', val);};
-searchModel.dueDate.setValue = function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'select a date';}
+searchModel.dueDate.setValue = function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'Set due date';}
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
 	this.menuid = menuid;

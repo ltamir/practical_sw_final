@@ -15,6 +15,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.MutableBool;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.MutableInt;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.PredicateContainer;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.StringPredicate;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.TaskStatusPredicate;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Contact;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Status;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
@@ -45,14 +46,14 @@ public class TaskDAL {
 		predicate.add("duedate", new DatePredicate(new java.sql.Date(1), 
 				" dueDate <= ? ",
 				1));
-		predicate.add("status", new IntPredicate(0, 
+		predicate.add("status", new TaskStatusPredicate(0, 
 				" statusId=? ",
 				1));
 		predicate.add("title", new StringPredicate("", 
 				" title like ?",
 				1));
 		predicate.add("project", new IntPredicate(0, 
-				" taskId=? or taskId in(select childTaskId from taskRelation where parentTaskId=?) ",
+				" (taskId in(select childTaskId from taskRelation where parentTaskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in (select childTaskId from taskRelation where parentTaskId=?)))",
 				2));
 		predicate.add("taskType", new IntPredicate(0, 
 				" taskTypeId=? ",
@@ -105,7 +106,7 @@ public class TaskDAL {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, boolean isClosed) throws SQLException {
+	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, int status) throws SQLException {
 		List<Task> entityList = null;
 		MutableInt paramCount = new MutableInt(0);
 		MutableBool whereUsed = new MutableBool(false);
@@ -124,7 +125,7 @@ public class TaskDAL {
 		this.predicate.prepare("title", title, whereUsed, sqlStatement);
 		this.predicate.prepare("project", projectTaskId, whereUsed, sqlStatement);
 		this.predicate.prepare("taskType", taskTypeId, whereUsed, sqlStatement);
-		this.predicate.prepare("status", (isClosed)?4:0, whereUsed, sqlStatement);
+		this.predicate.prepare("status", status, whereUsed, sqlStatement);
 		
 		sqlStatement.append(orderBy);
 
@@ -137,7 +138,7 @@ public class TaskDAL {
 			this.predicate.set("title", ps, paramCount, title);
 			this.predicate.set("project", ps, paramCount, projectTaskId);
 			this.predicate.set("taskType", ps, paramCount, taskTypeId);
-			this.predicate.set("status", ps, paramCount, (isClosed)?4:0);
+			this.predicate.set("status", ps, paramCount, status);
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);

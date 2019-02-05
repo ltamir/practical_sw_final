@@ -9,7 +9,7 @@ public abstract class AbstractPredicate <T>{
 	final static String AND = " and ";
 	
 	protected final int paramCount;
-	protected final String predicateString;
+	protected String predicateString;
 	protected final static String NONE = "";
 	protected final T ALL;
 	

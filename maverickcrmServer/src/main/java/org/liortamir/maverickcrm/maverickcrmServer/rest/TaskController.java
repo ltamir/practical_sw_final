@@ -55,8 +55,8 @@ public class TaskController extends HttpServlet {
 				String title = req.getParameter("title");
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
-				boolean isClosed = (req.getParameter("showclosed").equals("1"))?true:false;
-				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, isClosed);
+				int status = Integer.parseInt(req.getParameter("showclosed"));
+				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, status);
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;

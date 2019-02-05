@@ -100,7 +100,7 @@ function resetTaskSearch(){
 
 
 function toggleSearchTaskStatus(statusImg){
-	if(statusImg.getAttribute('data-state') == '0')
+	if(statusImg.getAttribute('data-state') == '1')
 		setSearchTaskStatusClosed(statusImg);
 	else
 		setSearchTaskStatusOpen(statusImg);
@@ -108,14 +108,14 @@ function toggleSearchTaskStatus(statusImg){
 
 function setSearchTaskStatusClosed(statusImg){
 	statusImg.src='images/task_done.png';
-	statusImg.setAttribute('data-state', 1);
+	statusImg.setAttribute('data-state', 4);
 	toggleAsBotton(statusImg);
 	statusImg.title = 'Closed tasks';
 }
 
 function setSearchTaskStatusOpen(statusImg){
 	statusImg.src='images/task_open.png';
-	statusImg.setAttribute('data-state', 0);
+	statusImg.setAttribute('data-state', 1);
 	toggleAsBotton(statusImg);
 	statusImg.title = 'Open tasks';
 }
@@ -141,7 +141,7 @@ function toggleSearchDate(lbl, field){
 		field.setAttribute('data-isActive', '1');
 		field.focus();
 	}else{
-		let formattedDate = 'select a date';
+		let formattedDate = 'Set due date';
 		field.style.display='none';
 		let dateval = field.value;
 		if(dateval.split("-")[2] != undefined){
