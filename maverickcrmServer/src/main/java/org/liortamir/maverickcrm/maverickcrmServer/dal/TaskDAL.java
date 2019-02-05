@@ -53,8 +53,8 @@ public class TaskDAL {
 				" title like ?",
 				1));
 		predicate.add("project", new IntPredicate(0, 
-				" (taskId in(select childTaskId from taskRelation where parentTaskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in (select childTaskId from taskRelation where parentTaskId=?)))",
-				2));
+				" ( taskId = ? or taskId in(select childTaskId from taskRelation where parentTaskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in (select childTaskId from taskRelation where parentTaskId=?)))",
+				3));
 		predicate.add("taskType", new IntPredicate(0, 
 				" taskTypeId=? ",
 				1));		
