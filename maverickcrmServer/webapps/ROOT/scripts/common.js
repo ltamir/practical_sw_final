@@ -167,16 +167,19 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 		let divRow = document.createElement('DIV');
 		divList.appendChild(divRow);	
 		funcValue(divRow, item); 
-			
-		let txtPart = document.createElement("SPAN");
-		if(funcText != null) funcText(txtPart, item);
-		setTextDirection(txtPart, txtPart.innerHTML);
-		if(txtPart.style.direction == 'rtl'){
-			txtPart.style.float = 'right';
+		
+		if(funcText != null){
+			let txtPart = document.createElement("SPAN");
+			 funcText(txtPart, item);
+			setTextDirection(txtPart, txtPart.innerHTML);
+			if(txtPart.style.direction == 'rtl'){
+				txtPart.style.float = 'right';
+			}
+			divRow.appendChild(txtPart);			
 		}
-		if(eventHandler != undefined)
+
+		if(eventHandler != null)
 			eventHandler(txtPart, item);
-		divRow.appendChild(txtPart);
 	});
 }
 
@@ -193,15 +196,19 @@ function searchText(selectId, inputTextId, event){
 	var inputTextElem = document.getElementById(inputTextId);
 	
 	if(inputTextElem.value == ''){
-		for (var i = selectElem.length - 1; i >= 0; i--)
-			selectElem.options[i].style.display='';
+		for(let i = selectElem.childNodes.length-1; i > -1; i--)
+			selectElem.childNodes[i].style.display='';
 	}
+
 	
-    for (var i = selectElem.length - 1; i >= 0; i--) {
-    	let elemText = selectElem.options[i].text.toLowerCase();
+    for (var i = selectElem.childNodes.length - 1; i >= 0; i--) {
+    	let elemText = selectElem.childNodes[i].innerHTML.toLowerCase();
     	let elemInputText = inputTextElem.value.toLowerCase()
     	if(!elemText.includes(elemInputText))
-    		selectElem.options[i].style.display='none';
+    		selectElem.childNodes[i].style.display='none';
+    	else
+    		selectElem.childNodes[i].style.display='';
+    	
     }
 }
 
