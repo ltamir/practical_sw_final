@@ -170,6 +170,10 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 			
 		let txtPart = document.createElement("SPAN");
 		if(funcText != null) funcText(txtPart, item);
+		setTextDirection(txtPart, txtPart.innerHTML);
+		if(txtPart.style.direction == 'rtl'){
+			txtPart.style.float = 'right';
+		}
 		if(eventHandler != undefined)
 			eventHandler(txtPart, item);
 		divRow.appendChild(txtPart);
@@ -264,4 +268,26 @@ function getISODate(dateObject){	//ISO 8601
 	date += (dateObject.day<10)?"0":"";
 	date += dateObject.day;			
 	return date;
+}
+
+function setTextDirectionModel(Model){
+//	Object.keys(Model).forEach(item=>setTextDirection(Model[item].dom, Model[item].getValue()));
+	Object.keys(Model).forEach(function(item){
+		if(Model[item].domField != null)
+			setTextDirection(Model[item].dom, Model[item].getValue());
+		});
+}
+function setTextDirection(dom, value){
+	const heb_start = 1488;
+	const heb_end = 1514;
+	const skip_bellow = 65;
+	
+//	if(dom == null) return;
+	for(let pos = 0; pos < 5; pos++){
+		if(value.charCodeAt() >= heb_start && value.charCodeAt() <= heb_end){
+			dom.style.direction = 'rtl';
+			return;			
+		}
+	}
+	dom.style.direction = 'ltr';
 }

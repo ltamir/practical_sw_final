@@ -92,7 +92,9 @@ function viewContact(id, item){
 	contactModel.email.setValue(contact.email);
 	contactModel.notes.setValue(contact.notes);
 	contactModel.contactId.setValue(contact.contactId);
+	setTextDirectionModel(contactModel);
 }
+
 
 function viewAddress(id, item){
 	let address = item.address;
@@ -102,6 +104,7 @@ function viewAddress(id, item){
 	addressModel.city.setValue(address.city);
 	addressModel.country.setValue(address.country);
 	addressModel.addressId.setValue(address.addressId);
+	setTextDirectionModel(addressModel);
 }
 
 function setChildTask(setter){
@@ -167,6 +170,7 @@ function viewTask(id, data){
 			}, null, null, null, null);
 	
 	menuData.newTaskType.menuid.src='images/newitem.png';
+	setTextDirectionModel(taskModel);
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -178,6 +182,7 @@ function viewTaskLog(id, data){
 	taskLogModel.taskLogType.setValue(taskLog.taskLogType.taskLogTypeId);
 	taskLogModel.sysdate.setValue(taskLog.sysdate);
 	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
+	setTextDirectionModel(taskLogModel);
 }
 
 
@@ -185,6 +190,7 @@ function viewTaskRelationDetails(id, data){
 	let taskRelation = data.taskRelation;
 	taskRelationModel.taskRelationType.setValue(taskRelation.taskRelationType.taskRelationTypeId);
 	taskRelationModel.taskRelationId.setValue(taskRelation.taskRelationId);
+	setTextDirectionModel(taskRelationModel);
 }
   
 function viewCustomer(id, data){
@@ -192,6 +198,7 @@ function viewCustomer(id, data){
 	customerModel.customerId.setValue(customer.customerId);
 	customerModel.customerName.setValue(customer.customerName);
 	customerModel.customerNotes.setValue(customer.customerNotes);
+	setTextDirectionModel(customerModel);
 }
 
 function viewAttachment(id, data){
@@ -201,6 +208,7 @@ function viewAttachment(id, data){
 	attachmentModel.contact.setValue(attachment.taskLog.contact.contactId);
 	attachmentModel.notes.setValue(attachment.taskLog.description);
 	attachmentModel.taskLogId.setValue(attachment.taskLog.taskLogId);
+	setTextDirectionModel(attachmentModel);
 
 }
 
@@ -210,6 +218,7 @@ function viewLogin(id, data){
 	loginModel.password.setValue(login.password);
 	loginModel.loginId.setValue(login.loginId);
 	loginModel.contact.setValue(login.contact.contactId);
+	setTextDirectionModel(loginModel);
 }
 
 //***** save model ***** //

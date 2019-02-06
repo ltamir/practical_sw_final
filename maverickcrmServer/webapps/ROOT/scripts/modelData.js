@@ -234,7 +234,7 @@ var taskModel={
 	}
 taskModel.status.changed = false;
 taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
-
+taskModel.dueDateLabel.getValue = function(){return this.dom.innerHTML;}
 var contactModel = {
 		contactId:new Model('connectionContactId', null, 'contactId', [], ''),
 		firstName:new Model('txtFirstName', null, 'firstName', [''], 'Contact missing First Name'),

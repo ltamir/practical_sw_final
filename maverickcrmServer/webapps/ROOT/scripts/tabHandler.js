@@ -111,12 +111,15 @@ function viewTaskLogList(){
 				taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
 				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
 				divRow.appendChild(taskLogImg);
+				let prefixPart = document.createElement("SPAN");
+				let thisDate = new Date(item.sysdate);
+				prefixPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": ";
+				divRow.appendChild(prefixPart);
 			}, 
     		(txtPart,item)=>{
     			if(dbg==Module.tasklog)
     		    	console.log(item);
-    			var thisDate = new Date(item.sysdate);
-    			txtPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": " + item.description;
+    			txtPart.innerHTML = item.description;
     			}, 
     		(txtPart,item)=>{
     			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});

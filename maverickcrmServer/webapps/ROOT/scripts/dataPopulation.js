@@ -123,6 +123,7 @@ function createTaskRow(row, item, parent){
 	
     let titleCell  = row.insertCell(1);
 	titleCell.innerHTML = item.title;
+	setTextDirection(titleCell, titleCell.innerHTML);
     titleCell.classList.add("cssTaskListTitle");         
 
     let dueDateCell  = row.insertCell(2);
