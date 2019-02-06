@@ -167,10 +167,10 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 		let divRow = document.createElement('DIV');
 		divList.appendChild(divRow);	
 		funcValue(divRow, item); 
-		
+		let txtPart;
 		if(funcText != null){
-			let txtPart = document.createElement("SPAN");
-			 funcText(txtPart, item);
+			txtPart = document.createElement("SPAN");
+			funcText(txtPart, item);
 			setTextDirection(txtPart, txtPart.innerHTML);
 			if(txtPart.style.direction == 'rtl'){
 				txtPart.style.float = 'right';
