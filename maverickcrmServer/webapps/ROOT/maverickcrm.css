@@ -145,7 +145,7 @@
     	cursor: pointer;
     }
 		
-	#TabLinkedCustomer{
+	#TabLinkedCustomer, #TabPermission{
 		display: none;
 	}		
 
@@ -176,27 +176,39 @@
 		cursor: pointer;
 	}
 
-		
-	#divCustomerList{
-		font-family: arial, sans-serif;
-        background-color: GhostWhite;
-        min-width: 21em;	
-	}
-
 	#cmbContactList{
 		font-family: arial, sans-serif;
         background-color: GhostWhite;
         min-width: 23em;	
 	}
-			
-	#txtDetailTaskTitle, #txtTaskLogDescription, #cmbRelationTaskList, #divAttachmentList, #txtAttachmentNotes{
-		width: 37em;
+
+	#txtTaskLogDescription, #txtAttachmentNotes{
+		font-family: arial, sans-serif;
+		font-size:10pt;		
 	}
-	#divTaskDetailsTop{
-		width: 31em;
+		
+	#divTaskTab{
+		font-family: arial, sans-serif;
+		font-size:10pt;	
+		/* Add shadows to create the "card" effect */
+		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+		transition: 0.3s;
 	}
-	#divTaskDetailsBottom{
-		width: 31em;
+
+	/* On mouse-over, add a deeper shadow */
+	#divTaskTab:hover {
+	  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+	}	
+	
+	#divCRM{
+		font-family: arial, sans-serif;
+		font-size:10pt;	
+		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+		transition: 0.3s;
+	}
+
+	#divCRM:hover {
+	  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 	}
 		
 	#divCustomerList{
@@ -206,6 +218,8 @@
 		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
 		font-size:10pt;
+        background-color: GhostWhite;
+        min-width: 21em;		
 	}
 	#divParentTaskList, #divChildTaskList, #divTaskLogList{
 		height: 2em;
@@ -222,32 +236,40 @@
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
 	}	
-	#divAttachmentList{
-		height: 2em;
+	#divAttachmentList, #divPermissionList, #divPermissionLoginList{
 		width: 31em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
+	#txtDetailTaskTitle, #cmbRelationTaskList, #divAttachmentList {
+		width: 37em;
+	}
+
+	#divTaskDetailsBottom, #divTaskDetailsTop{
+		width: 31em;
+	}	
 	#divChildTaskList{
 		height: 4em;
 		border-bottom:none;
 	}
 	
-	#divAttachmentList{
-		font-family: arial, sans-serif;
-        background-color: WhiteSmoke;
+	#divAttachmentList, #divPermissionList, #divPermissionLoginList{     
         height: 4.5em;
-	}	
+	}
 
-	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList span{
+	.cssDivRow{
+		background-color: WhiteSmoke;
 		font-family: arial, sans-serif;
 		font-size:10pt;
-		cursor: pointer;
 	}
-	#divParentTaskList, #divChildTaskList, #divTaskLogList, #divAttachmentList img{
+	.cssDivRow div > img{
 		border-style: outset;
 		border-width: 1px;
+		margin-right: 0.3em;	
 	}
+	.cssDivRow div > span{
+		cursor: pointer;
+	}	
 	
 	.cssTaskRelationTitle{
 		background-color: WhiteSmoke;

@@ -1,6 +1,6 @@
-<div id="divAttachmentList"></div>
+<div id="divAttachmentList" class="cssDivRow"></div>
 <form enctype="multipart/form-data" method="post" name="fileinfo">
-	<textarea id="txtAttachmentNotes" rows="2" cols="74"></textarea>
+	<textarea id="txtAttachmentNotes" rows="2" cols="62" class="cssDivRow"></textarea>
 	<br>
 	<label for="cmbAttachmentType" class="cssFieldLabel">Type:</label><select id="cmbAttachmentType"> </select>
 	<input type="file" id="attachmentFile">
@@ -11,3 +11,4 @@
 	<img src="images/save.png" title="save attachment" align="bottom" id="imgSaveAttachment" onmousedown="toggleAsBotton(this)" onmouseup="saveAttachment();toggleAsBotton(this)">
 	<img src="images/newitem.png" title="new attachment" id="imgNewAttachment" onmousedown="toggleAsBotton(this)" onmouseup="newAttachment(); toggleAsBotton(this)">
 </form>
+<br>
