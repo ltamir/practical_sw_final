@@ -6,7 +6,8 @@ function setTab(tab){
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTabSelected';
 		getById('TabRelation').className='cssTab';
-		getById('TabLinkedCustomer').className='cssTab';	
+		getById('TabLinkedCustomer').className='cssTab';
+		getById('TabPermission').className='cssTab';
 		activateTabTaskLog();
 		activeTaskTab = tab;
 		break;
@@ -15,6 +16,7 @@ function setTab(tab){
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTabSelected';
 		getById('TabLinkedCustomer').className='cssTab';
+		getById('TabPermission').className='cssTab';
 		activateTabRelation();  
 		activeTaskTab = tab;
 		break;
@@ -23,6 +25,7 @@ function setTab(tab){
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTab';		
 		getById('TabLinkedCustomer').className='cssTab';
+		getById('TabPermission').className='cssTab';
 		activateTabAttachment();
 		activeTaskTab = tab;
 		break;
@@ -30,8 +33,18 @@ function setTab(tab){
 		getById('TabLinkedCustomer').className='cssTabSelected';
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTab';
-		getById('TabRelation').className='cssTab';		
+		getById('TabRelation').className='cssTab';	
+		getById('TabPermission').className='cssTab';
 		activateTabLinkedCustomer();
+		activeTaskTab = tab;
+		break;
+	case tabEnum.permission:
+		getById('TabLinkedCustomer').className='cssTab';
+		getById('TabAttachment').className='cssTab';
+		getById('TabLog').className='cssTab';
+		getById('TabRelation').className='cssTab';	
+		getById('TabPermission').className='cssTabSelected';
+		activateTabPermission();
 		activeTaskTab = tab;
 		break;		
 	case tabEnum.customer:
@@ -84,8 +97,8 @@ function activateTabTaskLog(){
 		Object.keys(taskLogModel).forEach(function(item){
 		taskLogModel[item].dom = getById(taskLogModel[item].domField);
 		});	
-	})
-
+	});
+	getById('divTaskTab').style.width = '37em';
 }
 
 function viewTaskLogList(){
@@ -134,12 +147,15 @@ function activateTabRelation(){
 		});	
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
+	getById('divTaskTab').style.width = '37em';
 	
 }
 
 function activateTabAttachment(){
-	getHTML('tabAttachment.html').then(function(response){fillTab('divTaskTab', response)})
-	.then(viewAttachmentList())	
+	getHTML('tabAttachment.html').then(function(response){
+		fillTab('divTaskTab', response);
+		viewAttachmentList();
+		})
 	.then(()=>getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Attachment type',
 			(opt,item)=>opt.value = item.attachmentTypeId, 
 			(opt,item)=>opt.text = item.attachmentTypeName, 
@@ -153,7 +169,8 @@ function activateTabAttachment(){
 		Object.keys(attachmentModel).forEach(function(item){
 			attachmentModel[item].dom = getById(attachmentModel[item].domField);
 		});		
-	})
+	});
+	getById('divTaskTab').style.width = '31em';
 }
 
 function viewAttachmentList(){
@@ -202,9 +219,71 @@ function activateTabLinkedCustomer(){
 		Object.keys(customerTaskModel).forEach(function(item){
 			customerTaskModel[item].dom = getById(customerTaskModel[item].domField);
 		});	
-	})	
-						
+	});
+	getById('divTaskTab').style.width = '31em';
 }
+
+function activateTabPermission(){
+	getHTML('tabPermission.html').then(function(response){fillTab('divTaskTab', response)})
+	.then(()=>getTaskPermissions()	)
+	.then(()=>getDataEx('cmbPermissionType', 'permissiontype', '?actionId=2', fillSelect, 
+			null, 
+			(opt,item)=>opt.value = item.permissionTypeId, 
+			(opt,item)=>opt.text = item.permissionTypeName, 
+			null))
+	.then(()=>getLoginList());
+	getById('divTaskTab').style.width = '31em';
+}
+
+function getLoginList(){
+	getDataEx('divPermissionLoginList', 'login', '?actionId=2', fillDivList, null, 
+			(divRow,item)=>{
+				divRow.setAttribute('data-loginId', item.loginId);
+				let addressImg = document.createElement("IMG");
+				addressImg.src='images/login.png';
+				divRow.appendChild(addressImg);					
+			}, 
+			(txtPart,item)=>{
+				txtPart.innerHTML = item.contact.firstName + ' ' + item.contact.lastName + ' [' + item.username + ']'; 
+			},
+			(txtPart,item)=>{
+				txtPart.addEventListener("click", ()=>{
+					selectedTaskList.toggle(txtPart);});					
+				txtPart.addEventListener("dblclick", ()=>{
+					setMsg(msgType.ok, 'Permission added');
+				});
+			}
+			)
+}
+
+function getTaskPermissions(){
+	getDataEx('divPermissionList', 'taskpermission','?actionId=18&taskId='+taskModel.taskId.getValue(), fillDivList, null, 
+			(divRow,item)=>{
+				divRow.setAttribute('data-taskPermissionId', item.taskPermissionId);
+				let addressImg = document.createElement("IMG");
+				if(item.permissionType.permissionTypeId == 1){
+					addressImg.src='images/permissiontype_view.png';
+					addressImg.title = 'Read only';							
+				}else{
+					addressImg.src='images/permissiontype_edit.png';
+					addressImg.title = 'Read /write';						
+				}
+				divRow.appendChild(addressImg);
+				}, 
+			(txtPart,item)=>{
+				txtPart.innerHTML = item.login.contact.firstName + ' ' + item.login.contact.lastName + ' [' + item.login.username + ']';
+				},
+			(txtPart, item)=>{
+				txtPart.addEventListener("click", ()=>{
+					selectedTaskList.toggle(txtPart);
+				})					
+				txtPart.addEventListener("dblclick", ()=>{
+					setMsg(msgType.ok, 'Permission removed');
+				})					
+			}
+			)	
+}
+
 
 function activateTabConnection(){
 	getHTML('tabConnection.html').then(function(response){fillTab('divCRM', response)})
@@ -379,7 +458,7 @@ function activateTabLogin(){
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
-		.then(()=>fillLoginList())
+		.then(()=>fillLoginList('cmbAvailableLogins'))
 		.then(()=>{
 			Object.keys(loginModel).forEach(function(item){
 				loginModel[item].dom = getById(loginModel[item].domField);
@@ -387,8 +466,8 @@ function activateTabLogin(){
 		})
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
-function fillLoginList(){
-	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
+function fillLoginList(loginListElement){
+	getDataEx(loginListElement, 'login', '?actionId=2', fillSelect, 'Select Login', 
 		(opt,item)=>opt.value = item.loginId, 
 		(opt,item)=>opt.text = item.username,
 		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, viewLogin)})

@@ -19,5 +19,6 @@ public enum ActionEnum {
 	ACT_CUSTOMER_LINKED_BY_TASK,	//14
 	ACT_LOGOUT,						//15
 	ACT_GET_LOGGED_IN,				//16
-	ACT_GET_ATTACHMENT;				//17
+	ACT_GET_ATTACHMENT,			//17
+	ACT_BY_TASK;				//18
 }

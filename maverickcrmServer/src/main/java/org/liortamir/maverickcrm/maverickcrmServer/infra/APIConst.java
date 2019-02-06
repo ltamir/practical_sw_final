@@ -67,6 +67,11 @@ public class APIConst {
 	public static final String FLD_LOGIN_PASSWORD = "password";
 	public static final String FLD_LOGIN_CONTACT_ID = "contactId";
 	
+	public static final String FLD_TASKPERMISSION_ID = "taskpermissionId";
+	public static final String FLD_TASKPERMISSION_TASKID = "taskId";
+	public static final String FLD_TASKPERMISSION_LOGINID = "loginId";
+	public static final String FLD_TASKPERMISSION_PERMISSIONTYPEID = "permissiontypeId";
+	
 	public static final String FLD_PERMISSIONTYPE_ID = "permissiontypeId";
 	public static final String FLD_PERMISSIONTYPE_NAME = "permissiontypeName";
 
