@@ -205,7 +205,7 @@
 		border-bottom: 1px inset #000000;
 	}
 	#divChildTaskList{
-		height: 4.5em;
+		height: 4.8em;
 		border-bottom:none;
 	}	
 	#divTaskLogList{
@@ -245,6 +245,9 @@
 	}
 	.cssDivRow div > span{
 		cursor: pointer;
+	}
+	.cssDivRow div{
+		cursor: pointer;
 	}	
 	
 	.cssTaskRelationTitle{
@@ -252,9 +255,13 @@
 		color: Black;
 	}
 	.cssTaskRelationTitleSelected{
-		background-color: FloralWhite;
-		color: FireBrick;
+		background-color: #4CAF50;
+		color: GhostWhite;
 	}
+	.cssTaskRelationTitleSelected img{
+		background-color: WhiteSmoke;
+		color: GhostWhite;
+	}	
 
 	.tabRow{
 		border-style: outset;
