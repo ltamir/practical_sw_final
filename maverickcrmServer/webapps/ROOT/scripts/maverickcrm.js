@@ -222,12 +222,9 @@ function init(){
 }
 
 function initModels(){
-	Object.keys(taskModel).forEach(function(item){
-		taskModel[item].dom = getById(taskModel[item].domField);
-	});
-	Object.keys(searchModel).forEach(function(item){
-		searchModel[item].dom = getById(searchModel[item].domField);
-	});	
+	Object.keys(taskModel).forEach(item=>taskModel[item].dom = getById(taskModel[item].domField));
+	Object.keys(searchModel).forEach(item=>searchModel[item].dom = getById(searchModel[item].domField));
+
 	searchModel.status.setValue(1);
 	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
 	searchTaskStatusToggle.set('closed', getById('searchClosedTask'));

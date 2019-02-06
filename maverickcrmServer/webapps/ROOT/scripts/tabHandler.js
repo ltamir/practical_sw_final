@@ -93,10 +93,8 @@ function activateTabTaskLog(){
     		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
 
     })
-	.then(()=>{viewTaskLogList()}).then(()=>{	
-		Object.keys(taskLogModel).forEach(function(item){
-		taskLogModel[item].dom = getById(taskLogModel[item].domField);
-		});	
+	.then(()=>{viewTaskLogList()}).then(()=>{
+		Object.keys(taskLogModel).forEach(item=>taskLogModel[item].dom = getById(taskLogModel[item].domField));
 	});
 	getById('divTaskTab').style.width = '37em';
 }
@@ -146,9 +144,7 @@ function activateTabRelation(){
 	})
 	.then(()=>searchProjectTask('cmbTabRelationProject'))
 	.then(()=>{
-		Object.keys(taskRelationModel).forEach(function(item){
-			taskRelationModel[item].dom = getById(taskRelationModel[item].domField);
-		});	
+		Object.keys(taskRelationModel).forEach(item=>taskRelationModel[item].dom = getById(taskRelationModel[item].domField));
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
 	getById('divTaskTab').style.width = '37em';
@@ -170,9 +166,7 @@ function activateTabAttachment(){
 			(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;}))
 	.then(()=>setValue('txtAttachmentNotes', '')).
 	then(()=>{
-		Object.keys(attachmentModel).forEach(function(item){
-			attachmentModel[item].dom = getById(attachmentModel[item].domField);
-		});		
+		Object.keys(attachmentModel).forEach(item=>attachmentModel[item].dom = getById(attachmentModel[item].domField));	
 	});
 	getById('divTaskTab').style.width = '31em';
 }
@@ -221,9 +215,7 @@ function activateTabLinkedCustomer(){
 			(opt,item)=>opt.text = item.customerName, 
 			(opt,item)=>opt.addEventListener("dblclick", ()=>addLinkedCustomer()))
 	).then(()=>{
-		Object.keys(customerTaskModel).forEach(function(item){
-			customerTaskModel[item].dom = getById(customerTaskModel[item].domField);
-		});	
+		Object.keys(customerTaskModel).forEach(item=>customerTaskModel[item].dom = getById(customerTaskModel[item].domField));
 	});
 	getById('divTaskTab').style.width = '31em';
 }
@@ -302,19 +294,10 @@ function activateTabConnection(){
 			null))
 			.then(()=>showAllContacts())
 			.then(()=>{
-				Object.keys(contactModel).forEach(function(item){
-					contactModel[item].dom = getById(contactModel[item].domField);
-				});	
-				Object.keys(customerModel).forEach(function(item){
-					customerModel[item].dom = getById(customerModel[item].domField);
-				});
-				Object.keys(associationModel).forEach(function(item){
-					associationModel[item].dom = getById(associationModel[item].domField);
-				});
-				Object.keys(addressModel).forEach(function(item){
-					addressModel[item].dom = getById(addressModel[item].domField);
-				});				
-				
+				Object.keys(contactModel).forEach(item=>contactModel[item].dom = getById(contactModel[item].domField));
+				Object.keys(customerModel).forEach(item=>customerModel[item].dom = getById(customerModel[item].domField));	
+				Object.keys(associationModel).forEach(item=>associationModel[item].dom = getById(associationModel[item].domField));
+				Object.keys(addressModel).forEach(item=>addressModel[item].dom = getById(addressModel[item].domField));
 			});
 }
 
@@ -433,11 +416,10 @@ function activateTabCustomer(){
 	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
 	.then(()=>{
 		viewCustomerList();
-		Object.keys(customerModel).forEach(function(item){
-			customerModel[item].dom = getById(customerModel[item].domField);
-		});
+		Object.keys(customerModel).forEach(item=>customerModel[item].dom = getById(customerModel[item].domField));
 	})
 }
+
 function viewCustomerList(){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divCustomerList', 'customer', '?actionId=2', fillDivList, null,
@@ -446,7 +428,7 @@ function viewCustomerList(){
 		    	console.log(item);			
 			divRow.setAttribute('data-taskLogId', item.customerId);
 			divRow.innerHTML = item.customerName;
-			divRow.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+			divRow.addEventListener("mouseover",function(){this.style.cursor='pointer';});
 			divRow.addEventListener("click", function(){
 				toggler.toggle(divRow);
 				getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
@@ -456,9 +438,7 @@ function viewCustomerList(){
 }
 
 function activateTabTimeline(){
-	
 	getHTML('tabTimeline.html').then(function(response){fillTab('divCRM', response)});
-
 }
 
 
@@ -470,9 +450,7 @@ function activateTabLogin(){
 				null))
 		.then(()=>fillLoginList('cmbAvailableLogins'))
 		.then(()=>{
-			Object.keys(loginModel).forEach(function(item){
-				loginModel[item].dom = getById(loginModel[item].domField);
-			});			
+			Object.keys(loginModel).forEach(item=>loginModel[item].dom = getById(loginModel[item].domField));
 		})
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
