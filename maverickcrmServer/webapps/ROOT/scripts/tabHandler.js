@@ -108,11 +108,16 @@ function viewTaskLogList(){
 				let taskLogImg = document.createElement("IMG");
 				taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
 				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
-				divRow.appendChild(taskLogImg);
-				let prefixPart = document.createElement("SPAN");
+				let prefixPart = document.createElement('SPAN');
 				let thisDate = new Date(item.sysdate);
 				prefixPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": ";
+				prefixPart.style.color = 'inherit';
 				divRow.appendChild(prefixPart);
+				divRow.appendChild(taskLogImg);
+				divRow.addEventListener("click", function(){
+    				toggler.toggle(divRow);
+    				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
+    			});	
 			}, 
     		(txtPart,item)=>{
     			if(dbg==Module.tasklog)
@@ -120,11 +125,9 @@ function viewTaskLogList(){
     			txtPart.innerHTML = item.description;
     			}, 
     		(txtPart,item)=>{
-    			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-    			txtPart.addEventListener("click", function(){
-    				toggler.toggle(txtPart);
-    				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
-    			});	
+				txtPart.style.color = 'inherit';
+				txtPart.style.backgroundColor  = 'inherit';
+				
     		});	
 }
 
@@ -184,20 +187,22 @@ function viewAttachmentList(){
 			dwLink.download = '';
 			dwLink.appendChild(dwImg);
 			divRow.appendChild(dwLink);
+			divRow.addEventListener("click", function(){
+				toggler.toggle(divRow);
+				getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);
+			});	
 		}, 
 		(txtPart,item)=>{
 			if(dbg==Module.attachment)
 		    	console.log(item);
-
+			txtPart.style.color = 'inherit';
+			txtPart.style.backgroundColor  = 'inherit';
 			txtPart.innerHTML = item.fileName + " " + item.attachmentType.attachmentTypeName;
 			txtPart.title = item.taskLog.description;
 			}, 
 		(txtPart,item)=>{
-			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-			txtPart.addEventListener("click", function(){
-				toggler.toggle(txtPart);
-				getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);
-			});	
+
+
 		})
 }
 	
@@ -228,34 +233,42 @@ function activateTabPermission(){
 			(opt,item)=>opt.value = item.permissionTypeId, 
 			(opt,item)=>opt.text = item.permissionTypeName, 
 			null))
-	.then(()=>getLoginList());
+	.then(()=>viewPermissionLoginList());
 	getById('divTaskTab').style.width = '31em';
 }
 
-function getLoginList(){
+function viewPermissionLoginList(){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getById('divPermissionLoginList').setAttribute('data-loginId', 0);
 	getDataEx('divPermissionLoginList', 'login', '?actionId=2', fillDivList, null, 
 			(divRow,item)=>{
 				divRow.setAttribute('data-loginId', item.loginId);
 				let addressImg = document.createElement("IMG");
 				addressImg.src='images/login.png';
 				divRow.appendChild(addressImg);	
+				divRow.addEventListener("click", ()=>{
+					toggler.toggle(divRow);
+					divRow.parentElement.setAttribute('data-loginId', item.loginId);
+					});					
+				divRow.addEventListener("dblclick", ()=>{
+					setMsg(msgType.ok, 'Permission added');
+				});				
 			}, 
 			(txtPart,item)=>{
+				txtPart.style.color = 'inherit';
+				txtPart.style.backgroundColor  = 'inherit';
 				txtPart.innerHTML = item.contact.firstName + ' ' + item.contact.lastName + ' [' + item.username + ']'; 
 			},
 			(txtPart,item)=>{
-				txtPart.addEventListener("click", ()=>{
-					toggler.toggle(txtPart);
-					});					
-				txtPart.addEventListener("dblclick", ()=>{
-					setMsg(msgType.ok, 'Permission added');
-				});
+
 			}
-			)
+		)
+		Object.keys(taskPermissionModel).forEach(item=>taskPermissionModel[item].dom = getById(taskPermissionModel[item].domField));
+		
 }
 
 function getTaskPermissions(){
+	getById('divPermissionList').setAttribute('data-taskPermissionId', 0);
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divPermissionList', 'taskpermission','?actionId=18&taskId='+taskModel.taskId.getValue(), fillDivList, null, 
 			(divRow,item)=>{
@@ -268,19 +281,21 @@ function getTaskPermissions(){
 					addressImg.src='images/permissiontype_edit.png';
 					addressImg.title = 'Read /write';						
 				}
+				divRow.addEventListener("click", ()=>{
+					toggler.toggle(divRow);
+					divRow.parentElement.setAttribute('data-taskPermissionId', item.taskPermissionId);
+				});
+				divRow.addEventListener("dblclick", ()=>{
+					setMsg(msgType.ok, 'Permission removed');
+				});				
 				divRow.appendChild(addressImg);
 				}, 
 			(txtPart,item)=>{
+				txtPart.style.color = 'inherit';
+				txtPart.style.backgroundColor  = 'inherit';
 				txtPart.innerHTML = item.login.contact.firstName + ' ' + item.login.contact.lastName + ' [' + item.login.username + ']';
 				},
-			(txtPart, item)=>{
-				txtPart.addEventListener("click", ()=>{
-					toggler.toggle(txtPart);
-				})					
-				txtPart.addEventListener("dblclick", ()=>{
-					setMsg(msgType.ok, 'Permission removed');
-				})					
-			}
+			null
 			)	
 }
 
