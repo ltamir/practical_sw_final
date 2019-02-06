@@ -186,31 +186,7 @@
 		font-family: arial, sans-serif;
 		font-size:10pt;		
 	}
-		
-	#divTaskTab{
-		font-family: arial, sans-serif;
-		font-size:10pt;	
-		/* Add shadows to create the "card" effect */
-		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-		transition: 0.3s;
-	}
-
-	/* On mouse-over, add a deeper shadow */
-	#divTaskTab:hover {
-	  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-	}	
-	
-	#divCRM{
-		font-family: arial, sans-serif;
-		font-size:10pt;	
-		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-		transition: 0.3s;
-	}
-
-	#divCRM:hover {
-	  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-	}
-		
+			
 	#divCustomerList{
 		height: 6em;
 		width: 8em;
@@ -221,13 +197,17 @@
         background-color: GhostWhite;
         min-width: 21em;		
 	}
-	#divParentTaskList, #divChildTaskList, #divTaskLogList{
+	
+	#divParentTaskList, #divChildTaskList{
 		height: 2em;
 		width: 37em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
-	
+	#divChildTaskList{
+		height: 4em;
+		border-bottom:none;
+	}	
 	#divTaskLogList{
 		height: 5.5em;
 		width: 37em;
@@ -248,10 +228,6 @@
 	#divTaskDetailsBottom, #divTaskDetailsTop{
 		width: 31em;
 	}	
-	#divChildTaskList{
-		height: 4em;
-		border-bottom:none;
-	}
 	
 	#divAttachmentList, #divPermissionList, #divPermissionLoginList{     
         height: 4.5em;
@@ -332,6 +308,21 @@
 		padding: 3px;
 	}
 	  
+	/***** card display *****/
+	  
+	.card{
+		font-family: arial, sans-serif;
+		font-size:10pt;	
+		/* Add shadows to create the "card" effect */
+		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+		transition: 0.3s;
+	}
+	
+	/* On mouse-over, add a deeper shadow */
+	.card:hover {
+	  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+	}
+		  
 	.cssCard{
 		background-color: LightGoldenRodYellow;
 	}
@@ -340,9 +331,9 @@
 		border-width: 1px;
 		border-style: dotted;
 		border-color: black;
-		font-family: arial, sans-serif;
+		font-family: Tahoma, Geneva, sans-serif;
 		background-color: LightGoldenRodYellow;
-		font-size: 0.9em;
+		font-size: 1em;
 		background-image: none;
 	}
 	
@@ -353,12 +344,14 @@
 		vertical-align: bottom;
 	}
 	
+	/***** address  display *****/	
+	
 	#divAddressList{
-		width: 28em;
+		width: 31em;
 		height: 3em;
 		overflow-y: scroll;
 		font-family: Tahoma, Geneva, sans-serif;
-		font-size: 0.8em;
+		font-size: 1em;
 		border-bottom: 1px inset #000000;	
 		cursor: pointer;	
 	}	
@@ -378,21 +371,25 @@
 		max-width: 2em;
 	}
 	
-	#cssConnectedEditContact{
-		width: 28em;
+	#tblConnectedEditContact{
+		width: 31em;
+		font-family: Tahoma, Geneva, sans-serif;
+		font-size: 1em;		
 		border-radius: 8px;
 		border: 1px solid #000000;
 	}
-	#cssConnectedEditContact tr{
+	#tblConnectedEditContact tr{
 		background-color: LightGoldenRodYellow;
 	}	
-	#cssConnectedEditContact td{
+	#tblConnectedEditContact td{
 		border-spacing: 0px;
 		padding: 0px;
 	}		
 	
 	#divConnectedEditAddress{
-		max-width: 28em;
+		max-width: 31em;
+		border-radius: 4px;
+		border: 1px solid #000000;		
 	}
 	
 	#cssConnectionList{

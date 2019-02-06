@@ -171,6 +171,7 @@ function fillTaskRelationSearchResult(id, data){
 
 function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let parentElement = getById(id);
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	
 	for(let i = parentElement.childNodes.length-1; i > -1; i--)
 		parentElement.removeChild(parentElement.childNodes[i]);
@@ -231,19 +232,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     	relTask.setAttribute("data-taskId", taskId);
     	relTask.classList.add("cssTaskRelationTitle");
     	relTask.addEventListener("click", function(){
-    		let containerDiv = getById('divTaskTab');
-    		if(containerDiv.hasAttribute('data-selected')){
-    			let prevRow = getById(containerDiv.getAttribute('data-selected'));
-    			prevRow.classList.remove("cssTaskRelationTitleSelected");
-    			prevRow.parentElement.classList.remove("cssTaskRelationTitleSelected");
-    			prevRow.classList.add("cssTaskRelationTitle");
-    			prevRow.parentElement.classList.add("cssTaskRelationTitle");
-    		}
-    		relTask.classList.remove("cssTaskRelationTitle");
-    		relTask.parentElement.classList.remove("cssTaskRelationTitle");
-    		relTask.classList.add("cssTaskRelationTitleSelected");
-    		relTask.parentElement.classList.add("cssTaskRelationTitleSelected");
-    		containerDiv.setAttribute('data-selected', relTask.id);    		
+    		toggler.toggle(relTask);   		
     		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, viewTaskRelationDetails); setValue('taskRelationSelectedTaskId', taskId);
     		});
     		

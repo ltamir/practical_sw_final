@@ -102,6 +102,7 @@ function activateTabTaskLog(){
 }
 
 function viewTaskLogList(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	if(getValue('taskId') > 0)
     	getDataEx('divTaskLogList', 'tasklog', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null, 
     		(divRow,item)=>{
@@ -120,7 +121,7 @@ function viewTaskLogList(){
     		(txtPart,item)=>{
     			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
     			txtPart.addEventListener("click", function(){
-    				selectedTaskList.toggle(txtPart);
+    				toggler.toggle(txtPart);
     				getData('', 'tasklog', '?actionId=3&taskLogId='+item.taskLogId, viewTaskLog);
     			});	
     		});	
@@ -174,6 +175,7 @@ function activateTabAttachment(){
 }
 
 function viewAttachmentList(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divAttachmentList', 'attachment', '?actionId=2&taskId='+getValue('taskId'), fillDivList, null,
 		(divRow,item)=>{
 			divRow.setAttribute('data-taskLogId', item.attachmentId);
@@ -196,7 +198,7 @@ function viewAttachmentList(){
 		(txtPart,item)=>{
 			txtPart.addEventListener("mouseover", function(){this.style.cursor='pointer';});
 			txtPart.addEventListener("click", function(){
-				selectedTaskList.toggle(txtPart);
+				toggler.toggle(txtPart);
 				getData('', 'attachment', '?actionId=3&attachmentId='+item.attachmentId, viewAttachment);
 			});	
 		})
@@ -236,19 +238,21 @@ function activateTabPermission(){
 }
 
 function getLoginList(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divPermissionLoginList', 'login', '?actionId=2', fillDivList, null, 
 			(divRow,item)=>{
 				divRow.setAttribute('data-loginId', item.loginId);
 				let addressImg = document.createElement("IMG");
 				addressImg.src='images/login.png';
-				divRow.appendChild(addressImg);					
+				divRow.appendChild(addressImg);	
 			}, 
 			(txtPart,item)=>{
 				txtPart.innerHTML = item.contact.firstName + ' ' + item.contact.lastName + ' [' + item.username + ']'; 
 			},
 			(txtPart,item)=>{
 				txtPart.addEventListener("click", ()=>{
-					selectedTaskList.toggle(txtPart);});					
+					toggler.toggle(txtPart);
+					});					
 				txtPart.addEventListener("dblclick", ()=>{
 					setMsg(msgType.ok, 'Permission added');
 				});
@@ -257,6 +261,7 @@ function getLoginList(){
 }
 
 function getTaskPermissions(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divPermissionList', 'taskpermission','?actionId=18&taskId='+taskModel.taskId.getValue(), fillDivList, null, 
 			(divRow,item)=>{
 				divRow.setAttribute('data-taskPermissionId', item.taskPermissionId);
@@ -275,7 +280,7 @@ function getTaskPermissions(){
 				},
 			(txtPart, item)=>{
 				txtPart.addEventListener("click", ()=>{
-					selectedTaskList.toggle(txtPart);
+					toggler.toggle(txtPart);
 				})					
 				txtPart.addEventListener("dblclick", ()=>{
 					setMsg(msgType.ok, 'Permission removed');
@@ -348,6 +353,7 @@ function toggleFilterCustomers(img){
 
 
 function showCustomerConnection(param){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	if(param == null)
 		param =  '?actionId=2';
 	getDataEx('cmbConnectedCustomer', 'customer', param, fillSelect, null, 
@@ -370,7 +376,7 @@ function showCustomerConnection(param){
 							txtPart.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
 							},
 						(txtPart, item)=>txtPart.addEventListener("click", ()=>{
-							selectedTaskList.toggle(txtPart);
+							toggler.toggle(txtPart);
 							getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)
 							})
 						);				
@@ -430,6 +436,7 @@ function activateTabCustomer(){
 	})
 }
 function viewCustomerList(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divCustomerList', 'customer', '?actionId=2', fillDivList, null,
 		(divRow,item)=>{
 			if(dbg==Module.attachment)
@@ -438,7 +445,7 @@ function viewCustomerList(){
 			divRow.innerHTML = item.customerName;
 			divRow.addEventListener("mouseover", function(){this.style.cursor='pointer';});
 			divRow.addEventListener("click", function(){
-				selectedTaskList.toggle(divRow);
+				toggler.toggle(divRow);
 				getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
 			});				
 		},null	, 
