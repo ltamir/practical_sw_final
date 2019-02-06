@@ -145,8 +145,10 @@ function viewTask(id, data){
 	
 	if(task.taskType.taskTypeId==1){
 		getById('TabLinkedCustomer').style.display='inline';
+		getById('TabPermission').style.display='inline';
 	}else{
-		getById('TabLinkedCustomer').style.display='none';		
+		getById('TabLinkedCustomer').style.display='none';
+		getById('TabPermission').style.display='none';
 	}
 	
 	getDataEx('', 'business', '?taskId=' + task.taskId, 

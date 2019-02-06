@@ -3,7 +3,7 @@
 var Module = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9, address:10}
 var dbg = 0;
 var msgType = {ok:1, nok:2};
-var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8}
+var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8, permission:9}
 var activeTaskTab = tabEnum.taskLog;
 
 function subscriber(module, listener){
@@ -157,15 +157,15 @@ function fillTab(id, data, defaultOption, funcValue, funcText, eventHandler){
 	getById(id).innerHTML = data;
 }
 
-function fillDivList(id, data, defaultOption, funcValue, funcText, eventHandler){
-	let parentElement = getById(id);
+function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandler){
+	let divList = getById(divId);
 	
-	for(let i = parentElement.childNodes.length-1; i > -1; i--)
-		parentElement.removeChild(parentElement.childNodes[i]);
+	for(let i = divList.childNodes.length-1; i > -1; i--)
+		divList.removeChild(divList.childNodes[i]);
 	
 	data.array.forEach(function (item) {
 		let divRow = document.createElement('DIV');
-		parentElement.appendChild(divRow);	
+		divList.appendChild(divRow);	
 		funcValue(divRow, item); 
 			
 		let txtPart = document.createElement("SPAN");
