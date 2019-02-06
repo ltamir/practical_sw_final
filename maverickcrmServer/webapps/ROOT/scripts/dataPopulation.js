@@ -205,11 +205,11 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 
     	});
     	divRow.appendChild(relType);
-
+    	
     	let gotoImg = document.createElement("IMG");
     	gotoImg.src="images/goto_task.png";
     	gotoImg.title="goto task";
-    	gotoImg.style.marginLeft = '0.5em';
+    	gotoImg.style.marginLeft = '0.1em';
     	gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+taskId, viewTask)});
     	divRow.appendChild(gotoImg);
     	
@@ -228,8 +228,9 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     		relTask.id = 'taskChildList' + taskId;
     	}
 
-    	relTask.style.marginLeft = '1em';
+    	relTask.style.marginLeft = '0.3em';
     	relTask.innerHTML = taskTitle;
+
     	relTask.setAttribute("data-taskId", taskId);
     	relTask.classList.add("cssTaskRelationTitle");
     	relTask.addEventListener("click", function(){
@@ -237,7 +238,16 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
     		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, viewTaskRelationDetails); setValue('taskRelationSelectedTaskId', taskId);
     		});
     		
-    	divRow.appendChild(relTask);
+    	setTextDirection(relTask, relTask.innerHTML);
+		if(relTask.style.direction == 'rtl'){
+			relTask.style.float = 'right';
+			relTask.style.display = 'table-row';
+//			relTask.style.width = '85%';
+		}else{
+			
+		} 
+		divRow.appendChild(relTask);
+    	
 
     	divRow.classList.add("cssTaskRelationTitle");
 	});
