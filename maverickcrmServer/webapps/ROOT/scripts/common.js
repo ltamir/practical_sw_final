@@ -280,11 +280,10 @@ function setTextDirectionModel(Model){
 function setTextDirection(dom, value){
 	const heb_start = 1488;
 	const heb_end = 1514;
-	const skip_bellow = 65;
+	const non_letters = 65;
 	
-//	if(dom == null) return;
-	for(let pos = 0; pos < 5; pos++){
-		if(value.charCodeAt() >= heb_start && value.charCodeAt() <= heb_end){
+	for(let pos = 0; pos < 4; pos++){
+		if(value.charCodeAt(pos) > non_letters && value.charCodeAt(pos) >= heb_start && value.charCodeAt(pos) <= heb_end){
 			dom.style.direction = 'rtl';
 			return;			
 		}
