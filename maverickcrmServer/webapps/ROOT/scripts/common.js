@@ -173,8 +173,9 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 			funcText(txtPart, item);
 			setTextDirection(txtPart, txtPart.innerHTML);
 			if(txtPart.style.direction == 'rtl'){
-				txtPart.style.float = 'right';
+				divRow.style.direction = 'rtl'; 
 			}
+		
 			divRow.appendChild(txtPart);			
 		}
 
