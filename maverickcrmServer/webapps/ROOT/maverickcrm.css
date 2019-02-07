@@ -243,9 +243,11 @@
 		border-width: 1px;
 		margin-right: 0.3em;	
 	}
-	.cssDivRow div > span{
+	
+	.cssDivRow > div{
 		cursor: pointer;
 	}
+	
 	.cssDivRow div{
 		cursor: pointer;
 	}	
