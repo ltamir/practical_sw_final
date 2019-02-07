@@ -230,7 +230,8 @@ var taskModel={
 		effortUnit:new Model('effortUnit', null, 'effortUnit', [], '', null, null), 
 		dueDate:new Model('txtDetailDueDate', null, 'dueDate', [], '', null, null),
 		dueDateLabel:new Model('lblDetailDueDate', null, null, [], '', null, null),
-		status:new Model('cmbDetailStatus', null, 'statusId', [], '', null, null) 
+		status:new Model('cmbDetailStatus', null, 'statusId', [], '', null, null),
+		version:1
 	}
 taskModel.status.changed = false;
 taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
@@ -242,22 +243,26 @@ var contactModel = {
 		officePhone:new Model('txtOfficePhone', null, 'officePhone', [], '', null, null),
 		mobilePhone:new Model('txtMobilePhone', null, 'mobilePhone', [], '', null, null),
 		email:new Model('txtEmail', null, 'email', [], '', null, null),
-		notes:new Model('txtNotes', null, 'notes', [], '', null, null)
+		notes:new Model('txtNotes', null, 'notes', [], '', null, null),
+		version:1
 }
 
 var customerModel = {
+		version:1,
 		customerId:new Model('detailCustomerId', null, 'customerId', [], '', null, null),
 		customerName:new Model('txtCustomerName', null, 'customerName', [''], 'Please fill customer name', null, null),
 		customerNotes:new Model('txtCustomerNotes', null, 'customerNotes', [], '', null, null)
 }
 
 var customerTaskModel = {
+		version:1,
 		customerTaskId:new Model('cmbLinkedCustomer', null, 'customerTaskId', [], '', null, null),
 		newcustomerId:new Model('cmbNoneLinkedCustomer', null, 'customerId', [''], 'Please select a customer', null, null),
 		taskId:new Model('taskId', null, 'taskId', [], '', null, null)
 }
 
 var loginModel = {
+		version:1,
 		loginId:new Model('loginId', null, 'loginId', [], '', null, null),
 		username:new Model('txtUserName', null, 'username', [''], 'Please type a username', null, null),		
 		password:new Model('txtPassword', null, 'password', [''], 'Please type a password', null, null),
@@ -265,32 +270,34 @@ var loginModel = {
 }
 
 var taskPermissionModel = {
-		taskPermissionId:new Model('divPermissionList', null, 'customerTaskId', [], '', function(){return this.dom.getAttribute('data-taskPermissionId');}, function(val){this.dom.setAttribute('data-taskPermissionId', val);}),
+		taskPermissionId:new Model('divPermissionList', null, 'taskpermissionId', [], '', function(){return this.dom.getAttribute('data-taskPermissionId');}, function(val){this.dom.setAttribute('data-taskPermissionId', val);}),
 		taskId:new Model('taskId', null, 'taskId', [0], 'Please select a task to assign it permission', null, null),
-		loginId:new Model('divPermissionLoginList', null, 'loginId', [], '', function(){return this.dom.getAttribute('data-loginId');}, function(val){this.dom.setAttribute('data-loginId', val);}),
-		permissiontypeId:new Model('cmbPermissionType', null, 'permissiontypeId', [''], 'Please select Edit or View permision', null, null)
+		loginId:new Model('divPermissionLoginList', null, 'loginId', [''], 'Login not selected', function(){return this.dom.getAttribute('data-loginId');}, function(val){this.dom.setAttribute('data-loginId', val);}),
+		permissiontypeId:new Model('cmbPermissionType', null, 'permissiontypeId', [''], 'Please select Edit or View permision', null, null),
+		version:3
 }
-//taskPermissionModel.taskPermissionId.setValue = function(val){this.dom.parentElement.setAttribute('data-taskPermissionId', val);}
-//taskPermissionModel.taskPermissionId.getValue = function(){return this.dom.parentElement.getAttribute('data-taskPermissionId');}
-//taskPermissionModel.loginId.setValue = function(val){this.dom.parentElement.setAttribute('data-loginId', val);}
-//taskPermissionModel.loginId.getValue = function(){return this.dom.parentElement.getAttribute('data-loginId');}
 
-var validation = {
-		loginModel:{loginId:[
-			{PUT:{chkValues:[0], err:'Please select a login'}},
-			{DELETE:{chkValues:[0], err:'Please select a login'}}
-			]},
-		loginModel:{username:[
-			{POST:{chkValues:[''], err:'Please type a username'}},
-			{PUT:{chkValues:[''], err:'Please type a username'}}
-			]},
-		loginModel:{password:[
-			{POST:{chkValues:[''], err:'Please type a username'}},
-			{PUT:{chkValues:[''], err:'Please type a username'}}
-			]}			
+function mapAPI(chkValues, err, inApi){
+	this.chkValues = chkValues;
+	this.err = err;
+	this.inApi = (inApi == null)?false:inApi;
 }
+
+taskPermissionModel.taskPermissionId.POST = new mapAPI(null, null, false);
+taskPermissionModel.taskPermissionId.PUT = new mapAPI([0], 'permission not selected', true);
+taskPermissionModel.taskPermissionId.DELETE = new mapAPI([0], 'permission not selected', true);
+taskPermissionModel.taskId.POST = new mapAPI([0], 'Please select a task to assign it permission', true);
+taskPermissionModel.taskId.PUT = new mapAPI(null, null, false);
+taskPermissionModel.taskId.DELETE = new mapAPI(null, null, false);
+taskPermissionModel.loginId.POST = new mapAPI([0], 'Login not selected', true);
+taskPermissionModel.loginId.PUT = new mapAPI(null, null, false);
+taskPermissionModel.loginId.DELETE = new mapAPI();
+taskPermissionModel.permissiontypeId.POST = new mapAPI([''], 'Please select Edit or View permision', true);
+taskPermissionModel.permissiontypeId.PUT = new mapAPI([''], 'Please select Edit or View permision', true);
+taskPermissionModel.permissiontypeId.DELETE = new mapAPI(null, null, false);
 
 var attachmentModel = {
+		version:1,
 		attachmentId:new Model('attachmentId', null, 'attachmentId', [], '', null, null),
 		type:new Model('cmbAttachmentType', null, 'attachmentTypeId', [], '', null, null),
 		file:new Model('attachmentFile', null, 'fileName', [], '', null, null),
@@ -322,6 +329,7 @@ associationModel.contact.validation.DELETE = {chkValues:[0,''],err:'Contact not 
 associationModel.associationId.validation = {DELETE:{chkValues:[0,''],err:'Something not selected'}};
 
 var taskRelationModel = {
+		version:1,
 		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', [], '', null, null),
 		task:new Model('taskId', null, 'parentTaskId',[], '', null, null),
 		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId', [], '', null, null),
@@ -329,6 +337,7 @@ var taskRelationModel = {
 }
 
 var addressModel = {
+		version:1,
 		addressId:new Model('addressId', null, 'addressId', [], '', null, null),
 		street:new Model('txtAddressStreet', null, 'street', [''], 'Please fill the street name', null, null),
 		houseNum:new Model('txtAddressHouseNum', null, 'houseNum', [''], 'Please fill the building number', null, null),
@@ -338,6 +347,7 @@ var addressModel = {
 }
 
 var searchModel = {
+		version:1,
 		customer:new Model('cmbSearchCustomer', null, 'customerId', [], '', null, null),
 		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', [], '', null, null),
 		project:new Model('cmbSearchProject', null, 'projectId', [], '', null, null),

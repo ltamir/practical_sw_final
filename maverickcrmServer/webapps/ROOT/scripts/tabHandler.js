@@ -227,7 +227,7 @@ function activateTabLinkedCustomer(){
 
 function activateTabPermission(){
 	getHTML('tabPermission.html').then(function(response){fillTab('divTaskTab', response)})
-	.then(()=>getTaskPermissions()	)
+	.then(()=>viewTaskPermissionList()	)
 	.then(()=>getDataEx('cmbPermissionType', 'permissiontype', '?actionId=2', fillSelect, 
 			null, 
 			(opt,item)=>opt.value = item.permissionTypeId, 
@@ -251,7 +251,7 @@ function viewPermissionLoginList(){
 					divRow.parentElement.setAttribute('data-loginId', item.loginId);
 					});					
 				divRow.addEventListener("dblclick", ()=>{
-					setMsg(msgType.ok, 'Permission added');
+
 				});				
 			}, 
 			(txtPart,item)=>{
@@ -267,14 +267,14 @@ function viewPermissionLoginList(){
 		
 }
 
-function getTaskPermissions(){
+function viewTaskPermissionList(){
 	getById('divPermissionList').setAttribute('data-taskPermissionId', 0);
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divPermissionList', 'taskpermission','?actionId=18&taskId='+taskModel.taskId.getValue(), fillDivList, null, 
 			(divRow,item)=>{
 				divRow.setAttribute('data-taskPermissionId', item.taskPermissionId);
 				let addressImg = document.createElement("IMG");
-				if(item.permissionType.permissionTypeId == 1){
+				if(item.permissionType.permissionTypeId == 2){
 					addressImg.src='images/permissiontype_view.png';
 					addressImg.title = 'Read only';							
 				}else{
@@ -286,7 +286,7 @@ function getTaskPermissions(){
 					divRow.parentElement.setAttribute('data-taskPermissionId', item.taskPermissionId);
 				});
 				divRow.addEventListener("dblclick", ()=>{
-					setMsg(msgType.ok, 'Permission removed');
+					
 				});				
 				divRow.appendChild(addressImg);
 				}, 
@@ -463,14 +463,14 @@ function activateTabLogin(){
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
-		.then(()=>fillLoginList('cmbAvailableLogins'))
+		.then(()=>viewLoginList())
 		.then(()=>{
 			Object.keys(loginModel).forEach(item=>loginModel[item].dom = getById(loginModel[item].domField));
 		})
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
-function fillLoginList(loginListElement){
-	getDataEx(loginListElement, 'login', '?actionId=2', fillSelect, 'Select Login', 
+function viewLoginList(){
+	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
 		(opt,item)=>opt.value = item.loginId, 
 		(opt,item)=>opt.text = item.username,
 		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, viewLogin)})

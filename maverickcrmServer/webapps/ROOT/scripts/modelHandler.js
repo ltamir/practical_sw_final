@@ -317,28 +317,43 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 			method = 'PUT';		
 	}
 	
-	if(model.version != null && model.version == 2){	//validation per API
+	if(model.version == 1){	//one validation for all API
+		for(const key in model){
+			if(key != 'version' && model[key].notValid.length > 0){
+				for(const val in model[key].notValid)
+					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
+			}	
+		}	
+	}else if(model.version == 2){	//validation per API
 		for(const key in model){
 			if(key != 'version' && model[key].validation[method] != null){
 				for(const val in model[key].validation[method].chkValues)
 					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
 			}
 		}		
-	}else{
+	}else if(model.version == 3){
 		for(const key in model){
-			if(model[key].notValid.length > 0){
-				for(const val in model[key].notValid)
-					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
-			}	
+			if(key != 'version' && model[key][method] != null){
+				for(const val in model[key][method].chkValues)
+					if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
+			}
 		}
 	}
 	if(!validation(model)) return;
 	
 	formData = new FormData();
-	Object.keys(model).forEach(function(key){
-		if(key != 'version' && model[key].api != null)
-			formData.append(model[key].api, model[key].getValue())
-	});	
+	if(model.version == 3){	//only fields flagged in method
+		for(const key in model){
+			if(key != 'version' && model[key][method].inApi){
+				formData.append(model[key].api, model[key].getValue())
+			}
+		}
+	}else{
+		Object.keys(model).forEach(function(key){
+			if(key != 'version' && model[key].api != null)
+				formData.append(model[key].api, model[key].getValue())
+		});			
+	}
 	
 	if(dbg == dbgModule)
 		debugFormData(formData);
@@ -629,8 +644,24 @@ function saveLogin(){
 	
 	genericSave(validateLogin, loginModel, loginModel.loginId, Module.login, null, 'login',
 		(resp)=>{
-			fillLoginList();
+			viewLoginList();
 			setValue('loginId', resp.loginId);
 			setValue('cmbAvailableLogins', resp.loginId);
 		});
+}
+
+function addPermission(){
+	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.taskPermissionId, Module.login, null, 'taskpermission',
+			(resp)=>{
+				viewTaskPermissionList();
+				setMsg(msgType.ok, 'Permissions updated');
+			});
+}
+
+function removePermission(){
+	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.loginId, Module.login, 'DELETE', 'taskpermission',
+			(resp)=>{
+				viewTaskPermissionList();
+				setMsg(msgType.ok, 'Permissions removed');
+			});
 }
