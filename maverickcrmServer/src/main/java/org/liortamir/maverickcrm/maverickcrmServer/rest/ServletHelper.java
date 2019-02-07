@@ -22,13 +22,23 @@ public class ServletHelper {
 	public static final ActionEnum[] ACTION_LIST = ActionEnum.values();
 	
 	public static void doError(Exception e, Object servlet, String method, JsonObject json, HttpServletRequest req) {
+		final String DOT = ".";
+		final String METHOD = "()";
+		final String SPACE = " ";
 		StringBuilder sb = new StringBuilder();
-		sb.append(servlet.getClass().getName() );
-		sb.append(".");
-		sb.append(method);
-		sb.append("(): ");
-		sb.append(e.toString());
-		sb.append(" ");
+		sb.append(servlet.getClass().getName()).append(DOT).append(method).append(METHOD).append(e.toString());
+//		sb.append(DOT);
+//		sb.append(method);
+//		sb.append(METHOD);
+//		sb.append(e.toString());
+
+		if(e.getCause() != null)
+			if(e.getCause().getCause() != null)
+				if(e.getCause().getCause().getCause() != null){
+					sb.append(SPACE);
+					sb.append(e.getCause().getCause().getCause());
+				}
+		sb.append(SPACE);
 		sb.append(req.getQueryString());
 		
 		System.out.println(sb.toString());
