@@ -7,6 +7,7 @@
 		border-radius: 3px;
 		color: #112211;
 		font-family: Tahoma, Geneva, sans-serif;
+		font-size: 0.9em;
 	}
 	
 	textarea{
@@ -71,7 +72,6 @@
 	}
 	
 	.cssMessageInfo{
-		font-size:11pt;
 		border: 1px inset;
 		font-family: Tahoma, Geneva, sans-serif;
 		font-style: oblique;
@@ -102,7 +102,7 @@
 	    float: left;
 	    width: 100%;
 	    font-family: Geneva, arial, sans-serif;
-	    font-size: medium;	
+	    font-size: 1em;	
 	    overflow-y: auto;
 	    overflow-x: hidden;
 	    height: 150px;
@@ -184,7 +184,7 @@
 
 	#txtTaskLogDescription, #txtAttachmentNotes{
 		font-family: arial, sans-serif;
-		font-size:10pt;		
+		font-size:1em;		
 	}
 			
 	#divCustomerList{
@@ -193,7 +193,7 @@
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
-		font-size:10pt;
+		font-size:1em;
         background-color: GhostWhite;
         min-width: 21em;		
 	}
@@ -236,7 +236,7 @@
 	.cssDivRow{
 		background-color: WhiteSmoke;
 		font-family: arial, sans-serif;
-		font-size:10pt;
+		font-size: 1em;
 	}
 	.cssDivRow div > img{
 		border-style: outset;
@@ -319,7 +319,7 @@
 	  
 	.card{
 		font-family: arial, sans-serif;
-		font-size:10pt;	
+		font-size:1em;	
 		/* Add shadows to create the "card" effect */
 		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 		transition: 0.3s;
@@ -369,7 +369,7 @@
 	
 	#divAddressList span{
 		font-family: arial, sans-serif;
-		font-size:10pt;
+		font-size:1em;
 		cursor: pointer;
 		
 	}
