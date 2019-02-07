@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 
 import com.google.gson.Gson;
@@ -45,7 +47,13 @@ public class TaskController extends HttpServlet {
 		int taskId = 0;
 
 		try {
+//			AuthenticationController authentication = (AuthenticationController)getServletConfig().getServletContext().getServlet("Authentication");
+//			req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
+			String user = (String) req.getSession().getAttribute("username");
+			if(user == null)
+				throw new NullPointerException();
 
+			Login login = LoginDAL.getInstance().get(user);
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action) {
 			case ACT_ALL:
@@ -56,7 +64,7 @@ public class TaskController extends HttpServlet {
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
 				int status = Integer.parseInt(req.getParameter("showclosed"));
-				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, status);
+				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;

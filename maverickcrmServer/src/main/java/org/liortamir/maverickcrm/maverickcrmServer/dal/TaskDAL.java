@@ -57,7 +57,7 @@ public class TaskDAL {
 				3));
 		predicate.add("taskType", new IntPredicate(0, 
 				" taskTypeId=? ",
-				1));		
+				1));	
 	}
 	
 	/**
@@ -68,6 +68,7 @@ public class TaskDAL {
 	 */
 	public Task get(int taskId) throws SQLException {
 		Task entity = null;
+		final String authentication = " permissiontypeid from taskpermission where (taskId in(select parenttaskId from taskrelation where childtaskId = ?) and loginId =?) or (taskId in (select parentTaskId from taskrelation where childtaskid in(select parentTaskId from taskrelation where  childtaskId = ?) )  and loginId = ? )";
 		try (Connection conn = DBHandler.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("select * from task where taskId=?");
 			ps.setInt(1, taskId);
@@ -106,14 +107,16 @@ public class TaskDAL {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, int status) throws SQLException {
+	public List<Task> getAll(int customerId, String dueDate, String title, int projectTaskId, int taskTypeId, int status, int loginId) throws SQLException {
 		List<Task> entityList = null;
 		MutableInt paramCount = new MutableInt(0);
 		MutableBool whereUsed = new MutableBool(false);
 		final String baseSQL = "select * from task ";
 		final String orderBy = " order by duedate asc, statusId asc";
-
+		final String authentication = " (taskId in (select taskId from taskPermission where loginId=?) or   taskid in (select childtaskId from taskrelation where parentTaskId in(select taskId from taskPermission where loginId = ?)) or "
+				+ " taskId in (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?)))) ";
 		StringBuilder sqlStatement = new StringBuilder(baseSQL);
+
 		
 		Date dateDueDate = null;
 		if(dueDate.equals(""))
@@ -127,6 +130,11 @@ public class TaskDAL {
 		this.predicate.prepare("taskType", taskTypeId, whereUsed, sqlStatement);
 		this.predicate.prepare("status", status, whereUsed, sqlStatement);
 		
+		if(!whereUsed.get())
+			sqlStatement.append(" where ");
+		else
+			sqlStatement.append(" and ");
+		sqlStatement.append(authentication);
 		sqlStatement.append(orderBy);
 
 		try (Connection conn = DBHandler.getConnection()){
@@ -139,6 +147,10 @@ public class TaskDAL {
 			this.predicate.set("project", ps, paramCount, projectTaskId);
 			this.predicate.set("taskType", ps, paramCount, taskTypeId);
 			this.predicate.set("status", ps, paramCount, status);
+			
+			ps.setInt(paramCount.get() + 1, loginId);
+			ps.setInt(paramCount.get() + 2, loginId);
+			ps.setInt(paramCount.get() + 3, loginId);
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
