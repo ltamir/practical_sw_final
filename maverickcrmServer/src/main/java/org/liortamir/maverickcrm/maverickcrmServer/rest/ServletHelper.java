@@ -23,14 +23,9 @@ public class ServletHelper {
 	
 	public static void doError(Exception e, Object servlet, String method, JsonObject json, HttpServletRequest req) {
 		final String DOT = ".";
-		final String METHOD = "()";
 		final String SPACE = " ";
 		StringBuilder sb = new StringBuilder();
-		sb.append(servlet.getClass().getName()).append(DOT).append(method).append(METHOD).append(e.toString());
-//		sb.append(DOT);
-//		sb.append(method);
-//		sb.append(METHOD);
-//		sb.append(e.toString());
+		sb.append(servlet.getClass().getName()).append(DOT).append(method).append(e.toString());
 
 		if(e.getCause() != null)
 			if(e.getCause().getCause() != null)
@@ -43,7 +38,7 @@ public class ServletHelper {
 		
 		System.out.println(sb.toString());
 		json.addProperty("msg",  "Internal error, please check the log");
-		json.addProperty("err",  e.toString());
+		json.addProperty("err",  sb.toString());
 		json.addProperty("status",  "nack");
 	}
 	
