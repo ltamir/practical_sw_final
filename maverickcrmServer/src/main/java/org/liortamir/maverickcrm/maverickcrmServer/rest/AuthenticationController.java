@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -34,7 +35,7 @@ public class AuthenticationController extends HttpServlet {
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
-			
+			// TODO req.getDispatcherType() == INCLUDE
 			switch(action) {
 			case ACT_GET_LOGGED_IN:
 				String user = (String) req.getSession().getAttribute("username");
@@ -42,6 +43,10 @@ public class AuthenticationController extends HttpServlet {
 					throw new NullPointerException();
 
 				Login login = LoginDAL.getInstance().get(user);
+				if(req.getDispatcherType() == DispatcherType.INCLUDE) {
+					req.getSession().setAttribute("login", login);
+					return;
+				}
 				json.add("login", jsonHelper.toJsonTree(login));
 	
 				break;

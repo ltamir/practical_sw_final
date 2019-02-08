@@ -34,6 +34,28 @@ public class TaskPermissionDAL {
 		return entity;
 	}
 	
+	public TaskPermission get(int taskId, int loginId) throws SQLException {
+		TaskPermission entity = null;
+		final String authentication = " or " + 
+				" taskId in(select childTaskId from taskrelation where parentTaskId" + 
+				" in (select taskId from taskpermission where loginId=?))" + 
+				"or" + 
+				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
+				" in ( select childTaskId from taskrelation where parentTaskId " + 
+				" in(select taskId from taskpermission where loginId=?)))";
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from taskpermission where taskId=? and loginId=?" + authentication);
+			ps.setInt(1, taskId);
+			ps.setInt(2, loginId);
+			ps.setInt(3, loginId);
+			ps.setInt(4, loginId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = mapFields(rs);
+		}
+		return entity;
+	}	
+	
 	public List<TaskPermission> getAll() throws SQLException {
 		List<TaskPermission> entityList = null;
 

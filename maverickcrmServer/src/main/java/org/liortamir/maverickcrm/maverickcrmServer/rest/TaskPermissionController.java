@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -61,6 +62,14 @@ public class TaskPermissionController extends HttpServlet {
 				bulk = dal.getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
+			case ACT_BY_TASK_AND_LOGIN:
+				id = Integer.parseInt(req.getParameter("taskId")); 
+				int loginId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_ID));
+				taskPermission = dal.get(id, loginId);
+				if(req.getDispatcherType() == DispatcherType.INCLUDE) {
+					req.getSession().setAttribute("taskPermission", taskPermission);
+					return;
+				}
 			default:
 				throw new InvalidActionException(actionId);
 			}

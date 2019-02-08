@@ -68,10 +68,44 @@ public class TaskDAL {
 	 */
 	public Task get(int taskId) throws SQLException {
 		Task entity = null;
-		final String authentication = " permissiontypeid from taskpermission where (taskId in(select parenttaskId from taskrelation where childtaskId = ?) and loginId =?) or (taskId in (select parentTaskId from taskrelation where childtaskid in(select parentTaskId from taskrelation where  childtaskId = ?) )  and loginId = ? )";
 		try (Connection conn = DBHandler.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("select * from task where taskId=?");
 			ps.setInt(1, taskId);
+		
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = mapFields(rs);
+		}
+		return entity;
+	}	
+	
+
+	/**
+	 * Get task if the loginId has permission on its project task
+	 * @param taskId
+	 * @param loginId
+	 * @return
+	 * @throws SQLException
+	 */
+	public Task get(int taskId, int loginId) throws SQLException {
+		Task entity = null;
+		final String authentication = "select * from task where taskId = ? " + 
+				"and " + 
+				"( taskId in(select taskId from taskpermission where loginId=?)" + 
+				" or " + 
+				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
+				" in (select taskId from taskpermission where loginId=?))" + 
+				"or " + 
+				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
+				" in ( select childTaskId from taskrelation where parentTaskId " + 
+				" in(select taskId from taskpermission where loginId=?)))" + 
+				") ";
+		try (Connection conn = DBHandler.getConnection()) {
+			PreparedStatement ps = conn.prepareStatement(authentication);
+			ps.setInt(1, taskId);
+			ps.setInt(2, loginId);
+			ps.setInt(3, loginId);
+			ps.setInt(4, loginId);			
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);

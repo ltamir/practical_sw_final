@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
+import org.liortamir.maverickcrm.maverickcrmServer.model.TaskPermission;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -47,13 +47,9 @@ public class TaskController extends HttpServlet {
 		int taskId = 0;
 
 		try {
-//			AuthenticationController authentication = (AuthenticationController)getServletConfig().getServletContext().getServlet("Authentication");
-//			req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
-			String user = (String) req.getSession().getAttribute("username");
-			if(user == null)
-				throw new NullPointerException();
-
-			Login login = LoginDAL.getInstance().get(user);
+			req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
+			Login login = (Login)req.getSession().getAttribute("login");
+			
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action) {
 			case ACT_ALL:
@@ -68,10 +64,15 @@ public class TaskController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;
-			case ACT_SINGLE:
+			case ACT_SINGLE: //TODO return taskpermission object as well
+//				req.setAttribute(APIConst.FLD_LOGIN_ID, login.getLoginId());
+				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId()).include(req, resp);
+				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
+				
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				task = TaskDAL.getInstance().get(taskId);
+				task = TaskDAL.getInstance().get(taskId, login.getLoginId());
 				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
+				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
 			case ACT_RELATION_PARENTS:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
