@@ -122,7 +122,6 @@ function flagToggle(lbl, field, ev){
 }
 
 function toggleSearchDate(lbl, field){
-	console.log(window.event);
 	if(field.getAttribute('data-isActive') == '0'){
 		field.style.display='inline';
 		lbl.style.display='none';
