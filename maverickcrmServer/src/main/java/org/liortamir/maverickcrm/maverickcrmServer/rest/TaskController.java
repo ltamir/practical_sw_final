@@ -64,8 +64,7 @@ public class TaskController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;
-			case ACT_SINGLE: //TODO return taskpermission object as well
-//				req.setAttribute(APIConst.FLD_LOGIN_ID, login.getLoginId());
+			case ACT_SINGLE:
 				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId()).include(req, resp);
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
 				

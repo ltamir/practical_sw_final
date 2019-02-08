@@ -41,22 +41,22 @@ public class TaskDAL {
 	private TaskDAL() {
 		// customer, duedate, status, title, project, taskType
 		predicate.add("customer", new IntPredicate(0, 
-				" taskId in (select taskId from customerTask where customerId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)) or taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select taskId from customerTask where customerId=?)))",
+				" (task.taskId in (select customerTask.taskId from customerTask where customerId=?) or task.taskId in(select childTaskId from taskRelation where parentTaskId in(select customerTask.taskId from customerTask where customerId=?)) or task.taskId in(select childTaskId from taskRelation where parentTaskId in(select childTaskId from taskRelation where parentTaskId in(select customerTask.taskId from customerTask where customerId=?))))",
 				3));
 		predicate.add("duedate", new DatePredicate(new java.sql.Date(1), 
-				" dueDate <= ? ",
+				" task.dueDate <= ? ",
 				1));
 		predicate.add("status", new TaskStatusPredicate(0, 
-				" statusId=? ",
+				" task.statusId=? ",
 				1));
 		predicate.add("title", new StringPredicate("", 
-				" title like ?",
+				" task.title like ?",
 				1));
 		predicate.add("project", new IntPredicate(0, 
-				" ( taskId = ? or taskId in(select childTaskId from taskRelation where parentTaskId=?) or taskId in(select childTaskId from taskRelation where parentTaskId in (select childTaskId from taskRelation where parentTaskId=?)))",
+				" ( task.taskId = ? or task.taskId in(select childTaskId from taskRelation where parentTaskId=?) or task.taskId in(select childTaskId from taskRelation where parentTaskId in (select childTaskId from taskRelation where parentTaskId=?)))",
 				3));
 		predicate.add("taskType", new IntPredicate(0, 
-				" taskTypeId=? ",
+				" task.taskTypeId=? ",
 				1));	
 	}
 	
@@ -99,13 +99,19 @@ public class TaskDAL {
 				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
 				" in ( select childTaskId from taskrelation where parentTaskId " + 
 				" in(select taskId from taskpermission where loginId=?)))" + 
-				") ";
+				"or " + 
+				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
+				" in ( select childTaskId from taskrelation where parentTaskId " + 
+				" in ( select childTaskId from taskrelation where parentTaskId " +
+				" in(select taskId from taskpermission where loginId=?))))" + 
+				")";
 		try (Connection conn = DBHandler.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement(authentication);
 			ps.setInt(1, taskId);
 			ps.setInt(2, loginId);
 			ps.setInt(3, loginId);
-			ps.setInt(4, loginId);			
+			ps.setInt(4, loginId);
+			ps.setInt(5, loginId);	
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);
@@ -145,46 +151,102 @@ public class TaskDAL {
 		List<Task> entityList = null;
 		MutableInt paramCount = new MutableInt(0);
 		MutableBool whereUsed = new MutableBool(false);
-		final String baseSQL = "select * from task ";
-		final String orderBy = " order by duedate asc, statusId asc";
-		final String authentication = " (taskId in (select taskId from taskPermission where loginId=?) or   taskid in (select childtaskId from taskrelation where parentTaskId in(select taskId from taskPermission where loginId = ?)) or "
-				+ " taskId in (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?)))) ";
-		StringBuilder sqlStatement = new StringBuilder(baseSQL);
-
 		
+		final String orderBy = " order by duedate asc, statusId asc";	
+		final String union = " union ";
+		final String baseSQL = "select * from (select * from task"
+		+" inner join (select taskId from taskPermission where loginId=?) perm on perm.taskId = task.taskid"
+		+ union
+		+" select * from task"
+		+" inner  join"
+		+" (select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?)) one on one .childTaskId  = task.taskId"
+		+ union
+		+" select * from task"
+		+" inner  join"
+		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) two on two .childTaskId  = task.taskId"
+		+ union
+		+" select * from task"
+		+" inner  join"
+		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) three on three .childTaskId  = task.taskId"
+		+ union
+		+" select * from task"
+		+" inner join"
+		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) "
+		+" ) four on four.childTaskId  = task.taskId ) as task";	
+		
+		final String levelZero = "select * from task inner join (select taskPermission.taskId from taskPermission where loginId=?) perm on perm.taskId = task.taskid";
+		final String levelOne = " select * from task"
+				+" inner  join"
+				+" (select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?)) one on one.childTaskId  = task.taskId";
+		final String levelTwo = "select * from task"
+				+" inner  join"
+				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) two on two.childTaskId  = task.taskId";
+		final String levelThree = " select * from task"
+				+" inner  join"
+				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) three on three.childTaskId  = task.taskId";
+		final String levelFour = " select * from task"
+				+" inner join"
+				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) "
+				+" ) four on four.childTaskId  = task.taskId" ;
+		
+		StringBuilder sqlStatement = new StringBuilder(levelZero);
+		StringBuilder sqlPredicate = new StringBuilder();
 		Date dateDueDate = null;
 		if(dueDate.equals(""))
 			dateDueDate = new java.sql.Date(1);
 		else
 			dateDueDate = java.sql.Date.valueOf(dueDate);
-		this.predicate.prepare("customer", customerId, whereUsed, sqlStatement);
-		this.predicate.prepare("duedate", dateDueDate, whereUsed, sqlStatement);
-		this.predicate.prepare("title", title, whereUsed, sqlStatement);
-		this.predicate.prepare("project", projectTaskId, whereUsed, sqlStatement);
-		this.predicate.prepare("taskType", taskTypeId, whereUsed, sqlStatement);
-		this.predicate.prepare("status", status, whereUsed, sqlStatement);
 		
-		if(!whereUsed.get())
-			sqlStatement.append(" where ");
-		else
-			sqlStatement.append(" and ");
-		sqlStatement.append(authentication);
+		this.predicate.prepare("customer", customerId, whereUsed, sqlPredicate);
+		this.predicate.prepare("duedate", dateDueDate, whereUsed, sqlPredicate);
+		this.predicate.prepare("title", title, whereUsed, sqlPredicate);
+		this.predicate.prepare("project", projectTaskId, whereUsed, sqlPredicate);
+		this.predicate.prepare("taskType", taskTypeId, whereUsed, sqlPredicate);
+		this.predicate.prepare("status", status, whereUsed, sqlPredicate);
+		
+		sqlStatement.append(sqlPredicate.toString() + union);
+		sqlStatement.append(levelOne.toString());
+		sqlStatement.append(sqlPredicate.toString() + union);
+		sqlStatement.append(levelTwo.toString());
+		sqlStatement.append(sqlPredicate.toString() + union);
+		sqlStatement.append(levelThree.toString());
+		sqlStatement.append(sqlPredicate.toString() + union);
+		sqlStatement.append(levelFour.toString());
+		sqlStatement.append(sqlPredicate.toString());
 		sqlStatement.append(orderBy);
 
 		try (Connection conn = DBHandler.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sqlStatement.toString());
-
-			this.predicate.set("customer", ps, paramCount, customerId);
-			this.predicate.set("duedate", ps, paramCount, dateDueDate);
-			this.predicate.set("title", ps, paramCount, title);
-			this.predicate.set("project", ps, paramCount, projectTaskId);
-			this.predicate.set("taskType", ps, paramCount, taskTypeId);
-			this.predicate.set("status", ps, paramCount, status);
-			
-			ps.setInt(paramCount.get() + 1, loginId);
-			ps.setInt(paramCount.get() + 2, loginId);
-			ps.setInt(paramCount.get() + 3, loginId);
+			for(int i = 0; i < 5; i++) {
+				
+				ps.setInt(paramCount.get()+1, loginId);
+				paramCount.add(1);
+				this.predicate.set("customer", ps, paramCount, customerId);
+				this.predicate.set("duedate", ps, paramCount, dateDueDate);
+				this.predicate.set("title", ps, paramCount, title);
+				this.predicate.set("project", ps, paramCount, projectTaskId);
+				this.predicate.set("taskType", ps, paramCount, taskTypeId);
+				this.predicate.set("status", ps, paramCount, status);
+				
+			}
+//			paramCount.add(1);
+//			ps.setInt(paramCount.get(), loginId);
+//			paramCount.add(1);
+//			ps.setInt(paramCount.get(), loginId);
+//			paramCount.add(1);
+//			ps.setInt(paramCount.get(), loginId);
+//			paramCount.add(1);
+//			ps.setInt(paramCount.get(), loginId);
+//			paramCount.add(1);
+//			ps.setInt(paramCount.get(), loginId);
+//			
+//			this.predicate.set("customer", ps, paramCount, customerId);
+//			this.predicate.set("duedate", ps, paramCount, dateDueDate);
+//			this.predicate.set("title", ps, paramCount, title);
+//			this.predicate.set("project", ps, paramCount, projectTaskId);
+//			this.predicate.set("taskType", ps, paramCount, taskTypeId);
+//			this.predicate.set("status", ps, paramCount, status);
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
