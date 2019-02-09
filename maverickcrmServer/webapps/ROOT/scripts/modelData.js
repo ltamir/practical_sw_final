@@ -180,13 +180,9 @@ function divRowToggler(regularCSS, selectedCSS){
 			return;
 		row.classList.add(selectedCSS);
 		row.classList.remove(regularCSS);
-//		row.parentElement.classList.add(selectedCSS);
-//		row.parentElement.classList.remove(regularCSS);
 		if(this.selectedRow !=null){
 			this.selectedRow.classList.remove(selectedCSS);
-			this.selectedRow.classList.add(regularCSS);
-//			this.selectedRow.parentElement.classList.remove(selectedCSS);
-//			this.selectedRow.parentElement.classList.add(regularCSS);			
+			this.selectedRow.classList.add(regularCSS);		
 		}
 		this.selectedRow = row;
 	}	
