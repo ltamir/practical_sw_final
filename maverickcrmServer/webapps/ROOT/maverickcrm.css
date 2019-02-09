@@ -83,7 +83,7 @@
 		transform: skewX(-10deg);
 	}
 
-	.Fixed
+	.cssFixed
 	{
 	    position: fixed;
 	    top: 4em;
