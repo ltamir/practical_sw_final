@@ -44,6 +44,7 @@
             <td width="27%" align="right" valign="bottom">
             	<img src="images/menu_search.png" style="float:left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
             	<img src="images/menu_reset.png" style="float:left; margin-left:0.3em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
             	<select id="cmbDebug" onchange="setDebugModule()">
@@ -67,7 +68,7 @@
 			<td class="cssMessageInfo" id="messageInfo">Ready</td>
 		</tr>
 	</table>
-   	<table id="parentTaskList" class="Fixed">
+   	<table id="parentTaskList" class="cssFixed">
 		<tr>
 			<td style="width: 5%;">Type</td>
 			<td style="width: 70%; text-align: center;">Title</td>
@@ -129,8 +130,8 @@
 				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="80" tabindex="1"></textarea>
 				<br>
 				<div id="divTaskDetailsBottom">
-					<label for="txtDetailEffort" class="cssFieldLabel" tabindex="2">Effort</label>
-					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1">
+					<label for="txtDetailEffort" class="cssFieldLabel">Effort</label>
+					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1" tabindex="2">
 					<img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.taskEffortUnit)">
 					<div id="divMenuEffortUnit">
 						<img title="Effort is in hours" src="images/effortUnit_hours.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 1 ); menuHandler(menuData.taskEffortUnit)">
@@ -159,15 +160,17 @@
 					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
 					<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;">
-	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; position:relative; overflow-y: scroll; height:18em; width: 26m;">
-	            		<textarea rows="3" cols="60" id="txtSQL">select * from task</textarea>
+	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; height:18em; width: 26m;">
+	            		<textarea rows="5" cols="85" id="txtSQL">select * from task</textarea>
 	            		<br>
 	            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
-	            		
+	            		<div style=" position:relative; overflow-y: scroll; height:18em">
 	            		<table>
-	            			<thead id="resultHeader" style="font-size:x-small;"></thead>
+	            			<thead id="resultHeader" style="font-size:x-small;width:100vw;"></thead>
 	            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
-	            		</table>
+	            		</table>	            		
+<!-- 	            		</div> -->
+
 	            	</div>	
 					<div id="divCRM" class="card"></div>
 				</div>
