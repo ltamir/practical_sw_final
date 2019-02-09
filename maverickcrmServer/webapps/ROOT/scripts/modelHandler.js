@@ -127,7 +127,9 @@ function setChildTask(setter){
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
+var currentTaskPermissionType; //1:edit, 2:view
 function viewTask(id, data){
+	currentTaskPermissionType = data.taskPermission.permissionType.permissionTypeId;
 	let task = data.task;
 	taskModel.taskId.setValue(task.taskId);
 	taskModel.contact.setValue(task.contact.contactId);
@@ -176,6 +178,11 @@ function viewTask(id, data){
 
 
 function viewTaskLog(id, data){
+	if(currentTaskPermissionType == 2){
+		taskLogModel.description.dom.disabled = true;
+	}else{
+		taskLogModel.description.dom.disabled = false;
+	}	
 	let taskLog = data.taskLog;
 	taskLogModel.description.setValue(taskLog.description);
 	taskLogModel.contact.setValue(taskLog.contact.contactId);
