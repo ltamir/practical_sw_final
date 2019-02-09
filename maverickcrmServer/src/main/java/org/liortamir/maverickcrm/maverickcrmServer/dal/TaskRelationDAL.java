@@ -63,13 +63,14 @@ public class TaskRelationDAL {
 		return taskRelationList;
 	}
 	
-	public int insert(int parentTaskId, int childTaskId, int relationTypeId) throws SQLException {
+	public int insert(int parentTaskId, int childTaskId, int relationTypeId, int rootTaskId) throws SQLException {
 		int identity = 0;
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("insert into taskRelation values(default,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = conn.prepareStatement("insert into taskRelation values(default,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, parentTaskId);
 			ps.setInt(2, childTaskId);
 			ps.setInt(3, relationTypeId);
+			ps.setInt(4, rootTaskId);
 			if(ps.executeUpdate() != 1)
 				throw new SQLException("Error performing insert taskRelation", "row not inserted");
 				
@@ -116,6 +117,7 @@ public class TaskRelationDAL {
 		taskrelation = new TaskRelation(rs.getInt(APIConst.FLD_TASKRELATION_ID), 
 				TaskDAL.getInstance().get(rs.getInt(APIConst.FLD_TASKRELATION_PARENT_TASK_ID)),
 				TaskDAL.getInstance().get(rs.getInt(APIConst.FLD_TASKRELATION_CHILD_TASK_ID)),
+				TaskDAL.getInstance().get(rs.getInt(APIConst.FLD_TASKRELATION_ROOT_TASK_ID)),
 				TaskRelationTypeDAL.getInstance().get(rs.getInt(APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID)));
 
 		return taskrelation;

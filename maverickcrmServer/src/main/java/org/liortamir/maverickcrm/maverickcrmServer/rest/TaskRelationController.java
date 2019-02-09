@@ -16,6 +16,8 @@ import javax.servlet.http.Part;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskRelationDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.SecurityHandler;
+import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 import org.liortamir.maverickcrm.maverickcrmServer.model.TaskRelation;
 
 import com.google.gson.Gson;
@@ -82,7 +84,9 @@ public class TaskRelationController extends HttpServlet {
 			int childTaskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_CHILD_TASK_ID));
 			int taskRelationTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID));
 			
-			int taskRelationId = TaskRelationDAL.getInstance().insert(parentTaskId, childTaskId, taskRelationTypeId);
+			SecurityHandler sec = new SecurityHandler();
+			Task root = sec.getRootTask(parentTaskId);
+			int taskRelationId = TaskRelationDAL.getInstance().insert(parentTaskId, childTaskId, taskRelationTypeId, root.getTaskId());
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {

@@ -5,11 +5,13 @@ public class TaskRelation {
 	private int taskRelationId;
 	private Task parentTask;
 	private Task childTask;
+	private Task rootTask;
 	private TaskRelationType taskRelationType;
-	public TaskRelation(int taskRelationId, Task parentTask, Task childTask, TaskRelationType taskRelationType) {
+	public TaskRelation(int taskRelationId, Task parentTask, Task childTask, Task rootTask, TaskRelationType taskRelationType) {
 		this.taskRelationId = taskRelationId;
 		this.parentTask = parentTask;
 		this.childTask = childTask;
+		this.rootTask = rootTask;
 		this.taskRelationType = taskRelationType;
 	}
 	public int getTaskRelationId() {
@@ -30,6 +32,12 @@ public class TaskRelation {
 	public void setChildTask(Task childTask) {
 		this.childTask = childTask;
 	}
+	public Task getRootTask() {
+		return rootTask;
+	}
+	public void setRootTask(Task rootTask) {
+		this.rootTask = rootTask;
+	}	
 	public TaskRelationType getTaskRelationType() {
 		return taskRelationType;
 	}

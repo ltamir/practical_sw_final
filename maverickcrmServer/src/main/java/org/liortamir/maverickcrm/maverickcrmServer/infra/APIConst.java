@@ -30,6 +30,7 @@ public class APIConst {
 	public static final String FLD_TASKRELATION_ID = "taskRelationId";
 	public static final String FLD_TASKRELATION_PARENT_TASK_ID = "parentTaskId";
 	public static final String FLD_TASKRELATION_CHILD_TASK_ID = "childTaskId";
+	public static final String FLD_TASKRELATION_ROOT_TASK_ID = "rootTaskId";
 	public static final String FLD_TASKRELATION_TASKRELATIONTYPE_ID = "taskRelationTypeId";
 	
 	public static final String TASKTYPE_ID = "taskTypeId";
