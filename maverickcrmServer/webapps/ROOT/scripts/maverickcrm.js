@@ -74,7 +74,7 @@ function searchProjectTask(id){
 	searchTaskParams += '&showclosed=0';
 	searchTaskParams += '&title=';
 	
-	getDataEx(id, 'task', searchTaskParams, fillSelect, 'projects:',
+	getDataEx(id, 'task', searchTaskParams, fillSelect, 'All Projects',
 			(opt, item)=>opt.value = item.taskId,
 			(opt, item)=>opt.text = item.title,
 			(opt, item)=>opt.title = item.title
@@ -181,12 +181,13 @@ function execSync(funcA, funcB){
 		if(body == null)
 			window.location.replace('login.html');
 		loggedContact = body.login.contact;
+		getById('lblLoggedInContact').innerHTML = body.login.contact.firstName + ' ' + body.login.contact.lastName;
 		}, 'Customers:', null, null, null);
 	funcA('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
     		(opt,item)=>opt.value = item.contactId, 
     		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
     		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
-	funcB('cmbSearchTaskType', 'tasktype', '?actionId=2', fillSelect, 'Task Type:', 
+	funcB('cmbSearchTaskType', 'tasktype', '?actionId=2', fillSelect, 'All Types', 
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 
 			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
@@ -195,7 +196,7 @@ function init(){
 
 	initModels();
 	initMenuData();
-	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers:', 
+	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'All Customers', 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
 			null);
