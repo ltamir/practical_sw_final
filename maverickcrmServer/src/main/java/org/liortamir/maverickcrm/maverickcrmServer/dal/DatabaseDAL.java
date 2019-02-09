@@ -31,7 +31,7 @@ public class DatabaseDAL {
     		if(sql.startsWith("insert") || sql.startsWith("update") || sql.startsWith("delete")) {
     			updatedRows = ps.executeUpdate();
     			System.out.println("updated " + updatedRows + " rows");
-    		}else if(sql.startsWith("alter") || sql.startsWith("create") || sql.startsWith("drop")) {
+    		}else if(sql.startsWith("alter") || sql.startsWith("create") || sql.startsWith("drop") || sql.startsWith("rename")) {
     			updatedRows = ps.executeUpdate();
     		}else if(sql.contains("CALL")) {
     			ps.execute();
