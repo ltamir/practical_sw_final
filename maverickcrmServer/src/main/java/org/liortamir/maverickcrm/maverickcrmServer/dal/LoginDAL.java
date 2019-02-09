@@ -43,7 +43,20 @@ public class LoginDAL {
 				entity = mapFields(rs);
 		}
 		return entity;
-	}	
+	}
+	
+	public Login getByContact(int contactId) throws SQLException {
+		Login entity = null;
+
+		try( Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from login where contactId=?");
+			ps.setInt(1, contactId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				entity = mapFields(rs);
+		}
+		return entity;
+	}		
 	
 	public List<Login> getAll() throws SQLException{
 		List<Login> loginList = null;

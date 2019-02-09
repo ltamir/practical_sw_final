@@ -32,6 +32,7 @@ public class LoginController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
 	private Gson jsonHelper = new Gson();
+	private LoginDAL dal = LoginDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,17 +47,22 @@ public class LoginController extends HttpServlet {
 			
 			if(action == ActionEnum.ACT_ALL) {
 				
-				List<Login> bulk = LoginDAL.getInstance().getAll();
+				List<Login> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			
 			}else if(action == ActionEnum.ACT_SINGLE){
 				String username = (String)req.getSession().getAttribute("username");
 				
 				id = Integer.parseInt(req.getParameter("loginId"));
-				login = LoginDAL.getInstance().get(id);
+				login = dal.get(id);
 				if(!login.getUsername().equals(username))
 					login.setPassword("*****");
 				ServletHelper.addJsonTree(jsonHelper, json, "login", login);
+			}else if(action == ActionEnum.ACT_LOGIN_BY_CONTACT) {
+				int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
+				login = dal.getByContact(contactId);
+				req.getSession().setAttribute("login", login);
+				return;
 			}
 			
 			ServletHelper.doSuccess(json);

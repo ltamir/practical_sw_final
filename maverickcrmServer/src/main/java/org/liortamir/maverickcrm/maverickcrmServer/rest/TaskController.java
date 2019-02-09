@@ -87,6 +87,7 @@ public class TaskController extends HttpServlet {
 			default:
 				throw new InvalidActionException(action.ordinal());
 			}
+			req.getSession().removeAttribute("login");
 			ServletHelper.doSuccess(json);
 		}catch(NumberFormatException | SQLException | InvalidActionException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
@@ -138,6 +139,13 @@ public class TaskController extends HttpServlet {
 		
 		try {
 			int taskId = dal.insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
+			if(taskTypeId == 1) {	//if this is a project task assign edit permission to the creator
+			
+				req.getRequestDispatcher("login?actionId=20&contactId=" + APIConst.FLD_CONTACT_ID).include(req, resp);
+				Login login = (Login)req.getSession().getAttribute("login");
+				req.getRequestDispatcher("taskpermision?contactId=" + APIConst.FLD_CONTACT_ID).include(req, resp);
+				req.getSession().removeAttribute("login");
+			}
 			json.addProperty(APIConst.FLD_TASK_ID, taskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {

@@ -21,5 +21,6 @@ public enum ActionEnum {
 	ACT_GET_LOGGED_IN,				//16
 	ACT_GET_ATTACHMENT,				//17
 	ACT_BY_TASK,					//18
-	ACT_BY_TASK_AND_LOGIN;			//19
+	ACT_BY_TASK_AND_LOGIN,			//19
+	ACT_LOGIN_BY_CONTACT;			//20
 }
