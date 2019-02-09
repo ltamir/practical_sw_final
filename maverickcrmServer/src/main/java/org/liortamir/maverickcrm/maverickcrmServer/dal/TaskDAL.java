@@ -89,29 +89,19 @@ public class TaskDAL {
 	 */
 	public Task get(int taskId, int loginId) throws SQLException {
 		Task entity = null;
-		final String authentication = "select * from task where taskId = ? " + 
-				"and " + 
-				"( taskId in(select taskId from taskpermission where loginId=?)" + 
-				" or " + 
-				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
-				" in (select taskId from taskpermission where loginId=?))" + 
-				"or " + 
-				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
-				" in ( select childTaskId from taskrelation where parentTaskId " + 
-				" in(select taskId from taskpermission where loginId=?)))" + 
-				"or " + 
-				" taskId in(select childTaskId from taskrelation where parentTaskId " + 
-				" in ( select childTaskId from taskrelation where parentTaskId " + 
-				" in ( select childTaskId from taskrelation where parentTaskId " +
-				" in(select taskId from taskpermission where loginId=?))))" + 
-				")";
+
+		final String levelZero = "select * from task inner join (select taskPermission.taskId from taskPermission where loginId=?) perm on perm.taskId = task.taskid where task.taskId=?";
+		final String union = " union ";
+		final String levelRoot = " select * from task"
+				+" inner  join"
+				+" (select childTaskId from taskrelation where rootTaskId in (select taskPermission.taskId from taskPermission where loginId = ?)) one on one.childTaskId  = task.taskId  where task.taskId=?";
+		
 		try (Connection conn = DBHandler.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement(authentication);
-			ps.setInt(1, taskId);
-			ps.setInt(2, loginId);
+			PreparedStatement ps = conn.prepareStatement(levelZero + union + levelRoot);
+			ps.setInt(1, loginId);
+			ps.setInt(2, taskId);
 			ps.setInt(3, loginId);
-			ps.setInt(4, loginId);
-			ps.setInt(5, loginId);	
+			ps.setInt(4, taskId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);
@@ -151,43 +141,14 @@ public class TaskDAL {
 		List<Task> entityList = null;
 		MutableInt paramCount = new MutableInt(0);
 		MutableBool whereUsed = new MutableBool(false);
-		
+
 		final String orderBy = " order by duedate asc, statusId asc";	
-		final String union = " union ";
-		final String baseSQL = "select * from (select * from task"
-		+" inner join (select taskId from taskPermission where loginId=?) perm on perm.taskId = task.taskid"
-		+ union
-		+" select * from task"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?)) one on one .childTaskId  = task.taskId"
-		+ union
-		+" select * from task"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) two on two .childTaskId  = task.taskId"
-		+ union
-		+" select * from task"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) three on three .childTaskId  = task.taskId"
-		+ union
-		+" select * from task"
-		+" inner join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) "
-		+" ) four on four.childTaskId  = task.taskId ) as task";	
+		final String union = " union ";	
 		
 		final String levelZero = "select * from task inner join (select taskPermission.taskId from taskPermission where loginId=?) perm on perm.taskId = task.taskid";
-		final String levelOne = " select * from task"
+		final String levelRoot = " select * from task"
 				+" inner  join"
-				+" (select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?)) one on one.childTaskId  = task.taskId";
-		final String levelTwo = "select * from task"
-				+" inner  join"
-				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) two on two.childTaskId  = task.taskId";
-		final String levelThree = " select * from task"
-				+" inner  join"
-				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) three on three.childTaskId  = task.taskId";
-		final String levelFour = " select * from task"
-				+" inner join"
-				+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskPermission.taskId from taskPermission where loginId = ?))) "
-				+" ) four on four.childTaskId  = task.taskId" ;
+				+" (select childTaskId from taskrelation where rootTaskId in (select taskPermission.taskId from taskPermission where loginId = ?)) one on one.childTaskId  = task.taskId";
 		
 		StringBuilder sqlStatement = new StringBuilder(levelZero);
 		StringBuilder sqlPredicate = new StringBuilder();
@@ -205,20 +166,15 @@ public class TaskDAL {
 		this.predicate.prepare("status", status, whereUsed, sqlPredicate);
 		
 		sqlStatement.append(sqlPredicate.toString() + union);
-		sqlStatement.append(levelOne.toString());
-		sqlStatement.append(sqlPredicate.toString() + union);
-		sqlStatement.append(levelTwo.toString());
-		sqlStatement.append(sqlPredicate.toString() + union);
-		sqlStatement.append(levelThree.toString());
-		sqlStatement.append(sqlPredicate.toString() + union);
-		sqlStatement.append(levelFour.toString());
+		sqlStatement.append(levelRoot.toString());
 		sqlStatement.append(sqlPredicate.toString());
+		
 		sqlStatement.append(orderBy);
 
 		try (Connection conn = DBHandler.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sqlStatement.toString());
-			for(int i = 0; i < 5; i++) {
+			for(int i = 0; i < 2; i++) {
 				
 				ps.setInt(paramCount.get()+1, loginId);
 				paramCount.add(1);
@@ -230,23 +186,6 @@ public class TaskDAL {
 				this.predicate.set("status", ps, paramCount, status);
 				
 			}
-//			paramCount.add(1);
-//			ps.setInt(paramCount.get(), loginId);
-//			paramCount.add(1);
-//			ps.setInt(paramCount.get(), loginId);
-//			paramCount.add(1);
-//			ps.setInt(paramCount.get(), loginId);
-//			paramCount.add(1);
-//			ps.setInt(paramCount.get(), loginId);
-//			paramCount.add(1);
-//			ps.setInt(paramCount.get(), loginId);
-//			
-//			this.predicate.set("customer", ps, paramCount, customerId);
-//			this.predicate.set("duedate", ps, paramCount, dateDueDate);
-//			this.predicate.set("title", ps, paramCount, title);
-//			this.predicate.set("project", ps, paramCount, projectTaskId);
-//			this.predicate.set("taskType", ps, paramCount, taskTypeId);
-//			this.predicate.set("status", ps, paramCount, status);
 			
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(14);
@@ -255,7 +194,6 @@ public class TaskDAL {
 		}
 		return entityList;
 	}
-	
 	
 	
 	/**
