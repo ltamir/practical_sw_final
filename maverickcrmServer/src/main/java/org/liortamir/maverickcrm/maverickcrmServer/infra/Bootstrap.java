@@ -47,6 +47,7 @@ public class Bootstrap {
 			tomcat.start();
 		} catch (MalformedURLException | ServletException | LifecycleException e) {
 			e.printStackTrace();
+			System.exit(0);
 		}
 		
 
