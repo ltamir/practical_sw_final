@@ -35,7 +35,13 @@ function getData(id, resource, params, impl){
         }
     )
     .then(function(body){
-        impl(id, body);
+    	if(body.status == 'nack'){
+    		console.log(body.err);
+    		setMsg(msgType.nok, body.msg);
+    		return;
+    	}
+    	if(impl != null)
+    		impl(id, body);
         }
     )
     
