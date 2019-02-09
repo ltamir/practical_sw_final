@@ -36,6 +36,7 @@ public class TaskController extends HttpServlet {
 	private static final long serialVersionUID = -2104805615225405434L;
 	
 	private Gson jsonHelper = new Gson();
+	private TaskDAL dal = TaskDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,7 +61,7 @@ public class TaskController extends HttpServlet {
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
 				int status = Integer.parseInt(req.getParameter("showclosed"));
-				taskList = TaskDAL.getInstance().getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
+				taskList = dal.getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;
@@ -69,18 +70,18 @@ public class TaskController extends HttpServlet {
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
 				
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				task = TaskDAL.getInstance().get(taskId, login.getLoginId());
+				task = dal.get(taskId, login.getLoginId());
 				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
 			case ACT_RELATION_PARENTS:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				taskRelationList = TaskDAL.getInstance().getParents(taskId);
+				taskRelationList = dal.getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				break;
 			case ACT_RELATION_CHILDREN:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
-				taskRelationList = TaskDAL.getInstance().getChildren(taskId);
+				taskRelationList = dal.getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				break;
 			default:
@@ -136,7 +137,7 @@ public class TaskController extends HttpServlet {
 		}
 		
 		try {
-			int taskId = TaskDAL.getInstance().insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
+			int taskId = dal.insert(taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty(APIConst.FLD_TASK_ID, taskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
@@ -194,7 +195,7 @@ public class TaskController extends HttpServlet {
 			}
 			
 
-			TaskDAL.getInstance().update(taskId, taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
+			dal.update(taskId, taskTypeId, contactId, title, effort, effortUnit, dueDate, statusId);
 			json.addProperty(APIConst.FLD_TASK_ID, taskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
