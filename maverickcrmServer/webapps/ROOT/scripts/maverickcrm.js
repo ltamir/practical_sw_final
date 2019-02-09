@@ -183,10 +183,15 @@ function execSync(funcA, funcB){
 		loggedContact = body.login.contact;
 		getById('lblLoggedInContact').innerHTML = body.login.contact.firstName + ' ' + body.login.contact.lastName;
 		}, 'Customers:', null, null, null);
-	funcA('cmbDetailContact', 'contact', '?actionId=4', fillSelect, 'Contacts:', 
-    		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		(opt,item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;});
+	
+	funcA('cmbDetailContact', 'login', '?actionId=2', fillSelect, 'Contacts', 
+			(opt,item)=>opt.value = item.contact.contactId, 
+			(opt,item)=>{
+				opt.text = item.contact.firstName + ' ' + item.contact.lastName;
+				opt.setAttribute('loginId', item.loginId);
+			}, 
+			(opt, item)=>{if(loggedContact != null && opt.value == loggedContact.contactId)opt.selected=true;})
+
 	funcB('cmbSearchTaskType', 'tasktype', '?actionId=2', fillSelect, 'All Types', 
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 

@@ -270,9 +270,32 @@ var loginModel = {
 }
 
 var taskPermissionModel = {
-		taskPermissionId:new Model('divPermissionList', null, 'taskpermissionId', [], '', function(){return this.dom.getAttribute('data-taskPermissionId');}, function(val){this.dom.setAttribute('data-taskPermissionId', val);}),
+		taskPermissionId:new Model('divPermissionList', null, 'taskpermissionId', [], '', function(){
+			if(this.dom != null)
+				return this.dom.getAttribute('data-taskPermissionId');
+			else
+				return this.value;
+			
+			}, function(val){
+				if(this.dom != null)
+					this.dom.setAttribute('data-taskPermissionId', val);
+				else
+					this.value = val;
+				}),
 		taskId:new Model('taskId', null, 'taskId', [0], 'Please select a task to assign it permission', null, null),
-		loginId:new Model('divPermissionLoginList', null, 'loginId', [''], 'Login not selected', function(){return this.dom.getAttribute('data-loginId');}, function(val){this.dom.setAttribute('data-loginId', val);}),
+		loginId:new Model('divPermissionLoginList', null, 'loginId', [''], 'Login not selected', function(){
+			if(this.dom != null)
+				return this.dom.getAttribute('data-loginId');
+			else
+				return this.value;
+			
+			}, 
+			function(val){
+				if(this.dom != null)
+					this.dom.setAttribute('data-loginId', val);
+				else
+					this.value = val;
+				}),	
 		permissiontypeId:new Model('cmbPermissionType', null, 'permissiontypeId', [''], 'Please select Edit or View permision', null, null),
 		version:3
 }

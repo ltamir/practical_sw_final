@@ -279,6 +279,13 @@ function saveTask(){
 				setMsg(msgType.ok, 'Task saved');
 			}
 			if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
+				if(taskModel.taskType.getValue() == 1){	// if this is a project contact's login shall edit permission on it
+					taskPermissionModel.taskPermissionId.setValue(0);
+					taskPermissionModel.taskId.setValue(resp.taskId);
+					taskPermissionModel.loginId.setValue(taskModel.contact.dom.options[taskModel.contact.dom.selectedIndex].getAttribute('loginId'));
+					taskPermissionModel.permissiontypeId.setValue(1);
+					addPermission();	
+				}
 				taskModel.taskId.setValue(resp.taskId);
 				taskLogModel.contact.setValue(taskModel.contact.getValue());
 				taskLogModel.taskLogType.setValue(4);
@@ -660,7 +667,8 @@ function saveLogin(){
 function addPermission(){
 	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.taskPermissionId, Module.login, null, 'taskpermission',
 			(resp)=>{
-				viewTaskPermissionList();
+				if(activeTaskTab == tabEnum.permission)
+					viewTaskPermissionList();
 				setMsg(msgType.ok, 'Permissions updated');
 			});
 }
