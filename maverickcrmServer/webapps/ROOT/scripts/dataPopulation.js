@@ -106,6 +106,7 @@ function createTaskRow(row, item, parent){
     	evt = window.event || event; 
 	    if(this === evt.target) {
 	    	let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
+	    	if(parentTaskItem == null) return;
 	    	if(parentTaskItem.hasChildren){
 	    		taskItemList.deleteRow(parent, parentTaskItem);
 	    		parentTaskItem.hasChildren = false;

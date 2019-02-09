@@ -80,8 +80,12 @@ var taskItemList = {
 		if(parentItem[taskId] != null)
 			return parentItem[taskId];
 		for(let child in parentItem){
-			if(parentItem[child].hasChildren != undefined && parentItem[child].hasChildren == true)
-				return this.get(parentItem[child], taskId);
+			if(parentItem[child].hasChildren == true){
+				let t = this.get(parentItem[child], taskId);
+				if(t != null)
+					return t;
+			}
+				
 		}		
 	},
 	remove:function(parentItem, taskId){
