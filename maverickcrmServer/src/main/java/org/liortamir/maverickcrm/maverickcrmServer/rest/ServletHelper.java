@@ -1,6 +1,8 @@
 package org.liortamir.maverickcrm.maverickcrmServer.rest;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
@@ -20,12 +22,18 @@ public class ServletHelper {
 	public static final String METHOD_DELETE = "doDelete()";
 	
 	public static final ActionEnum[] ACTION_LIST = ActionEnum.values();
+	private static SimpleDateFormat dateFormat=  new SimpleDateFormat();
+	
+	static {
+		dateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
+	}
 	
 	public static void doError(Exception e, Object servlet, String method, JsonObject json, HttpServletRequest req) {
+		String sysdate = dateFormat.format(new Date());
 		final String DOT = ".";
 		final String SPACE = " ";
 		StringBuilder sb = new StringBuilder();
-		sb.append(servlet.getClass().getName()).append(DOT).append(method).append(e.toString());
+		sb.append(sysdate).append(SPACE).append(servlet.getClass().getName()).append(DOT).append(method).append(SPACE).append(e.toString());
 
 		if(e.getCause() != null)
 			if(e.getCause().getCause() != null)
@@ -35,6 +43,14 @@ public class ServletHelper {
 				}
 		sb.append(SPACE);
 		sb.append(req.getQueryString());
+		
+		for(StackTraceElement s : e.getStackTrace()) {
+			if(s.toString().contains("org.liortamir")){
+				sb.append("\n" + s);
+				break;
+			}
+			
+		}
 		
 		System.out.println(sb.toString());
 		json.addProperty("msg",  "Internal error, please check the log");
@@ -76,11 +92,11 @@ public class ServletHelper {
 		return actionEnum;
 	}
 	
-	public static String getPartString(Part part) throws IOException{
+	public static String getPartString(Part part) throws IOException, NullPointerException{
 		return new String(IOUtils.toByteArray(part.getInputStream()));
 	}
 	
-	public static Integer getPartInt(Part part) throws IOException{
+	public static Integer getPartInt(Part part) throws IOException, NullPointerException{
 		String strPart = getPartString(part);
 		return (strPart.equals("null"))?0:Integer.valueOf(strPart);
 	}	
