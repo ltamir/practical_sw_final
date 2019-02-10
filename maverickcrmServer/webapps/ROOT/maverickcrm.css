@@ -36,7 +36,7 @@
 	img{
 		cursor: pointer;
 		border-style: outset;
-		vertical-align: bottom;
+		vertical-align: center;
 	}
 
 	#menu {
@@ -55,6 +55,9 @@
       cursor: pointer;
     }
     
+    #menu td > img{
+    	margin-top: 0.2em;
+    }
 	#lblSearchDueDate{
 		cursor: pointer;
 		float: left;

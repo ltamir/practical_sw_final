@@ -41,7 +41,7 @@
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Set due date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
             </td> 
-            <td width="27%" align="right" valign="bottom">
+            <td width="27%" align="right" valign="center">
             	<img src="images/menu_search.png" style="float:left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
             	<img src="images/menu_reset.png" style="float:left; margin-left:0.3em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             	<span id="lblLoggedInContact"></span>
