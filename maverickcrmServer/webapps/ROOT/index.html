@@ -47,8 +47,8 @@
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
-            	<select id="cmbDebug" onchange="setDebugModule()">
-            		<option value=0>None</option>
+            	<select id="cmbDebug" onchange="setDebugModule()" style="width:4em;">
+            		<option value=0>DBG</option>
             		<option value=1>customer</option>
             		<option value=2>contact</option>
             		<option value=3>task</option>
