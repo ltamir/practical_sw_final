@@ -240,12 +240,18 @@ function validate(modelKey, value, errorMessage){
 	return true;
 }
 
-function validateEx(modelKey, value, errorMessage, func, postFunc){
-	func(modelKey, 'taskrelation', "?actionId=5&taskId="+taskModel.taskId.getValue(), (id, data)=>{
-		modelKey.length = data.array.length;
+
+function saveTask(){
+	if(taskModel.title.getValue().length > 120){
+		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
+		return;
+	}
+	let pass = {length:-1, getValue:function(){return this.length}};	
+	getData(pass, 'taskrelation', "?actionId=5&taskId="+taskModel.taskId.getValue(), (id, data)=>{
+		pass.length = data.array.length;
 		
 		if(taskModel.taskType.prevTaskType == 1 && taskModel.taskType.getValue() != 1)
-			if(!validate(modelKey, 0, 'Please add a parent task in Relations',getData, validate)) return;
+			if(!validate(pass, 0, 'Please add a parent task in Relations',getData, validate)) return;
 		
 		genericSave(()=>{return true;}, taskModel, taskModel.taskId, Module.task, null, 'task',
 				(resp)=>{
@@ -295,6 +301,42 @@ function postTaskSave(resp){
 			
 			saveTaskLog(); 
 		}
+		
+		//if tasktype changed from project to other
+		if(taskModel.taskType.prevTaskType == 1 && taskModel.taskType.getValue() != 1){
+			getData(null, 'customertask', "?actionId=9&taskId="+taskModel.taskId.getValue(), (id, data)=>{
+		    data.array.forEach(function (customertask) {
+				let customerTaskForm = new FormData();
+				let customertaskMethod = 'DELETE';
+				customerTaskForm.append('customerTaskId', customertask.customerTaskId);
+				setData(customertaskMethod, customerTaskForm, 'customertask')
+				.then(function(resp){
+					if(resp.status == 'nack'){
+						setMsg(msgType.nok,  resp.msg);
+						console.log('error ' + resp.err);
+						return;
+					}
+				});	
+		    }); 			
+			});
+			getData(null, 'taskpermission', '?actionId=18&taskId='+taskModel.taskId.getValue(), (id, data)=>{
+		    data.array.forEach(function (taskpermission) {
+				let taskpermissionForm = new FormData();
+				let taskpermissionMethod = 'DELETE';
+				taskpermissionForm.append('taskpermissionId', taskpermission.taskPermissionId);
+				setData(taskpermissionMethod, taskpermissionForm, 'taskpermission')
+				.then(function(resp){
+					if(resp.status == 'nack'){
+						setMsg(msgType.nok,  resp.msg);
+						console.log('error ' + resp.err);
+						return;
+					}
+				});	
+			});
+			});
+			getById('TabLinkedCustomer').style.display='none';
+			getById('TabPermission').style.display='none';
+		}
 	}
 	
 	if(taskModel.taskType.getValue() ==1){
@@ -302,25 +344,8 @@ function postTaskSave(resp){
 		getById('TabPermission').style.display='inline';
 	}
 	
-
+	taskModel.taskType.prevTaskType = taskModel.taskType.getValue();
 	searchTask(prepareSearchTask());
-
-}
-
-function saveTask(){
-	let method;
-	let formData = new FormData();
-	
-	if(taskModel.title.getValue().length > 120){
-		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
-		return;
-	}
-
-	let pass = {length:-1, getValue:function(){return this.length}, getEx:function(){
-		getData()
-	}};
-	
-	validateEx(pass, 0, 'Please add a parent task in Relations',getData, validate);
 
 }
 
