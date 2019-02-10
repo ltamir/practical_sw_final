@@ -27,7 +27,7 @@ public class Bootstrap {
 		// database init
 		File[] files = new File(ref.getAsString("db.path")).listFiles();
 		if(files == null || files.length == 0) {
-			System.out.println("creating db");
+			System.out.println("Creating DB");
 			DBSetup dbSetup = new DBSetup();
 			try {
 				dbSetup.startServiceImpl();
@@ -38,7 +38,7 @@ public class Bootstrap {
 			System.out.println("Database directory set to " + ref.getAsString("db.path"));
 			dbSetup.stopServiceImpl();
 		}else {
-			System.out.println("db exists");
+			System.out.println("DB exists: " + storagePath);
 		}
 		
 		new Thread(new DBUTest()).start();
