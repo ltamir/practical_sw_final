@@ -71,7 +71,7 @@ public class CustomerTaskController extends HttpServlet {
 					throw new InvalidActionException(actionId);
 			}
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | NullPointerException | InvalidActionException e) {
+		}catch(SQLException | NullPointerException | InvalidActionException | NumberFormatException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		response = jsonHelper.toJson(json);			
