@@ -64,7 +64,7 @@ public class TaskRelationController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
 			}
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | InvalidActionException | NullPointerException e) {
+		}catch(SQLException | InvalidActionException | NullPointerException |NumberFormatException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		
