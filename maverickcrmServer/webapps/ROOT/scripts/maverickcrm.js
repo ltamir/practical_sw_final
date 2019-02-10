@@ -140,7 +140,12 @@ function toggleSearchDate(lbl, field){
 }
 
 function initMenuData(){
-	menuData.taskType = new MenuItem(getById('imgTaskType'), getById('divMenuTaskType'), taskModel.taskType, taskTypeList, dummyAction);	
+	menuData.taskType = new MenuItem(getById('imgTaskType'), getById('divMenuTaskType'), taskModel.taskType, taskTypeList,
+
+			(val)=>{
+				if(val != 1 && taskModel.taskType.prevTaskType == 1)
+					alert('Changing from Project will delete permissions and Linked customers of this task');
+			});	
 	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;});
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction);	
 	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask);

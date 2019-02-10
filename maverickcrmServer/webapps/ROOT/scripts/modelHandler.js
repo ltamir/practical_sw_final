@@ -143,6 +143,7 @@ function viewTask(id, data){
 		setChildTask(addChildTaskState);
 	}
 	taskModel.status.oldValue = task.status.statusId;
+	taskModel.taskType.prevTaskType = task.taskType.taskTypeId;
 	menuSetter(menuData.taskType, task.taskType.taskTypeId);
 	menuSetter(menuData.taskEffortUnit, task.effortUnit);
 	menuSetter(menuData.taskStatus, task.status.statusId);
@@ -239,6 +240,73 @@ function validate(modelKey, value, errorMessage){
 	return true;
 }
 
+function validateEx(modelKey, value, errorMessage, func, postFunc){
+	func(modelKey, 'taskrelation', "?actionId=5&taskId="+taskModel.taskId.getValue(), (id, data)=>{
+		modelKey.length = data.array.length;
+		
+		if(taskModel.taskType.prevTaskType == 1 && taskModel.taskType.getValue() != 1)
+			if(!validate(modelKey, 0, 'Please add a parent task in Relations',getData, validate)) return;
+		
+		genericSave(()=>{return true;}, taskModel, taskModel.taskId, Module.task, null, 'task',
+				(resp)=>{
+					setMsg(msgType.ok, 'Task saved');
+					if(activeTaskTab == tabEnum.taskLog){
+						viewTaskLogList();
+						newTaskLog();				
+					}
+					postTaskSave(resp);
+				});
+	});
+	
+}
+
+function postTaskSave(resp){
+	if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
+		if(taskModel.taskType.getValue() == 1){	// if this is a project contact's login shall edit permission on it
+			taskPermissionModel.taskPermissionId.setValue(0);
+			taskPermissionModel.taskId.setValue(resp.taskId);
+			taskPermissionModel.loginId.setValue(taskModel.contact.dom.options[taskModel.contact.dom.selectedIndex].getAttribute('loginId'));
+			taskPermissionModel.permissiontypeId.setValue(1);
+			addPermission();	
+		}
+		
+		let addChildTask = getById('addChildTask');
+		if(addChildTask.getAttribute('data-parentTask') != 0){
+			taskRelationModel.taskRelationId.setValue(0);
+			saveRelation(addChildTask.getAttribute('data-parentTask'), taskModel.taskId.getValue(), 1);
+			addChildTask.setAttribute('data-parentTask', 0);
+			toggleAsBotton(addChildTask);
+		}
+		
+		taskModel.taskId.setValue(resp.taskId);
+		taskLogModel.contact.setValue(taskModel.contact.getValue());
+		taskLogModel.taskLogType.setValue(4);
+		taskLogModel.description.setValue('Task created');
+		
+		saveTaskLog(); 
+	}else if(taskModel.status.changed){ // existing task and status has changed
+		if(taskModel.status.oldValue != taskModel.status.getValue()){
+			taskModel.taskId.setValue(resp.taskId);
+			taskLogModel.contact.setValue(taskModel.contact.getValue());
+			taskLogModel.taskLogType.setValue(4);
+			let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue-1].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()-1].text
+			taskLogModel.description.setValue(desc);
+			taskModel.status.oldValue = taskModel.status.getValue();
+			
+			saveTaskLog(); 
+		}
+	}
+	
+	if(taskModel.taskType.getValue() ==1){
+		getById('TabLinkedCustomer').style.display='inline';
+		getById('TabPermission').style.display='inline';
+	}
+	
+
+	searchTask(prepareSearchTask());
+
+}
+
 function saveTask(){
 	let method;
 	let formData = new FormData();
@@ -247,77 +315,12 @@ function saveTask(){
 		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
 		return;
 	}
-	
-	if(!validate(taskModel.taskType, 0, 'Please select a task type')) return;
-	if(!validate(taskModel.contact, 0, 'Please select a contact')) return;
-	if(!validate(taskModel.title, 0, 'Please enter a task title')) return;
-	if(!validate(taskModel.effort, '', 'Please enter an effort')) return;
-	if(!validate(taskModel.dueDate, '', 'Please select a due date')) return;
 
-	Object.keys(taskModel).forEach(function(item){
-		if(taskModel[item].api != null)
-			formData.append(taskModel[item].api, taskModel[item].getValue())
-	});
+	let pass = {length:-1, getValue:function(){return this.length}, getEx:function(){
+		getData()
+	}};
 	
-	if(taskModel.taskId.getValue() == 0){
-		method = 'POST';
-	}else{
-		method = 'PUT';
-    	formData.append('taskId', taskModel.taskId.getValue());
-	}
-	
-	if(dbg == Module.task)
-		debugFormData(formData);
-	
-	setData(method, formData, 'task')
-		.then(function(resp){
-			if(resp.status == 'nack'){
-				setMsg(msgType.nok, resp.msg);
-				console.log(resp.err);
-				return;
-			}else{
-				setMsg(msgType.ok, 'Task saved');
-			}
-			if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
-				if(taskModel.taskType.getValue() == 1){	// if this is a project contact's login shall edit permission on it
-					taskPermissionModel.taskPermissionId.setValue(0);
-					taskPermissionModel.taskId.setValue(resp.taskId);
-					taskPermissionModel.loginId.setValue(taskModel.contact.dom.options[taskModel.contact.dom.selectedIndex].getAttribute('loginId'));
-					taskPermissionModel.permissiontypeId.setValue(1);
-					addPermission();	
-				}
-				taskModel.taskId.setValue(resp.taskId);
-				taskLogModel.contact.setValue(taskModel.contact.getValue());
-				taskLogModel.taskLogType.setValue(4);
-				taskLogModel.description.setValue('Task created');
-				
-				saveTaskLog(); 
-			}else if(taskModel.status.changed){ // existing task and status has changed
-				if(taskModel.status.oldValue != taskModel.status.getValue()){
-					taskModel.taskId.setValue(resp.taskId);
-					taskLogModel.contact.setValue(taskModel.contact.getValue());
-					taskLogModel.taskLogType.setValue(4);
-					let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue-1].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()-1].text
-					taskLogModel.description.setValue(desc);
-					taskModel.status.oldValue = taskModel.status.getValue();
-					
-					saveTaskLog(); 
-				}
-			}
-			
-			if(taskModel.taskType.getValue() ==1)
-				getById('TabLinkedCustomer').style.display='inline';
-			})
-		.then(()=>{
-			let addChildTask = getById('addChildTask');
-			if(method == 'POST' && addChildTask.getAttribute('data-parentTask') != 0){
-				taskRelationModel.taskRelationId.setValue(0);
-				saveRelation(addChildTask.getAttribute('data-parentTask'), taskModel.taskId.getValue(), 1);
-				addChildTask.setAttribute('data-parentTask', 0);
-				toggleAsBotton(addChildTask);
-			}
-		})
-		.then(function(){searchTask(prepareSearchTask())});
+	validateEx(pass, 0, 'Please add a parent task in Relations',getData, validate);
 
 }
 

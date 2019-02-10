@@ -231,8 +231,37 @@ var taskModel={
 		dueDate:new Model('txtDetailDueDate', null, 'dueDate', [], '', null, null),
 		dueDateLabel:new Model('lblDetailDueDate', null, null, [], '', null, null),
 		status:new Model('cmbDetailStatus', null, 'statusId', [], '', null, null),
-		version:1
+		version:3
 	}
+
+taskModel.taskId.POST = new mapAPI(null, null, false);
+taskModel.taskId.PUT = new mapAPI(null, null, true);
+taskModel.taskId.DELETE = new mapAPI(null, null, true);
+taskModel.taskType.POST = new mapAPI(0, 'Please select a task type', true);
+taskModel.taskType.PUT = new mapAPI(null, null, true);
+taskModel.taskType.DELETE = new mapAPI(null, null, false);
+taskModel.contact.POST = new mapAPI(0, 'Please select a contact', true);
+taskModel.contact.PUT = new mapAPI(null, null, true);
+taskModel.contact.DELETE = new mapAPI(null, null, false);
+taskModel.title.POST = new mapAPI('', 'Please enter a task title', true);
+taskModel.title.PUT = new mapAPI(null, null, true);
+taskModel.title.DELETE = new mapAPI(null, null, false);
+taskModel.effort.POST = new mapAPI(0, 'Please enter an effort', true);
+taskModel.effort.PUT = new mapAPI(null, null, true);
+taskModel.effort.DELETE = new mapAPI(null, null, false);
+taskModel.dueDate.POST = new mapAPI('', 'Please select a due date', true);
+taskModel.dueDate.PUT = new mapAPI('', 'Please select a due date', true);
+taskModel.dueDate.DELETE = new mapAPI(null, null, false);
+taskModel.effortUnit.POST = new mapAPI(null, null, true);
+taskModel.effortUnit.PUT = new mapAPI(null, null, true);
+taskModel.effortUnit.DELETE = new mapAPI(null, null, false);
+taskModel.status.POST = new mapAPI(null, null, true);
+taskModel.status.PUT = new mapAPI(null, null, true);
+taskModel.status.DELETE = new mapAPI(null, null, false);
+taskModel.dueDateLabel.POST = new mapAPI(null, null, false);
+taskModel.dueDateLabel.PUT = new mapAPI(null, null, false);
+taskModel.dueDateLabel.DELETE = new mapAPI(null, null, false);
+
 taskModel.status.changed = false;
 taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
 taskModel.dueDateLabel.getValue = function(){return this.dom.innerHTML;}
