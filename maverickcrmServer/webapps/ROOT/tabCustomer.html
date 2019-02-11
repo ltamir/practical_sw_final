@@ -1,8 +1,5 @@
-<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('divCustomerList', 'txtSearchCustomer', event)">
 <img src="images/newitem.png" title="New customer" align="bottom" id="imgAddCustomer" onmousedown="toggleAsBotton(this)" onmouseup="newCustomer();toggleAsBotton(this)">
 <img src="images/save.png" title="Save customer" id="imgSaveCustomer" onmousedown="toggleAsBotton(this)" onmouseup="saveCustomer();toggleAsBotton(this)">
-<br>
-<div id="divCustomerList" class="cssDivRow"></div>
 <br>
 <form action="customer" id="frmCustomer" method="POST">
 <label for="txtCustomerName" class="cssFieldLabel">Name</label><input type="text" name="customerName" id="txtCustomerName">

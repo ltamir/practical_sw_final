@@ -191,17 +191,6 @@
 		font-family: arial, sans-serif;
 		font-size:1em;		
 	}
-			
-	#divCustomerList{
-		height: 6em;
-		width: 8em;
-		overflow-y: scroll;
-		border-bottom: 1px inset #000000;
-		font-family: arial, sans-serif;
-		font-size:1em;
-        background-color: GhostWhite;
-        min-width: 21em;		
-	}
 	
 	#divParentTaskList, #divChildTaskList{
 		height: 2em;

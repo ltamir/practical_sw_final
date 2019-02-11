@@ -306,6 +306,7 @@ function viewTaskPermissionList(){
 
 
 function activateTabConnection(){
+	getById('divContactCard').innerHTML = '';
 	getHTML('tabConnection.html').then(function(response){fillTab('divCRM', response)})
 	.then(()=>showCustomerConnection())
 	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
@@ -368,44 +369,55 @@ function showCustomerConnection(param){
 			(opt, item)=>opt.addEventListener("click", ()=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)
 					showAssociatedContacts();
-				if(activeCrmTab != tabEnum.connection)
+				if(activeCrmTab == tabEnum.connection){
+					getById('lblselectedCustomer').innerHTML = item.customerName;
+					viewAddressList(item.customerId);
 					return;
+				}
+				if(activeCrmTab == tabEnum.customer){
+					//toggler.toggle(divRow);
+					getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
+				}
 				
-				getById('lblselectedCustomer').innerHTML = item.customerName;
-				newAddress();
-				getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
-						(divRow,item)=>{
-							divRow.setAttribute('data-addressId', item.addressId);
-							let addressImg = document.createElement("IMG");
-							addressImg.src='images/address.png';
-							addressImg.title = 'Click to edit address';
-							divRow.appendChild(addressImg);
-							}, 
-						(txtPart,item)=>{
-							txtPart.setAttribute('data-addressId', item.addressId);
-							txtPart.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
-							},
-						(txtPart, item)=>txtPart.addEventListener("click", ()=>{
-							toggler.toggle(txtPart);
-							getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)
-							})
-						);				
-
 				})
 			)
 }
+function viewAddressList(customerId){
+	newAddress();
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getDataEx('divAddressList', 'address', '?actionId=13&customerId='+customerId, fillDivList, null, 
+			(divRow,item)=>{
+				divRow.setAttribute('data-addressId', item.addressId);
+				let addressImg = document.createElement("IMG");
+				addressImg.src='images/address.png';
+				addressImg.title = 'Click to edit address';
+				divRow.appendChild(addressImg);
+				}, 
+			(txtPart,item)=>{
+				txtPart.setAttribute('data-addressId', item.addressId);
+				txtPart.innerHTML = item.street + ' ' + item.houseNum + ' ' + item.city;
+				},
+			(txtPart, item)=>txtPart.addEventListener("click", ()=>{
+				toggler.toggle(txtPart);
+				getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)
+				})
+			);		
+}
 function showAssociatedContacts(){
+	let contactCardPopup = getById('divContactCard');
 	if(getValue('cmbConnectedCustomer') == '')
 		return;
 	getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+getValue('cmbConnectedCustomer'), fillSelect, null, 
 		(opt,item)=>opt.value = item.contact.contactId, 
-		(opt,item)=>{
-		let phone = (item.contact.officePhone == '')?((item.contact.mobilePhone == '')?'1':item.contact.mobilePhone):item.contact.officePhone;
-		opt.text = item.contact.firstName + " " + item.contact.lastName + " : " + new String((phone == null)?"  -  ":phone);
-		},
+		(opt,item)=>opt.text = item.contact.firstName + " " + item.contact.lastName,
 		(opt, item)=>{
 			opt.addEventListener("click", ()=>{
-				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, viewContact);
+				contactCardPopup.innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email
+				if(activeCrmTab != tabEnum.connection){
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, viewContact);
+					return;
+				}
+
 				let addressList = getById('divAddressList');
 				for(let i = addressList.childNodes.length-1; i > -1; i--){
 					let addressNode = addressList.childNodes[i];
@@ -423,6 +435,7 @@ function showAssociatedContacts(){
 }
 
 function showAllContacts(){
+	let contactCardPopup = getById('divContactCard');
 	getDataEx('cmbConnectedContact', 'contact', '?actionId=2', fillSelect, null,
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>{
@@ -430,8 +443,10 @@ function showAllContacts(){
 			},
 			(opt, item)=>{
 				opt.addEventListener("click", ()=>{
-					getById('divContactCard').innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email
-					if(activeCrmTab == tabEnum.connection)
+					if(activeCrmTab != tabEnum.connection){
+						contactCardPopup.innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email;
+						return;
+					}
 						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
 					})
 				}
@@ -441,7 +456,7 @@ function showAllContacts(){
 function activateTabCustomer(){
 	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
 	.then(()=>{
-		viewCustomerList();
+		//viewCustomerList();
 		Object.keys(customerModel).forEach(item=>customerModel[item].dom = getById(customerModel[item].domField));
 	})
 }
