@@ -19,13 +19,13 @@ function newCustomer(){
 }
 
 function newContact(){
-	contact.firstName.setValue('');
-	contact.lastName.setValue('');
-	contact.officePhone.setValue('');
-	contact.mobilePhone.setValue('');
-	contact.email.setValue('');
-	contact.notes.setValue('');
-	contact.contactId.setValue(0);
+	contactModel.firstName.setValue('');
+	contactModel.lastName.setValue('');
+	contactModel.officePhone.setValue('');
+	contactModel.mobilePhone.setValue('');
+	contactModel.email.setValue('');
+	contactModel.notes.setValue('');
+	contactModel.contactId.setValue(0);
 
 	setMsg(msgType.ok, 'Ready');
 }
