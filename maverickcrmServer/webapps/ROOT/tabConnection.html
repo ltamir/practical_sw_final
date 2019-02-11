@@ -1,63 +1,40 @@
-
-<table id="cssConnectionList">
-	<tr>
-	<td>
-		<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
-		<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
-	</td>	
-	<td>
-		<input type="text" title="Search Case Sensitive" id="txtSearchContact" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
-		<img src="images/filter.png" id="imgFilterContact" data-state="0" title="filter on selected contact" onclick="toggleShowContacts(this)">	
-	</td>
-		
-	</tr>
-	<tr>
-	<td>
-		<select id="cmbConnectedCustomer" size="3" class="cssConnectedCustomers"></select>
-	</td>
-	<td>
-		<select id="cmbConnectedContact" size="3" class="cssConncetedContacts"></select>
-	</td>
-	</tr>
-</table>
-
-<img src="images/add_up.png" title="add to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(1);toggleAsBotton(this)">
-<img src="images/remove_down.png" title="Remove from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(0);toggleAsBotton(this)">
-
+<img src="images/link_disconnect.png" title="Disconnect from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(0);toggleAsBotton(this)">
 <select id="cmbContactType"></select>
+<img src="images/link_connect.png" title="Connect to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="saveAssociation(1);toggleAsBotton(this)">
+<span>Customer: </span><span id="lblselectedCustomer"></span>
+
 <br>
 
 <table id="tblConnectedEditContact" class="cssCard card">
 <tr>
 	<td rowspan="3" style="border: 2px outset #DCDCDC;">
-		<input type="text" id="txtFirstName" tabindex="1" size="9" class="cssCardInput" placeholder="First name">
+		<input type="text" id="txtFirstName" tabindex="1" size="9" class="cssCardInput" placeholder="First name" tabindex="1">
 		<br>
 		<br>
-		<input type="text" id="txtLastName" tabindex="2" size="9" class="cssCardInput" placeholder="Last name">
+		<input type="text" id="txtLastName" tabindex="2" size="9" class="cssCardInput" placeholder="Last name" tabindex="2">
 	</td>
 	<td>
 		<img title="Office phone" src="images/phone.png" class="cssCardInput">
-		<input type="text" id="txtOfficePhone" tabindex="3" size="13" class="cssCardInput" placeholder="Office phone">
+		<input type="text" id="txtOfficePhone" tabindex="3" size="13" class="cssCardInput" placeholder="Office phone" tabindex="3">
 	</td>
 
 	<td rowspan="2">
 		<img title="Notes" src="images/notes.png" class="cssCardInput" style="vertical-align: 150%;">
-		<textarea rows="3" cols="18" id="txtNotes" tabindex="6" class="cssCardInput" placeholder="Notes..."></textarea>
+		<textarea rows="3" cols="18" id="txtNotes" tabindex="6" class="cssCardInput" placeholder="Notes..." tabindex="6"></textarea>
 	</td>		
 </tr>
 <tr>
 	<td>
 		<img title="Mobile phone" src="images/cellular.png" class="cssCardInput">
-		<input type="text" id="txtMobilePhone" tabindex="4" size="13" class="cssCardInput" placeholder="Mobile name">
+		<input type="text" id="txtMobilePhone" tabindex="4" size="13" class="cssCardInput" placeholder="Mobile name" tabindex="4">
 	</td>	
 </tr>
 <tr>
 	<td colspan="2">
 		<img title="Email address" src="images/email.png" class="cssCardInput">
-		<input type="text" id="txtEmail" tabindex="5" size="32" class="cssCardInput" placeholder="email">
-<img src="images/newitem.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
-<img src="images/save.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
-		
+		<input type="text" id="txtEmail" tabindex="5" size="32" class="cssCardInput" placeholder="email" tabindex="5">
+		<img src="images/newitem.png" title="new contact" id="imgNewContact" onmousedown="toggleAsBotton(this)" onmouseup="newContact();toggleAsBotton(this)">
+		<img src="images/save.png" title="save contact" id="imgSaveContact" onmousedown="toggleAsBotton(this)" onmouseup="saveContact();toggleAsBotton(this)">
 	</td>
 </tr>
 </table>
@@ -65,15 +42,12 @@
 <input type="hidden" id="connectionContactId" value="0">
 <input type="hidden" id="connectionAssociationId" value="0">
 <div id="divAddressList"></div>
-<img src="images/newitem.png" title="New address" id="imgNewAddress" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
-<img src="images/save.png" title="Save address" id="imgSaveAddress" onmousedown="toggleAsBotton(this)" onmouseup="saveAddress(); toggleAsBotton(this)">
-<img src="images/add_up.png" title="add to selected customer" id="imgAddConnection" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-<img src="images/remove_down.png" title="Remove from selected customer" id="imgRemoveConnection" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-
 <div id="divConnectedEditAddress" class="cssCard card">
-	<input type="text" id="txtAddressStreet" size="19" class="cssCardInput" placeholder="Street">
+	<input type="text" id="txtAddressStreet" size="16" class="cssCardInput" placeholder="Street">
 	<input type="text" id="txtAddressHouseNum" size="2" class="cssCardInput" placeholder="No.">
 	<input type="text" id="txtAddressCity" size="12" class="cssCardInput" placeholder="City">
-	<input type="text" id="txtAddressCountry" size="8" class="cssCardInput" placeholder="Country">
+	<input type="text" id="txtAddressCountry" size="8" class="cssCardInput" placeholder="Country">	
+	<img src="images/save.png" title="Save address" id="imgSaveAddress" style="float:right; margin-left:0.2em;" onmousedown="toggleAsBotton(this)" onmouseup="saveAddress(); toggleAsBotton(this)">
+	<img src="images/newitem.png" title="New address" id="imgNewAddress" style="float:right" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
 	<input type="hidden" id="addressId" value="0">
 </div>
