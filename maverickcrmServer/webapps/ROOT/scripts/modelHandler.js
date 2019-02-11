@@ -240,6 +240,67 @@ function validate(modelKey, value, errorMessage){
 	return true;
 }
 
+function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
+	let formData;
+	
+	if(method == null){
+		if(modelIdField.getValue() == '0' || modelIdField.getValue() == '')
+			method = 'POST';
+		else
+			method = 'PUT';		
+	}
+	
+	if(model.version == 1){	//one validation for all API
+		for(const key in model){
+			if(key != 'version' && model[key].notValid.length > 0){
+				for(const val in model[key].notValid)
+					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
+			}	
+		}	
+	}else if(model.version == 2){	//validation per API
+		for(const key in model){
+			if(key != 'version' && model[key].validation[method] != null){
+				for(const val in model[key].validation[method].chkValues)
+					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
+			}
+		}		
+	}else if(model.version == 3){
+		for(const key in model){
+			if(key != 'version' && model[key][method] != null){
+				for(const val in model[key][method].chkValues)
+					if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
+			}
+		}
+	}
+	
+	formData = new FormData();
+	if(model.version == 3){	//only fields flagged in method
+		for(const key in model){
+			if(key != 'version' && model[key][method].inApi){
+				formData.append(model[key].api, model[key].getValue())
+			}
+		}
+	}else{
+		Object.keys(model).forEach(function(key){
+			if(key != 'version' && model[key].api != null)
+				formData.append(model[key].api, model[key].getValue())
+		});			
+	}
+	
+	if(dbg == dbgModule)
+		debugFormData(formData);
+	
+	setData(method, formData, resource)
+	.then(function(resp){
+		if(resp.status == 'nack'){
+			setMsg(msgType.nok,  resp.msg);
+			console.log('error ' + resp.err);
+			return;
+		}else{
+			postFunc(resp);
+		}
+	});	
+}
 
 function saveTask(){
 	if(taskModel.title.getValue().length > 120){
@@ -349,68 +410,6 @@ function postTaskSave(resp){
 
 }
 
-function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
-	let formData;
-	
-	if(method == null){
-		if(modelIdField.getValue() == '0' || modelIdField.getValue() == '')
-			method = 'POST';
-		else
-			method = 'PUT';		
-	}
-	
-	if(model.version == 1){	//one validation for all API
-		for(const key in model){
-			if(key != 'version' && model[key].notValid.length > 0){
-				for(const val in model[key].notValid)
-					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
-			}	
-		}	
-	}else if(model.version == 2){	//validation per API
-		for(const key in model){
-			if(key != 'version' && model[key].validation[method] != null){
-				for(const val in model[key].validation[method].chkValues)
-					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
-			}
-		}		
-	}else if(model.version == 3){
-		for(const key in model){
-			if(key != 'version' && model[key][method] != null){
-				for(const val in model[key][method].chkValues)
-					if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
-			}
-		}
-	}
-	if(!validation(model)) return;
-	
-	formData = new FormData();
-	if(model.version == 3){	//only fields flagged in method
-		for(const key in model){
-			if(key != 'version' && model[key][method].inApi){
-				formData.append(model[key].api, model[key].getValue())
-			}
-		}
-	}else{
-		Object.keys(model).forEach(function(key){
-			if(key != 'version' && model[key].api != null)
-				formData.append(model[key].api, model[key].getValue())
-		});			
-	}
-	
-	if(dbg == dbgModule)
-		debugFormData(formData);
-	
-	setData(method, formData, resource)
-	.then(function(resp){
-		if(resp.status == 'nack'){
-			setMsg(msgType.nok,  resp.msg);
-			console.log('error ' + resp.err);
-			return;
-		}else{
-			postFunc(resp);
-		}
-	});	
-}
 
 function saveTaskLog(){
 	
@@ -693,7 +692,7 @@ function saveLogin(){
 }
 
 function addPermission(){
-	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.taskPermissionId, Module.login, null, 'taskpermission',
+	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.taskPermissionId, Module.login, 'POST', 'taskpermission',
 			(resp)=>{
 				if(activeTaskTab == tabEnum.permission)
 					viewTaskPermissionList();

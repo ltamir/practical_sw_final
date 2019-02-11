@@ -36,7 +36,8 @@
 	img{
 		cursor: pointer;
 		border-style: outset;
-		vertical-align: center;
+		margin-top: auto;
+		margin-bottom: auto;	
 	}
 
 	#menu {
@@ -45,7 +46,7 @@
       width: 100%;
       height: 2.2em;
       background-color: WhiteSmoke;
-      vertical-align: center;'
+      vertical-align: center;
     }
 
     #menu.td, #menu.th {
@@ -204,7 +205,7 @@
 	
 	#divParentTaskList, #divChildTaskList{
 		height: 2em;
-		width: 37em;
+		width: 35em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
@@ -214,23 +215,23 @@
 	}	
 	#divTaskLogList{
 		height: 5.5em;
-		width: 37em;
+		width: 35em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
 	}	
-	#divAttachmentList, #divPermissionList, #divPermissionLoginList{
-		width: 31em;
+	#divAttachmentList, #divPermissionList, #divPermissionLoginList, #cmbRelationTaskList{
+		width: 35em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
-	#txtDetailTaskTitle, #cmbRelationTaskList, #divAttachmentList {
-		width: 37em;
-	}
 
+	#divTaskDetailsTop > img{
+		margin-top: 0.2em;
+	}
 	#divTaskDetailsBottom, #divTaskDetailsTop{
-		width: 31em;
+		width: 35em;
 	}	
 	
 	#divAttachmentList, #divPermissionList, #divPermissionLoginList{     
@@ -291,9 +292,10 @@
 	.cssFieldLabel{
 		font-family: arial, sans-serif;
 		background-color: GhostWhite;
-		font-size: 0.8em;
+		font-size: 0.8em;		
 		font-weight: bold;	
 		width: 3.5em;
+		margin-left: 0.1em;
 		display: inline-block;
 	}
 	

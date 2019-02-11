@@ -100,22 +100,20 @@
 	            		<img src="images/status/closed.png" title="Closed" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskStatus, 4); menuHandler(menuData.taskStatus)"><br>
 	            		<img src="images/status/onhold.png" title="On Hold" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskStatus, 5); menuHandler(menuData.taskStatus)"><br>
 	            	</div>	
-	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact"></select>
-	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;">Total effort: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
+	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact" style="margin-bottom: 0.4em;"></select>
+					<label for="txtDetailEffort" class="cssFieldLabel">Effort</label>
+					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1" tabindex="2">
+					<img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.taskEffortUnit)">
+					<div id="divMenuEffortUnit">
+						<img title="Effort is in hours" src="images/effortUnit_hours.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 1 ); menuHandler(menuData.taskEffortUnit)">
+						<img title="Effort is in days" src="images/effortUnit_days.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 2); menuHandler(menuData.taskEffortUnit)">
+						<img title="Effort is in months" src="images/effortUnit_months.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 3); menuHandler(menuData.taskEffortUnit)">
+					</div>
+	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;" title="Total effort for task and child tasks">Total: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
-	            	<img align="right" style="margin-left:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
-	            	<img align="right" style="margin-left:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="setChildTask(this)">
-	            	<img align="right" style="margin-left:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-	            	<br>
-	            	<div style="margin-left:25.9em;" id="divMenuNewTaskType">
-	            		<img src="images/tasklist/project.png" title="new project task" onclick="menuSetter(menuData.newTaskType, 1); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="menuSetter(menuData.newTaskType, 2); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/design.png" title="new design task" onclick="menuSetter(menuData.newTaskType, 3); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/develop.png" title="new development task" onclick="menuSetter(menuData.newTaskType, 4); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="menuSetter(menuData.newTaskType, 5); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="menuSetter(menuData.newTaskType, 6); menuHandler(menuData.newTaskType)"><br>
-	            		<img src="images/tasklist/support.png" title="new support task" onclick="menuSetter(menuData.newTaskType, 7); menuHandler(menuData.newTaskType)	">
-	            	</div>	            	
+					<label for="txtDetailEffort" style="text-align:center;" class="cssFieldLabel">Due:</label>	            	
+	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, taskModel.dueDate.dom)">Due Date</span>				
+					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeydown="flagToggle(taskModel.dueDateLabel.dom,this, event)" onblur="toggleSearchDate(taskModel.dueDateLabel.dom, this)"/>
 				</div>
 				
             	<div id="divMenuTaskType">
@@ -127,22 +125,27 @@
             		<img src="images/tasklist/delivery.png" title="new delivery task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskType, 6); menuHandler(menuData.taskType)"><br>
             		<img src="images/tasklist/support.png" title="new support task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskType, 7); menuHandler(menuData.taskType)">
             	</div>				
-				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="80" tabindex="1"></textarea>
+				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="75" tabindex="1"></textarea>
 				<br>
 				<div id="divTaskDetailsBottom">
-					<label for="txtDetailEffort" class="cssFieldLabel">Effort</label>
-					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1" tabindex="2">
-					<img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.taskEffortUnit)">
-					<div id="divMenuEffortUnit">
-						<img title="Effort is in hours" src="images/effortUnit_hours.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 1 ); menuHandler(menuData.taskEffortUnit)">
-						<img title="Effort is in days" src="images/effortUnit_days.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 2); menuHandler(menuData.taskEffortUnit)">
-						<img title="Effort is in months" src="images/effortUnit_months.png" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.taskEffortUnit, 3); menuHandler(menuData.taskEffortUnit)">
-					</div>
-					<input type="hidden" id="effortUnit" value="1">
-	            	<span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, taskModel.dueDate.dom)">Due Date</span>				
-					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeydown="flagToggle(taskModel.dueDateLabel.dom,this, event)" onblur="toggleSearchDate(taskModel.dueDateLabel.dom, this)"/> 
-					<input type="hidden" id="taskId" value="0">    
-	            	<img align="right" src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
+					
+					<input type="hidden" id="effortUnit" value="1"> 
+					<input type="hidden" id="taskId" value="0">
+					
+					<img align="right" src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
+					<img align="left" style="margin-right:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+	            	<img align="left" style="margin-right:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="setChildTask(this)">
+					<img align="left" style="margin-right:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType)">
+	            	<br>
+	            	<div style="margin-left:25.9em;" id="divMenuNewTaskType">
+	            		<img src="images/tasklist/project.png" title="new project task" onclick="menuSetter(menuData.newTaskType, 1); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/requirements.png" title="new requirement task" onclick="menuSetter(menuData.newTaskType, 2); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/design.png" title="new design task" onclick="menuSetter(menuData.newTaskType, 3); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/develop.png" title="new development task" onclick="menuSetter(menuData.newTaskType, 4); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/qa.png" title="new qa task" onclick="menuSetter(menuData.newTaskType, 5); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/delivery.png" title="new delivery task" onclick="menuSetter(menuData.newTaskType, 6); menuHandler(menuData.newTaskType)"><br>
+	            		<img src="images/tasklist/support.png" title="new support task" onclick="menuSetter(menuData.newTaskType, 7); menuHandler(menuData.newTaskType)	">
+	            	</div>	
             	</div>
 				<hr align="left" style="width:31em;">
 				<span class="cssTabSelected" id="TabLog" onclick="setTab(tabEnum.taskLog)">Log</span>
