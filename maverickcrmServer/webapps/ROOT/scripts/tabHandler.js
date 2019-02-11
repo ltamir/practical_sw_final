@@ -52,6 +52,7 @@ function setTab(tab){
 		getById('tabTimeline').className = "cssTab";
 		getById('tabLogin').className = "cssTab";
 		getById('tabConnection').className = "cssTab";
+		activeCrmTab = tab;
 		activateTabCustomer();
 		break;
 	case tabEnum.timeline:
@@ -59,6 +60,7 @@ function setTab(tab){
 		getById('tabCustomer').className = "cssTab";		
 		getById('tabLogin').className = "cssTab";
 		getById('tabConnection').className = "cssTab";
+		activeCrmTab = tab;
 		activateTabTimeline();
 		break;
 	case tabEnum.login:
@@ -66,6 +68,7 @@ function setTab(tab){
 		getById('tabTimeline').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";	
 		getById('tabConnection').className = "cssTab";
+		activeCrmTab = tab;
 		activateTabLogin();
 		break;
 	case tabEnum.connection:
@@ -73,6 +76,7 @@ function setTab(tab){
 		getById('tabLogin').className = "cssTab";
 		getById('tabTimeline').className = "cssTab";
 		getById('tabCustomer').className = "cssTab";
+		activeCrmTab = tab;
 		activateTabConnection();
 		break;
 	default:
@@ -96,7 +100,8 @@ function activateTabTaskLog(){
 	.then(()=>{viewTaskLogList()}).then(()=>{
 		Object.keys(taskLogModel).forEach(item=>taskLogModel[item].dom = getById(taskLogModel[item].domField));
 	});
-	getById('divTaskTab').style.width = '37em';
+
+	getById('divTaskTab').style.width = '35em';
 }
 
 function viewTaskLogList(){
@@ -150,7 +155,7 @@ function activateTabRelation(){
 		Object.keys(taskRelationModel).forEach(item=>taskRelationModel[item].dom = getById(taskRelationModel[item].domField));
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
-	getById('divTaskTab').style.width = '37em';
+	getById('divTaskTab').style.width = '35em';
 	
 }
 
@@ -171,7 +176,7 @@ function activateTabAttachment(){
 	then(()=>{
 		Object.keys(attachmentModel).forEach(item=>attachmentModel[item].dom = getById(attachmentModel[item].domField));	
 	});
-	getById('divTaskTab').style.width = '31em';
+	getById('divTaskTab').style.width = '35em';
 }
 
 function viewAttachmentList(){
@@ -222,7 +227,7 @@ function activateTabLinkedCustomer(){
 	).then(()=>{
 		Object.keys(customerTaskModel).forEach(item=>customerTaskModel[item].dom = getById(customerTaskModel[item].domField));
 	});
-	getById('divTaskTab').style.width = '31em';
+	getById('divTaskTab').style.width = '35em';
 }
 
 function activateTabPermission(){
@@ -234,7 +239,7 @@ function activateTabPermission(){
 			(opt,item)=>opt.text = item.permissionTypeName, 
 			null))
 	.then(()=>viewPermissionLoginList());
-	getById('divTaskTab').style.width = '31em';
+	getById('divTaskTab').style.width = '35em';
 }
 
 function viewPermissionLoginList(){
@@ -363,6 +368,10 @@ function showCustomerConnection(param){
 			(opt, item)=>opt.addEventListener("click", ()=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)
 					showAssociatedContacts();
+				if(activeCrmTab != tabEnum.connection)
+					return;
+				
+				getById('lblselectedCustomer').innerHTML = item.customerName;
 				newAddress();
 				getDataEx('divAddressList', 'address', '?actionId=13&customerId='+item.customerId, fillDivList, null, 
 						(divRow,item)=>{
@@ -421,7 +430,9 @@ function showAllContacts(){
 			},
 			(opt, item)=>{
 				opt.addEventListener("click", ()=>{
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
+					getById('divContactCard').innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email
+					if(activeCrmTab == tabEnum.connection)
+						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
 					})
 				}
 			)

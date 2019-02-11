@@ -157,11 +157,33 @@
 				<div id="divTaskTab" class="card"></div>				                    
 			</td>
 			<td valign="top" rowspan="2">			
-				<div class="tabCRM">				
+				<div class="tabCRM">
+					<table id="cssConnectionList">
+						<tr>
+						<td>
+							<input type="text" title="Search Case Sensitive" id="txtSearchCustomer" class="cssConnectedList" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
+							<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
+						</td>	
+						<td>
+							<input type="text" title="Search Case Sensitive" id="txtSearchContact" class="cssConnectedList" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
+							<img src="images/filter.png" id="imgFilterContact" data-state="0" title="filter on selected contact" onclick="toggleShowContacts(this)">	
+						</td>
+							
+						</tr>
+						<tr>
+						<td>
+							<select id="cmbConnectedCustomer" size="2" class="cssConnectedList"></select>
+						</td>
+						<td>
+							<select id="cmbConnectedContact" size="2" class="cssConnectedList"></select>
+						</td>
+						</tr>
+					</table>
 					<span id="tabConnection" class="cssTab" onclick="setTab(tabEnum.connection)">Connections</span>
 					<span id="tabTimeline" class="cssTab" onclick="setTab(tabEnum.timeline)">Timeline</span>
 					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
+					<span id="divContactCard" class="cssCard card" style="display:inline-block;float:bottom;">&nbsp;</span>
 					<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;">
 	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; height:18em; width: 26m;">
 	            		<textarea rows="5" cols="85" id="txtSQL">select * from task</textarea>

@@ -366,6 +366,9 @@
 		width: 33em;
 	}
 		
+	.cssConnectedList{
+		font-size: 0.9em;
+	}
 	#divAddressList{
 		height: 3em;
 		overflow-y: scroll;
