@@ -157,7 +157,15 @@ function viewTask(id, data){
 		getById('TabPermission').style.display='none';
 	}
 	
-	getDataEx('', 'business', '?taskId=' + task.taskId, 
+	viewTotalEffort();
+	
+	menuData.newTaskType.menuid.src='images/newitem.png';
+	setTextDirectionModel(taskModel);
+	setMsg(msgType.ok, 'Ready');
+}
+
+function viewTotalEffort(){
+	getDataEx('', 'business', '?taskId=' + taskModel.taskId.getValue(), 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
 				getById('totalTaskEffort').innerHTML = data.total;
 				let effortState = getById('imgEffortStatus');
@@ -171,12 +179,7 @@ function viewTask(id, data){
 					effortState.title = 'effort is correct';			
 				}
 			}, null, null, null, null);
-	
-	menuData.newTaskType.menuid.src='images/newitem.png';
-	setTextDirectionModel(taskModel);
-	setMsg(msgType.ok, 'Ready');
 }
-
 
 function viewTaskLog(id, data){
 	if(currentTaskPermissionType == 2){
@@ -407,7 +410,7 @@ function postTaskSave(resp){
 	
 	taskModel.taskType.prevTaskType = taskModel.taskType.getValue();
 	searchTask(prepareSearchTask());
-
+	viewTotalEffort();
 }
 
 
@@ -532,7 +535,7 @@ function saveCustomer(){
 	
 	genericSave(()=>{return true;}, customerModel, customerModel.customerId, Module.customer, null, 'customer',
 			(resp)=>{
-				viewCustomerList();
+				//todo put customerlist
 				setMsg(msgType.ok, 'Customer saved')				
 			});
 }
@@ -567,7 +570,7 @@ function saveAssociation(action){
 				else
 					showAllContacts();
 				newContact();
-				associationModel.associationId.setValue(item.associationId);
+				associationModel.associationId.setValue(resp.associationId);
 				setMsg(msgType.ok, 'Connection change saved')		
 		});	
 	}
