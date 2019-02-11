@@ -258,7 +258,7 @@ function toggleDatabase(btn){
 		sqlDIV.style.display='none';
 		toggleAsBotton(btn);
 		btn.setAttribute('data-state', 0);
-		getById('divCRM').style.display='inline';
+		getById('divCRM').style.display='block';
 	}
 }
 function executeSQL(){
