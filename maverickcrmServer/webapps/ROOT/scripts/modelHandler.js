@@ -73,6 +73,14 @@ function newTask(taskType){
 }
 
 function newTaskLog(){
+	if(taskModel.taskId == 0){
+		setMsg(msgType.nok, 'Please select a task');
+		return	
+	}
+	if(taskModel.permissionType.getValue() == 2){
+		setMsg(msgType.nok, 'View permission on task');
+		return
+	}
 	taskLogModel.taskLogId.setValue(0);
 	taskLogModel.contact.setValue(loggedContact.contactId);
 	taskLogModel.taskLogType.setValue(0);
@@ -127,9 +135,8 @@ function setChildTask(setter){
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
-var currentTaskPermissionType; //1:edit, 2:view
 function viewTask(id, data){
-	currentTaskPermissionType = data.taskPermission.permissionType.permissionTypeId;
+	taskModel.permissionType.setValue(data.taskPermission.permissionType.permissionTypeId);
 	let task = data.task;
 	taskModel.taskId.setValue(task.taskId);
 	taskModel.contact.setValue(task.contact.contactId);
@@ -182,17 +189,13 @@ function viewTotalEffort(){
 }
 
 function viewTaskLog(id, data){
-	if(currentTaskPermissionType == 2){
-		taskLogModel.description.dom.disabled = true;
-	}else{
-		taskLogModel.description.dom.disabled = false;
-	}	
 	let taskLog = data.taskLog;
 	taskLogModel.description.setValue(taskLog.description);
 	taskLogModel.contact.setValue(taskLog.contact.contactId);
 	taskLogModel.taskLogType.setValue(taskLog.taskLogType.taskLogTypeId);
 	taskLogModel.sysdate.setValue(taskLog.sysdate);
 	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
+	getById('lblDueDate').innerHTML = taskLog.sysdate;
 	setTextDirectionModel(taskLogModel);
 }
 
@@ -253,21 +256,21 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 			method = 'PUT';		
 	}
 	
-	if(model.version == 1){	//one validation for all API
+	if(model.version.getValue() == 1){	//one validation for all API
 		for(const key in model){
 			if(key != 'version' && model[key].notValid.length > 0){
 				for(const val in model[key].notValid)
 					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
 			}	
 		}	
-	}else if(model.version == 2){	//validation per API
+	}else if(model.version.getValue() == 2){	//validation per API
 		for(const key in model){
 			if(key != 'version' && model[key].validation[method] != null){
 				for(const val in model[key].validation[method].chkValues)
 					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
 			}
 		}		
-	}else if(model.version == 3){
+	}else if(model.version.getValue() == 3){
 		for(const key in model){
 			if(key != 'version' && model[key][method] != null){
 				for(const val in model[key][method].chkValues)
@@ -415,7 +418,14 @@ function postTaskSave(resp){
 
 
 function saveTaskLog(){
-	
+	if(taskModel.taskId == 0){
+		setMsg(msgType.nok, 'Please select a task');
+		return;
+	}
+	if(taskModel.permissionType.getValue() == 2){
+		setMsg(msgType.nok, 'View permission on task');
+		return;
+	}	
 	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
 		(resp)=>{
 			setMsg(msgType.ok, 'Log saved');
@@ -426,7 +436,14 @@ function saveTaskLog(){
 		});
 }
 function deleteTaskLog(){
-	
+	if(taskModel.taskId == 0){
+		setMsg(msgType.nok, 'Please select a task');
+		return;
+	}
+	if(taskModel.permissionType.getValue() == 2){
+		setMsg(msgType.nok, 'View permission on task');
+		return;
+	}	
 	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, 'DELETE', 'tasklog',
 			(resp)=>{
 				setMsg(msgType.ok, 'Log saved');
