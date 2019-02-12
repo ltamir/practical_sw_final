@@ -85,20 +85,34 @@ function setTab(tab){
 }
 	
 function activateTabTaskLog(){
+
 	getHTML('tabTaskLog.html').then(function(response){fillTab('divTaskTab', response)})
-	.then(()=>getDataEx('cmbTaskLogType', 'tasklogtype', '?actionId=2', fillSelect, 'Log type:', 
+	.then(()=>{
+		getDataEx('cmbTaskLogType', 'tasklogtype', '?actionId=2', fillSelect, 'Log type:', 
     		(opt,item)=>opt.value = item.taskLogTypeId, 
     		(opt,item)=>opt.text = item.taskLogTypeName, 
-    		null))
-    .then(()=>{
-    	getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Contacts', 
-    		(opt,item)=>opt.value = item.contactId, 
-    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
-    		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
-
-    })
-	.then(()=>{viewTaskLogList()}).then(()=>{
-		Object.keys(taskLogModel).forEach(item=>taskLogModel[item].dom = getById(taskLogModel[item].domField));
+    		null);
+		getDataEx('cmbTaskLogContact', 'contact', '?actionId=2', fillSelect, 'Contacts', 
+	    		(opt,item)=>opt.value = item.contactId, 
+	    		(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
+	    		(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;});
+		viewTaskLogList();
+	})
+	.then(()=>{
+		initModel(taskLogModel);
+		if(taskModel.taskId.getValue() > 0){
+			if(taskModel.permissionType.getValue() == 2){
+				Object.keys(taskLogModel).forEach(item=>{
+					if(taskLogModel[item].dom == null)
+						console.log(item);
+					else
+						taskLogModel[item].dom.disabled=true
+				});
+			}else{
+				Object.keys(taskLogModel).forEach(item=>taskLogModel[item].dom.disabled=false);
+			}		
+		}
+	
 	});
 
 	getById('divTaskTab').style.width = '35em';
