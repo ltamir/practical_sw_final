@@ -100,19 +100,7 @@ function activateTabTaskLog(){
 	})
 	.then(()=>{
 		initModel(taskLogModel);
-		if(taskModel.taskId.getValue() > 0){
-			if(taskModel.permissionType.getValue() == 2){
-				Object.keys(taskLogModel).forEach(item=>{
-					if(taskLogModel[item].dom == null)
-						console.log(item);
-					else
-						taskLogModel[item].dom.disabled=true
-				});
-			}else{
-				Object.keys(taskLogModel).forEach(item=>taskLogModel[item].dom.disabled=false);
-			}		
-		}
-	
+		setDomPermission(taskLogModel);
 	});
 
 	getById('divTaskTab').style.width = '35em';
@@ -166,7 +154,8 @@ function activateTabRelation(){
 	})
 	.then(()=>searchProjectTask('cmbTabRelationProject'))
 	.then(()=>{
-		Object.keys(taskRelationModel).forEach(item=>taskRelationModel[item].dom = getById(taskRelationModel[item].domField));
+		initModel(taskRelationModel);
+		setDomPermission(taskRelationModel);
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
 	getById('divTaskTab').style.width = '35em';
@@ -188,7 +177,8 @@ function activateTabAttachment(){
 			(opt,item)=>{if(opt.value == loggedContact.contactId)opt.selected=true;}))
 	.then(()=>setValue('txtAttachmentNotes', '')).
 	then(()=>{
-		Object.keys(attachmentModel).forEach(item=>attachmentModel[item].dom = getById(attachmentModel[item].domField));	
+		initModel(attachmentModel);
+		setDomPermission(attachmentModel);
 	});
 	getById('divTaskTab').style.width = '35em';
 }
@@ -239,7 +229,8 @@ function activateTabLinkedCustomer(){
 			(opt,item)=>opt.text = item.customerName, 
 			(opt,item)=>opt.addEventListener("dblclick", ()=>addLinkedCustomer()))
 	).then(()=>{
-		Object.keys(customerTaskModel).forEach(item=>customerTaskModel[item].dom = getById(customerTaskModel[item].domField));
+		initModel(customerTaskModel);
+		setDomPermission(customerTaskModel);
 	});
 	getById('divTaskTab').style.width = '35em';
 }
@@ -282,8 +273,8 @@ function viewPermissionLoginList(){
 
 			}
 		)
-		Object.keys(taskPermissionModel).forEach(item=>taskPermissionModel[item].dom = getById(taskPermissionModel[item].domField));
-		
+		initModel(taskPermissionModel);
+		setDomPermission(taskPermissionModel);
 }
 
 function viewTaskPermissionList(){

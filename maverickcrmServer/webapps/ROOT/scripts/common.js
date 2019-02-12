@@ -312,3 +312,18 @@ function initModel(model){
 			model[item].dom = getById(model[item].domField);
 	});
 }
+
+function setDomPermission(model){
+	if(taskModel.taskId.getValue() > 0){
+		if(taskModel.permissionType.getValue() == 2){
+			Object.keys(model).forEach(item=>{
+				if(model[item].dom == null)
+					console.log(item);
+				else
+					model[item].dom.disabled=true
+			});
+		}else{
+			Object.keys(model).forEach(item=>model[item].dom.disabled=false);
+		}		
+	}	
+}

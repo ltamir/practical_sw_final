@@ -78,7 +78,7 @@ function newTaskLog(){
 		return	
 	}
 	if(taskModel.permissionType.getValue() == 2){
-		setMsg(msgType.nok, 'View permission on task');
+		setMsg(msgType.nok, 'You have view permission on task');
 		return
 	}
 	taskLogModel.taskLogId.setValue(0);
@@ -116,6 +116,7 @@ function viewAddress(id, item){
 }
 
 function setChildTask(setter){
+	if(!checkPermission()) return;
 	if(setter.getAttribute('data-parentTask') > 0){
 		setter.setAttribute('data-parentTask', 0);
 		setter.setAttribute('data-state', 0);
@@ -246,8 +247,18 @@ function validate(modelKey, value, errorMessage){
 	return true;
 }
 
-function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc){
+function checkPermission(){
+	if(taskModel.permissionType.getValue() == 2){
+		setMsg(msgType.nok, 'You have view permission on task');
+		return false;
+	}
+	return true;
+}
+
+function genericSave(validation, model, modelIdField, dbgModule, method, resource, postFunc, permFunc){
 	let formData;
+	
+	if(permFunc != null && !(permFunc())) return;
 	
 	if(method == null){
 		if(modelIdField.getValue() == '0' || modelIdField.getValue() == '')
@@ -309,6 +320,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 }
 
 function saveTask(){
+	if(!checkPermission()) return;
 	if(taskModel.title.getValue().length > 120){
 		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
 		return;
@@ -422,10 +434,7 @@ function saveTaskLog(){
 		setMsg(msgType.nok, 'Please select a task');
 		return;
 	}
-	if(taskModel.permissionType.getValue() == 2){
-		setMsg(msgType.nok, 'View permission on task');
-		return;
-	}	
+
 	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, null, 'tasklog',
 		(resp)=>{
 			setMsg(msgType.ok, 'Log saved');
@@ -433,7 +442,7 @@ function saveTaskLog(){
 				viewTaskLogList();
 				newTaskLog();				
 			}
-		});
+		}, checkPermission);
 }
 function deleteTaskLog(){
 	if(taskModel.taskId == 0){
@@ -441,7 +450,7 @@ function deleteTaskLog(){
 		return;
 	}
 	if(taskModel.permissionType.getValue() == 2){
-		setMsg(msgType.nok, 'View permission on task');
+		setMsg(msgType.nok, 'You have view permission on task');
 		return;
 	}	
 	genericSave(()=>{return true;}, taskLogModel, taskLogModel.taskLogId, Module.tasklog, 'DELETE', 'tasklog',
@@ -457,6 +466,8 @@ function deleteTaskLog(){
 function prepareSaveRelation(asParent){
 	let relationTaskList;
 	let relName = (asParent == 1)?'parent':'child';
+	
+	if(!checkPermission()) return;
 	
 	if(!validate(taskModel.taskId, 0, 'Please select a task')) return;
 	if(!validate(taskRelationModel.selectedTask, 0, 'Please select a task to set as ' + relName)) return;
@@ -488,6 +499,8 @@ function saveRelation(parent, child, relationType){
 	let formData = new FormData();
 	let taskRelationId;
 
+	if(!checkPermission()) return;
+	
 	formData.append('childTaskId', child);
 	formData.append('parentTaskId', parent);
 	formData.append('taskRelationTypeId', relationType);
@@ -514,6 +527,7 @@ function saveRelation(parent, child, relationType){
 
 function saveRelationType(relationTypeId){
 	let tmpRelationModel = Object.assign({}, taskRelationModel);
+	if(!checkPermission()) return;
 	
 	Object.keys(tmpRelationModel).forEach(function(item){
 		tmpRelationModel[item].dom = null;
@@ -611,6 +625,7 @@ function saveAddress(){
 
 function saveAttachment(){
 	
+	if(!checkPermission()) return;
 	let oFormData = new FormData();
 	let method;
 	let attachmentType = getById('cmbAttachmentType');
