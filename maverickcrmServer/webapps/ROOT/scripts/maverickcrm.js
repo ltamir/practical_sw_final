@@ -232,8 +232,8 @@ function init(){
 }
 
 function initModels(){
-	Object.keys(taskModel).forEach(item=>taskModel[item].dom = getById(taskModel[item].domField));
-	Object.keys(searchModel).forEach(item=>searchModel[item].dom = getById(searchModel[item].domField));
+	initModel(taskModel);
+	initModel(searchModel);
 
 	searchModel.status.setValue(1);
 	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
