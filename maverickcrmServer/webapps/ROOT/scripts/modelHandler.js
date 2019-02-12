@@ -1,6 +1,7 @@
 // ***** new model ***** //
 
 function newAttachment(){
+	if(!checkPermission()) return;
 	attachmentModel.attachmentId.setValue(0);
 	attachmentModel.type.setValue(0);
 	attachmentModel.file.setValue('');
@@ -77,10 +78,8 @@ function newTaskLog(){
 		setMsg(msgType.nok, 'Please select a task');
 		return	
 	}
-	if(taskModel.permissionType.getValue() == 2){
-		setMsg(msgType.nok, 'You have view permission on task');
-		return
-	}
+	if(!checkPermission()) return;
+
 	taskLogModel.taskLogId.setValue(0);
 	taskLogModel.contact.setValue(loggedContact.contactId);
 	taskLogModel.taskLogType.setValue(0);
@@ -169,6 +168,7 @@ function viewTask(id, data){
 	
 	menuData.newTaskType.menuid.src='images/newitem.png';
 	setTextDirectionModel(taskModel);
+	setDomPermission(taskModel);
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -558,7 +558,7 @@ function removeTaskRelation(){
 			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
 			getById('divTaskTab').removeAttribute('data-selected');
 			setMsg(msgType.ok, 'Relation Removed');
-		});
+		}, checkPermission);
 }
 
 
@@ -674,7 +674,7 @@ function addLinkedCustomer(){
 		(resp)=>{
 			activateTabLinkedCustomer();
 			setMsg(msgType.ok, 'customer added to project');
-	});
+	}, checkPermission);
 }
 
 function removeLinkedCustomer(){
@@ -687,6 +687,7 @@ function removeLinkedCustomer(){
 	
 	let formData = new FormData();
 	let method = 'DELETE';	
+	if(!checkPermission())return;
 	
     if(getValue('cmbLinkedCustomer') == ''){
 		setMsg(msgType.nok, 'Please select a customer');
@@ -732,7 +733,7 @@ function addPermission(){
 				if(activeTaskTab == tabEnum.permission)
 					viewTaskPermissionList();
 				setMsg(msgType.ok, 'Permissions updated');
-			});
+			}, checkPermission);
 }
 
 function removePermission(){
@@ -740,5 +741,5 @@ function removePermission(){
 			(resp)=>{
 				viewTaskPermissionList();
 				setMsg(msgType.ok, 'Permissions removed');
-			});
+			}, checkPermission);
 }

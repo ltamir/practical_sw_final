@@ -38,7 +38,7 @@
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
             </td> 
             <td width="14%">
-            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, getById('txtSearchDueDate'))">Set due date</span>
+            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, searchModel.dueDate.dom)">Set due date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
             </td> 
             <td width="27%" align="right" valign="center">

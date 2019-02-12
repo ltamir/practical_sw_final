@@ -122,6 +122,7 @@ function flagToggle(lbl, field, ev){
 }
 
 function toggleSearchDate(lbl, field){
+	if(field.disabled && !checkPermission()) return;
 	if(field.getAttribute('data-isActive') == '0'){
 		field.style.display='inline';
 		lbl.style.display='none';
