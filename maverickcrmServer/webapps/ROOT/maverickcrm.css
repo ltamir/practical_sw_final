@@ -62,7 +62,10 @@
 	#lblSearchDueDate{
 		cursor: pointer;
 		float: left;
-		width: 8.5em;
+		width: 9em;
+		margin-top: 0.2em;
+		border: 1px solid #dddddd;
+		
 	}
 	#txtSearchDueDate{
 		display: none;
@@ -91,7 +94,7 @@
 	.cssFixed
 	{
 	    position: fixed;
-	    top: 4em;
+	    top: 4.5em;
 	    width: 100%;
 	    font-family: Tahoma, Geneva, sans-serif;
 	    font-size: 0.9em;
@@ -268,7 +271,7 @@
 		border-style: outset;
 	}
 
-	#divMenuNewTaskType, #divMenuTaskType, #divMenuEffortUnit, #divMenuTaskStatus{
+	#divMenuNewTaskType, #divMenuTaskType, #divSearchTaskType, #divMenuEffortUnit, #divMenuTaskStatus{
 		display: none;
 		position: fixed;
 		z-index: 2;

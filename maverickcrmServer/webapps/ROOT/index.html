@@ -26,8 +26,20 @@
             <td width="4%">
                 <select class="cssMenu" title="Project list" id="cmbSearchProject" onchange="setSearchPredicate(this)"></select>
 			</td>
-            <td width="4%">
-                <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" onchange="setSearchPredicate(this)"></select>                
+            <td width="2%">
+                <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" style="display:none" onchange="setSearchPredicate(this)"></select>
+                <img src="images/site.png" id="imgTSearchaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.searchTaskType)">
+                <br>
+                <div id="divSearchTaskType">
+	                <img src="images/site.png" title="All types" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 0); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/project.png" title="new project task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 1); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/requirements.png" title="new requirement task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 2); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/design.png" title="new design task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 3); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/develop.png" title="new development task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 4); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/qa.png" title="new qa task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 5); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/delivery.png" title="new delivery task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 6); menuHandler(menuData.searchTaskType)"><br>
+            		<img src="images/tasklist/support.png" title="new support task" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); menuSetter(menuData.searchTaskType, 7); menuHandler(menuData.searchTaskType)">
+            	</div>
             </td>
             <td width="6%">
 	            <img src="images/task_status_open.png" id="searchOpenTask" style="border: 1px inset;" data-state="1" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
@@ -37,13 +49,13 @@
             <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
             </td> 
-            <td width="14%">
+            <td width="18%" valign="center">
             	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, searchModel.dueDate.dom)">Set due date</span>
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
+				<img src="images/menu_reset.png" style="float: right; margin-left:0.3em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+                <img src="images/menu_search.png" style="float: right; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">                
             </td> 
-            <td width="27%" align="right" valign="center">
-            	<img src="images/menu_search.png" style="float:left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
-            	<img src="images/menu_reset.png" style="float:left; margin-left:0.3em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            <td width="27%" align="right" valign="center">            	            	
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
@@ -68,6 +80,7 @@
 			<td class="cssMessageInfo" id="messageInfo">Ready</td>
 		</tr>
 	</table>
+	
    	<table id="parentTaskList" class="cssFixed">
 		<tr>
 			<td style="width: 5%;">Type</td>

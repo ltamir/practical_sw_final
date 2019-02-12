@@ -13,6 +13,7 @@ var effortUnitList = {
 		3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
 }
 var taskTypeList = {
+		0:{src:"images/site.png", title:"All"},
 		1:{src:"images/tasklist/project.png", title:"Project"},
 		2:{src:"images/tasklist/requirements.png", title:"Requirement"},
 		3:{src:"images/tasklist/design.png", title:"Design"},
