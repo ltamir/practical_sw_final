@@ -1,23 +1,16 @@
 function setDomValue(val){
-	if(this.dom != null)
-		this.dom.value = val;
-	else
-		this.value = val;
+	this.dom.value = val;
 }
 function getDomValue(){
-	if(this.dom != null)
-		return this.dom.value;
-	else
-		return this.value;	
-	
+	return this.dom.value;	
 }
 
 // ***** image to id mapping ***** //
 
 var effortUnitList = {
 		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
-			2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
-			3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
+		2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
+		3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
 }
 var taskTypeList = {
 		1:{src:"images/tasklist/project.png", title:"Project"},
@@ -196,7 +189,7 @@ function divRowToggler(regularCSS, selectedCSS){
 
 function Model(domField, dom, api, getter, setter, postMap, putMap, delMap ){
 	this.domField = domField;
-	this.dom = dom;
+	this.dom = (dom == null)?{disabled:false, value:3}:dom;
 	this.api = api;
 	this.value = null;
 	this.getValue = (getter == null)? getDomValue:getter;
@@ -219,7 +212,7 @@ var taskLogModel = {
 	description:new Model('txtTaskLogDescription', null, 'description', null, null, new mapAPI([''], 'Description cannot be empty', true), new mapAPI([''], 'Description cannot be empty', true), new mapAPI()),
 	taskLogType:new Model('cmbTaskLogType', null, 'taskLogTypeId', null, null, new mapAPI([0], 'Please select a log type', true), new mapAPI([0], 'Please select a log type', true), new mapAPI([3,4],'Cannot delete Attachment or Status change log' , false)),
 	taskId:new Model('taskId', null, 'taskId', null, null, new mapAPI([0], 'Please select a task', true), new mapAPI([0], 'Please select a task', true), new mapAPI([0], 'Please select a task', false)),
-	version:3
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI())
 	}
 
 var taskModel={
@@ -232,7 +225,8 @@ var taskModel={
 	dueDate:new Model('txtDetailDueDate', null, 'dueDate', null, null, new mapAPI('', 'Please select a due date', true), new mapAPI('', 'Please select a due date', true), new mapAPI()),
 	dueDateLabel:new Model('lblDetailDueDate', null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 	status:new Model('cmbDetailStatus', null, 'statusId', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
-	version:3
+	permissionType:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()), //1:edit, 2:view
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI())
 	}
 
 taskModel.status.changed = false;
@@ -246,29 +240,29 @@ var contactModel = {
 	mobilePhone:new Model('txtMobilePhone', null, 'mobilePhone', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
 	email:new Model('txtEmail', null, 'email', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
 	notes:new Model('txtNotes', null, 'notes', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
-	version:3
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI())
 }
 
 var customerModel = {
-	version:3,
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 	customerId:new Model('detailCustomerId', null, 'customerId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
 	customerName:new Model('txtCustomerName', null, 'customerName', null, null, new mapAPI([''], 'Please fill customer name', true), new mapAPI([''], 'Please fill customer name', true), new mapAPI()),
 	customerNotes:new Model('txtCustomerNotes', null, 'customerNotes', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI())
 }
 
 var customerTaskModel = {
-	version:3,
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 	customerTaskId:new Model('cmbLinkedCustomer', null, 'customerTaskId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
 	newcustomerId:new Model('cmbNoneLinkedCustomer', null, 'customerId', null, null, new mapAPI([''], 'Please select a customer', true), new mapAPI(null, null, true), new mapAPI()),
 	taskId:new Model('taskId', null, 'taskId', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI())
 }
 
 var loginModel = {
-		version:3,
-		loginId:new Model('loginId', null, 'loginId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
-		username:new Model('txtUserName', null, 'username', null, null, new mapAPI([''], 'Please type a username', true),new mapAPI([''], 'Please type a username', true), new mapAPI()),		
-		password:new Model('txtPassword', null, 'password', null, null, new mapAPI([''], 'Please type a password', true), new mapAPI([''], 'Please type a password', true), new mapAPI()),
-		contact:new Model('cmbLoginContactList', null, 'contactId', null, null, new mapAPI(['', 0], 'Please select a contact', true), new mapAPI(['', 0], 'Please select a contact', true), new mapAPI())
+	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
+	loginId:new Model('loginId', null, 'loginId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
+	username:new Model('txtUserName', null, 'username', null, null, new mapAPI([''], 'Please type a username', true),new mapAPI([''], 'Please type a username', true), new mapAPI()),		
+	password:new Model('txtPassword', null, 'password', null, null, new mapAPI([''], 'Please type a password', true), new mapAPI([''], 'Please type a password', true), new mapAPI()),
+	contact:new Model('cmbLoginContactList', null, 'contactId', null, null, new mapAPI(['', 0], 'Please select a contact', true), new mapAPI(['', 0], 'Please select a contact', true), new mapAPI())
 }
 
 var taskPermissionModel = {
@@ -296,7 +290,7 @@ var taskPermissionModel = {
 				(this.dom != null)?this.dom.setAttribute('data-loginId', val):this.value = val;
 				}),	
 		permissiontypeId:new Model('cmbPermissionType', null, 'permissiontypeId', null, null),
-		version:3
+		version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI())
 }
 
 
@@ -314,7 +308,7 @@ taskPermissionModel.permissiontypeId.PUT = new mapAPI([''], 'Please select Edit 
 taskPermissionModel.permissiontypeId.DELETE = new mapAPI();
 
 var attachmentModel = {
-		version:3,
+		version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		attachmentId:new Model('attachmentId', null, 'attachmentId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
 		type:new Model('cmbAttachmentType', null, 'attachmentTypeId', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
 		file:new Model('attachmentFile', null, 'fileName', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
@@ -324,16 +318,16 @@ var attachmentModel = {
 }
 
 var associationModel = {
+		version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		associationId:new Model('connectionAssociationId', null, 'associationId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI([0, ''], 'Something not selected', true)),
 		contact:new Model('connectionContactId', null, 'contactId', null, null, new mapAPI([0,''], 'Contact not selected', true), new mapAPI([0,''], 'Contact not selected', true), new mapAPI([0,''], 'Contact not selected', true)),
 		customer:new Model('cmbConnectedCustomer', null, 'customerId', null, null, new mapAPI([0,''], 'Customer not selected', true), new mapAPI([0,''], 'Customer not selected', true), new mapAPI([0,''], 'Customer not selected', true)),
 		contactType:new Model('cmbContactType', null, 'contactTypeId', null, null, new mapAPI([0,''], 'Contact Type not selected', true), new mapAPI([0,''], 'Contact Type not selected', true), new mapAPI()),
-		address:new Model('addressId', null, 'addressId', null, null, new mapAPI([0,''], 'Address not selected', true), new mapAPI([0,''], 'Address not selected', true), new mapAPI()),
-		version:3
+		address:new Model('addressId', null, 'addressId', null, null, new mapAPI([0,''], 'Address not selected', true), new mapAPI([0,''], 'Address not selected', true), new mapAPI())
 }
 
 var taskRelationModel = {
-		version:1,
+		version:new Model(null, {disabled:false, value:1}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', null, null),
 		task:new Model('taskId', null, 'parentTaskId', null, null),
 		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId' , null, null),
@@ -341,7 +335,7 @@ var taskRelationModel = {
 }
 
 var addressModel = {
-		version:3,
+		version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		addressId:new Model('addressId', null, 'addressId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)),
 		street:new Model('txtAddressStreet', null, 'street', null, null, new mapAPI([''], 'Please fill the street name', true), new mapAPI([''], 'Please fill the street name', true), new mapAPI()),
 		houseNum:new Model('txtAddressHouseNum', null, 'houseNum', null, null, new mapAPI([''], 'Please fill the building number', true), new mapAPI([''], 'Please fill the building number', true), new mapAPI()),
@@ -351,7 +345,7 @@ var addressModel = {
 }
 
 var searchModel = {
-		version:1,
+		version:new Model(null, {disabled:false, value:1}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		customer:new Model('cmbSearchCustomer', null, 'customerId', null, null),
 		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', null, null),
 		project:new Model('cmbSearchProject', null, 'projectId', null, null),
