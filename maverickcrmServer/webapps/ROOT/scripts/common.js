@@ -305,3 +305,10 @@ function setTextDirection(dom, value){
 	}
 	dom.style.direction = 'ltr';
 }
+
+function initModel(model){
+	Object.keys(model).forEach(item=>{
+		if(model[item].domField != null)
+			model[item].dom = getById(model[item].domField);
+	});
+}
