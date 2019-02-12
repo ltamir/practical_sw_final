@@ -320,10 +320,10 @@ function activateTabConnection(){
 			null))
 			.then(()=>showAllContacts())
 			.then(()=>{
-				Object.keys(contactModel).forEach(item=>contactModel[item].dom = getById(contactModel[item].domField));
-				Object.keys(customerModel).forEach(item=>customerModel[item].dom = getById(customerModel[item].domField));	
-				Object.keys(associationModel).forEach(item=>associationModel[item].dom = getById(associationModel[item].domField));
-				Object.keys(addressModel).forEach(item=>addressModel[item].dom = getById(addressModel[item].domField));
+				initModel(contactModel);
+				initModel(customerModel);
+				initModel(associationModel);
+				initModel(addressModel);
 			});
 }
 
@@ -460,10 +460,7 @@ function showAllContacts(){
 
 function activateTabCustomer(){
 	getHTML('tabCustomer.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>{
-		//viewCustomerList();
-		Object.keys(customerModel).forEach(item=>customerModel[item].dom = getById(customerModel[item].domField));
-	})
+	.then(()=>initModel(customerModel))
 }
 
 function viewCustomerList(){
@@ -495,9 +492,7 @@ function activateTabLogin(){
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
 		.then(()=>viewLoginList())
-		.then(()=>{
-			Object.keys(loginModel).forEach(item=>loginModel[item].dom = getById(loginModel[item].domField));
-		})
+		.then(()=>initModel(loginModel))
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
 function viewLoginList(){
