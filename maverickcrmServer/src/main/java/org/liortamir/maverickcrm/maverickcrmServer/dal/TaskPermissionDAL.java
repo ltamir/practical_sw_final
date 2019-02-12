@@ -37,35 +37,15 @@ public class TaskPermissionDAL {
 	public TaskPermission get(int taskId, int loginId) throws SQLException {
 		TaskPermission entity = null;
 		
-		final String baseSQL = "select * from taskpermission inner join (select taskId from taskPermission where loginId=?) perm on perm.taskId = taskpermission.taskid"
-		+" union"
-		+" select * from taskpermission"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?)) one on one .childTaskId  = taskpermission.taskId"
-		+" union"
-		+" select * from taskpermission"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) two on two .childTaskId  = taskpermission.taskId"
-		+" union"
-		+" select * from taskpermission"
-		+" inner  join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) three on three .childTaskId  = taskpermission.taskId"
-		+" union"
-		+" select * from taskpermission"
-		+" inner join"
-		+" (select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in(select childTaskId from taskrelation where parentTaskId in (select taskId from taskPermission where loginId = ?))) "
-		+" ) four on four.childTaskId  = taskpermission.taskId	";			
-
-		final String whereClause = "where taskpermission.taskId=? and taskpermission.loginId=?";
+		final String rootSQL = "select * from taskpermission where taskid=? and loginId=?";
+		final String union = " union ";
+		final String childSQL = "select * from taskpermission where taskid in (select rootTaskId from taskrelation where childTaskId = ?) and loginId=?";	
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement(baseSQL + whereClause);
-			ps.setInt(1, loginId);
+			PreparedStatement ps = conn.prepareStatement(rootSQL + union + childSQL);
+			ps.setInt(1, taskId);
 			ps.setInt(2, loginId);
-			ps.setInt(3, loginId);
+			ps.setInt(3, taskId);
 			ps.setInt(4, loginId);
-			ps.setInt(5, loginId);
-			ps.setInt(6, taskId);
-			ps.setInt(7, loginId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				entity = mapFields(rs);
