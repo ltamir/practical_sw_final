@@ -327,11 +327,17 @@ var associationModel = {
 }
 
 var taskRelationModel = {
-		version:new Model(null, {disabled:false, value:1}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
-		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', null, null),
-		task:new Model('taskId', null, 'parentTaskId', null, null),
-		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId' , null, null),
-		selectedTask:new Model('taskRelationSelectedTaskId', null, null,  null, null)
+		version:new Model(null, {disabled:false, value:3}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
+		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', null, null, new mapAPI(), new mapAPI([0], 'Please select a relation', true), new mapAPI([0], 'Please select a relation', true)),
+		task:new Model('taskId', null, 'parentTaskId', null, null, new mapAPI([0], 'Please select a task', true), new mapAPI([0], 'Please select a task', true), new mapAPI([0], 'Please select a task', false)),
+		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId' , null, null, new mapAPI([0], 'Please select a relation type', true), new mapAPI([0], 'Please select a relation type', true), new mapAPI()),
+		selectedTask:new Model('taskRelationSelectedTaskId', null, 'parentTaskId',  null, null, new mapAPI([0], 'Please select a related task', true), new mapAPI([0], 'Please select a related task', true), new mapAPI([0], 'Please select a related task', false))
+}
+
+var taskRelationTypeModel = {
+		version:new Model(null, {disabled:false, value:3}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
+		taskRelationId:new Model('taskRelationId', null, 'taskRelationId', null, null, new mapAPI(), new mapAPI([0], 'Please select a relation', true), new mapAPI([0], 'Please select a relation', true)),
+		taskRelationType:new Model('cmbTaskRelationType', null, 'taskRelationTypeId' , null, null, new mapAPI([0], 'Please select a relation type', true), new mapAPI([0], 'Please select a relation type', true), new mapAPI())
 }
 
 var addressModel = {

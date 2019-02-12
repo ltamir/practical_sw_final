@@ -291,7 +291,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	}
 	
 	formData = new FormData();
-	if(model.version == 3){	//only fields flagged in method
+	if(model.version.getValue() == 3){	//only fields flagged in method
 		for(const key in model){
 			if(key != 'version' && model[key][method].inApi){
 				formData.append(model[key].api, model[key].getValue())
@@ -303,7 +303,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 				formData.append(model[key].api, model[key].getValue())
 		});			
 	}
-	
+	console.log('using verision ' + model.version.getValue());
 	if(dbg == dbgModule)
 		debugFormData(formData);
 	
@@ -526,16 +526,13 @@ function saveRelation(parent, child, relationType){
 
 
 function saveRelationType(relationTypeId){
-	let tmpRelationModel = Object.assign({}, taskRelationModel);
+
 	if(!checkPermission()) return;
 	
-	Object.keys(tmpRelationModel).forEach(function(item){
-		tmpRelationModel[item].dom = null;
-		});	
-	tmpRelationModel.taskRelationId.setValue(getById('divRelationTypeList').getAttribute('data-taskrelationId'));
-	tmpRelationModel.taskRelationType.setValue(relationTypeId);
+	taskRelationTypeModel.taskRelationId.setValue(getById('divRelationTypeList').getAttribute('data-taskrelationId'));
+	taskRelationTypeModel.taskRelationType.setValue(relationTypeId);
 	
-	genericSave(()=>{return true;}, tmpRelationModel, tmpRelationModel.taskRelationId, Module.relation, 'PUT', 'taskrelation',
+	genericSave(()=>{return true;}, taskRelationTypeModel, taskRelationTypeModel.taskRelationId, Module.relation, 'PUT', 'taskrelation',
 		(resp)=>{
 			setMsg(msgType.ok, 'Relation type updated');
 			getById('divRelationTypeList').style.display='none'; 
