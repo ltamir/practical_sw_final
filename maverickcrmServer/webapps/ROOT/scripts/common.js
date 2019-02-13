@@ -30,6 +30,9 @@ function getData(id, resource, params, impl){
     var url = "http://127.0.0.1:8082/maverick/"+resource+params;
     fetch(url)
     .then(function(response) {
+    	if(response.status != 200){
+    		setMsg(msgType.nok, 'Error ' + response.status + ': ' + response.statusText);
+    	}
 		if(response.redirected)
 			window.location.replace(response.url);
         return response.json();

@@ -7,47 +7,52 @@ function getDomValue(){
 
 // ***** image to id mapping ***** //
 
-var effortUnitList = {
-		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
-		2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
-		3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
-}
-var taskTypeList = {
-		0:{src:"images/site.png", title:"All"},
-		1:{src:"images/tasklist/project.png", title:"Project"},
-		2:{src:"images/tasklist/requirements.png", title:"Requirement"},
-		3:{src:"images/tasklist/design.png", title:"Design"},
-		4:{src:"images/tasklist/develop.png", title:"Development"},
-		5:{src:"images/tasklist/qa.png", title:"QA"},
-		6:{src:"images/tasklist/delivery.png", title:"Delivery"},
-		7:{src:"images/tasklist/support.png", title:"Support"}
-	}
-var taskStatusList = {
-		1:{src:"images/status/new.png", title:"New"},
-		2:{src:"images/status/running.png", title:"Running"},
-		3:{src:"images/status/delivered.png", title:"Delivered"},
-		4:{src:"images/status/closed.png", title:"Closed"},
-		5:{src:"images/status/onhold.png", title:"On Hold"}
-	}
+var effortUnitList = [
+	{value:-1},
+	{value:1, src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
+	{value:2, src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
+	{value:3, src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
+]
+var taskTypeList = [
+	{value:0, src:"images/site.png", title:"All"},
+	{value:1, src:"images/tasklist/project.png", title:"Project"},
+	{value:2, src:"images/tasklist/requirements.png", title:"Requirement"},
+	{value:3, src:"images/tasklist/design.png", title:"Design"},
+	{value:4, src:"images/tasklist/develop.png", title:"Development"},
+	{value:5, src:"images/tasklist/qa.png", title:"QA"},
+	{value:6, src:"images/tasklist/delivery.png", title:"Delivery"},
+	{value:7, src:"images/tasklist/support.png", title:"Support"}
+	]
+var taskStatusList = [
+	{value:-1},
+	{value:1, src:"images/status/new.png", title:"New"},
+	{value:2, src:"images/status/running.png", title:"Running"},
+	{value:3, src:"images/status/delivered.png", title:"Delivered"},
+	{value:4, src:"images/status/closed.png", title:"Closed"},
+	{value:5, src:"images/status/onhold.png", title:"On Hold"}
+]
 
-var relationTypeList = {
-		1:{src:"images/derived.png", title:"Derived from task"},
-		2:{src:"images/process.png", title:"Process"},
-		3:{src:"images/dependency.png", title:"Depends on"}
-	}
+var relationTypeList = [
+	{value:-1},
+	{value:1, src:"images/derived.png", title:"Derived from task"},
+	{value:2, src:"images/process.png", title:"Process"},
+	{value:3, src:"images/dependency.png", title:"Depends on"}
+]
 
-var taskLogTypeList = {
-		1:{src:"images/tasklog_analysis.png", title:"Analysis"},
-		2:{src:"images/tasklog_solution.png", title:"Solution"},
-		3:{src:"images/tasklog_attachment.png", title:"Attachment"},
-		4:{src:"images/tasklog_statuschange.png", title:"Status change"}
-	}
+var taskLogTypeList = [
+	{value:-1},
+	{value:1, src:"images/tasklog_analysis.png", title:"Analysis"},
+	{value:2, src:"images/tasklog_solution.png", title:"Solution"},
+	{value:3, src:"images/tasklog_attachment.png", title:"Attachment"},
+	{value:4, src:"images/tasklog_statuschange.png", title:"Status change"}
+]
 
-var searchStatusList = {
-		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
-		2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
-		3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
-}
+var searchStatusList = [
+	{value:-1},
+	{value:1, src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
+	{value:1, src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
+	{value:1, src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
+]
 
 //***** TaskList expand / collapse handling ***** //
 function ExpandedTask(taskId){
@@ -359,7 +364,7 @@ var addressModel = {
 var searchModel = {
 		version:new Model(null, {disabled:false, value:1}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		customer:new Model('cmbSearchCustomer', null, 'customerId', null, null),
-		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskType, val);}),
+		taskType:new Model(null, null, 'tasktypeId', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskType, val);}),
 		project:new Model('cmbSearchProject', null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', null, 'title', null, null),
 		dueDate:new Model('txtSearchDueDate', null, 'duedate', null, function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'Set due date';}),
@@ -370,12 +375,13 @@ var searchModel = {
 
 var searchTaskStatusToggle = new Map();
 
-function MenuItem(menuid, menuDiv, model, menuList, action ){
+function MenuItem(menuid, menuDiv, model, menuList, action, size ){
 	this.menuid = menuid;
 	this.menuDiv = menuDiv;
 	this.model = model;
 	this.menuList = menuList;
 	this.action = action;
+	this.size = size
 }
 var menuData = {}
 

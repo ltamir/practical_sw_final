@@ -37,6 +37,13 @@
 		cursor: pointer;
 		border-style: outset;
 		margin-top: auto;
+		margin-bottom: auto;
+	}
+	input[type="image"]{
+		cursor: pointer;
+		border-style: outset;
+		border-width: 1px;
+		margin-top: auto;
 		margin-bottom: auto;	
 	}
 
@@ -224,6 +231,7 @@
 	}
 	#divTaskDetailsBottom, #divTaskDetailsTop{
 		width: 35em;
+		left: 4em;
 	}	
 	
 	#divAttachmentList, #divPermissionList, #divPermissionLoginList{     
@@ -271,13 +279,21 @@
 		border-style: outset;
 	}
 
-	#divMenuNewTaskType, #divMenuTaskType, #divSearchTaskType, #divMenuEffortUnit, #divMenuTaskStatus{
+	#divMenuNewTaskType {
 		display: none;
 		position: fixed;
 		z-index: 2;
 		background-color: oldlace;
 	}
 	
+	#divMenuTaskType, #divMenuTaskStatus, #divMenuEffortUnit, #divSearchTaskType{
+		position: fixed;
+		overflow: visible;
+		float: left;
+		display: inline-block;
+		z-index: 4;
+		background-color: #fbfbfb;
+	}
 	#divContactCard{
 		display:inline-block;
 		z-index: 2;
