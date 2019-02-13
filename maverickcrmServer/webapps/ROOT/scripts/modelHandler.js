@@ -307,7 +307,7 @@ function saveTask(){
 		pass.length = data.array.length;
 		
 		let addChildTask = getById('addChildTask'); //if this is a non project new task and was not set as child task
-		if(addChildTask.getAttribute('data-parentTask') == 0 && taskModel.taskType.prevTaskType == 1 && taskModel.taskType.getValue() != 1)
+		if(addChildTask.getAttribute('data-parentTask') == 0 && taskModel.taskType.getValue() != 1)
 			if(!validate(pass, 0, 'Please add a parent task in Relations',getData, validate)) return;
 		
 		genericSave(()=>{return true;}, taskModel, taskModel.taskId, Module.task, null, 'task',
