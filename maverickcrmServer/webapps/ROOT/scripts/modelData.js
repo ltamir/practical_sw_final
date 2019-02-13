@@ -43,6 +43,11 @@ var taskLogTypeList = {
 		4:{src:"images/tasklog_statuschange.png", title:"Status change"}
 	}
 
+var searchStatusList = {
+		1:{src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
+		2:{src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
+		3:{src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
+}
 
 //***** TaskList expand / collapse handling ***** //
 function ExpandedTask(taskId){
@@ -218,14 +223,14 @@ var taskLogModel = {
 
 var taskModel={
 	taskId:new Model('taskId', null, 'taskId', null, null, new mapAPI(), new mapAPI(null, null, true), new mapAPI(null, null, true)), 
-	taskType:new Model('cmbDetailTaskType', null, 'taskTypeId', null, null, new mapAPI(0, 'Please select a task type', true), new mapAPI(null, null, true), new mapAPI()), 
+	taskType:new Model('cmbDetailTaskType', null, 'taskTypeId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskType, val, pastAct);}, new mapAPI(0, 'Please select a task type', true), new mapAPI(null, null, true), new mapAPI()), 
 	contact:new Model('cmbDetailContact', null, 'contactId', null, null, new mapAPI(0, 'Please select a contact', true), new mapAPI(null, null, true), new mapAPI()), 
 	title:new Model('txtDetailTaskTitle', null, 'title', null, null, new mapAPI('', 'Please enter a task title', true), new mapAPI('', 'Please enter a task title', true), new mapAPI()), 
 	effort:new Model('txtDetailTaskEffort', null, 'effort', null, null, new mapAPI(0, 'Please enter an effort', true), new mapAPI(0, 'Please enter an effort', true), new mapAPI()), 
-	effortUnit:new Model('effortUnit', null, 'effortUnit', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()), 
+	effortUnit:new Model('effortUnit', null, 'effortUnit', null, function(val){this.dom.value = val; imgListSetter(menuData.taskEffortUnit, val);}, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()), 
 	dueDate:new Model('txtDetailDueDate', null, 'dueDate', null, null, new mapAPI('', 'Please select a due date', true), new mapAPI('', 'Please select a due date', true), new mapAPI()),
 	dueDateLabel:new Model('lblDetailDueDate', null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
-	status:new Model('cmbDetailStatus', null, 'statusId', null, null, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
+	status:new Model('cmbDetailStatus', null, 'statusId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskStatus, val, pastAct);}, new mapAPI(null, null, true), new mapAPI(null, null, true), new mapAPI()),
 	permissionType:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()), //1:edit, 2:view
 	version:new Model(null, null, null, null, null, new mapAPI(), new mapAPI(), new mapAPI())
 	}
@@ -354,7 +359,7 @@ var addressModel = {
 var searchModel = {
 		version:new Model(null, {disabled:false, value:1}, null, null, null, new mapAPI(), new mapAPI(), new mapAPI()),
 		customer:new Model('cmbSearchCustomer', null, 'customerId', null, null),
-		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', null, null),
+		taskType:new Model('cmbSearchTaskType', null, 'tasktypeId', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskType, val);}),
 		project:new Model('cmbSearchProject', null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', null, 'title', null, null),
 		dueDate:new Model('txtSearchDueDate', null, 'duedate', null, function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'Set due date';}),
@@ -362,6 +367,7 @@ var searchModel = {
 		status:new Model('searchOpenTask', null, 'showclosed', function(){return this.value}, function(val){this.value = val;})
 
 }
+
 var searchTaskStatusToggle = new Map();
 
 function MenuItem(menuid, menuDiv, model, menuList, action ){
@@ -372,3 +378,10 @@ function MenuItem(menuid, menuDiv, model, menuList, action ){
 	this.action = action;
 }
 var menuData = {}
+
+function imgListSetter(MenuItem, val, pastAct){
+	MenuItem.menuid.src = MenuItem.menuList[val].src;
+	MenuItem.menuid.title = MenuItem.menuList[val].title;
+	if(pastAct)
+		MenuItem.action(val);
+}
