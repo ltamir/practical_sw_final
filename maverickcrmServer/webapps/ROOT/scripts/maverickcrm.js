@@ -150,7 +150,7 @@ function initMenuData(){
 	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;});
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction);	
 	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask);
-	menuData.searchTaskType = new MenuItem(getById('imgTSearchaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction);
+	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction);
 }
 // handle image as two-state button
 function dummyAction(val){}
@@ -203,7 +203,7 @@ function execSync(funcA, funcB){
 			(opt,item)=>opt.value = item.taskTypeId, 
 			(opt,item)=>opt.text = item.taskTypeName, 
 			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
-	menuSetter(menuData.searchTaskType, 1);
+	searchModel.taskType.setValue(1);
 }
 function init(){
 
