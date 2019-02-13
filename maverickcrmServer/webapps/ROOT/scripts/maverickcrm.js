@@ -157,7 +157,7 @@ function initMenuData(){
 			}, getById('divMenuTaskTypeParent'));	
 	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;},  getById('divMenuTaskStatusParent'));
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, getById('divMenuEffortUnitParent'));	
-	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask,  getById('divMenuNewTaskTypeParent'));
+	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), newTaskModel.taskType, taskTypeList, newTask,  getById('divMenuNewTaskTypeParent'));
 	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, getById('divSearchTaskTypeParent'));
 }
 
@@ -193,7 +193,7 @@ function menuHandler(menuItem, menuAction, check){
 		menuItem.menuid.setAttribute('data-state', 0);
 		menuItem.menuid.style.borderStyle='outset';
 		hideMenu(menuItem);
-//		menuItem.menuDiv.tabIndex = -1;
+		menuItem.parent.tabIndex = -1;
 	}
 }
 
