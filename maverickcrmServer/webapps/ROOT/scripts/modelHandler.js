@@ -54,16 +54,16 @@ function newTask(taskType){
 		taskType = 0;
 	taskModel.taskId.setValue(0);
 	taskModel.taskType.setValue(taskType);
-	menuSetter(menuData.taskType, taskModel.taskType.getValue());
+	taskModel.taskType.setValue(taskType);
 	taskModel.contact.setValue(loggedContact.contactId);
 	taskModel.title.setValue('');
 	taskModel.effort.setValue(1);
 	taskModel.effortUnit.setValue(1);
-	menuSetter(menuData.taskEffortUnit, 1);	
+	taskModel.effortUnit.setValue(1);	
 	taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
 	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
 	taskModel.status.setValue(1);
-	menuSetter(menuData.taskStatus, 1);
+	taskModel.status.setValue(1);
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
 		setChildTask(getById('addChildTask'));
@@ -139,9 +139,12 @@ function viewTask(id, data){
 	taskModel.permissionType.setValue(data.taskPermission.permissionType.permissionTypeId);
 	let task = data.task;
 	taskModel.taskId.setValue(task.taskId);
+	taskModel.status.setValue(task.status.statusId);
+	taskModel.taskType.setValue(task.taskType.taskTypeId);
 	taskModel.contact.setValue(task.contact.contactId);
 	taskModel.title.setValue(task.title);
 	taskModel.effort.setValue(task.effort);
+	taskModel.effortUnit.setValue(task.effortUnit);
 	taskModel.dueDate.setValue(getISODate(task.dueDate));
 	
 	let addChildTaskState = getById('addChildTask');
@@ -151,9 +154,9 @@ function viewTask(id, data){
 	}
 	taskModel.status.oldValue = task.status.statusId;
 	taskModel.taskType.prevTaskType = task.taskType.taskTypeId;
-	menuSetter(menuData.taskType, task.taskType.taskTypeId);
-	menuSetter(menuData.taskEffortUnit, task.effortUnit);
-	menuSetter(menuData.taskStatus, task.status.statusId);
+//	menuSetter(menuData.taskType, task.taskType.taskTypeId);
+//	menuSetter(menuData.taskEffortUnit, task.effortUnit);
+//	menuSetter(menuData.taskStatus, task.status.statusId);
 	setTab(activeTaskTab);
 	
 	if(task.taskType.taskTypeId==1){
@@ -166,7 +169,7 @@ function viewTask(id, data){
 	
 	viewTotalEffort();
 	
-	menuData.newTaskType.menuid.src='images/newitem.png';
+//	menuData.newTaskType.menuid.src='images/newitem.png';
 	setTextDirectionModel(taskModel);
 	setDomPermission(taskModel);
 	setMsg(msgType.ok, 'Ready');
@@ -267,42 +270,20 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 			method = 'PUT';		
 	}
 	
-	if(model.version.getValue() == 1){	//one validation for all API
-		for(const key in model){
-			if(key != 'version' && model[key].notValid.length > 0){
-				for(const val in model[key].notValid)
-					if(!validate(model[key], model[key].notValid[val], model[key].err)) return false;
-			}	
-		}	
-	}else if(model.version.getValue() == 2){	//validation per API
-		for(const key in model){
-			if(key != 'version' && model[key].validation[method] != null){
-				for(const val in model[key].validation[method].chkValues)
-					if(!validate(model[key],  model[key].validation[method].chkValues[val],  model[key].validation[method].err)) return false;
-			}
-		}		
-	}else if(model.version.getValue() == 3){
-		for(const key in model){
-			if(key != 'version' && model[key][method] != null){
-				for(const val in model[key][method].chkValues)
-					if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
-			}
+	for(const key in model){
+		if(key != 'version' && model[key][method] != null){
+			for(const val in model[key][method].chkValues)
+				if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
 		}
 	}
 	
 	formData = new FormData();
-	if(model.version.getValue() == 3){	//only fields flagged in method
-		for(const key in model){
-			if(key != 'version' && model[key][method].inApi){
-				formData.append(model[key].api, model[key].getValue())
-			}
+	for(const key in model){
+		if(key != 'version' && model[key][method].inApi){
+			formData.append(model[key].api, model[key].getValue())
 		}
-	}else{
-		Object.keys(model).forEach(function(key){
-			if(key != 'version' && model[key].api != null)
-				formData.append(model[key].api, model[key].getValue())
-		});			
 	}
+
 	console.log('using verision ' + model.version.getValue());
 	if(dbg == dbgModule)
 		debugFormData(formData);
