@@ -268,7 +268,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	}
 	
 	for(const key in model){
-		if(key != 'version' && model[key][method] != null){
+		if(model[key][method].inApi){
 			for(const val in model[key][method].chkValues)
 				if(!validate(model[key],  model[key][method].chkValues[val],  model[key][method].err)) return false;
 		}
@@ -276,12 +276,11 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	
 	formData = new FormData();
 	for(const key in model){
-		if(key != 'version' && model[key][method].inApi){
-			formData.append(model[key].api, model[key].getValue())
+		if(model[key][method].inApi){
+			formData.append(model[key].apiField, model[key].getValue())
 		}
 	}
 
-	console.log('using verision ' + model.version.getValue());
 	if(dbg == dbgModule)
 		debugFormData(formData);
 	
