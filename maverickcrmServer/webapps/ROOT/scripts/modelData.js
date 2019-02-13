@@ -210,12 +210,18 @@ function Model(domField, dom, apiField, getter, setter, postMap, putMap, delMap 
 	this.DELETE = delMap;
 }
 
-function Method(chkValues, err, inApi){
-	if(chkValues != null && !(chkValues instanceof Array))
+function Method(checkValues, err, inApi = false){
+	if(checkValues != null && !(checkValues instanceof Array))
 		throw 'Invalid validation array in apiField ' + err;
-	this.chkValues = chkValues;
+	this.checkValues = checkValues;
 	this.err = err;
-	this.inApi = (inApi == null)?false:inApi;
+	this.inApi = inApi;
+}
+
+function dummyDom(disabled=false, value=3){
+	this.isDummy = true;
+	this.disabled = disabled;
+	this.value = value;
 }
 
 var taskLogModel = {
