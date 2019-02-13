@@ -154,9 +154,6 @@ function viewTask(id, data){
 	}
 	taskModel.status.oldValue = task.status.statusId;
 	taskModel.taskType.prevTaskType = task.taskType.taskTypeId;
-//	menuSetter(menuData.taskType, task.taskType.taskTypeId);
-//	menuSetter(menuData.taskEffortUnit, task.effortUnit);
-//	menuSetter(menuData.taskStatus, task.status.statusId);
 	setTab(activeTaskTab);
 	
 	if(task.taskType.taskTypeId==1){

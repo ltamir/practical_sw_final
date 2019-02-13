@@ -154,11 +154,11 @@ function initMenuData(){
 			(val)=>{
 				if(val != 1 && taskModel.taskType.prevTaskType == 1)
 					alert('Changing from Project will delete permissions and Linked customers of this task');
-			}, 7);	
-	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;}, 5);
-	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, 3);	
-	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask, 8);
-	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, 8);
+			}, getById('divMenuTaskTypeParent'));	
+	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;},  getById('divMenuTaskStatusParent'));
+	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, getById('divMenuEffortUnitParent'));	
+	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), taskModel.taskType, taskTypeList, newTask,  getById('divMenuNewTaskTypeParent'));
+	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, getById('divSearchTaskTypeParent'));
 }
 
 function showMenu(menuItem){
@@ -172,16 +172,6 @@ function showMenu(menuItem){
 		let br = document.createElement('BR');
 		menuItem.menuDiv.appendChild(br);		
 	}
-//	for(let i = 0; i < menuItem.size; i++){
-//		
-//		let imgItem = document.createElement('IMG');
-//		imgItem.src = menuItem.menuList[i].src;
-//		imgItem.title = menuItem.menuList[i].title;
-//		imgItem.addEventListener('click', function(){menuItem.model.setValue(i, true); menuHandler(menuItem)})
-//		menuItem.menuDiv.appendChild(imgItem);
-//		let br = document.createElement('BR');
-//		menuItem.menuDiv.appendChild(br);
-//	}
 }
 function hideMenu(menuItem){
 	while(menuItem.menuDiv.childNodes.length > 0)
@@ -197,8 +187,8 @@ function menuHandler(menuItem, menuAction, check){
 		menuItem.menuid.setAttribute('data-state', 1);
 		menuItem.menuid.style.borderStyle='inset';
 		showMenu(menuItem);
-//		menuItem.menuDiv.tabIndex = 1;
-//		menuItem.menuDiv.focus();
+		menuItem.parent.tabIndex = 1;
+		menuItem.parent.focus();
 	}else{
 		menuItem.menuid.setAttribute('data-state', 0);
 		menuItem.menuid.style.borderStyle='outset';
@@ -207,12 +197,6 @@ function menuHandler(menuItem, menuAction, check){
 	}
 }
 
-function menuSetter(MenuItem, val){
-	MenuItem.menuid.src = MenuItem.menuList[val].src;
-	MenuItem.menuid.title = MenuItem.menuList[val].title;
-	MenuItem.model.setValue(val);
-	MenuItem.action(val);
-}
 
 function dropOnParent(ev){
 	ev.preventDefault();

@@ -375,13 +375,13 @@ var searchModel = {
 
 var searchTaskStatusToggle = new Map();
 
-function MenuItem(menuid, menuDiv, model, menuList, action, size ){
+function MenuItem(menuid, menuDiv, model, menuList, action, parent ){
 	this.menuid = menuid;
 	this.menuDiv = menuDiv;
 	this.model = model;
 	this.menuList = menuList;
 	this.action = action;
-	this.size = size
+	this.parent = parent
 }
 var menuData = {}
 

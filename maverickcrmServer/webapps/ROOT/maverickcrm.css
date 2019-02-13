@@ -278,15 +278,8 @@
 	#imgEffortUnit{
 		border-style: outset;
 	}
-
-	#divMenuNewTaskType {
-		display: none;
-		position: fixed;
-		z-index: 2;
-		background-color: oldlace;
-	}
 	
-	#divMenuTaskType, #divMenuTaskStatus, #divMenuEffortUnit, #divSearchTaskType{
+	#divMenuTaskType, #divMenuTaskStatus, #divMenuEffortUnit, #divSearchTaskType, #divMenuNewTaskType{
 		position: fixed;
 		overflow: visible;
 		float: left;
