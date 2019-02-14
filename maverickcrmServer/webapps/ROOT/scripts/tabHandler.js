@@ -342,27 +342,32 @@ function toggleShowContacts(img){
 
 function toggleFilterCustomers(img){
 	if(img.getAttribute("data-state") == 0){
-		toggleAsBotton(img);
-		if(taskModel.taskId.getValue() == 0){
-			setMsg(msgType.nok, 'No task selected. cancelling thre filter');
-			toggleAsBotton(img);
-			return;
-		}
-		
-		img.setAttribute("data-state", 1);
-		img.title="Click to show all customers"
-		img.setAttribute("data-state", 1);
-		showCustomerConnection('?actionId=14&taskId='+taskModel.taskId.getValue())
-		setMsg(msgType.ok, 'Filtering on task');
+		customerFilterOn(img);
 	}else{
-		toggleAsBotton(img);
-		img.title = 'Filter on selected task';
-		img.setAttribute("data-state", 0);
-		showCustomerConnection(null);
-		setMsg(msgType.ok, 'Filter removed');		
+		customerFilterOff(img);	
 	}
 }
+function customerFilterOn(img){
+	toggleAsBotton(img);
+	if(taskModel.taskId.getValue() == 0){
+		setMsg(msgType.nok, 'No task selected. cancelling the filter');
+		toggleAsBotton(img);
+		return;
+	}
+	
+	img.setAttribute("data-state", 1);
+	img.title="Click to show all customers"
+	showCustomerConnection('?actionId=14&taskId='+taskModel.taskId.getValue())
+	setMsg(msgType.ok, 'Filtering on task');
+}
 
+function customerFilterOff(img){
+	toggleAsBotton(img);
+	img.title = 'Filter on selected task';
+	img.setAttribute("data-state", 0);
+	showCustomerConnection(null);
+	setMsg(msgType.ok, 'Filter removed');	
+}
 
 function showCustomerConnection(param){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');

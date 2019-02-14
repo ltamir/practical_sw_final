@@ -70,6 +70,7 @@ function newTask(taskType){
 	}
 	
 	setTab(tabEnum.taskLog); 
+	customerFilterOff(getById('imgFilterCustomer'));
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -154,6 +155,10 @@ function viewTask(id, data){
 	}
 	taskModel.status.oldValue = task.status.statusId;
 	taskModel.taskType.prevTaskType = task.taskType.taskTypeId;
+	
+	if(taskModel.taskType.getValue() != 1 && (activeTaskTab == tabEnum.linkedCustomer || activeTaskTab== tabEnum.permission))
+		activeTaskTab = tabEnum.taskLog;
+	
 	setTab(activeTaskTab);
 	
 	if(task.taskType.taskTypeId==1){
@@ -291,7 +296,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 			console.log('error ' + resp.err);
 			return;
 		}else{
-			postFunc(resp);
+			postFunc(resp, method);
 		}
 	});	
 }
@@ -311,19 +316,19 @@ function saveTask(){
 			if(!validate(pass, 0, 'Please add a parent task in Relations',getData, validate)) return;
 		
 		genericSave(()=>{return true;}, taskModel, taskModel.taskId, Module.task, null, 'task',
-				(resp)=>{
+				(resp, method)=>{
+					postTaskSave(resp, method);
 					setMsg(msgType.ok, 'Task saved');
 					if(activeTaskTab == tabEnum.taskLog){
 						viewTaskLogList();
 						newTaskLog();				
-					}
-					postTaskSave(resp);
+					}					
 				});
 	});
 	
 }
 
-function postTaskSave(resp){
+function postTaskSave(resp, method){
 	if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
 		if(taskModel.taskType.getValue() == 1){	// if this is a project contact's login shall edit permission on it
 			taskPermissionModel.taskPermissionId.setValue(0);
@@ -347,6 +352,7 @@ function postTaskSave(resp){
 		taskLogModel.description.setValue('Task created');
 		
 		saveTaskLog(); 
+		
 	}else if(taskModel.status.changed){ // existing task and status has changed
 		if(taskModel.status.oldValue != taskModel.status.getValue()){
 			taskModel.taskId.setValue(resp.taskId);
