@@ -167,7 +167,7 @@ function activateTabAttachment(){
 		fillTab('divTaskTab', response);
 		viewAttachmentList();
 		})
-	.then(()=>getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Attachment type',
+	.then(()=>getDataEx('cmbAttachmentType', 'attachmenttype', '?actionId=2', fillSelect, 'Type',
 			(opt,item)=>opt.value = item.attachmentTypeId, 
 			(opt,item)=>opt.text = item.attachmentTypeName, 
 			null))
