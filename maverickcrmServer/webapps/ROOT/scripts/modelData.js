@@ -61,7 +61,8 @@ function ExpandedTask(taskId){
 
 var taskListItemStat = {
 	    expandImg:{src:"images/tasklist_expand.png", title:"show children"},
-	    collapseImg:{src:"images/tasklist_collapse.png", title:"hide children"}
+	    collapseImg:{src:"images/tasklist_collapse.png", title:"hide children"},
+	    noChildrenImg:{src:"images/tasklist_no_children.png", title:"no children"},
 }
 
 function taskItem(taskId, row){
