@@ -18,9 +18,6 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     if(data.array.length > 0){
     	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
     }else{
-    	//set img to tasklist_no_children.png
-//        expandImg.src = taskListItemStat.expandImg.src;
-//        expandImg.title = taskListItemStat.expandImg.title;
     	parentTable.rows[rowIndex].children[0].children[1].src = taskListItemStat.noChildrenImg.src;
     	parentTable.rows[rowIndex].children[0].children[1].title = taskListItemStat.noChildrenImg.title;
     }
