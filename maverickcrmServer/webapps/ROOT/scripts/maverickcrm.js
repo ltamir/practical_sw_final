@@ -163,7 +163,7 @@ function initMenuData(){
 
 function showMenu(menuItem){
 	for(let item of menuItem.menuList){
-		if(item.value == -1) continue;
+		if(item.value == -1 || menuItem.model.getValue() == item.value) continue;
 		let imgItem = document.createElement('IMG');
 		imgItem.src = item.src;
 		imgItem.title = item.title;
