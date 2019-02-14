@@ -258,8 +258,6 @@ function setMsg(type, text){
 	msgBoard.innerHTML = text;
 }
 
-// ***** debug ***** //
-
 function debugFormData(formData){
 	for (var pair of formData.entries()) {
 		console.log(pair[0]+ ', ' + pair[1]); 
@@ -289,7 +287,6 @@ function getISODate(dateObject){	//ISO 8601
 }
 
 function setTextDirectionModel(Model){
-//	Object.keys(Model).forEach(item=>setTextDirection(Model[item].dom, Model[item].getValue()));
 	Object.keys(Model).forEach(function(item){
 		if(Model[item].domField != null)
 			setTextDirection(Model[item].dom, Model[item].getValue());
