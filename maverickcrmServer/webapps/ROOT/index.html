@@ -28,8 +28,8 @@
 			</td>
             <td width="2%">
                 <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" style="display:none" onchange="setSearchPredicate(this)"></select>
-				<div id="divSearchTaskTypeParent" style="display:inline-block;" onblur="menuHandler(menuData.searchTaskType, 0)">
-	            	<input type="image" src="images/site.png" id="imgSearchTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.searchTaskType)">
+				<div id="divSearchTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.searchTaskType, 0)">
+	            	<img src="images/site.png" id="imgSearchTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.searchTaskType, null, false)">
 	            	<div id="divSearchTaskType"></div>
             	</div>
             </td>
@@ -94,20 +94,20 @@
 		<tr>
 			<td width="50%" valign="top">
 				<div id="divTaskDetailsTop">
-	            	<div id="divMenuTaskTypeParent" style="display:inline-block;" onblur="menuHandler(menuData.taskType, 0)">
+	            	<div id="divMenuTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.taskType, 0)">
 		            	<img src="images/site.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType, null, true)">
 		            	<div id="divMenuTaskType"></div>
 	            	</div>				
 					<select title="Task Type" id="cmbDetailTaskType" style="display:none;"></select>
 					<select title="Task Status" id="cmbDetailStatus" style="display:none;"></select>
-					<div id="divMenuTaskStatusParent" style="display:inline-block;" onblur="menuHandler(menuData.taskStatus, 0)">
+					<div id="divMenuTaskStatusParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.taskStatus, 0)">
 						<img src="images/status/new.png" id="imgTaskStatus" title="New" data-state="0" onclick="menuHandler(menuData.taskStatus ,null, true)">				
 		            	<div id="divMenuTaskStatus" onblur="menuHandler(menuData.taskStatus, 0)"></div>
 	            	</div>
 	            	<select title="Contact for this task(Usually you!)" id="cmbDetailContact" style="margin-bottom: 0.4em;"></select>
 					<label for="txtDetailEffort" class="cssFieldLabel">Effort</label>
 					<input title="Task effort (in hours/days/months)" type="number" id="txtDetailTaskEffort" min="1" value="1" tabindex="2">
-					<div id="divMenuEffortUnitParent" style="display:inline-block;" onblur="menuHandler(menuData.taskEffortUnit, 0)">
+					<div id="divMenuEffortUnitParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.taskEffortUnit, 0)">
 						<img title="hours" id="imgEffortUnit" style="margin: 0em" src="images/effortUnit_hours.png" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.taskEffortUnit)" >
 						<div id="divMenuEffortUnit" onblur="menuHandler(menuData.taskEffortUnit, 0)">
 						</div>
@@ -126,7 +126,7 @@
 					<img align="right" src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
 					<input type="image" style="margin-right:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="buttonToggler(this)" onmouseup="buttonToggler(this)">
 	            	<input type="image" style="margin-right:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="setChildTask(this)">
-					<div id="divMenuNewTaskTypeParent" style="display:inline-block;" onblur="menuHandler(menuData.newTaskType, 0)">
+					<div id="divMenuNewTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.newTaskType, 0)">
 		            	<img style="margin-right:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="buttonToggler(this)" onmouseup="menuHandler(menuData.newTaskType, null, true)">
 		            	<div id="divMenuNewTaskType" onblur="menuHandler(menuData.newTaskType, 0)"></div>
 	            	</div>
