@@ -201,7 +201,7 @@ function viewTaskLog(id, data){
 	taskLogModel.taskLogType.setValue(taskLog.taskLogType.taskLogTypeId);
 	taskLogModel.sysdate.setValue(taskLog.sysdate);
 	taskLogModel.taskLogId.setValue(taskLog.taskLogId);
-	getById('lblDueDate').innerHTML = taskLog.sysdate;
+	getById('lblDueDate').innerHTML = getDate(taskLog.sysdate.split(' ')[0]) + ' ' + taskLog.sysdate.split(' ')[1];
 	setTextDirectionModel(taskLogModel);
 }
 
@@ -360,10 +360,10 @@ function postTaskSave(resp, method){
 			taskLogModel.taskLogType.setValue(4);
 			let desc = 'Status changed from ' + taskModel.status.dom[taskModel.status.oldValue-1].text + ' to ' + taskModel.status.dom[taskModel.status.getValue()-1].text
 			taskLogModel.description.setValue(desc);
-			taskModel.status.oldValue = taskModel.status.getValue();
 			
 			saveTaskLog(); 
 		}
+		
 		
 		//if tasktype changed from project to other
 		if(taskModel.taskType.prevTaskType == 1 && taskModel.taskType.getValue() != 1){
@@ -399,7 +399,8 @@ function postTaskSave(resp, method){
 			});
 		}
 	}
-	
+	taskModel.status.oldValue = taskModel.status.getValue();
+	taskModel.status.changed = false;
 	if(taskModel.taskType.getValue() ==1){
 		getById('TabLinkedCustomer').style.display='inline';
 		getById('TabPermission').style.display='inline';
@@ -719,9 +720,14 @@ function addPermission(){
 }
 
 function removePermission(){
-	genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.loginId, Module.login, 'DELETE', 'taskpermission',
-			(resp)=>{
-				viewTaskPermissionList();
-				setMsg(msgType.ok, 'Permissions removed');
-			}, checkPermission);
+	getData(pass, 'taskpermission', '?actionId=18&taskId='+taskModel.taskId.getValue(), (id, data)=>{
+		pass.length = data.array.length;
+		if(!validate(pass, 0, 'Task must contain at least one Edit permission',getData, validate)) return;
+		
+		genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.loginId, Module.login, 'DELETE', 'taskpermission',
+				(resp)=>{
+					viewTaskPermissionList();
+					setMsg(msgType.ok, 'Permissions removed');
+				}, checkPermission);
+	});
 }
