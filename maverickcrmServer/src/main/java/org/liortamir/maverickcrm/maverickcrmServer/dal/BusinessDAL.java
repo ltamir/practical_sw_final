@@ -43,7 +43,7 @@ public class BusinessDAL {
 		int entity = 0;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 1 and taskId in(select childtaskId from taskrelation where parentTaskId = ?)");
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 1 and taskId in(select childtaskId from taskrelation where parentTaskId = ? and taskRelationTypeId!=3)");
 			ps.setInt(1, taskId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
@@ -56,7 +56,7 @@ public class BusinessDAL {
 		int entity = 0;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 2 and taskId in(select childtaskId from taskrelation where parentTaskId = ?)");
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 2 and taskId in(select childtaskId from taskrelation where parentTaskId = ? and taskRelationTypeId!=3)");
 			ps.setInt(1, taskId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
@@ -69,7 +69,7 @@ public class BusinessDAL {
 		int entity = 0;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 3 and taskId in(select childtaskId from taskrelation where parentTaskId = ?)");
+			PreparedStatement ps = conn.prepareStatement("select sum(effort) from task where effortUnit = 3 and taskId in(select childtaskId from taskrelation where parentTaskId = ? and taskRelationTypeId!=3)");
 			ps.setInt(1, taskId);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
