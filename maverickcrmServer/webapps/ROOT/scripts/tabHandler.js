@@ -116,8 +116,8 @@ function viewTaskLogList(){
 				taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
 				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
 				let prefixPart = document.createElement('SPAN');
-				let thisDate = new Date(item.sysdate);
-				prefixPart.innerHTML = thisDate.toLocaleDateString() + " " + item.contact.firstName + " " + item.contact.lastName + ": ";
+				let thisDate = getDate(item.sysdate.split(' ')[0]);
+				prefixPart.innerHTML = thisDate + " " + item.contact.firstName + " " + item.contact.lastName + ": ";
 				prefixPart.style.color = 'inherit';
 				divRow.appendChild(prefixPart);
 				divRow.appendChild(taskLogImg);
