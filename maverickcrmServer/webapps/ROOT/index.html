@@ -156,10 +156,12 @@
 						</tr>
 						<tr>
 						<td>
-							<select id="cmbConnectedCustomer" size="3" class="cssConnectedList"></select>
+							<select id="cmbConnectedCustomer" size="4" class="cssConnectedList"></select>
 						</td>
-						<td>
+						<td valign="top">
 							<select id="cmbConnectedContact" size="3" class="cssConnectedList"></select>
+							<br>
+							<span id="divContactCard" class="cssCard card"></span>
 						</td>
 						</tr>
 					</table>
@@ -167,7 +169,7 @@
 					<span id="tabTimeline" class="cssTab" onclick="setTab(tabEnum.timeline)">Timeline</span>
 					<span id="tabCustomer" class="cssTab" onclick="setTab(tabEnum.customer)">Customers</span>
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
-					<span id="divContactCard" class="cssCard card"></span>
+					
 					<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;z-index: 1;">
 	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; height:12em; width: 26m;z-index: 1;">
 	            		<textarea rows="5" cols="85" id="txtSQL">select * from task</textarea>
