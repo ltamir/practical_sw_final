@@ -212,8 +212,13 @@ function execSync(funcA, funcB){
 		if(body == null)
 			window.location.replace('login.html');
 		loggedContact = body.login.contact;
+		let showDevMod = body.devmod;
+		if(showDevMod == null || showDevMod == 'false'){
+			getById('cmbDebug').style.display='none';
+			getById('showDatabase').style.display='none';
+		}
 		getById('lblLoggedInContact').innerHTML = body.login.contact.firstName + ' ' + body.login.contact.lastName;
-		}, 'Customers:', null, null, null);
+		}, null, null, null, null);
 	
 	funcA('cmbDetailContact', 'login', '?actionId=2', fillSelect, 'Contacts', 
 			(opt,item)=>opt.value = item.contact.contactId, 

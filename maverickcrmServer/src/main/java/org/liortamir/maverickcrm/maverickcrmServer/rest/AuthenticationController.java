@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.Reference;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 
 import com.google.gson.Gson;
@@ -25,7 +26,8 @@ import com.google.gson.JsonObject;
 public class AuthenticationController extends HttpServlet {
 
 	private static final long serialVersionUID = -3340984536477397627L;
-	Gson jsonHelper = new Gson();
+	private Gson jsonHelper = new Gson();
+	private Reference ref = Reference.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,7 +50,7 @@ public class AuthenticationController extends HttpServlet {
 					return;
 				}
 				json.add("login", jsonHelper.toJsonTree(login));
-	
+				json.addProperty("devmod", ref.getAsString("devmod", "false"));
 				break;
 			case ACT_LOGOUT:
 				req.getSession().removeAttribute("username");
