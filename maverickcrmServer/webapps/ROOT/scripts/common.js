@@ -311,6 +311,45 @@ function initModel(model){
 		if(model[item].domField != null)
 			model[item].dom = getById(model[item].domField);
 	});
+	
+	addFieldListener(model);
+}
+
+function addFieldListener(model){
+	let hasListener = false;
+	Object.keys(model).forEach(item=>{
+		if(model[item].dom != null && model[item].dom.tagName != null && (model[item].dom.tagName == 'INPUT' || model[item].dom.tagName == 'SELECT' || model[item].dom.tagName == 'TEXTAREA')){
+			hasListener = true;
+			model[item].dom.tabIndex = -1;
+			model[item].dom.addEventListener("focus", ()=>(tabEventBroker.invoke(model)));
+		}
+			
+	});
+	if(hasListener)
+		tabEventBroker.modelSubs.push(model);
+}
+
+var tabEventBroker = {
+		invoke : function(model){
+			if(tabEventBroker.selectedModel != null){
+				for(let item in tabEventBroker.selectedModel)
+					if(tabEventBroker.selectedModel[item].dom!=null)
+						tabEventBroker.selectedModel[item].dom.tabIndex = -1;
+					else
+						console.log(tabEventBroker.selectedModel[item]);
+			}
+
+			tabEventBroker.selectedModel = model;
+			for(let item in tabEventBroker.selectedModel){
+				if(tabEventBroker.selectedModel[item].dom==null)
+					console.log(tabEventBroker.selectedModel + ' ' + item);
+				else
+					tabEventBroker.selectedModel[item].dom.tabIndex = tabEventBroker.selectedModel[item].tabIndex;
+			}
+							
+		},
+		modelSubs : [],
+		selectedModel:null
 }
 
 function setDomPermission(model){

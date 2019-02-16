@@ -262,6 +262,7 @@ function initModels(){
 	initModel(taskModel);
 	initModel(searchModel);
 
+
 	searchModel.status.setValue(1);
 	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
 	searchTaskStatusToggle.set('closed', getById('searchClosedTask'));

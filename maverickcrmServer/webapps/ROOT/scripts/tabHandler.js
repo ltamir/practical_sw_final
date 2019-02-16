@@ -178,6 +178,7 @@ function activateTabAttachment(){
 	.then(()=>setValue('txtAttachmentNotes', '')).
 	then(()=>{
 		initModel(attachmentModel);
+//		addFieldListener(attachmentModel);
 		setDomPermission(attachmentModel);
 	});
 	getById('divTaskTab').style.width = '35em';
@@ -324,6 +325,11 @@ function activateTabConnection(){
 				initModel(customerModel);
 				initModel(associationModel);
 				initModel(addressModel);
+				
+//				addFieldListener(contactModel);
+//				addFieldListener(customerModel);
+//				addFieldListener(associationModel);
+//				addFieldListener(addressModel);				
 			});
 }
 
