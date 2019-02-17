@@ -39,7 +39,7 @@ public class TaskLogDAL {
 		List<TaskLog> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from tasklog where taskId=? order by sysdate");
+			PreparedStatement ps = conn.prepareStatement("select * from tasklog where taskId=? order by sysdate, tasklogId");
 			ps.setInt(1, taskId);
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(5);
