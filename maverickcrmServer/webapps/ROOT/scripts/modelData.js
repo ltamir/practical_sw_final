@@ -21,7 +21,8 @@ var taskTypeList = [
 	{value:4, src:"images/tasklist/develop.png", title:"Development"},
 	{value:5, src:"images/tasklist/qa.png", title:"QA"},
 	{value:6, src:"images/tasklist/delivery.png", title:"Delivery"},
-	{value:7, src:"images/tasklist/support.png", title:"Support"}
+	{value:7, src:"images/tasklist/support.png", title:"Support"},
+	{value:8, src:"images/tasklist/study.png", title:"Study"}
 	]
 var taskStatusList = [
 	{value:-1},
@@ -359,8 +360,9 @@ var searchModel = {
 
 }
 
+//domField, tabIndex, dom, apiField, getter, setter, postMap, putMap, delMap
 var newTaskModel = {
-		taskType:new Model(null, null, null, null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.newTaskType, val, pastAct);}, new Method(), new Method(), new Method())
+		taskType:new Model(null, null, {isDefault:true, disabled:false, value:0}, null, function(){return this.dom.value}, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.newTaskType, val, pastAct);}, new Method(), new Method(), new Method())
 }
 
 var searchTaskStatusToggle = new Map();
