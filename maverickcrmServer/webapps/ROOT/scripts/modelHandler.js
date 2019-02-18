@@ -307,7 +307,7 @@ function saveTask(){
 		setMsg(msgType.nok, 'Title is limited to 120. Please add the remaining as log');
 		return;
 	}
-	let pass = {length:-1, getValue:function(){return this.length}};	
+	let pass = {length:-1, getValue:function(){return this.length}};
 	getData(pass, 'taskrelation', "?actionId=5&taskId="+taskModel.taskId.getValue(), (id, data)=>{
 		pass.length = data.array.length;
 		
@@ -720,9 +720,20 @@ function addPermission(){
 }
 
 function removePermission(){
+	let pass = {length:-1, getValue:function(){return this.length}};
 	getData(pass, 'taskpermission', '?actionId=18&taskId='+taskModel.taskId.getValue(), (id, data)=>{
 		pass.length = data.array.length;
-		if(!validate(pass, 0, 'Task must contain at least one Edit permission',getData, validate)) return;
+		let hasEdit = false;
+		for(const entry of data.array){
+			if(taskPermissionModel.taskPermissionId.getValue() == entry.taskPermissionId) continue;
+			if(entry.permissionType.permissionTypeId == 1)
+				hasEdit = true;
+		}
+		if(!hasEdit){
+			setMsg(msgType.nok, 'Task must contain at least one Edit permission');
+			return false;
+		}
+//		if(!validate(pass, 0, 'Task must contain at least one Edit permission',getData, validate)) return;
 		
 		genericSave(()=>{return true;}, taskPermissionModel, taskPermissionModel.loginId, Module.login, 'DELETE', 'taskpermission',
 				(resp)=>{
