@@ -362,7 +362,7 @@ function setDomPermission(model){
 					model[item].dom.disabled=true
 			});
 		}else{
-			Object.keys(model).forEach(item=>model[item].dom.disabled=false);
+			Object.keys(model).forEach(item=>(model[item].dom == null)?throw 'Invalid item ' + item:model[item].dom.disabled=false);
 		}		
 	}	
 }
