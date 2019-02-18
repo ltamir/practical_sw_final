@@ -236,18 +236,34 @@ function activateTabLinkedCustomer(){
 	getById('divTaskTab').style.width = '35em';
 }
 
+var permissionTypes = {
+		edit : {dom:null, value:1},
+		view : {dom:null, value:2}		
+};
 function activateTabPermission(){
-	getHTML('tabPermission.html').then(function(response){fillTab('divTaskTab', response)})
-	.then(()=>viewTaskPermissionList()	)
-	.then(()=>getDataEx('cmbPermissionType', 'permissiontype', '?actionId=2', fillSelect, 
-			null, 
-			(opt,item)=>opt.value = item.permissionTypeId, 
-			(opt,item)=>opt.text = item.permissionTypeName, 
-			null))
-	.then(()=>viewPermissionLoginList());
-	getById('divTaskTab').style.width = '35em';
+	getHTML('tabPermission.html').then(function(response){
+		fillTab('divTaskTab', response);
+		viewTaskPermissionList();
+		viewPermissionLoginList();
+		initModel(taskPermissionModel);
+		setDomPermission(taskPermissionModel);
+		permissionTypes.edit.dom = getById('imgEditPermission');
+		permissionTypes.view.dom = getById('imgViewPermission');
+		taskPermissionModel.permissiontypeId.setValue(0);
+		getById('divTaskTab').style.width = '35em';
+		});
 }
 
+function togglePermissionType(permissionType){
+	taskPermissionModel.permissiontypeId.setValue(permissionType.value);
+	
+	for(const d in permissionTypes){
+		if(permissionType.value == d.value)
+			permissionTypes[d].dom.style.borderStyle = 'inset';
+		else
+			permissionTypes[d].dom.style.borderStyle = 'outset'			
+	}
+}
 function viewPermissionLoginList(){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getById('divPermissionLoginList').setAttribute('data-loginId', 0);
@@ -274,8 +290,7 @@ function viewPermissionLoginList(){
 
 			}
 		)
-		initModel(taskPermissionModel);
-		setDomPermission(taskPermissionModel);
+
 }
 
 function viewTaskPermissionList(){

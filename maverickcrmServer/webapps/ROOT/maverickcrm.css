@@ -220,10 +220,23 @@
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
 	}	
-	#divAttachmentList, #divPermissionList, #divPermissionLoginList, #cmbRelationTaskList{
+	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
 		width: 35em;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
+	}
+	
+	#divPermissionLoginList, #divPermissionList{
+		display: inline-block;
+		vertical-align: top;
+		height: 5em;
+		width: 43%;
+		overflow-y: scroll;
+	}
+	#divPermissionAction{
+		display: inline-block;
+		height: 5.5em;
+		align: center;
 	}
 
 	#divTaskDetailsTop > img{
@@ -234,7 +247,7 @@
 		left: 4em;
 	}	
 	
-	#divAttachmentList, #divPermissionList, #divPermissionLoginList{     
+	#divAttachmentList{     
         height: 4.5em;
 	}
 

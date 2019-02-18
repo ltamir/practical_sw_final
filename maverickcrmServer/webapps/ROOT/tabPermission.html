@@ -1,5 +1,14 @@
-<div id="divPermissionLoginList" class="cssDivRow"></div>
-<select id="cmbPermissionType" size="2"></select>
-<img src="images/add_down.png" title="Add permission" id="imgAddPermission" onmousedown="toggleAsBotton(this)" onmouseup="addPermission();toggleAsBotton(this)">
-<img src="images/remove_up.png" title="Remove permission" id="imgRemovePermission" onmousedown="toggleAsBotton(this)" onmouseup="removePermission();toggleAsBotton(this)">
-<div id="divPermissionList" class="cssDivRow"></div>
+<div id="divPermissionRow" class="cssDivRow">
+	<div id="divPermissionLoginList" ></div>
+	<div id="divPermissionAction" style="border: 2px groove;">
+		<img src="images/permissiontype_edit.png" title="Edit" id="imgEditPermission" style="margin-left:0.2em;margin-right:0.1em;" onmousedown="toggleAsBotton(this)" onmouseup="togglePermissionType(permissionTypes.edit); toggleAsBotton(this)">
+		<br>
+		<img src="images/permissiontype_view.png" title="View only" id="imgViewPermission" style="margin-left:0.2em;margin-right:0.1em;" onmousedown="toggleAsBotton(this)" onmouseup="togglePermissionType(permissionTypes.view);toggleAsBotton(this)">
+		<br style="border: 1px inset #112233">
+		<img src="images/add_right.png" title="Add permission" id="imgAddPermission" style="margin-left:0.2em;margin-right:0.1em;" onmousedown="toggleAsBotton(this)" onmouseup="addPermission();toggleAsBotton(this)">
+		<br>
+		<img src="images/remove_left.png" title="Remove permission" id="imgRemovePermission" style="margin-left:0.2em;margin-right:0.1em;" onmousedown="toggleAsBotton(this)" onmouseup="removePermission();toggleAsBotton(this)">	
+	</div>
+<div id="divPermissionList" ></div>
+</div>
+

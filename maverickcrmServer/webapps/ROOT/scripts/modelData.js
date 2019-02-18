@@ -300,8 +300,8 @@ var taskPermissionModel = {
 			function(){return (this.dom.isDefault == null)?this.dom.getAttribute('data-loginId'):this.value;}, 
 			function(val){(this.dom.isDefault == null)?this.dom.setAttribute('data-loginId', val):this.value = val;},
 			new Method([0], 'Login not selected', true), new Method(), new Method()),	
-		permissiontypeId:new Model('cmbPermissionType', -1, null, 'permissiontypeId', null, null,
-				new Method([''], 'Please select Edit or View permision', true), new Method([''], 'Please select Edit or View permision', true), new Method()),
+		permissiontypeId:new Model(null, -1, {disabled:false, value:0}, 'permissiontypeId', null, null,
+				new Method([0], 'Please select Edit or View permision', true), new Method([0], 'Please select Edit or View permision', true), new Method()),
 		version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())
 }
 
@@ -360,7 +360,6 @@ var searchModel = {
 
 }
 
-//domField, tabIndex, dom, apiField, getter, setter, postMap, putMap, delMap
 var newTaskModel = {
 		taskType:new Model(null, null, {isDefault:true, disabled:false, value:0}, null, function(){return this.dom.value}, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.newTaskType, val, pastAct);}, new Method(), new Method(), new Method())
 }
