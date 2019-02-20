@@ -60,7 +60,7 @@ function newTask(taskType){
 	taskModel.effort.setValue(1);
 	taskModel.effortUnit.setValue(1);
 	taskModel.effortUnit.setValue(1);	
-	taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+	taskModel.dueDate.setValue(getJsonDate(new Date().toISOString().split("T")[0]));
 	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
 	taskModel.status.setValue(1);
 	taskModel.status.setValue(1);
@@ -146,7 +146,7 @@ function viewTask(id, data){
 	taskModel.title.setValue(task.title);
 	taskModel.effort.setValue(task.effort);
 	taskModel.effortUnit.setValue(task.effortUnit);
-	taskModel.dueDate.setValue(getISODate(task.dueDate));
+	taskModel.dueDate.setValue(task.dueDate);
 	
 	let addChildTaskState = getById('addChildTask');
 	if(addChildTaskState.getAttribute('data-state') == 1){
@@ -171,7 +171,6 @@ function viewTask(id, data){
 	
 	viewTotalEffort();
 	
-//	menuData.newTaskType.menuid.src='images/newitem.png';
 	setTextDirectionModel(taskModel);
 	setDomPermission(taskModel);
 	setMsg(msgType.ok, 'Ready');

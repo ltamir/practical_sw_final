@@ -247,16 +247,16 @@ var taskModel={
 	title:new Model('txtDetailTaskTitle', 3, null, 'title', null, null, new Method([''], 'Please enter a task title', true), new Method([''], 'Please enter a task title', true), new Method()), 
 	effort:new Model('txtDetailTaskEffort', 2, null, 'effort', null, null, new Method([0], 'Please enter an effort', true), new Method([0], 'Please enter an effort', true), new Method()), 
 	effortUnit:new Model('effortUnit', -1, null, 'effortUnit', null, function(val){this.dom.value = val; imgListSetter(menuData.taskEffortUnit, val);}, new Method(null, null, true), new Method(null, null, true), new Method()), 
-	dueDate:new Model('txtDetailDueDate', -1, null, 'dueDate', null, null, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
-	dueDateLabel:new Model('lblDetailDueDate', -1, null, null, null, null, new Method(), new Method(), new Method()),
+	dueDate:new Model(null, -1, null, 'dueDate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
+//	dueDateLabel:new Model('lblDetailDueDate', -1, null, null, null, null, new Method(), new Method(), new Method()),
 	status:new Model('cmbDetailStatus', -1, null, 'statusId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskStatus, val, pastAct);}, new Method(null, null, true), new Method(null, null, true), new Method()),
 	permissionType:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()), //1:edit, 2:view
 	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())
 	}
 
 taskModel.status.changed = false;
-taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
-taskModel.dueDateLabel.getValue = function(){return this.dom.innerHTML;}
+//taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
+//taskModel.dueDateLabel.getValue = function(){return this.dom.innerHTML;}
 var contactModel = {
 	contactId:new Model('connectionContactId', -1, null, 'contactId', null, null, new Method(), new Method(null, null, true),new Method(null, null, true)),
 	firstName:new Model('txtFirstName', 1, null, 'firstName', null, null, new Method([''], 'Please enter First Name', true), new Method([''], 'Please enter First Name', true), new Method()),
@@ -354,8 +354,8 @@ var searchModel = {
 		taskType:new Model(null, -1, null, 'tasktypeId', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskType, val);}),
 		project:new Model('cmbSearchProject', -1, null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', -1, null, 'title', null, null),
-		dueDate:new Model('txtSearchDueDate', -1, null, 'duedate', function(){return this.dom.getIsoDate}, function(val){this.dom.this.setDate = val;}),
-		dueDateLabel:new Model('lblSearchDueDate', -1, null, '', null, null),
+		dueDate:new Model(null, -1, null, 'duedate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}),
+//		dueDateLabel:new Model('lblSearchDueDate', -1, null, '', null, null),
 		status:new Model('searchOpenTask', -1, null, 'showclosed', function(){return this.value}, function(val){this.value = val;})
 
 }

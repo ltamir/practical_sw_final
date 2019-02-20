@@ -58,6 +58,9 @@ function DatePicker (pickerId) {
             this.getIsoDate = function (){
             	return this.date.year + '-' + this.padLeft(this.date.month) + '-' + this.padLeft(this.date.day);
             };
+            this.setJsonDate = function(jsonDate){
+            	this.setDate(jsonDate.day, jsonDate.month, jsonDate.year);
+            };
             this.setDate = function (day, month, year){
             	this.date.value.setDate(day);
             	this.date.value.setMonth(month-1);
@@ -81,8 +84,8 @@ function DatePicker (pickerId) {
             this.show  = function (){
                 this.dom.pickerHeader.style.display = '';
                 this.dom.calendar.style.display = '';
-                this.dom.picker.focus();
                 this.dom.picker.tabIndex = 1;
+                this.dom.picker.focus();
             };
             this.hide = function (){
                 this.dom.pickerHeader.style.display = 'none';

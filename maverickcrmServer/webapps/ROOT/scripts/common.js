@@ -264,6 +264,14 @@ function debugFormData(formData){
 	}
 }
 
+function getJsonDate(isoDate){
+	let jsonDate = {day:0, month:0, year:0};
+	let dateArr = isoDate.split("-");
+	jsonDate.day = dateArr[2];
+	jsonDate.month = dateArr[1];
+	jsonDate.year = dateArr[0];
+	return jsonDate;
+}
 function getDate(isoDate){
 	let dateObject = {day:0, month:0, year:0};
 	let dateArr = isoDate.split("-");

@@ -235,12 +235,14 @@ function execSync(funcA, funcB){
 	searchModel.taskType.setValue(1);
 }
 
-var datePicker;
+//var datePicker;
 
 function init(){
 
 	initModels();
-	datePicker = new DatePicker('tblSearchDueDate');
+	searchModel.dueDate.dom = new DatePicker('tblSearchDueDate');
+	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate');
+	
 	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'All Customers', 
 			(opt,item)=>opt.value = item.customerId, 
@@ -264,13 +266,13 @@ function init(){
     setTab(tabEnum.connection);
     setTab(tabEnum.taskLog);
     
-    taskModel.dueDate.setValue(new Date().toISOString().split("T")[0]);
+    taskModel.dueDate.setValue(getJsonDate(new Date().toISOString().split("T")[0]));
 }
 
 function initModels(){
 	initModel(taskModel);
 	initModel(searchModel);
-
+//	searchModel.duedate.dom = datePicker;
 
 	searchModel.status.setValue(1);
 	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
