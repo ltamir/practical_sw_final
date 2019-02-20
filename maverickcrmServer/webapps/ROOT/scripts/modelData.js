@@ -309,7 +309,7 @@ var attachmentModel = {
 		version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()),
 		attachmentId:new Model('attachmentId', -1, null, 'attachmentId', null, null, new Method(), new Method(null, null, true), new Method(null, null, true)),
 		type:new Model('cmbAttachmentType', 2, null, 'attachmentTypeId', null, null, new Method(null, null, true), new Method(null, null, true), new Method()),
-		file:new Model('attachmentFile', null, 'fileName', null, null, new Method(null, null, true), new Method(null, null, true), new Method()),
+		file:new Model('attachmentFile',-1, null, 'fileName', null, null, new Method(null, null, true), new Method(null, null, true), new Method()),
 		contact:new Model('cmbAttachmenContact', 3, null, 'contactId', null, null, new Method(null, null, true), new Method(null, null, true), new Method()),
 		notes:new Model('txtAttachmentNotes', 1, null, 'attachmentNotes', null, null, new Method(null, null, true), new Method(null, null, true), new Method()),
 		taskLogId:new Model('attachmentTaskLogId', -1, null, 'taskLogId', null, null, new Method(null, null, true), new Method(null, null, true), new Method())
@@ -354,7 +354,7 @@ var searchModel = {
 		taskType:new Model(null, -1, null, 'tasktypeId', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskType, val);}),
 		project:new Model('cmbSearchProject', -1, null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', -1, null, 'title', null, null),
-		dueDate:new Model('txtSearchDueDate', -1, null, 'duedate', null, function(val){this.dom.value = val; searchModel.dueDateLabel.dom.innerHTML = 'Set due date';}),
+		dueDate:new Model('txtSearchDueDate', -1, null, 'duedate', function(){return this.dom.getIsoDate}, function(val){this.dom.this.setDate = val;}),
 		dueDateLabel:new Model('lblSearchDueDate', -1, null, '', null, null),
 		status:new Model('searchOpenTask', -1, null, 'showclosed', function(){return this.value}, function(val){this.value = val;})
 
