@@ -234,9 +234,13 @@ function execSync(funcA, funcB){
 			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
 	searchModel.taskType.setValue(1);
 }
+
+var datePicker;
+
 function init(){
 
 	initModels();
+	datePicker = new DatePicker('tblSearchDueDate');
 	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'All Customers', 
 			(opt,item)=>opt.value = item.customerId, 

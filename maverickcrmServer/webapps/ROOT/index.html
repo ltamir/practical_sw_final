@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maverick CRM</title>
     <link rel="stylesheet" type="text/css" href="maverickcrm.css?10">
+    <script src="scripts/datepicker.js?"></script>
     <script src="scripts/modelData.js?1"></script>
     <script src="scripts/common.js?10"></script>
     <script src="scripts/dataPopulation.js?16"></script>
@@ -18,7 +19,7 @@
 </head>
 <body onload="init()">
 	<input type="hidden" value="" id="user" data-contact="">
-    <table id="menu" border="0">
+    <table id="menu">
         <tr>
             <td width="4%">
                 <select class="cssMenu" id="cmbSearchCustomer" title="Customer list" onchange="setSearchPredicate(this)"></select>                
@@ -41,13 +42,15 @@
             <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
             </td> 
-            <td width="18%" valign="center">
-            	<span id="lblSearchDueDate" title="Set due date" onclick="toggleSearchDate(this, searchModel.dueDate.dom)">Set due date</span>
+            <td width="18%">
+            	<!-- <span id="lblSearchDueDate"  onclick="toggleSearchDate(this, searchModel.dueDate.dom)">Set due date</span> -->
+				<table id="tblSearchDueDate" title="Set due date" style="overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="datePicker.hide()"></table>				
+            	
                 <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
-				<img src="images/menu_reset.png" style="float: right; margin-left:0.3em; " title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+				<img src="images/menu_reset.png" style="float: right; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
                 <img src="images/menu_search.png" style="float: right; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">                
             </td> 
-            <td width="27%" align="right" valign="center">            	            	
+            <td width="27%" align="right">            	            	
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">

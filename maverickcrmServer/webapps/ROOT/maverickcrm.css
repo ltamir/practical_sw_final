@@ -66,14 +66,15 @@
     #menu td > img{
     	margin-top: 0.2em;
     }
-	#lblSearchDueDate{
+/* 	#lblSearchDueDate{
 		cursor: pointer;
 		float: left;
-		width: 9em;
+		text-align: center;
+		width: 10.5em;
 		margin-top: 0.2em;
+		margin-bottom: 0.2em;
 		border: 1px solid #dddddd;
-		
-	}
+	} */
 	#txtSearchDueDate{
 		display: none;
 	}
