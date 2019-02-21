@@ -6,7 +6,7 @@ function DatePicker (pickerId) {
             this.date={day:null, month:null, year:null, value:null, state:0};
                 
             this.build=function(){
-                let d= this.date.value;
+                let d= new Date(this.date.value);
                 this.dom.lblMonth.innerHTML = this.monthsNames[this.date.month-1];
                 
                 while(this.dom.calendar.childNodes.length > 0)
@@ -14,28 +14,38 @@ function DatePicker (pickerId) {
 
                 let currentm = d.getMonth();   
                 d.setDate(1);
-                week = this.buildWeek(this.daySpaces);
+                let week = this.buildWeek(this.daySpaces);
                 for(let i = 1; currentm == d.getMonth(); i++, d.setDate(i)){
                     week.childNodes[d.getDay()].innerHTML = this.padLeft(d.getDate());
-                    week.childNodes[d.getDay()].setAttribute('data-day', d.getDate());
                     let nodeDate = d.getDate();
                     week.childNodes[d.getDay()].addEventListener('click', function(){me.setPickedDate(nodeDate)});
                     if(d.getDay() == 6){
                         this.dom.calendar.appendChild(week);
                         week = this.buildWeek(this.daySpaces);
-                    }
+                    }                    
                 }
                 this.dom.calendar.appendChild(week);
             };
+           this.setMaxDay = function(){
+        	   let d = new Date(this.date.value);
+        	   let currentMonth = d.getMonth();
+        	   d.setDate(this.date.day);
+        	   for(let day = this.date.day; currentMonth != d.getMonth(); day = this.date.day, d=new Date(this.date.value), d.setDate(day))
+        		   this.date.day--; 
+        	   this.date.value.setDate(this.date.day);
+           };
             this.nextMonth = function (){
+            	this.setSelectedDay(false);
                 if(this.date.month == 12){
                     this.date.value.setMonth(0);
                     this.date.value.setFullYear(++this.date.year);
                 }else
                     this.date.value.setMonth(this.date.month++);
                 this.date.month = (this.date.value.getMonth()+1);
+
             }
             this.prevMonth = function (){
+            	this.setSelectedDay(false);
                 if(this.date.month == 1){
                     this.date.value.setMonth(11);
                     this.date.value.setFullYear(--this.date.year);
@@ -71,21 +81,36 @@ function DatePicker (pickerId) {
                 this.setDisplayDate();
             };            
             this.setPickedDate = function (nodeDate){
+            	this.setSelectedDay(false);
             	this.date.day = nodeDate;
-            	this.setDisplayDate();
+            	this.setDate(this.date.day, this.date.month,this.date.year);
+            	this.setSelectedDay(true);
+            	this.hide();
             };
             
             this.setDisplayDate = function (){
             	this.dom.lblDate.innerHTML = this.padLeft(this.date.day) + '/' + this.padLeft(this.date.month) + '/' + this.date.year;
             };
-            setter = function(func){
-
+            this.setSelectedDay = function(isOn){
+            	let d = new Date(this.date.value);
+            	d.setDate(1);
+            	let week = Math.floor((d.getDay() + this.date.day)/7);
+            	if(isOn){
+                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.fontWeight = 'bold';
+                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.border = '1px inset grey';
+            	}
+            	else{
+                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.fontWeight = 'normal';
+                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.border = '';            		
+            	}
             };
             this.show  = function (){
                 this.dom.pickerHeader.style.display = '';
                 this.dom.calendar.style.display = '';
+                if(this.date.day != null)this.setSelectedDay(true);
                 this.dom.picker.tabIndex = 1;
                 this.dom.picker.focus();
+                
             };
             this.hide = function (){
                 this.dom.pickerHeader.style.display = 'none';
@@ -159,5 +184,6 @@ function DatePicker (pickerId) {
             this.date.value = new Date();
             this.date.month = (this.date.value.getMonth()+1);
             this.date.year = this.date.value.getFullYear();
+            this.date.day = 1;
             this.dom.pickerHeader.appendChild(this.buildWeek(this.dayNames));    
         }
