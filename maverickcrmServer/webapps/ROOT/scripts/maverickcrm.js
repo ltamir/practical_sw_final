@@ -180,9 +180,9 @@ function hideMenu(menuItem){
 
 // handle image as two-state button
 function dummyAction(val){}
-function menuHandler(menuItem, menuAction, check){
+function menuHandler(menuItem, menuAction, doCheck){
 	if(menuAction != null) menuItem.menuid.setAttribute('data-state', !menuAction);
-	if(check != null && !checkPermission()) return;
+	if(doCheck && !checkPermission()) return;
 	if(menuItem.menuid.getAttribute('data-state') == '0'){
 		menuItem.menuid.setAttribute('data-state', 1);
 		menuItem.menuid.style.borderStyle='inset';
