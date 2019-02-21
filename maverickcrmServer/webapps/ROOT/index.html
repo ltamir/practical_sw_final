@@ -43,10 +43,7 @@
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
             </td> 
             <td width="18%">
-            	<!-- <span id="lblSearchDueDate"  onclick="toggleSearchDate(this, searchModel.dueDate.dom)">Set due date</span> -->
 				<table id="tblSearchDueDate" title="Set due date" style="overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="searchModel.dueDate.dom.hide()"></table>				
-            	
-                <input class="cssMenu" type="date" title="Task Due Date" id="txtSearchDueDate" data-isActive="0" onkeyup="flagToggle(getById('lblSearchDueDate'),this, event)" onblur="toggleSearchDate(getById('lblSearchDueDate'), getById('txtSearchDueDate'))"/>
 				<img src="images/menu_reset.png" style="float: right; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
                 <img src="images/menu_search.png" style="float: right; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">                
             </td> 
@@ -118,9 +115,7 @@
 	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;" title="Total effort for task and child tasks">Total: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
 					<label for="txtDetailEffort" style="text-align:center;" class="cssFieldLabel">Due:</label>	            	
-	            	<!-- <span id="lblDetailDueDate" title="Set due date" class="cssFieldLabel" onclick="toggleSearchDate(this, taskModel.dueDate.dom)">Due Date</span> -->
 	            	<table id="tblTaskDueDate" title="Set due date" style="display:inline-block; overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="taskModel.dueDate.dom.hide()"></table>
-					<input type="date" id="txtDetailDueDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"  data-isActive="0" onkeydown="flagToggle(taskModel.dueDateLabel.dom,this, event)" onblur="toggleSearchDate(taskModel.dueDateLabel.dom, this)"/>
 				</div>
 				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="77"></textarea>
 				<br>
