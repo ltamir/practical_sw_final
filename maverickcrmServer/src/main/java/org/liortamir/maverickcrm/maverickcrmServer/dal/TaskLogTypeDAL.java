@@ -13,15 +13,27 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 public class TaskLogTypeDAL {
 
 	private static TaskLogTypeDAL instance = new TaskLogTypeDAL();
+	private List<TaskLogType> cacheList = null;
 	
-	private TaskLogTypeDAL() {}
+	private TaskLogTypeDAL() {
+		loadCache();
+	}
 	
 	public static TaskLogTypeDAL getInstance() {
 		return instance;
 	}
 	
+	public void loadCache(){
+		try{
+			this.cacheList = get();
+		}catch(SQLException | IndexOutOfBoundsException e){
+			System.out.println("Error loading TaskLogTypeDAL chache: " + e.toString());
+		}
+	}
+	
 	public TaskLogType get(int taskLogTypeId) throws SQLException {
-		TaskLogType entity = null;		
+		TaskLogType entity = this.cacheList.get(taskLogTypeId-1);
+		if(entity != null) return entity;	
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("select * from taskLogType where taskLogTypeId=?");
 			ps.setInt(1, taskLogTypeId);
@@ -33,6 +45,10 @@ public class TaskLogTypeDAL {
 	}
 	
 	public List<TaskLogType> getAll() throws SQLException {
+		return this.cacheList;
+	}
+	
+	public List<TaskLogType> get() throws SQLException {
 		List<TaskLogType> entityList = null;
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("select * from taskLogType");

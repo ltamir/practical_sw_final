@@ -13,15 +13,27 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 public class PermissionTypeDAL {
 
 	private static final PermissionTypeDAL instance = new PermissionTypeDAL();
+	private List<PermissionType> cacheList = null;
 	
-	private PermissionTypeDAL() {}
+	private PermissionTypeDAL() {
+		loadCache();
+	}
 	
 	public static PermissionTypeDAL getInstance() {
 		return instance;
 	}
 	
+	public void loadCache(){
+		try{
+			this.cacheList = get();
+		}catch(SQLException | IndexOutOfBoundsException e){
+			System.out.println("Error loading PermissionTypeDAL chache: " + e.toString());
+		}
+	}
+	
 	public PermissionType get(int permissiontypeId) throws SQLException {
-		PermissionType entity = null;
+		PermissionType entity = this.cacheList.get(permissiontypeId-1);
+		if(entity != null) return entity;	
 
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("select * from permissiontype where permissiontypeId=?");
@@ -34,6 +46,10 @@ public class PermissionTypeDAL {
 	}
 	
 	public List<PermissionType> getAll() throws SQLException {
+		return this.cacheList;
+	}
+	
+	public List<PermissionType> get() throws SQLException {
 		List<PermissionType> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){

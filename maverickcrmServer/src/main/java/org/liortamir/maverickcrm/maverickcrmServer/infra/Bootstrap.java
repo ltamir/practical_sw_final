@@ -6,6 +6,12 @@ import java.net.MalformedURLException;
 import javax.servlet.ServletException;
 
 import org.apache.catalina.LifecycleException;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AttachmentTypeDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactTypeDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.PermissionTypeDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.StatusDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogTypeDAL;
+import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBSetup;
 
 public class Bootstrap {
@@ -40,6 +46,14 @@ public class Bootstrap {
 		}else {
 			System.out.println("DB exists: " + storagePath);
 		}
+		
+		// initiate caches in DAL
+		StatusDAL.getInstance();
+		TaskTypeDAL.getInstance();
+		TaskLogTypeDAL.getInstance();
+		AttachmentTypeDAL.getInstance();
+		ContactTypeDAL.getInstance();
+		PermissionTypeDAL.getInstance();
 		
 		new Thread(new DBUTest()).start();
 		EmbeddedTomcat tomcat = new EmbeddedTomcat();

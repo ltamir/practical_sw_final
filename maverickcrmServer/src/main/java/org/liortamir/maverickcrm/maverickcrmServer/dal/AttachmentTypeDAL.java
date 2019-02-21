@@ -13,16 +13,27 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 public class AttachmentTypeDAL {
 
 	private static final AttachmentTypeDAL instance = new AttachmentTypeDAL();
+	private List<AttachmentType> cacheList = null;
 	
-	private AttachmentTypeDAL() {}
+	private AttachmentTypeDAL() {
+		loadCache();
+	}
 	
 	public static AttachmentTypeDAL getInstance() {
 		return instance;
 	}
 	
+	public void loadCache(){
+		try{
+			this.cacheList = get();
+		}catch(SQLException | IndexOutOfBoundsException e){
+			System.out.println("Error loading AttachmentTypeDAL chache: " + e.toString());
+		}
+	}
+	
 	public AttachmentType get(int attachmentTypeId) throws SQLException {
-		AttachmentType entity = null;
-
+		AttachmentType entity = this.cacheList.get(attachmentTypeId-1);
+		if(entity != null) return entity;	
 		try (Connection conn = DBHandler.getConnection()){
 			
 			PreparedStatement stmt = conn.prepareStatement("select * from attachmentType where attachmentTypeId=?");
@@ -35,11 +46,15 @@ public class AttachmentTypeDAL {
 	}
 	
 	public List<AttachmentType> getAll() throws SQLException {
+		return this.cacheList;
+	}
+	
+	public List<AttachmentType> get() throws SQLException {
 		List<AttachmentType> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){
 			
-			PreparedStatement stmt = conn.prepareStatement("select * from attachmentType");
+			PreparedStatement stmt = conn.prepareStatement("select * from attachmentType order by attachmentTypeId");
 			ResultSet rs = stmt.executeQuery();
 			entityList = new ArrayList<>(5);
 			while(rs.next())

@@ -13,15 +13,27 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 public class TaskTypeDAL {
 
 	private static final TaskTypeDAL instance = new TaskTypeDAL();
+	private List<TaskType> cacheList = null;
 	
-	private TaskTypeDAL() {}
+	private TaskTypeDAL() {
+		loadCache();
+	}
+	
+	public void loadCache(){
+		try{
+			this.cacheList = get();
+		}catch(SQLException e){
+			System.out.println("Error loading TaskTypeDAL chache: " + e.toString());
+		}
+	}
 	
 	public static TaskTypeDAL getInstance() {
 		return instance;
 	}
 	
 	public TaskType get(int taskTypeId) throws SQLException {
-		TaskType entity = null;
+		TaskType entity = this.cacheList.get(taskTypeId-1);
+		if(entity != null) return entity;
 
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("select * from taskType where taskTypeId=?");
@@ -34,10 +46,14 @@ public class TaskTypeDAL {
 	}
 	
 	public List<TaskType> getAll() throws SQLException {
+		return this.cacheList;
+	}
+	
+	public List<TaskType> get() throws SQLException {
 		List<TaskType> entityList = null;
 
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from taskType");
+			PreparedStatement ps = conn.prepareStatement("select * from taskType order by taskTypeId");
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(10);
 			while(rs.next())

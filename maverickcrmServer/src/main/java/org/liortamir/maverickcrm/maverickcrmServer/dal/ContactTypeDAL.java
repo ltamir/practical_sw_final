@@ -13,15 +13,27 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
 public class ContactTypeDAL {
 
 	private static ContactTypeDAL instance = new ContactTypeDAL();
+	private List<ContactType> cacheList = null;
 	
 	public static ContactTypeDAL getInstance() {
 		return instance;
 	}
 	
-	private ContactTypeDAL() {}
+	private ContactTypeDAL() {
+		loadCache();
+	}
+	
+	public void loadCache(){
+		try{
+			this.cacheList = get();
+		}catch(SQLException | IndexOutOfBoundsException e){
+			System.out.println("Error loading ContactTypeDAL chache: " + e.toString());
+		}
+	}
 	
 	public ContactType get(int contactTypeId) throws SQLException {
-		ContactType entity = null;
+		ContactType entity = this.cacheList.get(contactTypeId-1);
+		if(entity != null) return entity;	
 		try (Connection conn = DBHandler.getConnection()){
 			PreparedStatement ps = conn.prepareStatement("select * from contactType where contactTypeId=?");
 			ps.setInt(1, contactTypeId);
@@ -33,9 +45,13 @@ public class ContactTypeDAL {
 	}
 	
 	public List<ContactType> getAll() throws SQLException {
+		return this.cacheList;
+	}
+	
+	public List<ContactType> get() throws SQLException {
 		List<ContactType> entityList = null;
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from contactType");
+			PreparedStatement ps = conn.prepareStatement("select * from contactType order by contactTypeId");
 			ResultSet rs = ps.executeQuery();
 			entityList = new ArrayList<>(5);
 			while(rs.next())
