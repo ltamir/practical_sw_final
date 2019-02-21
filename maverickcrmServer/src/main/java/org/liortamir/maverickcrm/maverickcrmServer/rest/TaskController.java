@@ -57,6 +57,7 @@ public class TaskController extends HttpServlet {
 				List<Task> taskList = null;			
 				int customerId = Integer.parseInt(req.getParameter("customerId"));
 				String dueDate = req.getParameter("duedate");
+				dueDate = (dueDate.equals("null"))?"":dueDate;
 				String title = req.getParameter("title");
 				int projectId = Integer.parseInt(req.getParameter("projectId"));
 				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
