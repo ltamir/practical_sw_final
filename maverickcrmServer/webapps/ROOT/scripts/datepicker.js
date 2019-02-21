@@ -4,7 +4,7 @@ function DatePicker (pickerId) {
             this.daySpaces=['', '', '', '', '', '', ''];
             this.dom = {picker:null,lblMonth:null, pickerHeader:null, lblDate:null, calendar:null};
             this.date={day:null, month:null, year:null, value:null, state:0};
-                
+            this.value = null;
             this.build=function(){
                 let d= new Date(this.date.value);
                 this.dom.lblMonth.innerHTML = this.monthsNames[this.date.month-1];
@@ -66,10 +66,20 @@ function DatePicker (pickerId) {
                 return divRow;
             };
             this.getIsoDate = function (){
+            	if(this.date.day == null) return '';
             	return this.date.year + '-' + this.padLeft(this.date.month) + '-' + this.padLeft(this.date.day);
             };
             this.setJsonDate = function(jsonDate){
-            	this.setDate(jsonDate.day, jsonDate.month, jsonDate.year);
+            	if(jsonDate == null){
+                    this.date.day = null;
+                    this.date.month = null;
+                    this.date.year = null;
+                    this.dom.lblDate.innerHTML = 'Set due date';
+            	}else{
+            		if(this.date.value == null)this.date.value = new Date();
+            		this.setDate(jsonDate.day, jsonDate.month, jsonDate.year);
+            	}
+            		
             };
             this.setDate = function (day, month, year){
             	this.date.value.setDate(day);
@@ -105,6 +115,10 @@ function DatePicker (pickerId) {
             	}
             };
             this.show  = function (){
+            	if(this.date.day == null){
+                    this.date.value = new Date();
+                    this.setDate(this.date.value.getDate(), this.date.value.getMonth()+1, this.date.value.getFullYear())
+            	}
                 this.dom.pickerHeader.style.display = '';
                 this.dom.calendar.style.display = '';
                 if(this.date.day != null)this.setSelectedDay(true);
@@ -149,7 +163,7 @@ function DatePicker (pickerId) {
             let tbody = this.buildTBODY('dateContainer', '');
             let tr = this.buildTR();
             tbody.appendChild(tr);
-            this.dom.lblDate = this.buildTD(pickerId + '_' + 'lblDate', 7, 'pointer', 'center', '', 'Set Date')
+            this.dom.lblDate = this.buildTD(pickerId + '_' + 'lblDate', 7, 'pointer', 'center', '', 'Set Due Date')
             this.dom.lblDate.onclick = function(){me.toggle()};
             tr.appendChild(this.dom.lblDate);
             this.dom.picker.appendChild(tbody);
@@ -180,10 +194,6 @@ function DatePicker (pickerId) {
             // calendar tbody
             this.dom.calendar = this.buildTBODY('datePicker', 'none');
             this.dom.picker.appendChild(this.dom.calendar);
-
-            this.date.value = new Date();
-            this.date.month = (this.date.value.getMonth()+1);
-            this.date.year = this.date.value.getFullYear();
-            this.date.day = 1;
+            
             this.dom.pickerHeader.appendChild(this.buildWeek(this.dayNames));    
         }
