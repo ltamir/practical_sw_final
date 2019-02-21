@@ -66,18 +66,6 @@
     #menu td > img{
     	margin-top: 0.2em;
     }
-
-	#txtSearchDueDate{
-		display: none;
-	}
-	
-	#lblDetailDueDate{
-		cursor: pointer;
-		width: 4.5em;
-	}
-	#txtDetailDueDate{
-		display: none;
-	}
 	
 	.cssMessageInfo{
 		border: 1px inset;

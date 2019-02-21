@@ -248,7 +248,6 @@ var taskModel={
 	effort:new Model('txtDetailTaskEffort', 2, null, 'effort', null, null, new Method([0], 'Please enter an effort', true), new Method([0], 'Please enter an effort', true), new Method()), 
 	effortUnit:new Model('effortUnit', -1, null, 'effortUnit', null, function(val){this.dom.value = val; imgListSetter(menuData.taskEffortUnit, val);}, new Method(null, null, true), new Method(null, null, true), new Method()), 
 	dueDate:new Model(null, -1, null, 'dueDate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
-//	dueDateLabel:new Model('lblDetailDueDate', -1, null, null, null, null, new Method(), new Method(), new Method()),
 	status:new Model('cmbDetailStatus', -1, null, 'statusId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskStatus, val, pastAct);}, new Method(null, null, true), new Method(null, null, true), new Method()),
 	permissionType:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()), //1:edit, 2:view
 	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())
@@ -355,7 +354,6 @@ var searchModel = {
 		project:new Model('cmbSearchProject', -1, null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', -1, null, 'title', null, null),
 		dueDate:new Model(null, -1, null, 'duedate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}),
-//		dueDateLabel:new Model('lblSearchDueDate', -1, null, '', null, null),
 		status:new Model('searchOpenTask', -1, null, 'showclosed', function(){return this.value}, function(val){this.value = val;})
 
 }

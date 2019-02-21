@@ -61,7 +61,6 @@ function newTask(taskType){
 	taskModel.effortUnit.setValue(1);
 	taskModel.effortUnit.setValue(1);	
 	taskModel.dueDate.setValue(getJsonDate(new Date().toISOString().split("T")[0]));
-	getById('lblDetailDueDate').innerHTML = getDate(taskModel.dueDate.getValue());
 	taskModel.status.setValue(1);
 	taskModel.status.setValue(1);
 	
