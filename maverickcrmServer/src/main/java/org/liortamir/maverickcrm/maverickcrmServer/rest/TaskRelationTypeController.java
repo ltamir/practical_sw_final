@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskRelationTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -26,7 +27,7 @@ public class TaskRelationTypeController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -320070227443341261L;
-
+	private AbstractDAL<TaskRelationType> dal = TaskRelationTypeDAL.getInstance();
 	
 	private Gson jsonHelper = new Gson();
 
@@ -44,11 +45,11 @@ public class TaskRelationTypeController extends HttpServlet {
 			if(action == ActionEnum.ACT_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter("taskRelationTypeId"));
-				taskRelationType = TaskRelationTypeDAL.getInstance().get(id);
+				taskRelationType = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelatoinType", taskRelationType);
 			}else if(action == ActionEnum.ACT_ALL) {
 				
-				List<TaskRelationType> taskRelationList = TaskRelationTypeDAL.getInstance().getAll();
+				List<TaskRelationType> taskRelationList = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 			}
 			ServletHelper.doSuccess(json);

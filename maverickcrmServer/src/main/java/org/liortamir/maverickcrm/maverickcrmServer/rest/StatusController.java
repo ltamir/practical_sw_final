@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.StatusDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -29,6 +30,7 @@ public class StatusController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 2510794507990929698L;
 	private Gson jsonHelper = new Gson();
+	private AbstractDAL<Status> dal = StatusDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,13 +43,13 @@ public class StatusController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				List<Status> bulk = StatusDAL.getInstance().getAll();
+				List<Status> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter("statusId"));
-				status = StatusDAL.getInstance().get(id);
+				status = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "status", status);
 			}
 			ServletHelper.doSuccess(json);

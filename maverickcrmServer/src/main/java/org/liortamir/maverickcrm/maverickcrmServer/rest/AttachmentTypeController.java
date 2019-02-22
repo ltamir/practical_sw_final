@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.AttachmentTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -26,7 +27,7 @@ public class AttachmentTypeController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
-	
+	private AbstractDAL<AttachmentType> dal = AttachmentTypeDAL.getInstance();
 	private Gson jsonHelper = new Gson();
 
 	@Override
@@ -40,13 +41,13 @@ public class AttachmentTypeController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				List<AttachmentType> bulk = AttachmentTypeDAL.getInstance().getAll();
+				List<AttachmentType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter("statusId"));
-				attachmentType = AttachmentTypeDAL.getInstance().get(id);
+				attachmentType = dal.get(id);
 				json.add("attachmentType", jsonHelper.toJsonTree(attachmentType));
 			}
 			ServletHelper.doSuccess(json);

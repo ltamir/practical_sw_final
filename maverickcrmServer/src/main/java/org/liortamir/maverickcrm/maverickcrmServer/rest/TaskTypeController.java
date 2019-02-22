@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -29,6 +30,7 @@ public class TaskTypeController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -8113572170218507397L;
 	private Gson jsonHelper = new Gson();
+	private AbstractDAL<TaskType> dal = TaskTypeDAL.getInstance();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,11 +45,11 @@ public class TaskTypeController extends HttpServlet {
 			
 			if(action == ActionEnum.ACT_ALL) {
 				resp.setContentType("application/json");
-				List<TaskType> bulk = TaskTypeDAL.getInstance().getAll();
+				List<TaskType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			}else if(action == ActionEnum.ACT_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
-				taskType = TaskTypeDAL.getInstance().get(id);	
+				taskType = dal.get(id);	
 				ServletHelper.addJsonTree(jsonHelper, json, "taskType", taskType);
 			}
 			ServletHelper.doSuccess(json);

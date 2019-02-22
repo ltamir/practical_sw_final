@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskLogTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -27,6 +28,7 @@ public class TaskLogTypeController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 2510794507990929698L;
 	private Gson jsonHelper = new Gson();
+	private AbstractDAL<TaskLogType> dal = TaskLogTypeDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,13 +41,13 @@ public class TaskLogTypeController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.ACT_ALL) {
-				List<TaskLogType> bulk = TaskLogTypeDAL.getInstance().getAll();
+				List<TaskLogType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKLOGTYPE_ID));
-				taskLogType = TaskLogTypeDAL.getInstance().get(id);
+				taskLogType = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskLogType", taskLogType);					
 			}
 			ServletHelper.doSuccess(json);

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.ContactTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -27,6 +28,7 @@ public class ContactTypeController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
 	
+	private AbstractDAL<ContactType> dal = ContactTypeDAL.getInstance();
 	private Gson jsonHelper = new Gson();
 
 	@Override
@@ -43,13 +45,13 @@ public class ContactTypeController extends HttpServlet {
 			if(action == ActionEnum.ACT_ALL){
 				
 				List<ContactType> bulk;
-				bulk = ContactTypeDAL.getInstance().getAll();
+				bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 					
 			}else if(action == ActionEnum.ACT_SINGLE){
 				
 				id = Integer.parseInt(req.getParameter("contactId"));
-				contactType = ContactTypeDAL.getInstance().get(id);
+				contactType = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "contactType", contactType);								
 			}
 			ServletHelper.doSuccess(json);

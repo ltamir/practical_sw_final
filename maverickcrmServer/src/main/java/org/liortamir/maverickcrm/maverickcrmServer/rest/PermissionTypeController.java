@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.liortamir.maverickcrm.maverickcrmServer.dal.AbstractDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.PermissionTypeDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
@@ -29,7 +30,7 @@ public class PermissionTypeController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -8113572170218507397L;
 	private Gson jsonHelper = new Gson();
-	private PermissionTypeDAL dal = PermissionTypeDAL.getInstance();
+	private AbstractDAL<PermissionType> dal = PermissionTypeDAL.getInstance();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
