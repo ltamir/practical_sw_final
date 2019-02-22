@@ -10,6 +10,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.IUserExceptionMessage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -49,13 +50,16 @@ public class ServletHelper {
 				sb.append("\n" + s);
 				break;
 			}
-			
 		}
 		
-		System.out.println(sb.toString());
-		json.addProperty("msg",  "Internal error, please check the log");
+		if(e instanceof IUserExceptionMessage)
+			json.addProperty("msg",  ((IUserExceptionMessage)e).getUserMessage());
+		else
+			json.addProperty("msg",  "Internal error, please check the log");
 		json.addProperty("err",  sb.toString());
 		json.addProperty("status",  "nack");
+		
+		System.out.println(sb.toString());
 	}
 	
 	public static void doSuccess(JsonObject json) {
