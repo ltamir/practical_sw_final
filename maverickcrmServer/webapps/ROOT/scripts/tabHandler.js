@@ -513,7 +513,7 @@ function activateTabTimeline(){
 
 function activateTabLogin(){
 	getHTML('tabLogin.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, 'Select Contact', 
+	.then(()=>getDataEx('cmbLoginContactList', 'contact', '?actionId=2', fillSelect, null, 
 			(opt,item)=>opt.value = item.contactId, 
 			(opt,item)=>opt.text = item.firstName + ' ' + item.lastName, 
 				null))
@@ -522,7 +522,7 @@ function activateTabLogin(){
 			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
 }
 function viewLoginList(){
-	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, 'Select Login', 
+	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, null, 
 		(opt,item)=>opt.value = item.loginId, 
 		(opt,item)=>opt.text = item.username,
 		(opt, item)=>opt.addEventListener("click", ()=>{getData('', 'login', '?actionId=3&loginId='+item.loginId, viewLogin)})
