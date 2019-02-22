@@ -124,20 +124,20 @@ function DatePicker (pickerId) {
                 if(this.date.day != null)this.setSelectedDay(true);
                 this.dom.picker.tabIndex = 1;
                 this.dom.picker.focus();
-                
+                this.date.state = 1;
             };
             this.hide = function (){
                 this.dom.pickerHeader.style.display = 'none';
                 this.dom.calendar.style.display = 'none';
-                this.dom.picker.tabIndex = -1;
+                this.dom.picker.blur();
+                this.dom.picker.tabIndex = '';
+                this.date.state = 0;
             };
             this.toggle = function (){
                 if(this.date.state == 0){
-                    this.date.state = 1;
                     this.build();
                     this.show();
                 }else{
-                    this.date.state = 0;
                     this.hide();
                 }
             };
