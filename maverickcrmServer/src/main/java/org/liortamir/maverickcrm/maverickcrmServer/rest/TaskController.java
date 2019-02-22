@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.InvalidPermissionException;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 import org.liortamir.maverickcrm.maverickcrmServer.model.TaskPermission;
@@ -67,10 +68,12 @@ public class TaskController extends HttpServlet {
 				
 				break;
 			case ACT_SINGLE:
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId()).include(req, resp);
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
-				
-				taskId = Integer.parseInt(req.getParameter("taskId"));
+				if(taskPermission == null){// in case there are no permissions
+					throw new InvalidPermissionException(taskId,login.getLoginId());
+				}
 				task = dal.get(taskId, login.getLoginId());
 				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
@@ -90,7 +93,7 @@ public class TaskController extends HttpServlet {
 			}
 			req.getSession().removeAttribute("login");
 			ServletHelper.doSuccess(json);
-		}catch(NumberFormatException | SQLException | InvalidActionException e) {
+		}catch(NumberFormatException | SQLException | InvalidActionException |InvalidPermissionException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		response = jsonHelper.toJson(json);
