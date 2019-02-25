@@ -247,7 +247,7 @@ var taskModel={
 	title:new Model('txtDetailTaskTitle', 3, null, 'title', null, null, new Method([''], 'Please enter a task title', true), new Method([''], 'Please enter a task title', true), new Method()), 
 	effort:new Model('txtDetailTaskEffort', 2, null, 'effort', null, null, new Method([0], 'Please enter an effort', true), new Method([0], 'Please enter an effort', true), new Method()), 
 	effortUnit:new Model('effortUnit', -1, null, 'effortUnit', null, function(val){this.dom.value = val; imgListSetter(menuData.taskEffortUnit, val);}, new Method(null, null, true), new Method(null, null, true), new Method()), 
-	dueDate:new Model(null, -1, null, 'dueDate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
+	dueDate:new Model(null, -1, null, 'dueDate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val); this.dom.setDisplayDate();}, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
 	status:new Model('cmbDetailStatus', -1, null, 'statusId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskStatus, val, pastAct);}, new Method(null, null, true), new Method(null, null, true), new Method()),
 	permissionType:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()), //1:edit, 2:view
 	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())

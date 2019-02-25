@@ -3,11 +3,12 @@ function DatePicker (pickerId) {
             this.monthsNames=['Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jun','Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             this.daySpaces=['', '', '', '', '', '', ''];
             this.dom = {picker:null,lblMonth:null, pickerHeader:null, lblDate:null, calendar:null};
-            this.date={day:null, month:null, year:null, value:null, state:0};
             this.value = null;
-            this.build=function(){
-                let d= new Date(this.date.value);
-                this.dom.lblMonth.innerHTML = this.monthsNames[this.date.month-1];
+            this.guiState = 0;
+
+            this.build=function(calculatedDate){
+                let d = this.createDate(calculatedDate);
+                this.dom.lblMonth.innerHTML = this.monthsNames[d.getMonth()];
                 
                 while(this.dom.calendar.childNodes.length > 0)
                     this.dom.calendar.removeChild(this.dom.calendar.lastChild);
@@ -18,7 +19,9 @@ function DatePicker (pickerId) {
                 for(let i = 1; currentm == d.getMonth(); i++, d.setDate(i)){
                     week.childNodes[d.getDay()].innerHTML = this.padLeft(d.getDate());
                     let nodeDate = d.getDate();
-                    week.childNodes[d.getDay()].addEventListener('click', function(){me.setPickedDate(nodeDate)});
+                    let nodeMonth = d.getMonth();
+                    let nodeYear = d.getFullYear();
+                    week.childNodes[d.getDay()].addEventListener('click', function(){me.setPickedDate(nodeDate, nodeMonth, nodeYear)});
                     if(d.getDay() == 6){
                         this.dom.calendar.appendChild(week);
                         week = this.buildWeek(this.daySpaces);
@@ -26,34 +29,126 @@ function DatePicker (pickerId) {
                 }
                 this.dom.calendar.appendChild(week);
             };
-           this.setMaxDay = function(){
-        	   let d = new Date(this.date.value);
-        	   let currentMonth = d.getMonth();
-        	   d.setDate(this.date.day);
-        	   for(let day = this.date.day; currentMonth != d.getMonth(); day = this.date.day, d=new Date(this.date.value), d.setDate(day))
-        		   this.date.day--; 
-        	   this.date.value.setDate(this.date.day);
-           };
-            this.nextMonth = function (){
-            	this.setSelectedDay(false);
-                if(this.date.month == 12){
-                    this.date.value.setMonth(0);
-                    this.date.value.setFullYear(++this.date.year);
-                }else
-                    this.date.value.setMonth(this.date.month++);
-                this.date.month = (this.date.value.getMonth()+1);
 
+            // ***** Month movements ***** //
+           this.setMaxDay = function(calculatedDate, newMonth){
+                let d = calculatedDate;
+                let origMonth = d.getMonth();
+                let currentDay = d.getDate();
+                
+                d.setMonth(newMonth);
+               for(let day = currentDay-1; d.getMonth() != newMonth; --day, d.setMonth(origMonth), d.setDate(day));
+               this.build(d);
+                this.setSelectedDay(calculatedDate, true);
+                this.calculatedDate = calculatedDate;
+               if(d.getFullYear() < 1900){console.log(d.getFullYear());}
+           };
+           this.calculatedDate = null;
+            this.nextMonth = function (){
+                let monthInc = 1, yearInc = 0;
+                let calculatedDate = (this.calculatedDate == null)?this.createDate(this.value):this.calculatedDate;
+                if(calculatedDate.getMonth() == 11){
+                    monthInc = -11;
+                    calculatedDate.setFullYear(calculatedDate.getFullYear()+1);                  
+                }
+                this.setMaxDay(calculatedDate, (calculatedDate.getMonth()+monthInc));
             }
             this.prevMonth = function (){
-            	this.setSelectedDay(false);
-                if(this.date.month == 1){
-                    this.date.value.setMonth(11);
-                    this.date.value.setFullYear(--this.date.year);
-                }else            
-                    this.date.value.setMonth(--this.date.month -1);
-                this.date.month = (this.date.value.getMonth()+1);
+                let monthInc = -1, yearInc = 0;
+                let calculatedDate = (this.calculatedDate == null)?this.createDate(this.value):this.calculatedDate;
+                if(calculatedDate.getMonth() == 0){
+                    monthInc = 11;
+                    calculatedDate.setFullYear(calculatedDate.getFullYear()-1);
+                }
+                this.setMaxDay(calculatedDate, (calculatedDate.getMonth()+monthInc));
             };
+
+            // ***** Setters ***** //
+            this.setJsonDate = function(jsonDate){
+            	if(jsonDate == null){
+                    this.value = null;
+                    this.dom.lblDate.innerHTML = 'Set due date';
+            	}else{
+            		this.setValue(jsonDate.day, (jsonDate.month-1), jsonDate.year);
+            	}
+            };
+            this.setValue = function (day, month, year){
+                this.value = this.createDate(this.value);
+                this.value.setFullYear(year);
+            	this.value.setMonth(month);
+                this.value.setDate(day);
+            };         
+            this.setCalculatedDate = function (calculatedDate, nodeDate){
+            	this.setSelectedDay(calculatedDate, false);
+            	// calculatedDate.setValue(calculatedDate, nodeDate);
+                this.setSelectedDay(calculatedDate, true);
+            };
+            this.setPickedDate = function (nodeDate, nodeMonth, nodeYear){
+                if(this.value !=null && this.value.getMonth() == nodeMonth) this.setSelectedDay(this.value, false);
+                this.setValue(nodeDate, nodeMonth, nodeYear);
+                this.setSelectedDay(this.value, true);
+                this.setDisplayDate();
+                this.calculatedDate = null;
+            	this.hide();
+            };
+            
+            // ***** Getters ***** //
             this.padLeft = (val)=>{return (val < 10)?'0'+val:val};
+            this.getIsoDate = function (){
+            	if(this.value == null) return '';
+            	return this.value.getFullYear() + '-' + this.padLeft(this.value.getMonth()+1) + '-' + this.padLeft(this.value.getDate());
+            };
+            this.createDate = function(dateBase){
+                if(dateBase == null)
+                    return new Date();
+                return new Date(dateBase);
+            }
+            this.getValue = ()=>{(this.value == null)?"":this.value}
+
+            // ***** Display ***** //
+            this.setDisplayDate = function (){
+            	this.dom.lblDate.innerHTML = this.padLeft(this.value.getDate()) + '/' + this.padLeft(this.value.getMonth()+1) + '/' + this.value.getFullYear();
+            };
+            this.setSelectedDay = function(calculatedDate, isOn){
+            	let d =this.createDate(calculatedDate);
+            	d.setDate(1);
+            	let week = Math.floor((d.getDay() + calculatedDate.getDate())/7);
+            	if(isOn){
+                	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.fontWeight = 'bold';
+                	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.border = '1px inset grey';
+            	}
+            	else{
+                	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.fontWeight = 'normal';
+                	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.border = '';            		
+            	}
+            };
+            this.show  = function (){
+                this.dom.pickerHeader.style.display = '';
+                this.dom.calendar.style.display = '';
+                this.setSelectedDay(this.createDate(this.value), true);
+                this.dom.picker.tabIndex = 1;
+                this.dom.picker.focus();
+                this.guiState = 1;
+            };
+            this.hide = function (){
+                this.dom.pickerHeader.style.display = 'none';
+                this.dom.calendar.style.display = 'none';
+                this.dom.picker.blur();
+                this.dom.picker.tabIndex = '';
+                this.guiState = 0;
+                this.calculatedDate = null;
+            };
+            this.toggle = function (){
+                if(this.guiState == 0){
+                    let calculatedDate = this.createDate(this.value);
+                    this.build(calculatedDate);
+                    this.show();
+                }else{
+                    this.hide();
+                }
+            };
+            
+            // ***** DOM builders ***** //
             this.buildWeek = function (values){
                 let divRow = document.createElement('TR');
                 
@@ -64,82 +159,6 @@ function DatePicker (pickerId) {
                     divRow.appendChild(day);
                 }
                 return divRow;
-            };
-            this.getIsoDate = function (){
-            	if(this.date.day == null) return '';
-            	return this.date.year + '-' + this.padLeft(this.date.month) + '-' + this.padLeft(this.date.day);
-            };
-            this.setJsonDate = function(jsonDate){
-            	if(jsonDate == null){
-                    this.date.day = null;
-                    this.date.month = null;
-                    this.date.year = null;
-                    this.dom.lblDate.innerHTML = 'Set due date';
-            	}else{
-            		if(this.date.value == null)this.date.value = new Date();
-            		this.setDate(jsonDate.day, jsonDate.month, jsonDate.year);
-            	}
-            		
-            };
-            this.setDate = function (day, month, year){
-            	this.date.value.setDate(day);
-            	this.date.value.setMonth(month-1);
-                this.date.value.setFullYear(year);
-                this.date.day = this.date.value.getDate();
-                this.date.month = (this.date.value.getMonth() + 1);
-                this.date.year = this.date.value.getFullYear();
-                this.setDisplayDate();
-            };            
-            this.setPickedDate = function (nodeDate){
-            	this.setSelectedDay(false);
-            	this.date.day = nodeDate;
-            	this.setDate(this.date.day, this.date.month,this.date.year);
-            	this.setSelectedDay(true);
-            	this.hide();
-            };
-            
-            this.setDisplayDate = function (){
-            	this.dom.lblDate.innerHTML = this.padLeft(this.date.day) + '/' + this.padLeft(this.date.month) + '/' + this.date.year;
-            };
-            this.setSelectedDay = function(isOn){
-            	let d = new Date(this.date.value);
-            	d.setDate(1);
-            	let week = Math.floor((d.getDay() + this.date.day)/7);
-            	if(isOn){
-                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.fontWeight = 'bold';
-                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.border = '1px inset grey';
-            	}
-            	else{
-                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.fontWeight = 'normal';
-                	this.dom.calendar.childNodes[week].childNodes[this.date.value.getDay()].style.border = '';            		
-            	}
-            };
-            this.show  = function (){
-            	if(this.date.day == null){
-                    this.date.value = new Date();
-                    this.setDate(this.date.value.getDate(), this.date.value.getMonth()+1, this.date.value.getFullYear())
-            	}
-                this.dom.pickerHeader.style.display = '';
-                this.dom.calendar.style.display = '';
-                if(this.date.day != null)this.setSelectedDay(true);
-                this.dom.picker.tabIndex = 1;
-                this.dom.picker.focus();
-                this.date.state = 1;
-            };
-            this.hide = function (){
-                this.dom.pickerHeader.style.display = 'none';
-                this.dom.calendar.style.display = 'none';
-                this.dom.picker.blur();
-                this.dom.picker.tabIndex = '';
-                this.date.state = 0;
-            };
-            this.toggle = function (){
-                if(this.date.state == 0){
-                    this.build();
-                    this.show();
-                }else{
-                    this.hide();
-                }
             };
             this.buildTD = function(id, colspan, cursor, textAlign, title, data){
                 let td = document.createElement('TD');
@@ -158,8 +177,13 @@ function DatePicker (pickerId) {
                 return locTbody;
             };
             this.buildTR = function(){return document.createElement('TR');};
-            var me = this;   
+
+            // ***** Initialization ***** //
+            var me = this;
+            // this.value = new Date();
             this.dom.picker = document.getElementById(pickerId);
+            this.dom.picker.onblur = function(){me.hide()};
+            // date display
             let tbody = this.buildTBODY('dateContainer', '');
             let tr = this.buildTR();
             tbody.appendChild(tr);
@@ -177,7 +201,7 @@ function DatePicker (pickerId) {
             let img = document.createElement('IMG');
             img.src = 'images/date_prev.png';
             td.appendChild(img);
-            td.addEventListener('click',function(){me.prevMonth(); me.build();})
+            td.addEventListener('click',function(){me.prevMonth();})
             tr.appendChild(td);
             //month name
             this.dom.lblMonth = this.buildTD('monthName', 3, '', 'center', '', '');
@@ -188,7 +212,7 @@ function DatePicker (pickerId) {
             img.src = 'images/date_next.png';
             td.appendChild(img);
             tr.appendChild(td);
-            td.addEventListener('click',function(){me.nextMonth(); me.build();})
+            td.addEventListener('click',function(){me.nextMonth();})
             this.dom.picker.appendChild(this.dom.pickerHeader);
 
             // calendar tbody
