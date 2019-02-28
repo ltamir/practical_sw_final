@@ -275,7 +275,7 @@
 		border-style: outset;
 	}
 	
-	#divMenuTaskType, #divMenuTaskStatus, #divMenuEffortUnit, #divSearchTaskType, #divMenuNewTaskType{
+	#divMenuTaskType, #divMenuTaskStatus, #divMenuEffortUnit, #divSearchTaskType, #divSearchTaskStatus, #divMenuNewTaskType{
 		position: fixed;
 		overflow: visible;
 		float: left;

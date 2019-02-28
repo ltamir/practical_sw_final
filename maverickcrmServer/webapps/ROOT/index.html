@@ -19,7 +19,7 @@
 </head>
 <body onload="init()">
 	<input type="hidden" value="" id="user" data-contact="">
-    <table id="menu" border="0">
+    <table id="menu">
         <tr>
 			<td class="cssMessageInfo" id="messageInfo">Ready</td>        
             <td width="4%">
@@ -28,17 +28,16 @@
             <td width="4%">
                 <select class="cssMenu" title="Project list" id="cmbSearchProject" onchange="setSearchPredicate(this)"></select>
 			</td>
-            <td width="2%">
+            <td width="4%">
                 <select class="cssMenu" title="Task Type" id="cmbSearchTaskType" style="display:none" onchange="setSearchPredicate(this)"></select>
 				<div id="divSearchTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.searchTaskType, 0, false)">
 	            	<img src="images/site.png" id="imgSearchTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.searchTaskType, null, false)">
 	            	<div id="divSearchTaskType"></div>
             	</div>
-            </td>
-            <td width="6%">
-	            <img src="images/task_status_open.png" id="searchOpenTask" style="border: 1px inset;" data-state="1" title = 'Open tasks' onclick="toggleSearchTaskStatus(this)">
-	            <img src="images/task_status_closed.png" id="searchClosedTask"  data-state="4" title = 'Close tasks' onclick="toggleSearchTaskStatus(this)">
-	            <img src="images/task_status_all.png" id="searchAllTasks"  data-state="0" title = 'All tasks' onclick="toggleSearchTaskStatus(this)">
+				<div id="divSearchTaskStatusParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.searchTaskStatus, 0, false)">
+	            	<img src="images/task_status_open.png" id="imgSearchTaskStatus" title="Open tasks" data-state="0" onclick="menuHandler(menuData.searchTaskStatus, null, false)">
+	            	<div id="divSearchTaskStatus"></div>
+            	</div>
             </td>
             <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
@@ -71,16 +70,6 @@
         </tr>
     </table>
 	
-<!--    	<table id="parentTaskList" class="cssFixed">
-		<tr>
-			<td style="width: 5%;">Type</td>
-			<td style="width: 70%; text-align: center;">Title</td>
-			<td style="width: 12%;">Due date</td>
-			<td style="width: 6%;">Effort</td>
-			<td style="width: 10%;">Status</td>
-		</tr>
-	</table>  
-	<br>   -->
     <table class="cssTaskList">
     	<thead>
 		<tr id="parentTaskList" class="cssFixed">
