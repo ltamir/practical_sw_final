@@ -100,6 +100,7 @@ function createTaskRow(row, item, parent){
 	let taskTypeCell  = row.insertCell(0);
 	taskTypeCell.classList.add("cssTaskListCustomer");
     let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
+    typeImg.style.marginRight= '0.3em';
 
     taskTypeCell.appendChild(typeImg);
 
