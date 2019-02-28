@@ -159,18 +159,18 @@ function initMenuData(){
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, getById('divMenuEffortUnitParent'));	
 	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), newTaskModel.taskType, taskTypeList, newTask,  getById('divMenuNewTaskTypeParent'));
 	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, getById('divSearchTaskTypeParent'));
+	menuData.searchTaskStatus = new MenuItem(getById('imgSearchTaskStatus'), getById('divSearchTaskStatus'), searchModel.status, searchStatusList, dummyAction, getById('divSearchTaskStatusParent'));
 }
 
 function showMenu(menuItem){
 	for(let item of menuItem.menuList){
 		if(item.value == -1 || menuItem.model.getValue() == item.value) continue;
 		let imgItem = document.createElement('IMG');
-		imgItem.src = item.src;
-		imgItem.title = item.title;
+		setImage(imgItem, item);
 		imgItem.addEventListener('click', function(){menuItem.model.setValue(item.value, true); menuHandler(menuItem)})
 		menuItem.menuDiv.appendChild(imgItem);
 		let br = document.createElement('BR');
-		menuItem.menuDiv.appendChild(br);		
+		menuItem.menuDiv.appendChild(br);
 	}
 }
 function hideMenu(menuItem){
@@ -233,6 +233,7 @@ function execSync(funcA, funcB){
 			(opt,item)=>opt.text = item.taskTypeName, 
 			(opt,item)=> {if(item.taskTypeId == 1)opt.selected = true});
 	searchModel.taskType.setValue(1);
+	searchModel.status.setValue(1);
 }
 
 //var datePicker;
@@ -272,12 +273,6 @@ function init(){
 function initModels(){
 	initModel(taskModel);
 	initModel(searchModel);
-//	searchModel.duedate.dom = datePicker;
-
-	searchModel.status.setValue(1);
-	searchTaskStatusToggle.set('open', getById('searchOpenTask'));
-	searchTaskStatusToggle.set('closed', getById('searchClosedTask'));
-	searchTaskStatusToggle.set('all', getById('searchAllTasks'));
 }
 
 function logout(){

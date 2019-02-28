@@ -49,10 +49,10 @@ var taskLogTypeList = [
 ]
 
 var searchStatusList = [
-	{value:-1},
-	{value:1, src:"images/effortUnit_hours.png", unit:'h', title:'hours', getHours:function(hours){return hours;}},
-	{value:1, src:"images/effortUnit_days.png", unit:'d', title:'days', getHours:function(days){return days*9;}},
-	{value:1, src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
+	{value:0, src:"images/task_status_all.png", title:'All tasks'},
+	{value:1, src:"images/task_status_open.png", title:'Open tasks'},
+	{value:-1},{value:-1},
+	{value:4, src:"images/task_status_closed.png", title:'Closed tasks'}
 ]
 
 //***** TaskList expand / collapse handling ***** //
@@ -354,8 +354,7 @@ var searchModel = {
 		project:new Model('cmbSearchProject', -1, null, 'projectId', null, null),
 		title:new Model('txtSearchTitle', -1, null, 'title', null, null),
 		dueDate:new Model(null, -1, null, 'duedate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val);}),
-		status:new Model('searchOpenTask', -1, null, 'showclosed', function(){return this.value}, function(val){this.value = val;})
-
+		status:new Model(null, -1, null, 'showclosed', null, function(val){this.dom.value = val; imgListSetter(menuData.searchTaskStatus, val);})
 }
 
 var newTaskModel = {
