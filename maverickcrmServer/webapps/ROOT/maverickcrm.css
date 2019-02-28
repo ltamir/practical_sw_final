@@ -72,7 +72,8 @@
 		font-family: Tahoma, Geneva, sans-serif;
 		font-style: oblique;
 		font-size: 0.8em;
-		width: 38em;
+		width: 100%;
+		min-width: 20em;
 		color: #fbfbfb;
 		display: inline-block;
 		background-color: #424f5a;
