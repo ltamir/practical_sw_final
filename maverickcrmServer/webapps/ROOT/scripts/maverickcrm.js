@@ -292,18 +292,21 @@ function toggleDatabase(btn){
 		toggleAsBotton(btn);
 		btn.setAttribute('data-state', 1);
 		getById('divCRM').style.display='none';
+		getById('tabCRM').style.display='none';
 		
 	}else{
 		sqlDIV.style.display='none';
 		toggleAsBotton(btn);
 		btn.setAttribute('data-state', 0);
 		getById('divCRM').style.display='block';
+		getById('tabCRM').style.display='block';
 	}
 }
 function executeSQL(){
 	if(dbg==Module.common)
 	console.log('executeSQL(): ' + escape(getValue('txtSQL')));
-	getDataEx('', 'database', '?sql=' + escape(getValue('txtSQL')), fillDataBase, null, null, null, null)
+	getDataEx('', 'database', '?sql=' + escape(getValue('txtSQL')), fillDataBase, null, null, null, null);
+	
 }
 
 function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler){
@@ -319,9 +322,14 @@ function fillDataBase(id, data, defaultOption, funcValue, funcText, eventHandler
     }
     if(data.status == 'ack')
     	setMsg(msgType.ok, 'SQL execution completed');
+    
+    let opt = document.createElement("OPTION");
+	opt.text = getValue('txtSQL');
+	getById('sqlHistory').appendChild(opt);
+	
     if(data.array == null)
     	return;
-	
+    
 	let headerCols = data.array[0].row;
 	let row = document.createElement('TR');
 	resultHeader.appendChild(row);
