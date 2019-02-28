@@ -108,7 +108,7 @@ var taskItemList = {
 			if(taskItem[child].hasChildren != undefined && taskItem[child].hasChildren)
 				this.deleteRow(table, taskItem[child])
 			if(taskItem[child].row != undefined){
-				table.deleteRow(taskItem[child].row.rowIndex);
+				table.deleteRow(taskItem[child].row.rowIndex-1);
 				delete taskItem[child];
 			}
 		}
