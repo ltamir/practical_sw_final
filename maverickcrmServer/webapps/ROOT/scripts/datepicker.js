@@ -8,7 +8,7 @@ function DatePicker (pickerId) {
 
             this.build=function(calculatedDate){
                 let d = this.createDate(calculatedDate);
-                this.dom.lblMonth.innerHTML = this.monthsNames[d.getMonth()];
+                this.dom.lblMonth.innerHTML = this.monthsNames[d.getMonth()] + ' ' + d.getFullYear();
                 
                 while(this.dom.calendar.childNodes.length > 0)
                     this.dom.calendar.removeChild(this.dom.calendar.lastChild);
