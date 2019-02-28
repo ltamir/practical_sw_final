@@ -19,8 +19,9 @@
 </head>
 <body onload="init()">
 	<input type="hidden" value="" id="user" data-contact="">
-    <table id="menu">
+    <table id="menu" border="0">
         <tr>
+			<td class="cssMessageInfo" id="messageInfo">Ready</td>        
             <td width="4%">
                 <select class="cssMenu" id="cmbSearchCustomer" title="Customer list" onchange="setSearchPredicate(this)"></select>                
 			</td>
@@ -41,13 +42,16 @@
             </td>
             <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
+            </td>
+            <td width="5%">
+	            <img src="images/menu_search.png" style="float: left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
+   				<img src="images/menu_reset.png" style="float: left; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td> 
-            <td width="18%">
-				<table id="tblSearchDueDate" title="Set due date" style="overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="searchModel.dueDate.dom.hide()"></table>				
-				<img src="images/menu_reset.png" style="float: right; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
-                <img src="images/menu_search.png" style="float: right; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">                
+            <td style="width: 12em;">
+                <table id="tblSearchDueDate" title="Set due date" style="overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="searchModel.dueDate.dom.hide()"></table>
+				<img src="images/menu_search.png" style="visible: flase; float: left; margin-right:0.3em;" id="searchTaska">                
             </td> 
-            <td width="27%" align="right">            	            	
+            <td width="25%" align="right">            	            	
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
@@ -66,14 +70,8 @@
             </td>                      
         </tr>
     </table>
-
-	<table style="width: 100%;">
-		<tr>
-			<td class="cssMessageInfo" id="messageInfo">Ready</td>
-		</tr>
-	</table>
 	
-   	<table id="parentTaskList" class="cssFixed">
+<!--    	<table id="parentTaskList" class="cssFixed">
 		<tr>
 			<td style="width: 5%;">Type</td>
 			<td style="width: 70%; text-align: center;">Title</td>
@@ -82,8 +80,18 @@
 			<td style="width: 10%;">Status</td>
 		</tr>
 	</table>  
-	<br>  
+	<br>   -->
     <table class="cssTaskList">
+    	<thead>
+		<tr id="parentTaskList" class="cssFixed">
+			<th style="width: 6em; text-align: left;">Type</th>
+			<th style="width: 94em; text-align: center;">Title</th>
+			<th style="width: 12em;">Due date</th>
+			<th style="width: 6em;">Effort</th>
+			<th style="width: 12em;">Status</th>
+		</tr>    	
+    	</thead>
+    	
 		<tbody id="taskList">             
         </tbody>     
     </table>
@@ -139,8 +147,22 @@
 				<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;">
 				<div id="divTaskTab" class="card"></div>				                    
 			</td>
-			<td valign="top" rowspan="2">			
-				<div class="tabCRM">
+			<td valign="top" rowspan="2">	
+				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 26em;z-index: 1;">
+					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">
+					</select>
+					<br>
+            		<textarea rows="4" cols="85" id="txtSQL" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">select * from task</textarea>
+            		<br>
+            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
+            		<div style=" position:relative; overflow-y: scroll; height:10em; width: 36em;">
+	            		<table>
+	            			<thead id="resultHeader"></thead>
+	            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
+	            		</table>	            		
+            		</div>
+            	</div>	
+				<div id="tabCRM">
 					<table id="cssConnectionList">
 						<tr>
 						<td>
@@ -170,17 +192,7 @@
 					<span id="tabLogin" class="cssTab" onclick="setTab(tabEnum.login)">Logins</span>
 					
 					<hr style="border-style: ridge;margin-top: 0.2em;margin-bottom: 0.2em;z-index: 1;">
-	             	<div id="divDataFrame" style="align:right; display:none; font-size:small; float:left; height:12em; width: 26m;z-index: 1;">
-	            		<textarea rows="5" cols="85" id="txtSQL">select * from task</textarea>
-	            		<br>
-	            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
-	            		<div style=" position:relative; overflow-y: scroll; height:10em">
-		            		<table>
-		            			<thead id="resultHeader" style="font-size:x-small;width:100vw;"></thead>
-		            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
-		            		</table>	            		
-	            		</div>
-	            	</div>	
+
 					<div id="divCRM" class="card"></div>
 				</div>
 			</td>

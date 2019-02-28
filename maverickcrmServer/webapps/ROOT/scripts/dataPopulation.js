@@ -1,10 +1,13 @@
 
 function getTaskTypeImg(taskType){
 	let img = document.createElement("IMG");
-
-	img.src = taskTypeList[taskType].src;
-	img.title = taskTypeList[taskType].title;
+	setImage(img, taskTypeList[taskType])
 	return img;
+}
+
+function setImage(targetImg, imgNode){
+	targetImg.src = imgNode.src;
+	targetImg.title = imgNode.title;
 }
 
 function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler){
@@ -18,12 +21,11 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     if(data.array.length > 0){
     	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
     }else{
-    	parentTable.rows[rowIndex].children[0].children[1].src = taskListItemStat.noChildrenImg.src;
-    	parentTable.rows[rowIndex].children[0].children[1].title = taskListItemStat.noChildrenImg.title;
+    	setImage(parentTable.rows[rowIndex].children[0].children[1], taskListItemStat.noChildrenImg);
     }
     	
     data.array.forEach(function (item) {
-    	var row = parentTable.insertRow(rowIndex+1+rowPos);
+    	var row = parentTable.insertRow(rowIndex+rowPos);
     	if(rowPos == firstRow){
     		row.style.borderTop='3px outset #8B8B8B';	
     	}
@@ -103,8 +105,7 @@ function createTaskRow(row, item, parent){
 
     let expandImg = document.createElement("IMG");
 
-    expandImg.src = taskListItemStat.expandImg.src;
-    expandImg.title = taskListItemStat.expandImg.title; 
+    setImage(expandImg, taskListItemStat.expandImg); 
     expandImg.addEventListener("click", function(event){
     	evt = window.event || event; 
 	    if(this === evt.target) {
@@ -113,12 +114,10 @@ function createTaskRow(row, item, parent){
 	    	if(parentTaskItem.hasChildren){
 	    		taskItemList.deleteRow(parent, parentTaskItem);
 	    		parentTaskItem.hasChildren = false;
-	    	    expandImg.src = taskListItemStat.expandImg.src;
-	    	    expandImg.title = taskListItemStat.expandImg.title; 
+	    		setImage(expandImg, taskListItemStat.expandImg);
 	    	}else{
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
-		        expandImg.src = taskListItemStat.collapseImg.src;
-		        expandImg.title = taskListItemStat.collapseImg.title; ;	    		
+		    	setImage(expandImg, taskListItemStat.collapseImg);    		
 	    	}
 	    }
     });
@@ -191,8 +190,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 		parentElement.appendChild(divRow);
 		
     	let relType = document.createElement("IMG");
-    	relType.src = relationTypeList[item.taskRelationType.taskRelationTypeId].src;
-    	relType.title = relationTypeList[item.taskRelationType.taskRelationTypeId].title;
+    	setImage(relType, relationTypeList[item.taskRelationType.taskRelationTypeId]);
 
     	relType.addEventListener("click", function(){
     		let containerDiv = getById('divTaskTab');

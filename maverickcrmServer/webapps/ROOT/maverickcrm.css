@@ -71,18 +71,19 @@
 		border: 1px inset;
 		font-family: Tahoma, Geneva, sans-serif;
 		font-style: oblique;
-		font-size: 0.9em;
+		font-size: 0.8em;
+		width: 38em;
 		color: #fbfbfb;
-		background-color: #112233;
+		background-color: #424f5a;
 		border-right: 1px inset #dddddd;
 		border-bottom: 1px inset #dddddd;
-		transform: skewX(-10deg);
+		transform: skewX(8deg);
 	}
 
 	.cssFixed
 	{
-	    position: fixed;
-	    top: 4.5em;
+		display: inline-block;
+	    position: relative;
 	    width: 100%;
 	    font-family: Tahoma, Geneva, sans-serif;
 	    font-size: 0.9em;
