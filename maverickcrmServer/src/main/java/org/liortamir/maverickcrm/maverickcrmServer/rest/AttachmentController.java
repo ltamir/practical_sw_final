@@ -125,12 +125,9 @@ public class AttachmentController extends HttpServlet {
 			fileName = filePart.getSubmittedFileName();
 			
 			int fileNumber = 0;
-			for(File existingFile = new File(storagePath + fileName + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"));
+			for(File existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"); existingFile.exists(); fileNumber++, existingFile = new File(storagePath + fileName + "_" + fileNumber + ".zip"));
 			
-			if(fileNumber > 0)
-				storageFileName = fileName + "_" + fileNumber + ".zip";
-			else
-				storageFileName = fileName + ".zip";
+			storageFileName = fileName + "_" + fileNumber + ".zip";
 			
 			File uploadedFile = new File(storagePath + storageFileName);
 			try(ZipOutputStream out = new ZipOutputStream(new FileOutputStream(uploadedFile))){
