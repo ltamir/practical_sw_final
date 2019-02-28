@@ -21,7 +21,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     if(data.array.length > 0){
     	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
     }else{
-    	setImage(parentTable.rows[rowIndex].children[0].children[1], taskListItemStat.noChildrenImg);
+    	setImage(parentTable.rows[rowIndex-1].children[0].children[1], taskListItemStat.noChildrenImg);
     }
     	
     data.array.forEach(function (item) {
