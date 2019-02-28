@@ -74,6 +74,7 @@
 		font-size: 0.8em;
 		width: 38em;
 		color: #fbfbfb;
+		display: inline-block;
 		background-color: #424f5a;
 		border-right: 1px inset #dddddd;
 		border-bottom: 1px inset #dddddd;
@@ -102,7 +103,7 @@
 	    font-size: 1em;	
 	    overflow-y: auto;
 	    overflow-x: hidden;
-	    height: 150px;
+	    height: 16em;
 	    background-color: WhiteSmoke;
 	    color: #121212;
 	}
@@ -179,7 +180,7 @@
         min-width: 23em;	
 	}
 
-	#txtTaskLogDescription, #txtAttachmentNotes{
+	#txtDetailTaskTitle, #txtTaskLogDescription, #txtAttachmentNotes{
 		font-family: arial, sans-serif;
 		font-size:16px;
 		width:34.5em;		

@@ -21,7 +21,7 @@
 	<input type="hidden" value="" id="user" data-contact="">
     <table id="menu">
         <tr>
-			<td class="cssMessageInfo" id="messageInfo">Ready</td>        
+			<td><span class="cssMessageInfo" id="messageInfo">Ready</span></td>        
             <td width="4%">
                 <select class="cssMenu" id="cmbSearchCustomer" title="Customer list" onchange="setSearchPredicate(this)"></select>                
 			</td>
@@ -92,7 +92,7 @@
 			<td width="50%" valign="top">
 				<div id="divTaskDetailsTop">
 	            	<div id="divMenuTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.taskType, 0, false)">
-		            	<img src="images/site.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType, null, true)">
+		            	<img src="images/tasklist/allTypes.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType, null, true)">
 		            	<div id="divMenuTaskType"></div>
 	            	</div>				
 					<select title="Task Type" id="cmbDetailTaskType" style="display:none;"></select>
@@ -114,7 +114,7 @@
 					<label for="txtDetailEffort" style="text-align:center;" class="cssFieldLabel">Due:</label>	            	
 	            	<table id="tblTaskDueDate" title="Set due date" style="display:inline-block; overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="taskModel.dueDate.dom.hide()"></table>
 				</div>
-				<textarea title="Task title" id="txtDetailTaskTitle" rows="2" cols="77"></textarea>
+				<textarea title="Task title" maxlength="120" id="txtDetailTaskTitle" rows="2" cols="77"></textarea>
 				<br>
 				<div id="divTaskDetailsBottom">
 					<input type="hidden" id="effortUnit" value="1"> 
