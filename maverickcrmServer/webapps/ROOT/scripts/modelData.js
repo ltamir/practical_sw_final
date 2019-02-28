@@ -14,15 +14,15 @@ var effortUnitList = [
 	{value:3, src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
 ]
 var taskTypeList = [
-	{value:0, src:"images/tasklist/allTypes.png", title:"All"},
-	{value:1, src:"images/tasklist/project.png", title:"Project"},
-	{value:2, src:"images/tasklist/requirements.png", title:"Requirement"},
-	{value:3, src:"images/tasklist/design.png", title:"Design"},
-	{value:4, src:"images/tasklist/develop.png", title:"Development"},
-	{value:5, src:"images/tasklist/qa.png", title:"QA"},
-	{value:6, src:"images/tasklist/delivery.png", title:"Delivery"},
-	{value:7, src:"images/tasklist/support.png", title:"Support"},
-	{value:8, src:"images/tasklist/study.png", title:"Study"}
+	{value:0, src:"images/tasklist/allTypes.png", title:"All task types"},
+	{value:1, src:"images/tasklist/project.png", title:"Project task"},
+	{value:2, src:"images/tasklist/requirements.png", title:"Requirement task"},
+	{value:3, src:"images/tasklist/design.png", title:"Design task"},
+	{value:4, src:"images/tasklist/develop.png", title:"Development task"},
+	{value:5, src:"images/tasklist/qa.png", title:"QA task"},
+	{value:6, src:"images/tasklist/delivery.png", title:"Delivery task"},
+	{value:7, src:"images/tasklist/support.png", title:"Support task"},
+	{value:8, src:"images/tasklist/study.png", title:"Study task"}
 	]
 var taskStatusList = [
 	{value:-1},
@@ -66,7 +66,7 @@ var taskListItemStat = {
 	    noChildrenImg:{src:"images/tasklist_no_children.png", title:"no children"},
 }
 
-function taskItem(taskId, row){
+function taskItem(taskId, row){	//taskItem constructor
 	this.id = taskId;
 	this.row = row;
 //	this.nextItem = null;
@@ -115,52 +115,7 @@ var taskItemList = {
 	}
 }
 
-var taskItemLinkedList = {
-
-	size:0,
-	ctor:function(taskId){
-		this.add(new taskItem(taskId));
-	},
-	
-	add:function(parentItem, taskItem){
-		let i = parentItem;
-		for(; i.nextItem != null; i = i.nextItem);
-		i.nextItem = taskItem;
-		taskItemList.size++;
-	},
-
-	get:function(head, taskId){
-		let i = head;
-
-		for(; i.nextItem != null && i.id != taskId; i = i.nextItem);
-		if(i.id == null || i.id != taskId)
-			return null;
-		return i;
-	},	
-	remove:function(taskId){
-		let i = this.head.nextItem;
-		let prev;
-		for(; i.id != taskId; prev = i, i = i.nextItem);
-		if(i.id == null)
-			return;
-		if(i.id == taskId){
-			if(i.nextItem != null)
-				prev.nextItem = i.nextItem;
-			else
-				prev.nextItem = null;
-			delete i;
-			taskItemList.size--;
-		}	
-	},
-	clear:function(item){
-		if(item.nextItem != null)
-			taskItemList.clear(item.nextItem);
-		delete item.nextItem;
-		delete item;
-		taskItemList.size--;
-	}
-}
-
+// ***** row selection toggle ***** //
 var selectedTaskList = {
 	selectedRow:null,
 	origColor:null,
@@ -200,6 +155,9 @@ function divRowToggler(regularCSS, selectedCSS){
 
 //***** Model definition and construction ***** //
 
+/**
+ * Model constructor
+ */
 function Model(domField, tabIndex, dom, apiField, getter, setter, postMap, putMap, delMap ){
 	this.domField = domField;
 	this.tabIndex = tabIndex;	
@@ -254,8 +212,7 @@ var taskModel={
 	}
 
 taskModel.status.changed = false;
-//taskModel.dueDate.setValue = function(val){this.dom.value = val; taskModel.dueDateLabel.dom.innerHTML = getDate(this.dom.value);}
-//taskModel.dueDateLabel.getValue = function(){return this.dom.innerHTML;}
+
 var contactModel = {
 	contactId:new Model('connectionContactId', -1, null, 'contactId', null, null, new Method(), new Method(null, null, true),new Method(null, null, true)),
 	firstName:new Model('txtFirstName', 1, null, 'firstName', null, null, new Method([''], 'Please enter First Name', true), new Method([''], 'Please enter First Name', true), new Method()),
