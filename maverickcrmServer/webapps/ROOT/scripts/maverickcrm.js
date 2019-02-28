@@ -92,20 +92,10 @@ function resetTaskSearch(){
 	searchModel.project.setValue(0);
 	searchModel.taskType.setValue(0);
 	searchModel.title.setValue('');
-	toggleSearchTaskStatus(getById('searchOpenTask'))
+	searchModel.status.setValue(0);
 	setMsg(msgType.ok, 'Ready');
 }
 
-
-function toggleSearchTaskStatus(statusImg){
-	for(const [key, value] of searchTaskStatusToggle){
-		if(value == statusImg)
-			value.style.borderStyle = 'inset';
-		else
-			value.style.borderStyle = 'outset'			
-	}
-	searchModel.status.setValue(statusImg.getAttribute('data-state'));
-}
 
 function buttonToggler(img, check){
 	if(check != null && !checkPermission) return;
