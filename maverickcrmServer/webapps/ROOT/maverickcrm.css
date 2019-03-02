@@ -87,8 +87,8 @@
 		display: inline-block;
 	    position: relative;
 	    width: 100%;
-	    font-family: Tahoma, Geneva, sans-serif;
-	    font-size: 0.9em;
+	    font-family: Geneva, arial, sans-serif;
+	    font-size:16px;
 	    font-weight: bold;
 	}
 
@@ -101,7 +101,7 @@
 	    float: left;
 	    width: 100%;
 	    font-family: Geneva, arial, sans-serif;
-	    font-size: 1em;	
+	    font-size:16px;
 	    overflow-y: auto;
 	    overflow-x: hidden;
 	    height: 30vh;
@@ -121,19 +121,19 @@
 	}
 
 	td.cssTaskListType {
-	    width: 5%;
+	    width: 4em;
 	}		
 	td.cssTaskListTitle {
-	    width: 75%;
+	    width: 54em;
 	}	
 	td.cssTaskListDueDate {
-	    width: 12%;
+	    width: 7em;
 	}
 	td.cssTaskListEffort {
-	    width: 6%;
+	    width: 6em;
 	}
 	td.cssTaskListStatus {
-	    width: 10%;
+	    width: 6em;
 	    text-align: left;
 	}
 
