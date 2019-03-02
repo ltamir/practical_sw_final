@@ -23,7 +23,8 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     }else{
     	setImage(parentTable.rows[rowIndex-1].children[0].children[1], taskListItemStat.noChildrenImg);
     }
-    	
+    
+    let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     data.array.forEach(function (item) {
     	var row = parentTable.insertRow(rowIndex+rowPos);
     	if(rowPos == firstRow){
@@ -38,7 +39,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
     	row.style.borderLeft='3px outset #8B8B8B';
     	row.style.borderRight='3px inset #b1b1b0';
-    	createTaskRow(row, item.childTask, parentTable); 
+    	createTaskRow(row, item.childTask, parentTable, toggler); 
     	rowPos++;
     }); 
 }
@@ -57,11 +58,12 @@ function fillTaskList(id, data){
     let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
     
+    let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     data.array.forEach(function (item) {
     	
     	var newRow = selectElement.insertRow(selectElement.rows.length);
     	taskItemList.add(taskItemList.root, new taskItem(item.taskId, newRow));
-    	createTaskRow(newRow, item, selectElement);    	
+    	createTaskRow(newRow, item, selectElement, toggler);    	
     }); 
     
     restoreHierarchy(prevItemList.root, taskItemList);
@@ -70,7 +72,7 @@ function fillTaskList(id, data){
 
 function restoreHierarchy(prevItemList, newTaskItemList){
 	for(let child in prevItemList){
-		if(prevItemList[child].hasChildren != undefined && prevItemList[child].hasChildren == true){
+		if(prevItemList[child].hasChildren == true){
 			let parentItem = newTaskItemList.get(newTaskItemList.root, prevItemList[child].id);
 			if(parentItem != null){
 				let event = new MouseEvent('click', {
@@ -78,7 +80,8 @@ function restoreHierarchy(prevItemList, newTaskItemList){
 				    bubbles: true,
 				    cancelable: true
 				});
-				parentItem.row.cells[0].childNodes[1].dispatchEvent(event);			
+				parentItem.row.cells[0].childNodes[1].dispatchEvent(event);	
+				restoreHierarchy(prevItemList[child], newTaskItemList);
 			}
 
 		}
@@ -86,13 +89,13 @@ function restoreHierarchy(prevItemList, newTaskItemList){
 	}
 }
 
-function createTaskRow(row, item, parent){
+function createTaskRow(row, item, parent, toggler){
 	row.id = 'taskList' + item.taskId;
 	row.addEventListener("click", function(event){
 		evt = window.event || event; 
 		if(row.childNodes[0].childNodes[1] === evt.target)
 			return;
-		selectedTaskList.toggle(row);
+		toggler.toggle(row);
 		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);		
 	
 	});

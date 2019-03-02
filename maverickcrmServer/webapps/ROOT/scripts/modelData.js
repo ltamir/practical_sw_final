@@ -116,24 +116,6 @@ var taskItemList = {
 }
 
 // ***** row selection toggle ***** //
-var selectedTaskList = {
-	selectedRow:null,
-	origColor:null,
-	origBackgroundColor:null,
-	toggle:function(row){
-		if(row == this.selectedRow)
-			return;
-		this.origBackgroundColor = row.style.backgroundColor;
-		this.origColor = row.style.color
-		row.style.backgroundColor = '#8899AA';
-		row.style.color = '#FFFFFF';
-		if(this.selectedRow !=null){
-			this.selectedRow.style.color = this.origColor;
-			this.selectedRow.style.backgroundColor = (this.origbackgroundColor == undefined)?'':this.origbackgroundColor;
-		}
-		this.selectedRow = row;
-	}
-}
 
 function divRowToggler(regularCSS, selectedCSS){
 	this.regularCSS = regularCSS;
@@ -143,14 +125,17 @@ function divRowToggler(regularCSS, selectedCSS){
 	this.toggle = function(row){
 		if(row == this.selectedRow)
 			return;
-		row.classList.add(selectedCSS);
-		row.classList.remove(regularCSS);
+		row.className = this.selectedCSS;
+//		row.classList.add(selectedCSS);
+//		row.classList.remove(regularCSS);
 		if(this.selectedRow !=null){
-			this.selectedRow.classList.remove(selectedCSS);
-			this.selectedRow.classList.add(regularCSS);		
+			this.selectedRow.className = this.regularCSS;
+//			this.selectedRow.classList.remove(selectedCSS);
+//			this.selectedRow.classList.add(regularCSS);		
 		}
 		this.selectedRow = row;
-	}	
+	}
+
 }
 
 //***** Model definition and construction ***** //
