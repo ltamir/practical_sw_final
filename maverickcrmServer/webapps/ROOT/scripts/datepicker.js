@@ -2,7 +2,7 @@ function DatePicker (pickerId) {
             this.dayNames=['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             this.monthsNames=['Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jun','Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             this.daySpaces=['', '', '', '', '', '', ''];
-            this.dom = {picker:null,lblMonth:null, pickerHeader:null, lblDate:null, calendar:null};
+            this.dom = {picker:null,lblMonth:null, pickerTable:null, lblDate:null, calendar:null};
             this.value = null;
             this.guiState = 0;
 
@@ -10,7 +10,7 @@ function DatePicker (pickerId) {
                 let d = this.createDate(calculatedDate);
                 this.dom.lblMonth.innerHTML = this.monthsNames[d.getMonth()] + ' ' + d.getFullYear();
                 
-                while(this.dom.calendar.childNodes.length > 0)
+                while(this.dom.calendar.childNodes.length > 2)
                     this.dom.calendar.removeChild(this.dom.calendar.lastChild);
 
                 let currentm = d.getMonth();   
@@ -112,7 +112,8 @@ function DatePicker (pickerId) {
             this.setSelectedDay = function(calculatedDate, isOn){
             	let d =this.createDate(calculatedDate);
             	d.setDate(1);
-            	let week = Math.floor((d.getDay() + calculatedDate.getDate())/7);
+            	let week = Math.floor((d.getDay() + calculatedDate.getDate() - 1)/7);
+            	week += 2;
             	if(isOn){
                 	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.fontWeight = 'bold';
                 	this.dom.calendar.childNodes[week].childNodes[calculatedDate.getDay()].style.border = '1px inset grey';
@@ -123,7 +124,6 @@ function DatePicker (pickerId) {
             	}
             };
             this.show  = function (){
-                this.dom.pickerHeader.style.display = '';
                 this.dom.calendar.style.display = '';
                 this.setSelectedDay(this.createDate(this.value), true);
                 this.dom.picker.tabIndex = 1;
@@ -131,7 +131,6 @@ function DatePicker (pickerId) {
                 this.guiState = 1;
             };
             this.hide = function (){
-                this.dom.pickerHeader.style.display = 'none';
                 this.dom.calendar.style.display = 'none';
                 this.dom.picker.blur();
                 this.dom.picker.tabIndex = '';
@@ -170,6 +169,15 @@ function DatePicker (pickerId) {
                 td.innerHTML = data;
                 return td;
             };
+            this.createSpan = function(id, cursor, textAlign, title, data){
+                let span = document.createElement('span');
+                span.id = pickerId + '_' + id;
+                span.style.cursor = cursor;
+                span.style.textAlign = textAlign;
+                span.title = title;
+                span.innerHTML = data;
+                return span;
+            };            
             this.buildTBODY = function(id, display){
                 let locTbody = document.createElement('TBODY');
                 locTbody.id = this.dom.picker.id + '_' + id;
@@ -180,22 +188,24 @@ function DatePicker (pickerId) {
 
             // ***** Initialization ***** //
             var me = this;
-            // this.value = new Date();
+
             this.dom.picker = document.getElementById(pickerId);
             this.dom.picker.onblur = function(){me.hide()};
             // date display
-            let tbody = this.buildTBODY('dateContainer', '');
-            let tr = this.buildTR();
-            tbody.appendChild(tr);
-            this.dom.lblDate = this.buildTD(pickerId + '_' + 'lblDate', 7, 'pointer', 'center', '', 'Set Due Date')
+            this.dom.lblDate = this.createSpan(pickerId + '_' + 'lblDate', 'pointer', 'center', '', 'Set Due Date')
             this.dom.lblDate.onclick = function(){me.toggle()};
-            tr.appendChild(this.dom.lblDate);
-            this.dom.picker.appendChild(tbody);
+            this.dom.picker.appendChild(this.dom.lblDate);
+            
+            // calendar table
+            this.dom.pickerTable = document.createElement('table');
+            this.dom.picker.appendChild(this.dom.pickerTable);
+            this.dom.calendar = this.buildTBODY('datePicker', 'none');
+            this.dom.calendar.className = 'cssdropDown';
+            this.dom.pickerTable.appendChild(this.dom.calendar);
+            //month-year display and movement
 
-            // month movement tbody
-            this.dom.pickerHeader = this.buildTBODY('pickerHeader', 'none');
-            tr = this.buildTR();
-            this.dom.pickerHeader.appendChild(tr);
+            let tr = this.buildTR();
+            this.dom.calendar.appendChild(tr);
             // previous month
             let td = this.buildTD(pickerId + 'prevMonth', 2, 'pointer', '', 'previous month', '');
             let img = document.createElement('IMG');
@@ -213,11 +223,9 @@ function DatePicker (pickerId) {
             td.appendChild(img);
             tr.appendChild(td);
             td.addEventListener('click',function(){me.nextMonth();})
-            this.dom.picker.appendChild(this.dom.pickerHeader);
 
             // calendar tbody
-            this.dom.calendar = this.buildTBODY('datePicker', 'none');
             this.dom.picker.appendChild(this.dom.calendar);
             
-            this.dom.pickerHeader.appendChild(this.buildWeek(this.dayNames));    
+            this.dom.calendar.appendChild(this.buildWeek(this.dayNames));    
         }
