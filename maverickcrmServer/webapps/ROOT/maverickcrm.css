@@ -73,7 +73,7 @@
 		font-style: oblique;
 		font-size: 0.8em;
 		width: 100%;
-		min-width: 20em;
+		min-width: 27vw;
 		color: #fbfbfb;
 		display: inline-block;
 		background-color: #424f5a;
@@ -104,17 +104,17 @@
 	    font-size: 1em;	
 	    overflow-y: auto;
 	    overflow-x: hidden;
-	    height: 16em;
+	    height: 30vh;
 	    background-color: WhiteSmoke;
 	    color: #121212;
 	}
 	table.cssTaskList tr {
       cursor: pointer;
     }	
-	tbody tr:nth-child(even) {
-      background-color: Snow;
-    }	
-
+	table.cssTaskList  tr:nth-child(even) {
+      background-color: snow;
+    }		
+    
 	td img{
 		border-width: 1px;
 		
@@ -255,6 +255,14 @@
 		cursor: pointer;
 	}	
 	
+	.cssTaskListRegular{
+		background-color: '';
+	    color: '';
+	}
+	.cssTaskListSelected td{
+		background-color: #8899AA;
+		color: #FFFFFF;
+	}	
 	.cssTaskRelationTitle{
 		background-color: WhiteSmoke;
 		color: Black;
@@ -285,6 +293,16 @@
 		z-index: 4;
 		background-color: #fbfbfb;
 	}
+	
+	.cssdropDown{
+		position: fixed;
+		overflow: visible;
+		float: left;
+		display: inline-block;
+		z-index: 4;
+		background-color: #fbfbfb;
+	}	
+
 	#divContactCard{
 		display:inline-block;
 		z-index: 2;
