@@ -47,10 +47,9 @@
    				<img src="images/menu_reset.png" style="float: left; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td> 
             <td style="width: 12em;">
-                <table id="tblSearchDueDate" title="Set due date" style="overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="searchModel.dueDate.dom.hide()"></table>
-				<img src="images/menu_search.png" style="visible: flase; float: left; margin-right:0.3em;" id="searchTaska">                
+            	<div id="tblSearchDueDate" style="display:inline-block;outline:none;" ></div>
             </td> 
-            <td width="25%" align="right">            	            	
+            <td width="22%" align="right">            	            	
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
@@ -111,8 +110,8 @@
 					</div>
 	            	<span id="lblTotalEffort" style="width: 4.5em; font-weight: bold; font-size: 0.8em;" title="Total effort for task and child tasks">Total: </span><span style="font-size: small" id="totalTaskEffort" title="Total effort for task and child tasks"></span>
 	            	<img id="imgEffortStatus" src="images/state_unknown.png" style="border:0;">
-					<label for="txtDetailEffort" style="text-align:center;" class="cssFieldLabel">Due:</label>	            	
-	            	<table id="tblTaskDueDate" title="Set due date" style="display:inline-block; overflow: visible;position: fixed;z-index: 4;background-color: #fbfbfb;" onblur="taskModel.dueDate.dom.hide()"></table>
+					<label for="txtDetailEffort" style="text-align:center;" class="cssFieldLabel">Due:</label>	 
+					<div id="tblTaskDueDate" style="display:inline-block;outline:none;" ></div>           	
 				</div>
 				<textarea title="Task title" maxlength="120" id="txtDetailTaskTitle" rows="2" cols="77"></textarea>
 				<br>
@@ -141,7 +140,7 @@
 					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">
 					</select>
 					<br>
-            		<textarea rows="4" cols="85" id="txtSQL" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">select * from task</textarea>
+            		<textarea rows="4" cols="85" id="txtSQL" style="background-image: none; background-color: #331327; color: white; font-family: Lucida Console, Georgia; font-size: medium; width: 36em;">select * from task</textarea>
             		<br>
             		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
             		<div style=" position:relative; overflow-y: scroll; height:10em; width: 36em;">
