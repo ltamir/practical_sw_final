@@ -22,6 +22,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
     }else{
     	setImage(parentTable.rows[rowIndex-1].children[0].children[1], taskListItemStat.noChildrenImg);
+    	return;
     }
     
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
@@ -57,7 +58,8 @@ function fillTaskList(id, data){
     }
     let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
-    
+	if(dbg==Module.task)
+    	console.log(data.array);
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     data.array.forEach(function (item) {
     	
@@ -100,7 +102,7 @@ function createTaskRow(row, item, parent, toggler){
 	
 	});
 	
-	let taskTypeCell  = row.insertCell(0);
+	let taskTypeCell = row.insertCell(0);
 	taskTypeCell.classList.add("cssTaskListCustomer");
     let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
     typeImg.style.marginRight= '0.3em';
