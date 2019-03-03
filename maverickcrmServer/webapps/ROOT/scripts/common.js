@@ -179,8 +179,10 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 		funcValue(divRow, item); 
 		let txtPart;
 		if(funcText != null){
-			txtPart = document.createElement("SPAN");
+			txtPart = document.createElement("DIV");
 			funcText(txtPart, item);
+			txtPart.style.display = 'inline-block';
+			txtPart.innerHTML = txtPart.innerHTML.replace(/\n/g, '<br>');
 			setTextDirection(txtPart, txtPart.innerHTML);
 			if(txtPart.style.direction == 'rtl'){
 				divRow.style.direction = 'rtl'; 
