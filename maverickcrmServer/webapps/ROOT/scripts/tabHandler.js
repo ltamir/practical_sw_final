@@ -117,7 +117,8 @@ function viewTaskLogList(){
 				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
 				let prefixPart = document.createElement('SPAN');
 				let thisDate = getDate(item.sysdate.split(' ')[0]);
-				prefixPart.innerHTML = thisDate + " " + item.contact.firstName + " " + item.contact.lastName + ": ";
+//				prefixPart.innerHTML = thisDate;
+				prefixPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
 				prefixPart.style.color = 'inherit';
 				divRow.appendChild(prefixPart);
 				divRow.appendChild(taskLogImg);
@@ -129,7 +130,9 @@ function viewTaskLogList(){
     		(txtPart,item)=>{
     			if(dbg==Module.tasklog)
     		    	console.log(item);
+    			let thisDate = getDate(item.sysdate.split(' ')[0]);
     			txtPart.innerHTML = item.description;
+    			txtPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
     			}, 
     		(txtPart,item)=>{
 				txtPart.style.color = 'inherit';
