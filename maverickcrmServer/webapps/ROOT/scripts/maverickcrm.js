@@ -38,6 +38,8 @@ function searchTask(searchString, customerId, dueDate, txtSearchTitle, projectId
 		searchString += '&showclosed=' + showClosed;
 		searchString += '&title=' + txtSearchTitle;
 	}
+	if(dbg==Module.menu)
+    	console.log(searchString);
 	
 	getData('taskList', 'task', searchString, fillTaskList);
 }
@@ -55,6 +57,9 @@ function searchRelationTask(){
 	searchTaskParams += '&tasktypeId=0';
 	searchTaskParams += '&showclosed=0';
 	searchTaskParams += '&title=' + getValue('txtTabRelatoinSearchTitle');
+	
+	if(dbg==Module.menu)
+    	console.log(relation);
 	
 	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
 	
