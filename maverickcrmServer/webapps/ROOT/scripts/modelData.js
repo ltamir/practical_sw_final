@@ -14,15 +14,15 @@ var effortUnitList = [
 	{value:3, src:"images/effortUnit_months.png", unit:'m', title:'months', getHours:function(months){return months*9*20;}}
 ]
 var taskTypeList = [
-	{value:0, src:"images/tasklist/allTypes.png", title:"All task types"},
-	{value:1, src:"images/tasklist/project.png", title:"Project task"},
-	{value:2, src:"images/tasklist/requirements.png", title:"Requirement task"},
-	{value:3, src:"images/tasklist/design.png", title:"Design task"},
-	{value:4, src:"images/tasklist/develop.png", title:"Development task"},
-	{value:5, src:"images/tasklist/qa.png", title:"QA task"},
-	{value:6, src:"images/tasklist/delivery.png", title:"Delivery task"},
-	{value:7, src:"images/tasklist/support.png", title:"Support task"},
-	{value:8, src:"images/tasklist/study.png", title:"Study task"}
+	{value:0, src:"images/tasktype/allTypes.png", title:"All task types"},
+	{value:1, src:"images/tasktype/project.png", title:"Project task"},
+	{value:2, src:"images/tasktype/requirements.png", title:"Requirement task"},
+	{value:3, src:"images/tasktype/design.png", title:"Design task"},
+	{value:4, src:"images/tasktype/develop.png", title:"Development task"},
+	{value:5, src:"images/tasktype/qa.png", title:"QA task"},
+	{value:6, src:"images/tasktype/delivery.png", title:"Delivery task"},
+	{value:7, src:"images/tasktype/support.png", title:"Support task"},
+	{value:8, src:"images/tasktype/study.png", title:"Study task"}
 	]
 var taskStatusList = [
 	{value:-1},

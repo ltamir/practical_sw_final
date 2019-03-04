@@ -40,12 +40,12 @@
             	</div>
             </td>
             <td width="5%">
+	            <img src="images/menu_search.png" style="margin-right:0.2em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
+   				<img src="images/menu_reset.png" style="margin-left:0.1em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
+            </td>             
+            <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
             </td>
-            <td width="5%">
-	            <img src="images/menu_search.png" style="float: left; margin-right:0.3em;" id="searchTask"  title="Search tasks" onmousedown="toggleAsBotton(this)" onmouseup="searchTask(prepareSearchTask());toggleAsBotton(this)">
-   				<img src="images/menu_reset.png" style="float: left; margin-left:0.3em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
-            </td> 
             <td style="width: 12em;">
             	<div id="tblSearchDueDate" style="display:inline-block;outline:none;" ></div>
             </td> 
@@ -91,7 +91,7 @@
 			<td width="50%" valign="top">
 				<div id="divTaskDetailsTop">
 	            	<div id="divMenuTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.taskType, 0, false)">
-		            	<img src="images/tasklist/allTypes.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType, null, true)">
+		            	<img src="images/tasktype/allTypes.png" id="imgTaskType" title="select Task type" data-state="0" onclick="menuHandler(menuData.taskType, null, true)">
 		            	<div id="divMenuTaskType"></div>
 	            	</div>				
 					<select title="Task Type" id="cmbDetailTaskType" style="display:none;"></select>
@@ -137,13 +137,14 @@
 			</td>
 			<td valign="top" rowspan="2">	
 				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 26em;z-index: 1;">
+					<div id="divConsoleLog" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium;"></div>
 					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">
 					</select>
 					<br>
             		<textarea rows="4" cols="85" id="txtSQL" style="background-image: none; background-color: #331327; color: white; font-family: Lucida Console, Georgia; font-size: medium; width: 36em;">select * from task</textarea>
             		<br>
             		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
-            		<div style=" position:relative; overflow-y: scroll; height:10em; width: 36em;">
+            		<div style=" position:relative; overflow-y: scroll; height:9em; width: 36em;">
 	            		<table>
 	            			<thead id="resultHeader"></thead>
 	            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
@@ -157,6 +158,7 @@
 							<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchCustomer" class="cssConnectedList" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
 							<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
 						</td>	
+						<td style="width: 10%;"></td>
 						<td>
 							<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchContact" class="cssConnectedList" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
 							<img src="images/filter.png" id="imgFilterContact" data-state="0" title="filter on selected contact" onclick="toggleShowContacts(this)">	
@@ -167,6 +169,7 @@
 						<td>
 							<select id="cmbConnectedCustomer" tabIndex="-1" size="4" class="cssConnectedList"></select>
 						</td>
+						<td style="width: 10%;"></td>
 						<td valign="top">
 							<select id="cmbConnectedContact" tabIndex="-1" size="3" class="cssConnectedList"></select>
 							<br>
