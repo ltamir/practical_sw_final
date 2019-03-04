@@ -236,8 +236,8 @@ function execSync(funcA, funcB){
 function init(){
 
 	initModels();
-	searchModel.dueDate.dom = new DatePicker('tblSearchDueDate');
-	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate');
+	searchModel.dueDate.dom = new DatePicker('tblSearchDueDate', null);
+	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate', checkPermission);
 	
 	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'All Customers', 

@@ -1,4 +1,4 @@
-function DatePicker (pickerId) {
+function DatePicker (pickerId,onShowFunc) {
             this.dayNames=['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             this.monthsNames=['Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jun','Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             this.daySpaces=['', '', '', '', '', '', ''];
@@ -193,7 +193,11 @@ function DatePicker (pickerId) {
             this.dom.picker.onblur = function(){me.hide()};
             // date display
             this.dom.lblDate = this.createSpan(pickerId + '_' + 'lblDate', 'pointer', 'center', '', 'Set Due Date')
-            this.dom.lblDate.onclick = function(){me.toggle()};
+            this.dom.lblDate.onclick = function(){
+            	if(onShowFunc != null)
+            		if(onShowFunc() == false) return;
+            	me.toggle();
+            };
             this.dom.picker.appendChild(this.dom.lblDate);
             
             // calendar table
