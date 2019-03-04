@@ -274,10 +274,8 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	}
 	
 	for(const key in model){
-		if(model[key][method].inApi){
-			for(const val in model[key][method].checkValues)
-				if(!validate(model[key],  model[key][method].checkValues[val],  model[key][method].err)) return false;
-		}
+		for(const val in model[key][method].checkValues)
+			if(!validate(model[key],  model[key][method].checkValues[val],  model[key][method].err)) return false;
 	}
 	
 	formData = new FormData();
