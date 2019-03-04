@@ -67,7 +67,7 @@ function DatePicker (pickerId,onShowFunc) {
             this.setJsonDate = function(jsonDate){
             	if(jsonDate == null){
                     this.value = null;
-                    this.dom.lblDate.innerHTML = 'Set due date';
+                    this.dom.lblDate.innerHTML = 'due date';
             	}else{
             		this.setValue(jsonDate.day, (jsonDate.month-1), jsonDate.year);
             	}
@@ -192,7 +192,7 @@ function DatePicker (pickerId,onShowFunc) {
             this.dom.picker = document.getElementById(pickerId);
             this.dom.picker.onblur = function(){me.hide()};
             // date display
-            this.dom.lblDate = this.createSpan(pickerId + '_' + 'lblDate', 'pointer', 'center', '', 'Set Due Date')
+            this.dom.lblDate = this.createSpan(pickerId + '_' + 'lblDate', 'pointer', 'center', '', 'Due Date')
             this.dom.lblDate.onclick = function(){
             	if(onShowFunc != null)
             		if(onShowFunc() == false) return;
