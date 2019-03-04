@@ -252,7 +252,7 @@ function validate(modelKey, value, errorMessage){
 
 function checkPermission(){
 	if(taskModel.permissionType.getValue() == 2){
-		setMsg(msgType.nok, 'You have view permission on task');
+		setMsg(msgType.nok, 'You have view permission on this task');
 		return false;
 	}
 	return true;
