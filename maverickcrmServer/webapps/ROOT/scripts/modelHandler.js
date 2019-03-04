@@ -115,7 +115,7 @@ function viewAddress(id, item){
 }
 
 function setChildTask(setter){
-	if(!checkPermission()) return;
+	
 	if(setter.getAttribute('data-parentTask') > 0){
 		setter.setAttribute('data-parentTask', 0);
 		setter.setAttribute('data-state', 0);
@@ -128,10 +128,14 @@ function setChildTask(setter){
 		setMsg(msgType.nok, 'Please select a task');
 		return;
 	}
+	
+	if(!checkPermission()) return;
+	
 	toggleAsBotton(setter);
 	let parentTaskId = taskModel.taskId.getValue();
 	newTask(taskModel.taskType.getValue());
 	setter.setAttribute('data-parentTask', parentTaskId);
+	setter.setAttribute('data-state', 1);
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
@@ -149,7 +153,6 @@ function viewTask(id, data){
 	
 	let addChildTaskState = getById('addChildTask');
 	if(addChildTaskState.getAttribute('data-state') == 1){
-		toggleState(addChildTaskState);
 		setChildTask(addChildTaskState);
 	}
 	taskModel.status.oldValue = task.status.statusId;
