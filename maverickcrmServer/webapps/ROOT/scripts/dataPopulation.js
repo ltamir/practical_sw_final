@@ -33,6 +33,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     	}
     	if(rowPos == lastRow){
     		row.style.borderBottom='3px inset #b1b1b0';
+    		row.classList.add('card');
     	}
     	
     	taskItemList.add(parentItem, new taskItem(item.childTask.taskId, row))
