@@ -40,7 +40,7 @@ function getData(id, resource, params, impl){
     )
     .then(function(body){
     	if(body.status == 'nack'){
-    		console.log(body.err);
+    		addLog(body.err);
     		setMsg(msgType.nok, body.msg);
     		return;
     	}
@@ -82,7 +82,7 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     )
     .then(function(body){
     	if(body.status == 'nack'){
-    		console.log(body.err);
+    		addLog(body.err);
     		setMsg(msgType.nok, body.msg);
     		return;
     	}
@@ -90,8 +90,6 @@ function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcTex
     		impl(id, body, defaultOption, funcValue, funcText, eventHandler);
         }
     )
-//    .then(function(body){return body;})
-    //.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}` + ` url:${url}`));
 }
 
 function getHTML(url) {
@@ -141,8 +139,7 @@ function fillSelect(id, data, defaultOption, funcValue, funcText, eventHandler){
         selectElement.remove(i);
     }
 
-    if(dbg == Module.common)
-    	console.log(data);
+    if(dbg == Module.common) addLog(data);
     
     if(defaultOption != undefined){
 	    let opt = document.createElement("OPTION");
@@ -179,9 +176,8 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 		funcValue(divRow, item); 
 		let txtPart;
 		if(funcText != null){
-			txtPart = document.createElement("DIV");
+			txtPart = document.createElement("SPAN");
 			funcText(txtPart, item);
-			txtPart.style.display = 'inline-block';
 			txtPart.innerHTML = txtPart.innerHTML.replace(/\n/g, '<br>');
 			setTextDirection(txtPart, txtPart.innerHTML);
 			if(txtPart.style.direction == 'rtl'){
@@ -255,14 +251,19 @@ function setMsg(type, text){
 		msgBoard.style.backgroundColor = 'Red';
 		break;
 		default:
-			console.log('invalid msgType');
+			addLog('invalid msgType');
 	}
 	msgBoard.innerHTML = text;
 }
 
+function addLog(log){
+	let logger = getById('divConsoleLog');
+	logger.innerHTML += '<br>' + log; 
+}
+
 function debugFormData(formData){
 	for (var pair of formData.entries()) {
-		console.log(pair[0]+ ', ' + pair[1]); 
+		addLog(pair[0]+ ', ' + pair[1]); 
 	}
 }
 
@@ -346,13 +347,13 @@ var tabEventBroker = {
 					if(tabEventBroker.selectedModel[item].dom!=null)
 						tabEventBroker.selectedModel[item].dom.tabIndex = -1;
 					else
-						console.log(tabEventBroker.selectedModel[item]);
+						addLog(tabEventBroker.selectedModel[item]);
 			}
 
 			tabEventBroker.selectedModel = model;
 			for(let item in tabEventBroker.selectedModel){
 				if(tabEventBroker.selectedModel[item].dom==null)
-					console.log(tabEventBroker.selectedModel + ' ' + item);
+					addLog(tabEventBroker.selectedModel + ' ' + item);
 				else
 					tabEventBroker.selectedModel[item].dom.tabIndex = tabEventBroker.selectedModel[item].tabIndex;
 			}
@@ -367,7 +368,7 @@ function setDomPermission(model){
 		if(taskModel.permissionType.getValue() == 2){
 			Object.keys(model).forEach(item=>{
 				if(model[item].dom == null)
-					console.log(item);
+					addLog(item);
 				else
 					model[item].dom.disabled=true
 			});

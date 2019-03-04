@@ -197,7 +197,7 @@
 		height: 4.8em;
 		border-bottom:none;
 	}	
-	#divTaskLogList{
+	#divTaskLogList, #divConsoleLog{
 		height: 5.5em;
 		width: 35em;
 		overflow-y: scroll;
@@ -437,7 +437,7 @@
 	}
 	
 	#cssConnectionList td{
-		width: 50%;
+		width: 45%;
 	}
 	#cssConnectionList select{
 		width: 90%;

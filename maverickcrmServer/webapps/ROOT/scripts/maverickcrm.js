@@ -39,7 +39,7 @@ function searchTask(searchString, customerId, dueDate, txtSearchTitle, projectId
 		searchString += '&title=' + txtSearchTitle;
 	}
 	if(dbg==Module.menu)
-    	console.log(searchString);
+		addLog(searchString);
 	
 	getData('taskList', 'task', searchString, fillTaskList);
 }
@@ -59,7 +59,7 @@ function searchRelationTask(){
 	searchTaskParams += '&title=' + getValue('txtTabRelatoinSearchTitle');
 	
 	if(dbg==Module.menu)
-    	console.log(relation);
+		addLog(relation);
 	
 	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
 	
@@ -97,7 +97,7 @@ function resetTaskSearch(){
 	searchModel.project.setValue(0);
 	searchModel.taskType.setValue(0);
 	searchModel.title.setValue('');
-	searchModel.status.setValue(0);
+	searchModel.status.setValue(1);
 	setMsg(msgType.ok, 'Ready');
 }
 
@@ -294,7 +294,7 @@ function toggleDatabase(btn){
 }
 function executeSQL(){
 	if(dbg==Module.common)
-	console.log('executeSQL(): ' + escape(getValue('txtSQL')));
+		addLog('executeSQL(): ' + escape(getValue('txtSQL')));
 	getDataEx('', 'database', '?sql=' + escape(getValue('txtSQL')), fillDataBase, null, null, null, null);
 	
 }

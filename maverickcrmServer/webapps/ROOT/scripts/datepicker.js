@@ -41,7 +41,7 @@ function DatePicker (pickerId,onShowFunc) {
                this.build(d);
                 this.setSelectedDay(calculatedDate, true);
                 this.calculatedDate = calculatedDate;
-               if(d.getFullYear() < 1900){console.log(d.getFullYear());}
+               if(d.getFullYear() < 1900){addLog(d.getFullYear());}
            };
            this.calculatedDate = null;
             this.nextMonth = function (){

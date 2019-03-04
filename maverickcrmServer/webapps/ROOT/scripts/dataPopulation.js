@@ -47,7 +47,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
 
 function fillTaskList(id, data){
 	if(data.status == 'nack'){
-		console.log(data.err);
+		addLog(data.err);
 		setMsg(msgType.nok, data.msg);
 		return;
 	}
@@ -59,7 +59,7 @@ function fillTaskList(id, data){
     let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
 	if(dbg==Module.task)
-    	console.log(data.array);
+		addLog(data.array);
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     data.array.forEach(function (item) {
     	
@@ -161,7 +161,7 @@ function fillTaskRelationSearchResult(id, data){
 	let selectElement = getById(id);
 	
 	if(dbg==Module.tasklog)
-   		console.log(data);
+		addLog(data);
 	
     for (let i = selectElement.length - 1; i >= 0; i--) {
         selectElement.remove(i);
@@ -187,7 +187,7 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 		parentElement.removeChild(parentElement.childNodes[i]);
 	
 	if(dbg==Module.relation)
-    	console.log(data);
+		addLog(data);
 	
 	data.array.forEach(function (item) {
 		let divRow = document.createElement('DIV');

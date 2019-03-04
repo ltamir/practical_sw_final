@@ -80,7 +80,7 @@ function setTab(tab){
 		activateTabConnection();
 		break;
 	default:
-		console.log('error received: ' + tab);
+		addLog('error received: ' + tab);
 	}
 }
 	
@@ -129,7 +129,7 @@ function viewTaskLogList(){
 			}, 
     		(txtPart,item)=>{
     			if(dbg==Module.tasklog)
-    		    	console.log(item);
+    				addLog(item);
     			let thisDate = getDate(item.sysdate.split(' ')[0]);
     			txtPart.innerHTML = item.description;
     			txtPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
@@ -206,8 +206,7 @@ function viewAttachmentList(){
 			});	
 		}, 
 		(txtPart,item)=>{
-			if(dbg==Module.attachment)
-		    	console.log(item);
+			if(dbg==Module.attachment) addLog(item);
 			txtPart.style.color = 'inherit';
 			txtPart.style.backgroundColor  = 'inherit';
 			txtPart.innerHTML = item.fileName + " " + item.attachmentType.attachmentTypeName;
@@ -496,8 +495,7 @@ function viewCustomerList(){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	getDataEx('divCustomerList', 'customer', '?actionId=2', fillDivList, null,
 		(divRow,item)=>{
-			if(dbg==Module.attachment)
-		    	console.log(item);			
+			if(dbg==Module.attachment) addLog(item);			
 			divRow.setAttribute('data-taskLogId', item.customerId);
 			divRow.innerHTML = item.customerName;
 			divRow.addEventListener("mouseover",function(){this.style.cursor='pointer';});
@@ -522,7 +520,7 @@ function activateTabLogin(){
 				null))
 		.then(()=>viewLoginList())
 		.then(()=>initModel(loginModel))
-			.catch(err=>console.log(`err: ${err}` + `err: ${err.stack}`));
+			.catch(err=>addLog(`err: ${err}` + `err: ${err.stack}`));
 }
 function viewLoginList(){
 	getDataEx('cmbAvailableLogins', 'login', '?actionId=2', fillSelect, null, 

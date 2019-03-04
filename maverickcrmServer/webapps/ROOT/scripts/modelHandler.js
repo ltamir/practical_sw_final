@@ -291,7 +291,7 @@ function genericSave(validation, model, modelIdField, dbgModule, method, resourc
 	.then(function(resp){
 		if(resp.status == 'nack'){
 			setMsg(msgType.nok,  resp.msg);
-			console.log('error ' + resp.err);
+			addLog('error ' + resp.err);
 			return;
 		}else{
 			postFunc(resp, method);
@@ -374,7 +374,7 @@ function postTaskSave(resp, method){
 				.then(function(resp){
 					if(resp.status == 'nack'){
 						setMsg(msgType.nok,  resp.msg);
-						console.log('error ' + resp.err);
+						addLog('error ' + resp.err);
 						return;
 					}
 				});	
@@ -389,7 +389,7 @@ function postTaskSave(resp, method){
 				.then(function(resp){
 					if(resp.status == 'nack'){
 						setMsg(msgType.nok,  resp.msg);
-						console.log('error ' + resp.err);
+						addLog('error ' + resp.err);
 						return;
 					}
 				});	
@@ -646,7 +646,7 @@ function saveAttachment(){
 		setMsg(msgType.ok, 'Attachment saved');
 		})
 	.then(function(){setValue('txtAttachmentNotes', notes)})
-	.catch(function(err){setMsg(msgType.nok, 'Attachment save failed. please check the log'); console.log(err)});
+	.catch(function(err){setMsg(msgType.nok, 'Attachment save failed. please check the log'); addLog(err)});
 }
 
 function addLinkedCustomer(){
