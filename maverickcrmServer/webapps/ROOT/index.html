@@ -44,7 +44,7 @@
    				<img src="images/menu_reset.png" style="margin-left:0.1em;" title="Reset search (all open tasks)" id="resetSearch" onmousedown="toggleAsBotton(this)" onmouseup="resetTaskSearch();toggleAsBotton(this)">
             </td>             
             <td width="5%">
-                <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event)">            
+                <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event, ()=>{searchTask(prepareSearchTask())})">            
             </td>
             <td style="width: 12em;">
             	<div id="tblSearchDueDate" style="display:inline-block;outline:none;" ></div>

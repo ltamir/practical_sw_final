@@ -1,6 +1,6 @@
-function submitOnEnter(event){
+function submitOnEnter(event, func){
 	if((event.which || event.keyCode) == 13)
-		searchTask(prepareSearchTask());
+		func();
 }
 
 function setSearchPredicate(searchElement){

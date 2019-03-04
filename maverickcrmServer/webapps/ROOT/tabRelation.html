@@ -1,7 +1,7 @@
 <div id="divParentTaskList" class="cssDivRow"></div>
 <div id="divChildTaskList" class="cssDivRow"></div>
 <select id="cmbTabRelationProject"></select>
-<input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtTabRelatoinSearchTitle">
+<input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtTabRelatoinSearchTitle" onkeypress="submitOnEnter(event, ()=>{searchRelationTask()})">
 <img src="images/menu_search.png" id="searchTask" onmousedown="toggleAsBotton(this)" onmouseup="searchRelationTask();toggleAsBotton(this)">
 <div id="divRelationAction" style="float:left;">
 	<select id="cmbTaskRelationType"> </select>
