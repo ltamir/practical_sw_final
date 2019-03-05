@@ -211,7 +211,7 @@ function searchText(selectId, inputTextId, event){
 
 	
     for (var i = selectElem.childNodes.length - 1; i >= 0; i--) {
-    	let elemText = selectElem.childNodes[i].innerHTML.toLowerCase();
+    	let elemText = selectElem.childNodes[i].childNodes[0].innerHTML.toLowerCase();
     	let elemInputText = inputTextElem.value.toLowerCase()
     	if(!elemText.includes(elemInputText))
     		selectElem.childNodes[i].style.display='none';
