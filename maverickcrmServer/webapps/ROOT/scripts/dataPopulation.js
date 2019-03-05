@@ -32,7 +32,8 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     		row.style.borderTop='3px outset #8B8B8B';	
     	}
     	if(rowPos == lastRow){
-    		row.style.borderBottom='3px inset #b1b1b0';
+//    		row.style.borderBottom='3px inset #b1b1b0';
+    		row.style.display='inline-block';
     		row.classList.add('card');
     	}
     	

@@ -118,7 +118,6 @@ function viewTaskLogList(){
 				let prefixPart = document.createElement('SPAN');
 				let thisDate = getDate(item.sysdate.split(' ')[0]);
 				prefixPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
-				prefixPart.style.color = 'inherit';
 				divRow.appendChild(prefixPart);
 				divRow.appendChild(taskLogImg);
 				divRow.addEventListener("click", function(){
@@ -133,11 +132,7 @@ function viewTaskLogList(){
     			txtPart.innerHTML = item.description;
     			txtPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
     			}, 
-    		(txtPart,item)=>{
-				txtPart.style.color = 'inherit';
-				txtPart.style.backgroundColor  = 'inherit';
-				
-    		});	
+    		null);	
 }
 
 function activateTabRelation(){
@@ -206,8 +201,6 @@ function viewAttachmentList(){
 		}, 
 		(txtPart,item)=>{
 			if(dbg==Module.attachment) addLog(item);
-			txtPart.style.color = 'inherit';
-			txtPart.style.backgroundColor  = 'inherit';
 			txtPart.innerHTML = item.fileName + " " + item.attachmentType.attachmentTypeName;
 			txtPart.title = item.taskLog.description;
 			}, 
@@ -283,8 +276,6 @@ function viewPermissionLoginList(){
 				});				
 			}, 
 			(txtPart,item)=>{
-				txtPart.style.color = 'inherit';
-				txtPart.style.backgroundColor  = 'inherit';
 				txtPart.innerHTML = item.contact.firstName + ' ' + item.contact.lastName + ' [' + item.username + ']'; 
 			},
 			(txtPart,item)=>{
@@ -318,8 +309,6 @@ function viewTaskPermissionList(){
 				divRow.appendChild(addressImg);
 				}, 
 			(txtPart,item)=>{
-				txtPart.style.color = 'inherit';
-				txtPart.style.backgroundColor  = 'inherit';
 				txtPart.innerHTML = item.login.contact.firstName + ' ' + item.login.contact.lastName + ' [' + item.login.username + ']';
 				},
 			null
