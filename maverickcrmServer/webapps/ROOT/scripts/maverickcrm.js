@@ -79,7 +79,7 @@ function searchProjectTask(id){
 	searchTaskParams += '&showclosed=0';
 	searchTaskParams += '&title=';
 	
-	getDataEx(id, 'task', searchTaskParams, fillSelect, 'All Projects',
+	getDataEx(id, 'task', searchTaskParams, fillSelect, 'Projects',
 			(opt, item)=>opt.value = item.taskId,
 			(opt, item)=>opt.text = item.title,
 			(opt, item)=>opt.title = item.title
@@ -240,7 +240,7 @@ function init(){
 	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate', checkPermission);
 	
 	initMenuData();
-	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'All Customers', 
+	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers', 
 			(opt,item)=>opt.value = item.customerId, 
 			(opt,item)=>opt.text = item.customerName, 
 			null);
