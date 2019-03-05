@@ -228,7 +228,9 @@ function setValue(elementId, value){
 }
 
 function getValue(elementId){
-	return document.getElementById(elementId).value;
+	let elem = getById(elementId);
+	if(elem.nodeName == 'DIV') return elem.getAttribute('data-id');
+	return elem.value;
 }
 
 function getState(elementId){
