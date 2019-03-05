@@ -161,27 +161,26 @@
 				<div id="tabCRM">
 					<table id="cssConnectionList">
 						<tr>
-						<td>
-							<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchCustomer" class="cssConnectedList" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
-							<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
-						</td>	
-						<td style="width: 10%;"></td>
-						<td>
-							<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchContact" class="cssConnectedList" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
-							<img src="images/filter.png" id="imgFilterContact" data-state="0" title="filter on selected contact" onclick="toggleShowContacts(this)">	
-						</td>
-							
+							<td>
+								<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchCustomer" class="cssConnectedList" size="15" onkeyup="searchText('cmbConnectedCustomer', 'txtSearchCustomer', event)">
+								<img src="images/filter.png" id="imgFilterCustomer" data-state="0" title="filter on selected task" onclick="toggleFilterCustomers(this)">		
+							</td>	
+							<td style="width: 10%;"></td>
+							<td>
+								<input type="text" tabIndex="-1" title="Search Case Sensitive" id="txtSearchContact" class="cssConnectedList" size="5" onkeyup="searchText('cmbConnectedContact', 'txtSearchContact', event)">
+								<img src="images/filter.png" id="imgFilterContact" data-state="0" title="filter on selected contact" onclick="toggleShowContacts(this)">	
+							</td>
 						</tr>
 						<tr>
-						<td>
-							<select id="cmbConnectedCustomer" tabIndex="-1" size="4" class="cssConnectedList"></select>
-						</td>
-						<td style="width: 10%;"></td>
-						<td valign="top">
-							<select id="cmbConnectedContact" tabIndex="-1" size="3" class="cssConnectedList"></select>
-							<br>
-							<span id="divContactCard" class="cssCard card"></span>
-						</td>
+							<td>
+								<div id="cmbConnectedCustomer" class="cssDivRow"></div>
+							</td>
+							<td style="width: 10%;"></td>
+							<td valign="top">
+								<div id="cmbConnectedContact" class="cssDivRow"></div>
+								<br>
+								<span id="divContactCard" class="cssCard card"></span>
+							</td>
 						</tr>
 					</table>
 					<span id="tabConnection" class="cssTab" onclick="setTab(tabEnum.connection)">Connections</span>

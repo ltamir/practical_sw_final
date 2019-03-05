@@ -259,9 +259,13 @@ function init(){
 
 	searchProjectTask('cmbSearchProject');
 	searchTask(null, 0, '', '', 0, 1, 0);
-    setTab(tabEnum.connection);
+//    setTab(tabEnum.connection);
+    setTab(tabEnum.timeline);
     setTab(tabEnum.taskLog);
     
+    showAllContacts();
+    showCustomerConnection();
+
     taskModel.dueDate.setValue(getJsonDate(new Date().toISOString().split("T")[0]));
 }
 
@@ -270,10 +274,32 @@ function initModels(){
 	initModel(searchModel);
 }
 
+// ***** customer & contacts lists ***** //
 function logout(){
 	getDataEx('', 'authenticate', '?actionId=15', null, null, null, null, null);
 }
 
+function showAllContacts(){
+	let contactCardPopup = getById('divContactCard');
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getDataEx('cmbConnectedContact', 'contact', '?actionId=2', fillDivList, null,
+			(divRow,item)=>{
+				divRow.setAttribute('data-id', item.contactId);
+				divRow.addEventListener("click", ()=>{
+					toggler.toggle(divRow);
+					if(activeCrmTab != tabEnum.connection){
+						contactCardPopup.innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email;
+						return;
+					}
+					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
+				})				
+			}, 
+			(txtPart,item)=>txtPart.innerHTML = item.firstName + " " + item.lastName,
+			null
+		)
+}
+
+// ***** database & log ***** //
 function toggleDatabase(btn){
 	let sqlDIV = getById('divDataFrame');
 	

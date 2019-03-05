@@ -117,7 +117,6 @@ function viewTaskLogList(){
 				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
 				let prefixPart = document.createElement('SPAN');
 				let thisDate = getDate(item.sysdate.split(' ')[0]);
-//				prefixPart.innerHTML = thisDate;
 				prefixPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
 				prefixPart.style.color = 'inherit';
 				divRow.appendChild(prefixPart);
@@ -327,27 +326,23 @@ function viewTaskPermissionList(){
 			)	
 }
 
-
+var addressList;
 function activateTabConnection(){
 	getById('divContactCard').innerHTML = '';
-	getHTML('tabConnection.html').then(function(response){fillTab('divCRM', response)})
-	.then(()=>showCustomerConnection())
-	.then(()=>getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
-			(opt,item)=>opt.value = item.contactTypeId, 
-			(opt,item)=>opt.text = item.contactTypeName, 
-			null))
-			.then(()=>showAllContacts())
-			.then(()=>{
-				initModel(contactModel);
-				initModel(customerModel);
-				initModel(associationModel);
-				initModel(addressModel);
-				
-//				addFieldListener(contactModel);
-//				addFieldListener(customerModel);
-//				addFieldListener(associationModel);
-//				addFieldListener(addressModel);				
-			});
+	getHTML('tabConnection.html').then(function(response){
+		fillTab('divCRM', response);
+		showCustomerConnection();
+		getDataEx('cmbContactType', 'contacttype', '?actionId=2', fillSelect, 'Contact type:', 
+				(opt,item)=>opt.value = item.contactTypeId, 
+				(opt,item)=>opt.text = item.contactTypeName, 
+				null);
+		addressList = getById('divAddressList');
+		initModel(contactModel);
+		initModel(customerModel);
+		initModel(associationModel);
+		initModel(addressModel);
+		});
+	
 }
 
 function toggleShowContacts(img){
@@ -396,24 +391,28 @@ function showCustomerConnection(param){
 	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
 	if(param == null)
 		param =  '?actionId=2';
-	getDataEx('cmbConnectedCustomer', 'customer', param, fillSelect, null, 
-			(opt,item)=>opt.value = item.customerId, 
-			(opt,item)=>opt.text = item.customerName,
-			(opt, item)=>opt.addEventListener("click", ()=>{
-				if(getById('imgFilterContact').getAttribute("data-state") == 1)
-					showAssociatedContacts();
-				if(activeCrmTab == tabEnum.connection){
-					getById('lblselectedCustomer').innerHTML = item.customerName;
-					viewAddressList(item.customerId);
-					return;
-				}
-				if(activeCrmTab == tabEnum.customer){
-					//toggler.toggle(divRow);
-					getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
-				}
-				
-				})
-			)
+	getDataEx('cmbConnectedCustomer', 'customer', param, fillDivList, null, 
+			(divRow,item)=>{
+				divRow.setAttribute('data-id', item.customerId);
+				divRow.addEventListener("click", ()=>{
+					toggler.toggle(divRow);
+					divRow.parentElement.setAttribute('data-id', item.customerId);
+					if(getById('imgFilterContact').getAttribute("data-state") == 1)
+						showAssociatedContacts();
+					if(activeCrmTab == tabEnum.connection){
+						getById('lblselectedCustomer').innerHTML = item.customerName;
+						viewAddressList(item.customerId);
+						return;
+					}
+					if(activeCrmTab == tabEnum.customer){
+						getData('', 'customer', '?actionId=3&customerId='+item.customerId, viewCustomer);
+					}
+					
+				})				
+			}, 
+		(divText,item)=>divText.innerHTML = item.customerName,
+		null
+	)
 }
 function viewAddressList(customerId){
 	newAddress();
@@ -434,24 +433,24 @@ function viewAddressList(customerId){
 				toggler.toggle(txtPart);
 				getData('divConnectedEditAddress', 'address', '?actionId=3&addressId='+item.addressId, viewAddress)
 				})
-			);		
+			);
 }
 function showAssociatedContacts(){
 	let contactCardPopup = getById('divContactCard');
-	if(getValue('cmbConnectedCustomer') == '')
+	if(getValue('cmbConnectedCustomer') == null)
 		return;
-	getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+getValue('cmbConnectedCustomer'), fillSelect, null, 
-		(opt,item)=>opt.value = item.contact.contactId, 
-		(opt,item)=>opt.text = item.contact.firstName + " " + item.contact.lastName,
-		(opt, item)=>{
-			opt.addEventListener("click", ()=>{
-				contactCardPopup.innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	
+	getDataEx('cmbConnectedContact', 'association', '?actionId=12&customerId='+getValue('cmbConnectedCustomer'), fillDivList, null, 
+		(divRow,item)=>{
+			divRow.setAttribute('data-id', item.contact.contactId);
+			divRow.addEventListener("click", ()=>{
+				toggler.toggle(divRow);
 				if(activeCrmTab != tabEnum.connection){
-					getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, viewContact);
+					contactCardPopup.innerHTML =  item.contact.officePhone + ' ' + item.contact.mobilePhone + '<br>' + item.contact.email
 					return;
 				}
-
-				let addressList = getById('divAddressList');
+				getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contact.contactId, viewContact);
 				for(let i = addressList.childNodes.length-1; i > -1; i--){
 					let addressNode = addressList.childNodes[i];
 					if(addressNode.hasAttribute('data-addressId') && addressNode.getAttribute('data-addressId') == item.address.addressId){
@@ -462,28 +461,13 @@ function showAssociatedContacts(){
 				}
 				associationModel.contactType.setValue(item.contactType.contactTypeId);
 				associationModel.associationId.setValue(item.associationId);
-			})
+			})			
+			}, 
+		(txtPart,item)=>txtPart.innerHTML = item.contact.firstName + " " + item.contact.lastName,
+		(opt, item)=>{
+
 		}
 	)
-}
-
-function showAllContacts(){
-	let contactCardPopup = getById('divContactCard');
-	getDataEx('cmbConnectedContact', 'contact', '?actionId=2', fillSelect, null,
-			(opt,item)=>opt.value = item.contactId, 
-			(opt,item)=>{
-			opt.text = item.firstName + " " + item.lastName;
-			},
-			(opt, item)=>{
-				opt.addEventListener("click", ()=>{
-					if(activeCrmTab != tabEnum.connection){
-						contactCardPopup.innerHTML =  item.officePhone + ' ' + item.mobilePhone + '<br>' + item.email;
-						return;
-					}
-						getData('divConnectedContactDetails', 'contact', '?actionId=3&contactId='+item.contactId, viewContact);
-					})
-				}
-			)
 }
 
 function activateTabCustomer(){
