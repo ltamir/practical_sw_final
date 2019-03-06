@@ -233,6 +233,7 @@ function execSync(funcA, funcB){
 
 //var datePicker;
 
+
 function init(){
 
 	initModels();
@@ -300,6 +301,29 @@ function showAllContacts(){
 }
 
 // ***** database & log ***** //
+//or(let i = 0; i<getById('taskList').childNodes.length; i++) addLog(getById('taskList').childNodes[i].innerHTML)
+function executeJs(){
+	try{
+		let func = new Function(getValue('txtJS'));
+		func();
+	}catch (err){
+		addLog(`err: ${err}` + `err: ${err.stack}`);
+	}
+    let opt = document.createElement("OPTION");
+	opt.text = getValue('txtJS');
+	getById('jsHistory').appendChild(opt);	
+}
+
+function copyJS(){
+	let js = getById('jsHistory'); 
+	setValue('txtJS', js.options[js.selectedIndex].text);
+}
+
+function copySQL(){
+	let js = getById('sqlHistory'); 
+	setValue('txtSQL', js.options[js.selectedIndex].text);
+}
+
 function toggleDatabase(btn){
 	let sqlDIV = getById('divDataFrame');
 	

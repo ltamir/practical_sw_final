@@ -203,7 +203,11 @@
 		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
-	}	
+	}
+	#divConsoleLog{
+		height: 4.5em;
+		width: 42em;
+	}
 	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
 		width: 35em;
 		overflow-y: scroll;

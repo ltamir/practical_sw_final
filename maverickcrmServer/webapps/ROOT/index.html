@@ -52,9 +52,9 @@
             <td width="22%" align="right">            	            	
             	<span id="lblLoggedInContact"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
-            	<img src="images/database.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
-            	<select id="cmbDebug" tabIndex="-1" onchange="setDebugModule()" style="width:4em;">
-            		<option value=0>DBG</option>
+            	<img src="images/dev_tools.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
+            	<select id="cmbDebug" tabIndex="-1" onchange="setDebugModule()" style="width:4.5em;">
+            		<option value=0>No DBG</option>
             		<option value=1>customer</option>
             		<option value=2>contact</option>
             		<option value=3>task</option>
@@ -77,14 +77,7 @@
 			<td class="cssTaskListDueDate">Due date</td>
 			<td class="cssTaskListEffort">Effort</td>
 			<td class="cssTaskListStatus">Status</td>
-		</tr>      	
-<!-- 		<tr id="parentTaskList" class="cssFixed">
-			<th style="width: 4em; text-align: left;">Type</th>
-			<th style="width: 52em; text-align: center;">Title</th>
-			<th style="width: 6em;">Due date</th>
-			<th style="width: 6em;">Effort</th>
-			<th style="width: 6em;">Status</th>
-		</tr>   -->  	
+		</tr>
     	</thead>
     	
 		<tbody id="taskList">             
@@ -143,18 +136,27 @@
 				<div id="divTaskTab" class="card"></div>				                    
 			</td>
 			<td valign="top" rowspan="2">	
-				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 26em;z-index: 1;">
-					<div id="divConsoleLog" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium;"></div>
-					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">
-					</select>
+				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 35em;z-index: 1;">
+					<div id="divConsoleLog" style="font-family: Tahoma, Geneva, sans-serif; font-size: small;"></div>
+					<img src="images/add_down.png" id="copyJs" title="copy to JS console" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); copyJS()">
+					<select id="jsHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 33em;">
+						<option>for(let i = 0; i &lt; getById('taskList').childNodes.length; i++) addLog(getById('taskList').childNodes[i].innerHTML)</option>
+						<option>getById('')</option>
+						<option>addLog()</option>
+					</select>					
 					<br>
-            		<textarea rows="4" cols="85" id="txtSQL" style="background-image: none; background-color: #331327; color: white; font-family: Lucida Console, Georgia; font-size: medium; width: 36em;">select * from task</textarea>
-            		<br>
-            		<img src="images/add_right.png" id="execSQL" title="Execute" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
+					<textarea rows="2" cols="80" id="txtJS" style="background-image: none; background-color: #331327; color: white; font-family: Lucida Console, Georgia; font-size: medium; width: 33em;" placeholder="getById();addLog();"></textarea>
+					<img src="images/add_right.png" id="execJS" title="Execute javascript" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeJs()">
+					<br>
+					<img src="images/add_down.png" id="copySQL" title="copy to SQL console" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); copySQL()">
+					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 33em;"></select>
+					<br>
+            		<textarea rows="3" cols="80" id="txtSQL" style="background-image: none; background-color: #331327; color: white; font-family: Lucida Console, Georgia; font-size: medium; width: 33em;">select * from task</textarea>
+            		<img src="images/add_right.png" id="execSQL" title="Execute SQL" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">
             		<div style=" position:relative; overflow-y: scroll; height:9em; width: 36em;">
-	            		<table>
-	            			<thead id="resultHeader"></thead>
-	            			<tbody id="resultBody" style="background-image: url('images/textBackground_no_num.jpg');"></tbody>
+	            		<table border="1">
+	            			<thead id="resultHeader" style="font-family: Tahoma, Geneva, sans-serif; font-size: small;"></thead>
+	            			<tbody id="resultBody" style="font-family: Tahoma, Geneva, sans-serif; font-size: small; background-image: url('images/textBackground_no_num.jpg');"></tbody>
 	            		</table>	            		
             		</div>
             	</div>	
