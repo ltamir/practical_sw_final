@@ -59,7 +59,7 @@ function searchRelationTask(){
 	searchTaskParams += '&title=' + getValue('txtTabRelatoinSearchTitle');
 	
 	if(dbg==Module.menu)
-		addLog(relation);
+		addLog(searchTaskParams);
 	
 	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
 	
