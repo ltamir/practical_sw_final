@@ -9,7 +9,7 @@ function DatePicker (pickerId,onShowFunc) {
             this.build=function(calculatedDate){
                 let d = this.createDate(calculatedDate);
                 this.dom.lblMonth.innerHTML = this.monthsNames[d.getMonth()] + ' ' + d.getFullYear();
-                
+                let today = new Date();
                 while(this.dom.calendar.childNodes.length > 2)
                     this.dom.calendar.removeChild(this.dom.calendar.lastChild);
 
@@ -18,6 +18,8 @@ function DatePicker (pickerId,onShowFunc) {
                 let week = this.buildWeek(this.daySpaces);
                 for(let i = 1; currentm == d.getMonth(); i++, d.setDate(i)){
                     week.childNodes[d.getDay()].innerHTML = this.padLeft(d.getDate());
+                    if(today.getFullYear() == d.getFullYear() && today.getMonth() == d.getMonth() && today.getDate() == d.getDate())
+                    	 week.childNodes[d.getDay()].style.color = 'red';
                     let nodeDate = d.getDate();
                     let nodeMonth = d.getMonth();
                     let nodeYear = d.getFullYear();
@@ -81,7 +83,6 @@ function DatePicker (pickerId,onShowFunc) {
             };         
             this.setCalculatedDate = function (calculatedDate, nodeDate){
             	this.setSelectedDay(calculatedDate, false);
-            	// calculatedDate.setValue(calculatedDate, nodeDate);
                 this.setSelectedDay(calculatedDate, true);
             };
             this.setPickedDate = function (nodeDate, nodeMonth, nodeYear){
