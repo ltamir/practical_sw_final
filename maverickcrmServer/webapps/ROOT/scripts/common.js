@@ -260,13 +260,16 @@ function setMsg(type, text){
 
 function addLog(log){
 	let logger = getById('divConsoleLog');
-	logger.innerHTML += '<br>' + log; 
+	logger.innerHTML += '<br>' + log;
+//	logger.innerHTML += '\n********** ********** **********';
 }
 
 function debugFormData(formData){
+	let dbgData = '';
 	for (var pair of formData.entries()) {
-		addLog(pair[0]+ ', ' + pair[1]); 
+		dbgData += '<br>' + pair[0]+ ', ' + pair[1]; 
 	}
+	addLog(dbgData);
 }
 
 function getJsonDate(isoDate){
