@@ -37,7 +37,7 @@ function DatePicker (pickerId,onShowFunc) {
                 let currentDay = d.getDate();
                 
                 d.setMonth(newMonth);
-               for(let day = currentDay-1; d.getMonth() != newMonth; --day, d.setMonth(origMonth), d.setDate(day));
+               for(let day = currentDay; d.getMonth() != newMonth; --day, d.setMonth(newMonth), d.setDate(day));
                this.build(d);
                 this.setSelectedDay(calculatedDate, true);
                 this.calculatedDate = calculatedDate;
@@ -74,8 +74,9 @@ function DatePicker (pickerId,onShowFunc) {
             };
             this.setValue = function (day, month, year){
                 this.value = this.createDate(this.value);
+                this.value.setDate(1);
                 this.value.setFullYear(year);
-            	this.value.setMonth(month);
+                this.value.setMonth(month);
                 this.value.setDate(day);
             };         
             this.setCalculatedDate = function (calculatedDate, nodeDate){
