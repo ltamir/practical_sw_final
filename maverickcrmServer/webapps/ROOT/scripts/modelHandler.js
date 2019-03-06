@@ -179,7 +179,7 @@ function viewTask(id, data){
 }
 
 function viewTotalEffort(){
-	getDataEx('', 'business', '?taskId=' + taskModel.taskId.getValue(), 
+	getDataEx('', 'business', '?actionId=21&taskId=' + taskModel.taskId.getValue(), 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
 				getById('totalTaskEffort').innerHTML = data.total;
 				let effortState = getById('imgEffortStatus');

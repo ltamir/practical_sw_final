@@ -301,17 +301,44 @@ function showAllContacts(){
 }
 
 // ***** database & log ***** //
-//or(let i = 0; i<getById('taskList').childNodes.length; i++) addLog(getById('taskList').childNodes[i].innerHTML)
 function executeJs(){
+	let code = getValue('txtJS');
 	try{
-		let func = new Function(getValue('txtJS'));
+		let func = new Function(code);
 		func();
 	}catch (err){
 		addLog(`err: ${err}` + `err: ${err.stack}`);
 	}
-    let opt = document.createElement("OPTION");
-	opt.text = getValue('txtJS');
-	getById('jsHistory').appendChild(opt);	
+
+    getStringHashCode(code, appendJSCode);
+}
+
+
+function getStringHashCode(stringToHash, func){
+	getDataEx('', 'business', '?actionId=22&tohash=' + stringToHash, 
+			function(id, data, defaultOption, funcValue, funcText, eventHandler){
+				func(data.hashcode, stringToHash);
+			}, null, null, null, null);
+}
+
+function appendJSCode(hashcode, code){
+	let selectElement = getById('jsHistory');
+    
+    let opt = null;
+    for (let i = selectElement.length - 1; i >= 0; i--) {
+        if(selectElement.options[i].value == hashcode){
+        	opt = selectElement.options[i];
+        	selectElement.remove(i);
+        	break;
+        }
+    }
+    if(opt== null){
+    	opt = document.createElement("OPTION");
+    	opt.text = code;
+    	opt.value = hashcode;
+    }
+
+	selectElement.appendChild(opt);	
 }
 
 function copyJS(){
