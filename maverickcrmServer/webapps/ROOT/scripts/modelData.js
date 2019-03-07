@@ -126,12 +126,8 @@ function divRowToggler(regularCSS, selectedCSS){
 		if(row == this.selectedRow)
 			return;
 		row.className = this.selectedCSS;
-//		row.classList.add(selectedCSS);
-//		row.classList.remove(regularCSS);
 		if(this.selectedRow !=null){
-			this.selectedRow.className = this.regularCSS;
-//			this.selectedRow.classList.remove(selectedCSS);
-//			this.selectedRow.classList.add(regularCSS);		
+			this.selectedRow.className = this.regularCSS;		
 		}
 		this.selectedRow = row;
 	}
@@ -178,7 +174,7 @@ var taskLogModel = {
 	sysdate:new Model('sysDate', -1, null, 'sysdate', null, null, new Method(), new Method(), new Method()),
 	contact:new Model('cmbTaskLogContact', 2, null, 'contactId', null, null, new Method([0], 'Please select a contact', true), new Method([0], 'Please select a contact', true), new Method()),
 	description:new Model('txtTaskLogDescription', 1, null, 'description', null, null, new Method([''], 'Description cannot be empty', true), new Method([''], 'Description cannot be empty', true), new Method()),
-	taskLogType:new Model('cmbTaskLogType', 3, null, 'taskLogTypeId', null, null, new Method([0], 'Please select a log type', true), new Method([0], 'Please select a log type', true), new Method([3,4],'Cannot delete Attachment or Status change log' , false)),
+	taskLogType:new Model('cmbTaskLogType', 3, null, 'taskLogTypeId', null, null, new Method([0], 'Please select a log type', true), new Method([3,4],'Cannot update Attachment or Status Change log', true), new Method([3,4],'Cannot delete Attachment or Status change log' , false)),
 	taskId:new Model('taskId', -1, null, 'taskId', null, null, new Method([0], 'Please select a task', true), new Method([0], 'Please select a task', true), new Method([0], 'Please select a task', false)),
 	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())
 	}
