@@ -260,8 +260,11 @@ function setMsg(type, text){
 
 function addLog(log){
 	let logger = getById('divConsoleLog');
-	logger.innerHTML += '<br>' + log;
-//	logger.innerHTML += '\n********** ********** **********';
+	let row = document.createElement('div');
+	
+	row.innerHTML = log;
+	logger.appendChild(row);
+	row.scrollIntoView();
 }
 
 function debugFormData(formData){

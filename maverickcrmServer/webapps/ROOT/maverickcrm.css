@@ -206,7 +206,7 @@
 	}
 	#divConsoleLog{
 		height: 4.5em;
-		width: 47em;
+		width: 38em;
 	}
 	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
 		width: 35em;
@@ -266,6 +266,11 @@
 	.cssDivRow div{
 		cursor: pointer;
 	}	
+	#divConsoleLog > div{
+		font-family: Tahoma, Geneva, sans-serif; 
+		font-size: small;
+		border-bottom: 1px inset black;
+	}
 	
 	.cssTaskListRegular{
 		background-color: '';

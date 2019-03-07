@@ -71,13 +71,13 @@
 	
     <table class="cssTaskList">
     	<thead>
-		<tr id="parentTaskList" class="cssFixed">
-			<td class="cssTaskListType" style="text-align: left;">Type</td>
-			<td class="cssTaskListTitle" style="text-align: center;">Title</td>
-			<td class="cssTaskListDueDate">Due date</td>
-			<td class="cssTaskListEffort">Effort</td>
-			<td class="cssTaskListStatus">Status</td>
-		</tr>
+			<tr id="parentTaskList" class="cssFixed">
+				<td class="cssTaskListType" style="text-align: left;">Type</td>
+				<td class="cssTaskListTitle" style="text-align: center;">Title</td>
+				<td class="cssTaskListDueDate">Due date</td>
+				<td class="cssTaskListEffort">Effort</td>
+				<td class="cssTaskListStatus">Status</td>
+			</tr>
     	</thead>
     	
 		<tbody id="taskList">             
@@ -137,7 +137,7 @@
 			</td>
 			<td valign="top" rowspan="2">	
 				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 38em;z-index: 1;">
-					<div id="divConsoleLog" style="font-family: Tahoma, Geneva, sans-serif; font-size: small;"></div>
+					<div id="divConsoleLog" class="cssDivRow"></div>
 					<img src="images/add_down.png" id="copyJs" title="copy to JS console" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); copyJS()">
 					<select id="jsHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 36em;">
 						<option>for(let i = 0; i &lt; getById('taskList').childNodes.length; i++) addLog(getById('taskList').childNodes[i].innerHTML)</option>
