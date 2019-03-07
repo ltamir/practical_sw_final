@@ -93,7 +93,7 @@ public class TaskController extends HttpServlet {
 			}
 			req.getSession().removeAttribute("login");
 			ServletHelper.doSuccess(json);
-		}catch(NumberFormatException | SQLException | InvalidActionException |InvalidPermissionException e) {
+		}catch(NumberFormatException | NullPointerException | SQLException | InvalidActionException |InvalidPermissionException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		response = jsonHelper.toJson(json);
