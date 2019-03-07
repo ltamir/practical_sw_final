@@ -538,7 +538,7 @@ function viewTimeline(taskArray){
 	    				getById('timelinePath').appendChild(path);	
 	    				return;
 	    			}
-    				if(getById('timelinePath').lastChild.nodeName == 'span' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
+    				if(getById('timelinePath').lastChild.nodeName == 'SPAN' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
     					getById('timelinePath').removeChild(getById('timelinePath').lastChild);
 					path.innerHTML = ' -> ' + item.title;
 					getById('timelinePath').appendChild(path);
