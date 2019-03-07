@@ -331,7 +331,7 @@ public class TaskDAL {
 		List<Task> taskList = null;
 		
 		try (Connection conn = DBHandler.getConnection()){
-			PreparedStatement ps = conn.prepareStatement("select * from task where taskId in(select childTaskId from taskRelation where parentTaskId=?)");
+			PreparedStatement ps = conn.prepareStatement("select * from task where taskId in(select childTaskId from taskRelation where parentTaskId=?) order by duedate asc, statusId asc");
 			ps.setInt(1, taskId);
 			ResultSet rs = ps.executeQuery();
 			taskList = new ArrayList<>(7);
