@@ -37,6 +37,8 @@ public class BusinessController extends HttpServlet {
 		resp.setContentType(APIConst.CONTENT_TYPE);
 		String response;
 		JsonObject json = new JsonObject();
+		Login login = null;
+		List<Task> bulk = null;
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
@@ -51,11 +53,16 @@ public class BusinessController extends HttpServlet {
 				break;
 			case ACT_TIMELINE_ALL:
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
-				Login login = (Login)req.getSession().getAttribute("login");
-				List<Task> bulk = dal.getTimelineAll(login.getLoginId());
+				login = (Login)req.getSession().getAttribute("login");
+				bulk = dal.getTimelineProjects(login.getLoginId());
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 			case ACT_TIMELINE_PROJECT:
+				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
+				login = (Login)req.getSession().getAttribute("login");
+				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
+				bulk = dal.getTimelineTask(taskId);
+				json.add("array", jsonHelper.toJsonTree(bulk));				
 				break;
 			default:
 				throw new InvalidActionException(action.ordinal());

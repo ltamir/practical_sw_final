@@ -77,10 +77,15 @@ public class BusinessDAL {
 		return entity;
 	}	
 
-	public List<Task> getTimelineAll(int loginId) throws SQLException {
+	public List<Task> getTimelineProjects(int loginId) throws SQLException {
 		List<Task> bulk = TaskDAL.getInstance().getAll(0, "", "", 0, 1, 0, loginId);
 
 		return bulk;
 	}	
 
+	public List<Task> getTimelineTask(int taskId) throws SQLException {
+		List<Task> bulk = TaskDAL.getInstance().getChildren(taskId);
+
+		return bulk;
+	}
 }
