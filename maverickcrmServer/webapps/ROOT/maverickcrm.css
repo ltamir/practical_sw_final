@@ -196,7 +196,7 @@
 		height: 4.8em;
 		border-bottom:none;
 	}	
-	#divTaskLogList, #divConsoleLog{
+	#divTaskLogList, #divConsoleLog, #divTimeline{
 		height: 5.5em;
 		width: 35em;
 		overflow-y: scroll;
@@ -206,7 +206,12 @@
 	}
 	#divConsoleLog{
 		height: 4.5em;
-		width: 38em;
+		width: 31em;
+	}
+	#divTimeline{
+		height: 12.4em;
+		width: 35em;
+		border-bottom: none;
 	}
 	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
 		width: 35em;

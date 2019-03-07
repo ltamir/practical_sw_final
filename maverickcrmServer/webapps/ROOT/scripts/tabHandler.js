@@ -481,7 +481,42 @@ function viewCustomerList(){
 }
 
 function activateTabTimeline(){
-	getHTML('tabTimeline.html').then(function(response){fillTab('divCRM', response)});
+	let colors = ['#4CAF50', '#2196F3', '#f44336', '#808080'];
+	let colorPos = 0;
+	let currentDate = new Date();
+	let milliInHour = 1000*60*60;
+	getHTML('tabTimeline.html').then(function(response){
+		fillTab('divCRM', response);
+		let divTimeline = getById('divTimeline');
+		getDataEx('', 'business', '?actionId=23', 
+				function(id, data, defaultOption, funcValue, funcText, eventHandler){
+					
+				    data.array.forEach(function (item) {
+				    	let span = document.createElement('SPAN');
+				    	span.innerHTML = item.title + ' -> ' + jsonToIsoDate(item.dueDate);
+				    	let div = document.createElement('DIV');
+				    	div.style.width = '100%';
+				    	let innerDiv = document.createElement('DIV');
+				    	innerDiv.style.color = 'white';
+				    	innerDiv.style.backgroundColor = colors[colorPos];
+				    	innerDiv.style.textAlign = 'right';
+				    	let taskDate = new Date(item.dueDate.year +'-' + item.dueDate.month +'-' + item.dueDate.day);
+				    	let dateDiffMs = (taskDate.getTime() - currentDate.getTime()) / milliInHour / 24; //difference in days
+				    	dateDiffMs -= (dateDiffMs/7*2) // remove friday and saturday
+				    	
+				    	let disp = (dateDiffMs < 0)?100:(100 - (dateDiffMs *9 / effortUnitList[item.effortUnit].getHours(item.effort)*100));
+				    	disp = (disp < 0)?0:Math.floor(disp); // if disp < 0 then task is 0%
+				    	innerDiv.style.width = ((disp < 15)?15:disp) + '%'
+				    	innerDiv.innerHTML = item.effort + ' ' + effortUnitList[item.effortUnit].unit + ' ' + disp + '%';
+				    	
+				    	div.appendChild(innerDiv);
+				    	divTimeline.appendChild(span);
+				    	divTimeline.appendChild(div);
+				    	colorPos = (colorPos < colors.length-1)?++colorPos:0;
+				    	
+				    }); 					
+				}, null, null, null, null);
+	});
 }
 
 

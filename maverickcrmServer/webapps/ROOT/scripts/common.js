@@ -275,6 +275,12 @@ function debugFormData(formData){
 	addLog(dbgData);
 }
 
+function jsonToIsoDate(jsonDate){
+    let day = (jsonDate.day<10)?'0'+jsonDate.day:jsonDate.day;
+    let month = (jsonDate.month<10)?'0'+jsonDate.month:jsonDate.month;
+    let date = day + "/" + month + "/" + jsonDate.year;
+    return date;
+}
 function getJsonDate(isoDate){
 	let jsonDate = {day:0, month:0, year:0};
 	let dateArr = isoDate.split("-");

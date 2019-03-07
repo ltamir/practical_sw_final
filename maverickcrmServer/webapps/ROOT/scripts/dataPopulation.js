@@ -150,11 +150,9 @@ function createTaskRow(row, item, parent, toggler){
 
 	effortCell.innerHTML +=' ' + effortUnitList[item.effortUnit].unit;
 
-	
 	let statusNameCell  = row.insertCell(4);
 	statusNameCell.classList.add("cssTaskListStatus");
-	statusNameCell.innerHTML = item.status.statusName;
-	
+	statusNameCell.innerHTML = item.status.statusName;	
 }
 
 
