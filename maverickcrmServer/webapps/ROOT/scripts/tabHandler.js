@@ -512,11 +512,38 @@ function viewTimeline(taskArray){
     	innerDiv.style.textAlign = 'right';
     	innerDiv.style.cursor = 'pointer';
     	innerDiv.addEventListener("click", ()=>{
-    		getDataEx('', 'business', '?actionId=24&taskId='+item.taskId, 
-    				function(id, data, defaultOption, funcValue, funcText, eventHandler){
-    			
-    				viewTimeline(data.array);
-    				}, null, null, null, null);	
+    		getDataEx(innerDiv, 'business', '?actionId=24&taskId='+item.taskId, 
+					function(id, data, defaultOption, funcValue, funcText, eventHandler){
+    				if(id.getAttribute('data-id') == 0)
+    					return;
+    				let path = document.createElement('SPAN');
+    				path.style.cursor = 'pointer';
+    				path.addEventListener("click", ()=>{
+    		    		getDataEx('', 'business', '?actionId=24&taskId='+item.taskId, 
+    							function(id, data, defaultOption, funcValue, funcText, eventHandler){
+    		    				let parentPath = getById('timelinePath');
+    		    				while(path.nextSibling != null)
+    		    					parentPath.removeChild(path.nextSibling);
+    							viewTimeline(data.array);
+    						}, null, null, null, null);	
+    		    	})    					
+    				
+	    			if(data.array.length == 0){
+	    				if(getById('timelinePath').lastChild.nodeName == 'SPAN' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
+	    					return;
+	    				path.innerHTML = ' ||';
+	    				path.title = 'No child tasks';
+	    				path.setAttribute('data-id', 0);
+	    				id.setAttribute('data-id', 0);
+	    				getById('timelinePath').appendChild(path);	
+	    				return;
+	    			}
+    				if(getById('timelinePath').lastChild.nodeName == 'span' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
+    					getById('timelinePath').removeChild(getById('timelinePath').lastChild);
+					path.innerHTML = ' -> ' + item.title;
+					getById('timelinePath').appendChild(path);
+					viewTimeline(data.array);
+				}, null, null, null, null);	
     	})
     	let taskDate = new Date(item.dueDate.year +'-' + item.dueDate.month +'-' + item.dueDate.day);
     	let dateDiffMs = (taskDate.getTime() - currentDate.getTime()) / milliInHour / 24; //difference in days
