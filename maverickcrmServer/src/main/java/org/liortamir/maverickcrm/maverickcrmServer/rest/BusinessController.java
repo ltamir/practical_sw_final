@@ -19,6 +19,8 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 @WebServlet(name = "Business", urlPatterns="/business")
@@ -55,14 +57,14 @@ public class BusinessController extends HttpServlet {
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
 				bulk = dal.getTimelineProjects(login.getLoginId());
-				json.add("array", jsonHelper.toJsonTree(bulk));
+				getTimeline(bulk, json);
 				break;
 			case ACT_TIMELINE_PROJECT:
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				bulk = dal.getTimelineTask(taskId);
-				json.add("array", jsonHelper.toJsonTree(bulk));				
+				getTimeline(bulk, json);		
 				break;
 			default:
 				throw new InvalidActionException(action.ordinal());
@@ -109,4 +111,64 @@ public class BusinessController extends HttpServlet {
 		return json;
 	}
 
+	private JsonElement getTimeline(List<Task> bulk, JsonObject json) throws SQLException{
+
+		JsonArray jsonArray = new JsonArray();
+		for(Task task : bulk){
+			jsonArray.add(jsonHelper.toJsonTree(task));
+			JsonObject jsonTask = (JsonObject)jsonArray.get(jsonArray.size()-1);
+			
+			List<Task> childBulk = dal.getTimelineTask(task.getTaskId());
+			int calculatedUsedEffort = (childBulk.size() == 0) ? calculateUsedEffort(task) : 0;
+			for(Task childTask : childBulk){
+				calculatedUsedEffort += calculateUsedEffort(childTask);
+			}
+			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
+		}
+		ServletHelper.addJsonTree(jsonHelper, json, "array", jsonArray);
+		/*
+		let milliInHour = 1000*60*60;
+		let taskDate = new Date(item.dueDate.year +'-' + item.dueDate.month +'-' + item.dueDate.day);
+    	let dateDiffMs = (taskDate.getTime() - currentDate.getTime()) / milliInHour / 24; //difference in days
+    	dateDiffMs -= (dateDiffMs/7*2) // remove friday and saturday
+    	
+    	let disp = (dateDiffMs < 0)?100:(100 - (dateDiffMs *9 / effortUnitList[item.effortUnit].getHours(item.effort)*100));
+    	disp = (disp < 0)?0:Math.floor(disp); // if disp < 0 then task is 0%
+		 */
+		
+		return json;
+	}
+	
+	private int calculateUsedEffort(Task task){
+		int hours = 0;
+		//n/a, new, Running, Deliered, Closed, On Hold
+		double[] ststusEffort  = {0, 0, 0.25, 0.75, 1, 0};
+		
+		int effort = task.getEffort();
+		switch(task.getEffortUnit()){
+		case 1:
+			hours = effort;
+			break;
+		case 2:
+			hours = daysToHours(effort);
+			break;
+		case 3:
+			hours = monthsToHours(effort);
+			break;
+		}
+		
+		hours = (int) (hours * ststusEffort[task.getStatus().getStatusId()]);
+		return hours;
+	}
+	private int daysToHours(int effort){
+		int hours = 0;
+		hours = effort * 9;
+		return hours;
+	}
+	
+	private int monthsToHours(int effort){
+		int hours = 0;
+		hours = effort * 9 * 20;
+		return hours;
+	}	
 }

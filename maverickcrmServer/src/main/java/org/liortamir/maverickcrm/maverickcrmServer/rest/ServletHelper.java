@@ -73,6 +73,10 @@ public class ServletHelper {
 	public static void addJsonTree(Gson jsonHelper, JsonObject json, String key, Object obj) {
 		json.add(key, jsonHelper.toJsonTree(obj));
 	}
+
+	public static void addJsonTree(Gson jsonHelper, JsonObject json, int key, Object obj) {
+		addJsonTree(jsonHelper, json, String.valueOf(key), obj);
+	}
 	
 	public static int getActionId(String action) throws InvalidActionException{
 		int actionId = 0;

@@ -26,11 +26,11 @@ var taskTypeList = [
 	]
 var taskStatusList = [
 	{value:-1},
-	{value:1, src:"images/status/new.png", title:"New"},
-	{value:2, src:"images/status/running.png", title:"Running"},
-	{value:3, src:"images/status/delivered.png", title:"Delivered"},
-	{value:4, src:"images/status/closed.png", title:"Closed"},
-	{value:5, src:"images/status/onhold.png", title:"On Hold"}
+	{value:1, src:"images/status/new.png", title:"New", effort:0},
+	{value:2, src:"images/status/running.png", title:"Running", effort:0.25},
+	{value:3, src:"images/status/delivered.png", title:"Delivered", effort: 0.75},
+	{value:4, src:"images/status/closed.png", title:"Closed", effort:1},
+	{value:5, src:"images/status/onhold.png", title:"On Hold", effort:0}
 ]
 
 var relationTypeList = [
