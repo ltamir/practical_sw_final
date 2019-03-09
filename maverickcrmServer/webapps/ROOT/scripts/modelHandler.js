@@ -409,10 +409,10 @@ function postTaskSave(resp, method){
 	}
 	
 	taskModel.taskType.prevTaskType = taskModel.taskType.getValue();
-	searchTask(prepareSearchTask());
+	updateTaskRow();
+	setTextDirectionModel(taskModel);
 	viewTotalEffort();
 }
-
 
 function saveTaskLog(){
 	if(taskModel.taskId == 0){

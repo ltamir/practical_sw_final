@@ -275,7 +275,7 @@ function debugFormData(formData){
 	addLog(dbgData);
 }
 
-function jsonToIsoDate(jsonDate){
+function jsonToDisplay(jsonDate){
     let day = (jsonDate.day<10)?'0'+jsonDate.day:jsonDate.day;
     let month = (jsonDate.month<10)?'0'+jsonDate.month:jsonDate.month;
     let date = day + "/" + month + "/" + jsonDate.year;

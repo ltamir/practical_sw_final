@@ -503,7 +503,7 @@ function viewTimeline(taskArray){
 	
 	taskArray.forEach(function (item) {
     	let span = document.createElement('SPAN');
-    	span.innerHTML = item.title + ' -> ' + jsonToIsoDate(item.dueDate);
+    	span.innerHTML = item.title + ' -> ' + jsonToDisplay(item.dueDate);
     	let div = document.createElement('DIV');
     	div.style.width = '100%';
     	

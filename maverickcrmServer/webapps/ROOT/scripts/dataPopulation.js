@@ -93,6 +93,26 @@ function restoreHierarchy(prevItemList, newTaskItemList){
 	}
 }
 
+function updateTaskRow(){
+	let row;
+	let taskList = getById('taskList');
+	
+    for (var i = taskList.rows.length - 1; i >= 0; i--) {
+    	let id = 'taskList'+taskModel.taskId.getValue();
+    	if(id == taskList.rows[i].id)
+    		row = taskList.rows[i];
+    }
+    setImage(row.cells[0].children[0], taskTypeList[taskModel.taskType.getValue()]);
+    row.cells[1].innerHTML = taskModel.title.getValue();
+    setTextDirection(row.cells[1], row.cells[1].innerHTML);
+    row.cells[2].innerHTML = getDate(taskModel.dueDate.getValue());
+    
+    let effort = taskModel.effort.getValue();
+    row.cells[3].innerHTML = (effort.length==1)?'0'+effort:effort ;
+    row.cells[3].innerHTML +=' ' + effortUnitList[taskModel.effortUnit.getValue()].unit;
+    row.cells[4].innerHTML = taskStatusList[taskModel.status.getValue()].title;
+}
+
 function createTaskRow(row, item, parent, toggler){
 	row.id = 'taskList' + item.taskId;
 	row.addEventListener("click", function(event){

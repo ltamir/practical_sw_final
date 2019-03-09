@@ -213,6 +213,7 @@
 		width: 35em;
 		border-bottom: none;
 	}
+	
 	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
 		width: 35em;
 		overflow-y: scroll;
