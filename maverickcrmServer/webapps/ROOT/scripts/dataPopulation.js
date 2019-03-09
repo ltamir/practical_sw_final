@@ -60,17 +60,17 @@ function fillTaskList(id, data){
     }
     let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
-	if(dbg==Module.task)
-		addLog(data.array);
+
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     data.array.forEach(function (item) {
-    	
+    	if(dbg==Module.task)
+    		addLog(item);    	
     	var newRow = selectElement.insertRow(selectElement.rows.length);
     	taskItemList.add(taskItemList.root, new taskItem(item.taskId, newRow));
     	createTaskRow(newRow, item, selectElement, toggler);    	
     }); 
     
-    restoreHierarchy(prevItemList.root, taskItemList);
+//    restoreHierarchy(prevItemList.root, taskItemList);
     prevItemList.clear();
 }
 
