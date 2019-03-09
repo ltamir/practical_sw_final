@@ -94,7 +94,7 @@ function restoreHierarchy(prevItemList, newTaskItemList){
 }
 
 function updateTaskRow(){
-	let row;
+	let row = null;
 	let taskList = getById('taskList');
 	
     for (var i = taskList.rows.length - 1; i >= 0; i--) {
@@ -102,6 +102,7 @@ function updateTaskRow(){
     	if(id == taskList.rows[i].id)
     		row = taskList.rows[i];
     }
+    if(row == null) return;
     setImage(row.cells[0].children[0], taskTypeList[taskModel.taskType.getValue()]);
     row.cells[1].innerHTML = taskModel.title.getValue();
     setTextDirection(row.cells[1], row.cells[1].innerHTML);
