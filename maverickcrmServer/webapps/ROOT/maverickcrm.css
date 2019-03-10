@@ -96,8 +96,19 @@
     width: 100%;
 	}
 	
-	table.cssTaskList tbody {
+/* 	table.cssTaskList tbody {
 	    float: left;
+	    width: 100%;
+	    font-family: Geneva, arial, sans-serif;
+	    font-size:16px;
+	    overflow-y: auto;
+	    overflow-x: hidden;
+	    height: 30vh;
+	    background-color: WhiteSmoke;
+	    color: #121212;
+	} */
+	#taskList{
+		float: left;
 	    width: 100%;
 	    font-family: Geneva, arial, sans-serif;
 	    font-size:16px;
@@ -206,11 +217,11 @@
 	}
 	#divConsoleLog{
 		height: 4.5em;
-		width: 31em;
+		width: 36em;
 	}
 	#divTimeline{
 		height: 12.4em;
-		width: 35em;
+		width: 39em;
 		border-bottom: none;
 	}
 	
