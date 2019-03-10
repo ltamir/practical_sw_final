@@ -261,7 +261,8 @@ function setMsg(type, text){
 function addLog(log){
 	let logger = getById('divConsoleLog');
 	let row = document.createElement('div');
-	
+	if(log.length = 0)
+		log = ' '
 	row.innerHTML = log;
 	logger.appendChild(row);
 	row.scrollIntoView();
