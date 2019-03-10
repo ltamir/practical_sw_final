@@ -113,6 +113,22 @@ public class BusinessController extends HttpServlet {
 		return json;
 	}
 
+	private String buildTotalEffortTime(int totalHours){
+		String totalEffort = "";
+		int days= 0, months = 0;
+		
+		if(totalHours > 9){
+			days += totalHours/9;
+			totalHours = totalHours % 9;
+		}
+
+		if(days > 20){
+			months += days/20;
+			days = days % 20;
+		}
+		totalEffort =  months + ":" + days + ":" + totalHours;
+		return totalEffort;
+	}
 	private JsonElement getTimeline(List<Task> bulk, JsonObject json) throws SQLException{
 		LocalDate currentDate = LocalDate.now();
 		JsonArray jsonArray = new JsonArray();
@@ -125,7 +141,7 @@ public class BusinessController extends HttpServlet {
 			for(Task childTask : childBulk){
 				calculatedUsedEffort += calculateUsedEffort(childTask);
 			}
-			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
+			jsonTask.addProperty("usedEffort", buildTotalEffortTime(calculatedUsedEffort));
 			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task));
 			
 		}
