@@ -503,9 +503,18 @@ function viewTimeline(taskArray){
 	
 	taskArray.forEach(function (item) {
     	let span = document.createElement('SPAN');
-    	span.innerHTML = item.title + ' -> ' + jsonToDisplay(item.dueDate);
+    	
+    	span.innerHTML = item.title + ' -> ' + item.usedEffort + 'h/' + item.effort + effortUnitList[item.effortUnit].unit + ' ' + jsonToDisplay(item.dueDate);
+    	span.title = 'goto task';
+    	span.style.cursor = 'pointer';
+    	span.style.marginLeft = '0.4em';
+    	span.addEventListener('click', ()=>{
+    		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);
+    	})
     	let div = document.createElement('DIV');
     	div.style.width = '100%';
+    	div.style.marginBottom = '0.4em';
+    	div.style.backgroundColor = '#EAEAEA';
     	
     	let innerDiv = document.createElement('DIV');
     	innerDiv.style.display = 'inline-block';
@@ -519,16 +528,7 @@ function viewTimeline(taskArray){
     					return;
     				let path = document.createElement('SPAN');
     				path.style.cursor = 'pointer';
-    				path.addEventListener("click", ()=>{
-    		    		getDataEx('', 'business', '?actionId=24&taskId='+item.taskId, 
-    							function(id, data, defaultOption, funcValue, funcText, eventHandler){
-    		    				let parentPath = getById('timelinePath');
-    		    				while(path.nextSibling != null)
-    		    					parentPath.removeChild(path.nextSibling);
-    							viewTimeline(data.array);
-    						}, null, null, null, null);	
-    		    	})    					
-    				
+  					    				
 	    			if(data.array.length == 0){
 	    				if(getById('timelinePath').lastChild.nodeName == 'SPAN' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
 	    					return;
@@ -539,6 +539,15 @@ function viewTimeline(taskArray){
 	    				getById('timelinePath').appendChild(path);	
 	    				return;
 	    			}
+    				path.addEventListener("click", ()=>{
+    		    		getDataEx('', 'business', '?actionId=24&taskId='+item.taskId, 
+    							function(id, data, defaultOption, funcValue, funcText, eventHandler){
+    		    				let parentPath = getById('timelinePath');
+    		    				while(path.nextSibling != null)
+    		    					parentPath.removeChild(path.nextSibling);
+    							viewTimeline(data.array);
+    						}, null, null, null, null);	
+    		    	});  	    			
     				if(getById('timelinePath').lastChild.nodeName == 'SPAN' && getById('timelinePath').lastChild.getAttribute('data-id') == 0)
     					getById('timelinePath').removeChild(getById('timelinePath').lastChild);
 					path.innerHTML = ' -> ' + item.title;
@@ -554,11 +563,15 @@ function viewTimeline(taskArray){
     	usedEffort.style.float = 'left';
     	usedEffort.innerHTML = item.usedEffort + 'h used';
     	
-    	innerDiv.style.width = (item.leftEffort < 15)?15:((item.leftEffort > 85)? item.leftEffort-(item.leftEffort-85) :item.leftEffort) + '%';
-    	innerDiv.innerHTML = item.effort + effortUnitList[item.effortUnit].unit + ' ' + item.leftEffort + '%'
+//    	innerDiv.style.width = (item.leftEffort < 15)?15:((item.leftEffort > 85)? item.leftEffort-(item.leftEffort-85) :item.leftEffort) + '%';
+    	innerDiv.style.width = (item.leftEffort < 15)?15:item.leftEffort +'%';
+    	innerDiv.innerHTML = item.leftEffort + '%'
+    	innerDiv.style.textAlign = 'right';
+    	let imgTaskType = getTaskTypeImg(item.taskType.taskTypeId)
     	
-    	div.appendChild(usedEffort);
+//    	div.appendChild(usedEffort);
     	div.appendChild(innerDiv);
+    	divTimeline.appendChild(imgTaskType);
     	divTimeline.appendChild(span);
     	divTimeline.appendChild(div);
     	colorPos = (colorPos < colors.length-1)?++colorPos:0;
