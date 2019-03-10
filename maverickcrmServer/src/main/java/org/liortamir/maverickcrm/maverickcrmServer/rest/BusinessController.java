@@ -3,6 +3,8 @@ package org.liortamir.maverickcrm.maverickcrmServer.rest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -112,7 +114,7 @@ public class BusinessController extends HttpServlet {
 	}
 
 	private JsonElement getTimeline(List<Task> bulk, JsonObject json) throws SQLException{
-
+		LocalDate currentDate = LocalDate.now();
 		JsonArray jsonArray = new JsonArray();
 		for(Task task : bulk){
 			jsonArray.add(jsonHelper.toJsonTree(task));
@@ -124,19 +126,29 @@ public class BusinessController extends HttpServlet {
 				calculatedUsedEffort += calculateUsedEffort(childTask);
 			}
 			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
+			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task));
+			
 		}
 		ServletHelper.addJsonTree(jsonHelper, json, "array", jsonArray);
-		/*
-		let milliInHour = 1000*60*60;
-		let taskDate = new Date(item.dueDate.year +'-' + item.dueDate.month +'-' + item.dueDate.day);
-    	let dateDiffMs = (taskDate.getTime() - currentDate.getTime()) / milliInHour / 24; //difference in days
-    	dateDiffMs -= (dateDiffMs/7*2) // remove friday and saturday
-    	
-    	let disp = (dateDiffMs < 0)?100:(100 - (dateDiffMs *9 / effortUnitList[item.effortUnit].getHours(item.effort)*100));
-    	disp = (disp < 0)?0:Math.floor(disp); // if disp < 0 then task is 0%
-		 */
 		
 		return json;
+	}
+	
+	private int caculateDateDiff(LocalDate currentDate, Task task){
+		int remainingPercentage = 0;
+		Period period = Period.between(currentDate, task.getDueDate());
+		int daysToDueDate = period.getDays();
+		
+		daysToDueDate -= daysToDueDate / 7 * 2;	// 5 working days, remove friday and saturday
+		int hoursToDueDate = (daysToDueDate < 0)?0 : daysToDueDate * 9;
+		int effortInHours = getEffortHours(task.getEffortUnit(),task.getEffort());
+		if(hoursToDueDate == 0)
+			remainingPercentage = 100;
+		else if(hoursToDueDate < effortInHours)
+			remainingPercentage = (int) ((((double)(effortInHours - hoursToDueDate) / (double)effortInHours) * 100));
+
+		remainingPercentage = (remainingPercentage <0)?0 : remainingPercentage;	// if < 0 then task is 0%
+		return remainingPercentage;		
 	}
 	
 	private int calculateUsedEffort(Task task){
@@ -144,8 +156,14 @@ public class BusinessController extends HttpServlet {
 		//n/a, new, Running, Deliered, Closed, On Hold
 		double[] ststusEffort  = {0, 0, 0.25, 0.75, 1, 0};
 		
-		int effort = task.getEffort();
-		switch(task.getEffortUnit()){
+		hours = getEffortHours(task.getEffortUnit(),task.getEffort());
+		hours = (int) Math.round((hours * ststusEffort[task.getStatus().getStatusId()]));
+		return hours;
+	}
+	
+	private int getEffortHours(int effortUnit, int effort){
+		int hours = 0;
+		switch(effortUnit){
 		case 1:
 			hours = effort;
 			break;
@@ -155,11 +173,10 @@ public class BusinessController extends HttpServlet {
 		case 3:
 			hours = monthsToHours(effort);
 			break;
-		}
-		
-		hours = (int) (hours * ststusEffort[task.getStatus().getStatusId()]);
+		}	
 		return hours;
 	}
+	
 	private int daysToHours(int effort){
 		int hours = 0;
 		hours = effort * 9;

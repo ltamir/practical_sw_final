@@ -546,33 +546,17 @@ function viewTimeline(taskArray){
 					viewTimeline(data.array);
 				}, null, null, null, null);	
     	})
-    	let taskDate = new Date();
-    	taskDate.setFullYear(item.dueDate.year);
-    	taskDate.setMonth((item.dueDate.month-1));
-    	taskDate.setDate(item.dueDate.day);
-    	let daysDiff = (taskDate.getTime() - currentDate.getTime()) / milliInHour / 24; //difference in days
-    	daysDiff -= (daysDiff/7*2) // remove friday and saturday
-    	let hoursToDueDate = (daysDiff < 0)?0:daysDiff * 9;
-    	
-    	let disp = (100 - (hoursToDueDate / effortUnitList[item.effortUnit].getHours(item.effort)*100));
-    	disp = (disp < 0)?0:Math.floor(disp); // if disp < 0 then task is 0%
-    	innerDiv.style.width = ((disp < 15)?15:((disp == 100)?85:disp)) + '%'
-    	
+    	    	
     	let usedEffort = document.createElement('SPAN');
-//    	usedEffort.style.display = 'inline-block';
     	usedEffort.style.backgroundColor = colors[colorPos];
     	usedEffort.style.color = 'white';
     	usedEffort.style.width = '15%';
     	usedEffort.style.float = 'left';
     	usedEffort.innerHTML = item.usedEffort + 'h used';
     	
-    	let effortDetails = document.createElement('SPAN');
-    	effortDetails.innerHTML = item.effort + effortUnitList[item.effortUnit].unit + ' ' + disp + '%';
-    	effortDetails.style.color = 'inherit';
-    	effortDetails.style.float = 'right';
+    	innerDiv.style.width = (item.leftEffort < 15)?15:((item.leftEffort > 85)? item.leftEffort-(item.leftEffort-85) :item.leftEffort) + '%';
+    	innerDiv.innerHTML = item.effort + effortUnitList[item.effortUnit].unit + ' ' + item.leftEffort + '%'
     	
-    	innerDiv.appendChild(usedEffort);
-    	innerDiv.appendChild(effortDetails);
     	div.appendChild(usedEffort);
     	div.appendChild(innerDiv);
     	divTimeline.appendChild(span);
