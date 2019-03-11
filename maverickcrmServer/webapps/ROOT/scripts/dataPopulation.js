@@ -153,27 +153,27 @@ function createTaskRow(row, item, parent, toggler){
     taskTypeCell.appendChild(expandImg);
     taskTypeCell.classList.add("cssTaskListType");   
 	
-    let titleCell  = row.insertCell(1);
-	titleCell.innerHTML = item.title;
+    let titleCell  = row.insertCell(1); 
+	titleCell.appendChild(document.createTextNode(item.title));
 	setTextDirection(titleCell, titleCell.innerHTML);
     titleCell.classList.add("cssTaskListTitle");         
 
     let dueDateCell  = row.insertCell(2);
     let day = (item.dueDate.day<10)?'0'+item.dueDate.day:item.dueDate.day;
     let month = (item.dueDate.month<10)?'0'+item.dueDate.month:item.dueDate.month;
-    dueDateCell.innerHTML = day + "/" + month + "/" + item.dueDate.year;
+    dueDateCell.appendChild(document.createTextNode(day + "/" + month + "/" + item.dueDate.year));
     dueDateCell.classList.add("cssTaskListDueDate");
 	
     let effortCell  = row.insertCell(3);
 	effortCell.classList.add("cssTaskListEffort");
 	let strEffort = new String(item.effort)
-	effortCell.innerHTML = (strEffort.length==1)?'0'+strEffort:strEffort ;
-
-	effortCell.innerHTML +=' ' + effortUnitList[item.effortUnit].unit;
+	strEffort = (strEffort.length==1)?'0'+strEffort:strEffort;
+	strEffort +=' ' + effortUnitList[item.effortUnit].unit;
+	effortCell.appendChild(document.createTextNode(strEffort));
 
 	let statusNameCell  = row.insertCell(4);
 	statusNameCell.classList.add("cssTaskListStatus");
-	statusNameCell.innerHTML = item.status.statusName;	
+	statusNameCell.appendChild(document.createTextNode(item.status.statusName));
 }
 
 
