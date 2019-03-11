@@ -42,13 +42,18 @@ public class BusinessController extends HttpServlet {
 		String response;
 		JsonObject json = new JsonObject();
 		Login login = null;
+		int taskId = 0;
 		List<Task> bulk = null;
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action){
 			case ACT_TOTAL_HOURS:
-				getTotalHours(req, json);
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
+				Task task;
+				req.getRequestDispatcher("task?actionId=3&taskId=" + taskId).include(req, resp);
+				task = (Task)req.getSession().getAttribute("task");				
+				getTotalHours(task, json);
 				break;
 			case ACT_GENERATE_HASH:
 				String toHash = req.getParameter("tohash");
@@ -64,7 +69,7 @@ public class BusinessController extends HttpServlet {
 			case ACT_TIMELINE_PROJECT:
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
-				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				bulk = dal.getTimelineTask(taskId);
 				getTimeline(bulk, json);		
 				break;
@@ -81,20 +86,19 @@ public class BusinessController extends HttpServlet {
 		out.println(response);
 	}
 	
-	private JsonObject getTotalHours(HttpServletRequest req, JsonObject json) throws SQLException{
+	private JsonObject getTotalHours(Task task, JsonObject json) throws SQLException{
 		int hours = 0;
 		int days = 0;
 		int months = 0;
 		int totalHours = 0;
-		int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 
-		hours = dal.getHours(taskId);
+		hours = dal.getHours(task.getTaskId());
 		totalHours += hours;
 		json.addProperty("hours", hours);
-		days = dal.getDays(taskId);
+		days = dal.getDays(task.getTaskId());
 		totalHours += days*9;
 		json.addProperty("days", days);
-		months = dal.getMonths(taskId);
+		months = dal.getMonths(task.getTaskId());
 		totalHours += months * 20 * 9;
 		json.addProperty("months", months);
 
@@ -109,7 +113,7 @@ public class BusinessController extends HttpServlet {
 			days = days % 20;
 		}
 		json.addProperty("total", months + ":" + days + ":" + hours);
-	
+		json.addProperty("taskTotal", buildTotalEffortTime(getEffortHours(task.getEffortUnit(),task.getEffort())));
 		return json;
 	}
 
@@ -141,8 +145,9 @@ public class BusinessController extends HttpServlet {
 			for(Task childTask : childBulk){
 				calculatedUsedEffort += calculateUsedEffort(childTask);
 			}
-			jsonTask.addProperty("usedEffort", buildTotalEffortTime(calculatedUsedEffort));
-			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task));
+			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime(calculatedUsedEffort));
+			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
+			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task, calculatedUsedEffort));
 			
 		}
 		ServletHelper.addJsonTree(jsonHelper, json, "array", jsonArray);
@@ -150,7 +155,7 @@ public class BusinessController extends HttpServlet {
 		return json;
 	}
 	
-	private int caculateDateDiff(LocalDate currentDate, Task task){
+	private int caculateDateDiff(LocalDate currentDate, Task task, int usedEffort){
 		int remainingPercentage = 0;
 		Period period = Period.between(currentDate, task.getDueDate());
 		int daysToDueDate = period.getDays();
@@ -159,12 +164,14 @@ public class BusinessController extends HttpServlet {
 //		if(daysToDueDate >5)
 //			daysToDueDate -= daysToDueDate / 7 * 2;	// 5 working days, remove friday and saturday
 		int hoursToDueDate = (daysToDueDate < 0)?0 : daysToDueDate * 9;
+		hoursToDueDate -= usedEffort;
 		int effortInHours = getEffortHours(task.getEffortUnit(),task.getEffort());
 		if(hoursToDueDate == 0)
 			remainingPercentage = 100;
 		else if(hoursToDueDate < effortInHours)
 			remainingPercentage = (int) ((((double)(effortInHours - hoursToDueDate) / (double)effortInHours) * 100));
-
+		else
+			remainingPercentage = 100 - (int)((double)((effortInHours - usedEffort) / (double)effortInHours) * 100);
 		remainingPercentage = (remainingPercentage <0)?0 : remainingPercentage;	// if < 0 then task is 0%
 		return remainingPercentage;		
 	}

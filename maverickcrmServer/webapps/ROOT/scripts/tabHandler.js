@@ -504,7 +504,7 @@ function viewTimeline(taskArray){
 	taskArray.forEach(function (item) {
     	let span = document.createElement('SPAN');
     	
-    	span.innerHTML = item.title + ' -> ' + item.usedEffort + 'h/' + item.effort + effortUnitList[item.effortUnit].unit + ' ' + jsonToDisplay(item.dueDate);
+    	span.innerHTML = item.title + ' -> ' + item.usedEffortFormatted + 'h/' + item.effort + effortUnitList[item.effortUnit].unit + ' ' + jsonToDisplay(item.dueDate);
     	span.title = 'goto task';
     	span.style.cursor = 'pointer';
     	span.style.marginLeft = '0.4em';
@@ -560,16 +560,17 @@ function viewTimeline(taskArray){
     	usedEffort.style.backgroundColor = colors[colorPos];
     	usedEffort.style.color = 'white';
     	usedEffort.style.width = '15%';
-    	usedEffort.style.float = 'left';
+    	usedEffort.style.float = 'left';    	
     	usedEffort.innerHTML = item.usedEffort + 'h used';
     	
-//    	innerDiv.style.width = (item.leftEffort < 15)?15:((item.leftEffort > 85)? item.leftEffort-(item.leftEffort-85) :item.leftEffort) + '%';
-    	innerDiv.style.width = (item.leftEffort < 15)?15:item.leftEffort +'%';
-    	innerDiv.innerHTML = item.leftEffort + '%'
+    	
+    	let totalLeftEffort = item.leftEffort;
+    	innerDiv.style.width = (totalLeftEffort < 15)? 15 : ( (totalLeftEffort > 100)? 100 : totalLeftEffort ) +'%';
+    	innerDiv.innerHTML = ( (totalLeftEffort >100)? 100 : totalLeftEffort ) +  '%'
     	innerDiv.style.textAlign = 'right';
+    	innerDiv.title = 'Show child tasks';
     	let imgTaskType = getTaskTypeImg(item.taskType.taskTypeId)
     	
-//    	div.appendChild(usedEffort);
     	div.appendChild(innerDiv);
     	divTimeline.appendChild(imgTaskType);
     	divTimeline.appendChild(span);

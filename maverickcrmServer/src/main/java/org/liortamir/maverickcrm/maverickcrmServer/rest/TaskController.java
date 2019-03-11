@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -75,6 +76,10 @@ public class TaskController extends HttpServlet {
 					throw new InvalidPermissionException(taskId,login.getLoginId());
 				}
 				task = dal.get(taskId, login.getLoginId());
+				if(req.getDispatcherType() == DispatcherType.INCLUDE) {
+					req.getSession().setAttribute("task", task);
+					return;
+				}				
 				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
