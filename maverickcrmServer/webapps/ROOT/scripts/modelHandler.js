@@ -181,13 +181,14 @@ function viewTask(id, data){
 function viewTotalEffort(){
 	getDataEx('', 'business', '?actionId=21&taskId=' + taskModel.taskId.getValue(), 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
-				getById('totalTaskEffort').innerHTML = data.total;
+				getById('totalTaskEffort').innerHTML = data.taskTotal + '/' + data.total;
+
 				let effortState = getById('imgEffortStatus');
 				let taskEffort = effortUnitList[taskModel.effortUnit.dom.value].getHours(taskModel.effort.dom.value);
 
 				if(taskEffort < data.totalHours){
 					effortState.src='images/state_alert.png';
-					effortState.title = 'effort is smaller than total effort';
+					effortState.title = 'effort is smaller than total effort '+ data.taskTotal;
 				}else{
 					effortState.src='images/state_success.png';
 					effortState.title = 'effort is correct';			
