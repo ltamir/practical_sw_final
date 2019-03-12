@@ -26,22 +26,34 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     }
     
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
+    let container = document.createElement('TBODY');
+    
+    let parentContainer = getById('tbody' + rowIndex);
+    if(parentContainer != null)
+    	parentTable.insertBefore(container,  parentContainer.rows[rowIndex]);
+    else
+    	parentTable.insertBefore(container,  parentTable.rows[rowIndex]);
+    container.id = 'tbody' + rowIndex;
+    container.style.display='inline-block';
+    container.classList.add('card');
     data.array.forEach(function (item) {
-    	var row = parentTable.insertRow(rowIndex+rowPos);
-    	if(rowPos == firstRow){
-    		row.style.borderTop='3px outset #8B8B8B';	
-    	}
-    	if(rowPos == lastRow){
-//    		row.style.borderBottom='3px inset #b1b1b0';
-    		row.style.display='inline-block';
-    		row.classList.add('card');
-    	}
+//    	var row = parentTable.insertRow(rowIndex+rowPos);
+    	var row = container.insertRow(-1);
+    	
+//    	if(rowPos == firstRow){
+//    		row.style.borderTop='3px outset #8B8B8B';	
+//    	}
+//    	if(rowPos == lastRow){
+////    		row.style.borderBottom='3px inset #b1b1b0';
+//    		row.style.display='inline-block';
+//    		row.classList.add('card');
+//    	}
     	
     	taskItemList.add(parentItem, new taskItem(item.childTask.taskId, row))
 
     	row.setAttribute('data-isTaskChild', item.parentTask.taskId);
-    	row.style.borderLeft='3px outset #8B8B8B';
-    	row.style.borderRight='3px inset #b1b1b0';
+    	row.style.borderLeft='3px outset #FBFBFB';
+    	row.style.borderRight='3px inset #FBFBFB';
     	createTaskRow(row, item.childTask, parentTable, toggler); 
     	rowPos++;
     }); 
@@ -129,20 +141,21 @@ function createTaskRow(row, item, parent, toggler){
 	taskTypeCell.classList.add("cssTaskListCustomer");
     let typeImg = getTaskTypeImg(item.taskType.taskTypeId);
     typeImg.style.marginRight= '0.3em';
-
     taskTypeCell.appendChild(typeImg);
 
     let expandImg = document.createElement("IMG");
-
     setImage(expandImg, taskListItemStat.expandImg); 
     expandImg.addEventListener("click", function(event){
     	evt = window.event || event; 
 	    if(this === evt.target) {
-	    	let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
-	    	if(parentTaskItem == null) return;
-	    	if(parentTaskItem.hasChildren){
-	    		taskItemList.deleteRow(parent, parentTaskItem);
-	    		parentTaskItem.hasChildren = false;
+//	    	let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
+//	    	if(parentTaskItem == null) return;
+	    	let container = getById('tbody' + row.rowIndex);
+	    	if(container != null){
+	    		getById('taskList').removeChild(container);
+//	    	if(parentTaskItem.hasChildren){
+//	    		taskItemList.deleteRow(parent, parentTaskItem);
+//	    		parentTaskItem.hasChildren = false;
 	    		setImage(expandImg, taskListItemStat.expandImg);
 	    	}else{
 		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
