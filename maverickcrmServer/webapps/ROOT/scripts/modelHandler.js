@@ -341,8 +341,10 @@ function postTaskSave(resp, method){
 		let addChildTask = getById('addChildTask');
 		if(addChildTask.getAttribute('data-parentTask') != 0){
 			taskRelationModel.taskRelationId.setValue(0);
+			taskRelationModel.taskRelationType.setValue(2);
 			saveRelation(addChildTask.getAttribute('data-parentTask'), resp.taskId, 1);
 			addChildTask.setAttribute('data-parentTask', 0);
+			addChildTask.setAttribute('data-state', 0);
 			toggleAsBotton(addChildTask);
 		}
 		
