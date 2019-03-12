@@ -33,7 +33,6 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     let container = document.createElement('TBODY');
     
-    
     let parentContainer = rowId.parentElement;
     if(parentContainer.id != 'taskList')
     	parentContainer.insertBefore(container,  parentContainer.rows[rowIndex+1]);
@@ -111,15 +110,9 @@ function restoreHierarchy(prevItemList, newTaskItemList){
 	}
 }
 
-function updateTaskRow(){
-	let row = null;
-	let taskList = getById('taskList');
-	
-    for (var i = taskList.rows.length - 1; i >= 0; i--) {
-    	let id = 'taskList'+taskModel.taskId.getValue();
-    	if(id == taskList.rows[i].id)
-    		row = taskList.rows[i];
-    }
+function updateTaskRow(taskId){
+	let row = getById('taskList' + taskId);
+
     if(row == null) return;
     setImage(row.cells[0].children[0], taskTypeList[taskModel.taskType.getValue()]);
     row.cells[1].innerHTML = taskModel.title.getValue();
@@ -158,8 +151,8 @@ function createTaskRow(row, item, parent, toggler){
 	    	if(expandImg.getAttribute('data-id') == taskRowEnum.collapse){
 		    	let container = getById('tbody' + item.taskId);
 		    	if(container != null){
-		    		let parentCOntainer = container.parentElement;
-		    		parentCOntainer.removeChild(container);    	
+		    		let parentContainer = container.parentElement;
+		    		parentContainer.removeChild(container);    	
 		    		setImage(expandImg, taskListItemStat.expandImg);
 		    		expandImg.setAttribute('data-id', taskRowEnum.expand);
 		    	}

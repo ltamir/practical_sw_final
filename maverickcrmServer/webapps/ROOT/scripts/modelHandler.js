@@ -412,7 +412,7 @@ function postTaskSave(resp, method){
 	}
 	
 	taskModel.taskType.prevTaskType = taskModel.taskType.getValue();
-	updateTaskRow();
+	updateTaskRow(resp.taskId);
 	setTextDirectionModel(taskModel);
 	viewTotalEffort();
 }
