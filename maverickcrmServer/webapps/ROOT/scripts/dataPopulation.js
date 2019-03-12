@@ -12,28 +12,34 @@ function setImage(targetImg, imgNode){
 
 function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler){
 
-	let parentTable = getById(id);
+	let parentTable = getById('taskList');
     
     let firstRow = 0;
     let lastRow = data.array.length-1;
     let rowPos = 0;
     let parentItem = null;
+    let rowId = getById('taskList' + id);
+    let expandImg = rowId.children[0].children[1];
     if(data.array.length > 0){
     	parentItem = taskItemList.get(taskItemList.root, data.array[0].parentTask.taskId);
     }else{
-    	setImage(parentTable.rows[rowIndex-1].children[0].children[1], taskListItemStat.noChildrenImg);
+    	expandImg.setAttribute('data-id', taskRowEnum.noChildren);
+    	setImage(expandImg, taskListItemStat.noChildrenImg);
     	return;
     }
     
+    setImage(expandImg, taskListItemStat.collapseImg); 
+    expandImg.setAttribute('data-id', taskRowEnum.collapse);
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
     let container = document.createElement('TBODY');
     
-    let parentContainer = getById('tbody' + rowIndex);
-    if(parentContainer != null)
-    	parentTable.insertBefore(container,  parentContainer.rows[rowIndex]);
+    
+    let parentContainer = rowId.parentElement;
+    if(parentContainer.id != 'taskList')
+    	parentContainer.insertBefore(container,  parentContainer.rows[rowIndex+1]);
     else
-    	parentTable.insertBefore(container,  parentTable.rows[rowIndex]);
-    container.id = 'tbody' + rowIndex;
+    	parentTable.insertBefore(container,  parentTable.rows[rowIndex+1]);
+    container.id = 'tbody' + id;
     container.style.display='inline-block';
     container.classList.add('card');
     data.array.forEach(function (item) {
@@ -144,23 +150,35 @@ function createTaskRow(row, item, parent, toggler){
     taskTypeCell.appendChild(typeImg);
 
     let expandImg = document.createElement("IMG");
+    expandImg.setAttribute('data-id', taskRowEnum.expand);	//0-expand, 1-collapse, 2-no children
     setImage(expandImg, taskListItemStat.expandImg); 
     expandImg.addEventListener("click", function(event){
     	evt = window.event || event; 
 	    if(this === evt.target) {
+	    	if(expandImg.getAttribute('data-id') == taskRowEnum.collapse){
+		    	let container = getById('tbody' + item.taskId);
+		    	if(container != null){
+		    		let parentCOntainer = container.parentElement;
+		    		parentCOntainer.removeChild(container);    	
+		    		setImage(expandImg, taskListItemStat.expandImg);
+		    		expandImg.setAttribute('data-id', taskRowEnum.expand);
+		    	}
+	    	}else if(expandImg.getAttribute('data-id') == taskRowEnum.expand){
+		    	getDataEx(item.taskId, 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.sectionRowIndex, null, null, null);
+//		    	setImage(expandImg, taskListItemStat.collapseImg); 
+//		    	expandImg.setAttribute('data-id', taskRowEnum.collapse);
+	    	} 
+	    	
 //	    	let parentTaskItem = taskItemList.get(taskItemList.root, item.taskId);
 //	    	if(parentTaskItem == null) return;
-	    	let container = getById('tbody' + row.rowIndex);
-	    	if(container != null){
-	    		getById('taskList').removeChild(container);
 //	    	if(parentTaskItem.hasChildren){
 //	    		taskItemList.deleteRow(parent, parentTaskItem);
 //	    		parentTaskItem.hasChildren = false;
-	    		setImage(expandImg, taskListItemStat.expandImg);
-	    	}else{
-		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.rowIndex, null, null, null);
-		    	setImage(expandImg, taskListItemStat.collapseImg);    		
-	    	}
+//	    		setImage(expandImg, taskListItemStat.expandImg);
+//	    	}else{
+//		    	getDataEx('taskList', 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.sectionRowIndex, null, null, null);
+//		    	setImage(expandImg, taskListItemStat.collapseImg);    		
+//	    	}
 	    }
     });
     taskTypeCell.appendChild(expandImg);

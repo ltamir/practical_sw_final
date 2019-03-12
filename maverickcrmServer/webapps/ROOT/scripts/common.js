@@ -3,10 +3,12 @@
 var Module = {customer:1, contact:2, task:3, tasklog:4, relation:5, attachment:6, menu:7, common:8, login:9, address:10}
 var dbg = 0;
 var msgType = {ok:1, nok:2};
+var taskRowEnum = {expand:0, collapse:1, noChildren:2}
 var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8, permission:9}
 var activeTaskTab = tabEnum.taskLog;
 var activeCrmTab;
 
+var taskRowState;
 function subscriber(module, listener){
 	this.module = module;
 	this.listener = listener
