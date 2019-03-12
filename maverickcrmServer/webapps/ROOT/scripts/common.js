@@ -8,7 +8,7 @@ var tabEnum = {taskLog:1, relation:2, attachment:3, customer:4, timeline:5, link
 var activeTaskTab = tabEnum.taskLog;
 var activeCrmTab;
 
-var taskRowState;
+var taskListWA = (navigator.userAgent.search('Safari') >0)?1:0;
 function subscriber(module, listener){
 	this.module = module;
 	this.listener = listener
