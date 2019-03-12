@@ -555,17 +555,9 @@ function viewTimeline(taskArray){
 					viewTimeline(data.array);
 				}, null, null, null, null);	
     	})
-    	    	
-    	let usedEffort = document.createElement('SPAN');
-    	usedEffort.style.backgroundColor = colors[colorPos];
-    	usedEffort.style.color = 'white';
-    	usedEffort.style.width = '15%';
-    	usedEffort.style.float = 'left';    	
-    	usedEffort.innerHTML = item.usedEffort + 'h used';
-    	
     	
     	let totalLeftEffort = item.leftEffort;
-    	innerDiv.style.width = (totalLeftEffort < 15)? 15 : ( (totalLeftEffort > 100)? 100 : totalLeftEffort ) +'%';
+    	innerDiv.style.width = totalLeftEffort +'%';
     	innerDiv.innerHTML = ( (totalLeftEffort >100)? 100 : totalLeftEffort ) +  '%'
     	innerDiv.style.textAlign = 'right';
     	innerDiv.title = 'Show child tasks';

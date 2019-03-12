@@ -163,8 +163,8 @@ public class BusinessController extends HttpServlet {
 		daysToDueDate += period.getYears() * 12 * 20;
 //		if(daysToDueDate >5)
 //			daysToDueDate -= daysToDueDate / 7 * 2;	// 5 working days, remove friday and saturday
-		int hoursToDueDate = (daysToDueDate < 0)?0 : daysToDueDate * 9;
-		hoursToDueDate -= usedEffort;
+		int hoursToDueDate = (daysToDueDate < 0)?0 : (daysToDueDate * 9);
+		hoursToDueDate = (hoursToDueDate == 0)? 0 : (hoursToDueDate - usedEffort);
 		int effortInHours = getEffortHours(task.getEffortUnit(),task.getEffort());
 		if(hoursToDueDate == 0)
 			remainingPercentage = 100;
