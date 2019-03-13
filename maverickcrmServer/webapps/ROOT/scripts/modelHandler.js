@@ -329,6 +329,7 @@ function saveTask(){
 }
 
 function postTaskSave(resp, method){
+	let isNewChildTask = false;
 	if(taskModel.taskId.getValue() != resp.taskId){	// if this is a new task
 		if(taskModel.taskType.getValue() == 1){	// if this is a project contact's login shall edit permission on it
 			taskPermissionModel.taskPermissionId.setValue(0);
@@ -345,6 +346,7 @@ function postTaskSave(resp, method){
 			saveRelation(addChildTask.getAttribute('data-parentTask'), resp.taskId, 2);
 			addChildTask.setAttribute('data-parentTask', 0);
 			addChildTask.setAttribute('data-state', 0);
+			isNewChildTask = true;
 			toggleAsBotton(addChildTask);
 		}
 		
@@ -414,7 +416,10 @@ function postTaskSave(resp, method){
 	taskModel.taskType.prevTaskType = taskModel.taskType.getValue();
 	updateTaskRow(resp.taskId);
 	setTextDirectionModel(taskModel);
-	viewTotalEffort();
+	
+	addChildTask.setAttribute('data-state', 0);
+	if(!isNewChildTask)
+		viewTotalEffort();
 }
 
 function saveTaskLog(){
