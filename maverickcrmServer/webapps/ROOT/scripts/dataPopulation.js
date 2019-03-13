@@ -41,6 +41,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     container.id = 'tbody' + id;
     container.style.display='inline-block';
     container.classList.add('card');
+    setTotalTasks(data.array.length, true);
     data.array.forEach(function (item) {
 //    	var row = parentTable.insertRow(rowIndex+rowPos);
     	var row = container.insertRow(-1);
@@ -64,6 +65,15 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     }); 
 }
 
+function setTotalTasks(taskCount, add=false){
+	
+    let totalTasks = getById('totalTasks');
+    if(add)
+    	(taskCount += parseInt(totalTasks.getAttribute('data-count')));
+    totalTasks.setAttribute('data-count',taskCount);
+    totalTasks.innerHTML = taskCount + ' tasks';	
+}
+
 function fillTaskList(id, data){
 	if(data.status == 'nack'){
 		addLog(data.err);
@@ -71,20 +81,30 @@ function fillTaskList(id, data){
 		return;
 	}
 	//taskListBody
-	let selectElement = getById(id);
-    for (var i = selectElement.rows.length - 1; i >= 0; i--) {
-        selectElement.deleteRow(i);
-    }
+	let taskList = getById(id);
+//    for (var i = selectElement.rows.length - 1; i >= 0; i--) {
+//        selectElement.deleteRow(i);
+//    }
+	for(let i = taskList.childNodes.length-1; i > -1; i--)
+		taskList.removeChild(taskList.childNodes[i]);
+	
+	let tbl = taskList.parentElement;
+	tbl.removeChild(taskList);
+	taskList = document.createElement('TBODY');
+	taskList.id = 'taskList';
+	tbl.appendChild(taskList);
+	
     let prevItemList = Object.assign({}, taskItemList);
     taskItemList.clear(taskItemList.head);
 
     let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
+    setTotalTasks(data.array.length);  
     data.array.forEach(function (item) {
     	if(dbg==Module.task)
     		addLog(item);    	
-    	var newRow = selectElement.insertRow(selectElement.rows.length);
+    	var newRow = taskList.insertRow(taskList.rows.length);
     	taskItemList.add(taskItemList.root, new taskItem(item.taskId, newRow));
-    	createTaskRow(newRow, item, selectElement, toggler);    	
+    	createTaskRow(newRow, item, taskList, toggler);    	
     }); 
     
 //    restoreHierarchy(prevItemList.root, taskItemList);
@@ -152,7 +172,9 @@ function createTaskRow(row, item, parent, toggler){
 		    	let container = getById('tbody' + item.taskId);
 		    	if(container != null){
 		    		let parentContainer = container.parentElement;
+		    		setTotalTasks((-1)*container.rows.length, true);
 		    		parentContainer.removeChild(container);    	
+
 		    		setImage(expandImg, taskListItemStat.expandImg);
 		    		expandImg.setAttribute('data-id', taskRowEnum.expand);
 		    	}
