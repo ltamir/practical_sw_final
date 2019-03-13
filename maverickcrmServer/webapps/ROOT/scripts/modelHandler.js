@@ -82,7 +82,7 @@ function newTaskLog(){
 
 	taskLogModel.taskLogId.setValue(0);
 	taskLogModel.contact.setValue(loggedContact.contactId);
-	taskLogModel.taskLogType.setValue(0);
+	taskLogModel.taskLogType.setValue(1);
 	taskLogModel.description.setValue('');
 	setMsg(msgType.ok, 'Ready');
 }
