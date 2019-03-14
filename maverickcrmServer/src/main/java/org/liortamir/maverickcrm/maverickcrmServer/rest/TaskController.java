@@ -31,7 +31,7 @@ import com.google.gson.JsonObject;
  * @author liort
  *
  */
-@WebServlet(name = "Task", urlPatterns="/task")
+@WebServlet(name = "Task", urlPatterns="/task/*")
 @MultipartConfig
 public class TaskController extends HttpServlet {
 
@@ -50,7 +50,7 @@ public class TaskController extends HttpServlet {
 		int taskId = 0;
 
 		try {
-			req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
+			req.getRequestDispatcher("/authenticate?actionId=16").include(req, resp);
 			Login login = (Login)req.getSession().getAttribute("login");
 			
 			ActionEnum action = ServletHelper.getAction(req);
@@ -69,8 +69,11 @@ public class TaskController extends HttpServlet {
 				
 				break;
 			case GET_SINGLE:
-				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId()).include(req, resp);
+				String id = req.getParameter(APIConst.FLD_TASK_ID);
+				if(id == null)
+					id = req.getPathInfo().substring(1);
+				taskId = Integer.parseInt(id);
+				req.getRequestDispatcher("/taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId() + "&taskId=" + id).include(req, resp);
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
 				if(taskPermission == null){// in case there are no permissions
 					throw new InvalidPermissionException(taskId,login.getLoginId());

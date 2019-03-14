@@ -152,7 +152,7 @@ function createTaskRow(row, item, parent, toggler){
 		if(row.childNodes[0].childNodes[1] === evt.target)
 			return;
 		toggler.toggle(row);
-		getData('', 'task', '?actionId=3&taskId='+item.taskId, viewTask);		
+		getData('', 'task/' + item.taskId, '', viewTask);		
 	
 	});
 	

@@ -85,6 +85,9 @@ public class ServletHelper {
 			int actionId = Integer.parseInt(actionParam);
 			actionEnum = ACTION_LIST[actionId];
 		}catch(NumberFormatException | NullPointerException e) {
+			String pathItem = req.getPathInfo();
+			if(pathItem != null)
+				return ActionEnum.GET_SINGLE;
 			throw new InvalidActionException(actionParam);
 		}
 		return actionEnum;
