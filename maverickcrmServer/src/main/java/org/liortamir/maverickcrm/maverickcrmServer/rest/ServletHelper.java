@@ -78,16 +78,6 @@ public class ServletHelper {
 		addJsonTree(jsonHelper, json, String.valueOf(key), obj);
 	}
 	
-	public static int getActionId(String action) throws InvalidActionException{
-		int actionId = 0;
-		try {
-			actionId = Integer.parseInt(action);
-		}catch(NumberFormatException e) {
-			throw new InvalidActionException(action);
-		}
-		return actionId;
-	}
-	
 	public static ActionEnum getAction(HttpServletRequest req) throws InvalidActionException{
 		ActionEnum actionEnum;
 		String actionParam = req.getParameter(APIConst.PARAM_ACTION_ID);
