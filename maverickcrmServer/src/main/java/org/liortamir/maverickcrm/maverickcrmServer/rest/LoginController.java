@@ -102,7 +102,7 @@ public class LoginController extends HttpServlet {
 					contactId /= 10;
 				}
 			}
-			loginId = LoginDAL.getInstance().insert(username, password, contactId);
+			loginId = dal.insert(username, password, contactId);
 			json.addProperty(APIConst.FLD_LOGIN_ID, loginId);
 			ServletHelper.doSuccess(json);
 		}catch(NullPointerException | NumberFormatException | SQLException e) {
@@ -146,9 +146,9 @@ public class LoginController extends HttpServlet {
 				}
 			}
 
-			LoginDAL.getInstance().update(username, contactId, loginId);
+			dal.update(username, contactId, loginId);
 			if(password != null && password.length()>4)
-				LoginDAL.getInstance().updatePassword(password, loginId);
+				dal.updatePassword(password, loginId);
 			
 			int loggedInId = (Integer)req.getSession().getAttribute("loginId");
 			if(loggedInId == loginId)

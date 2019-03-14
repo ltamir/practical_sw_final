@@ -31,6 +31,7 @@ public class CustomerTaskController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
 	
+	private CustomerTaskDAL dal = CustomerTaskDAL.getInstance();
 	private Gson jsonHelper = new Gson();
 
 	@Override
@@ -50,21 +51,21 @@ public class CustomerTaskController extends HttpServlet {
 			switch(action) {
 			case GET_SINGLE:
 				id = Integer.parseInt(req.getParameter("customerTaskId"));
-				customerTask = CustomerTaskDAL.getInstance().get(id);
+				customerTask = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "customerTask", customerTask);
 				break;
 			case CUSTOMERTASK_BY_CUSTOMER:
 				id = Integer.parseInt(req.getParameter("customerId"));
-				bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
+				bulk = dal.getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 			case CUSTOMERTASK_BY_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
-				bulk = CustomerTaskDAL.getInstance().getByTask(id);
+				bulk = dal.getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 			case GET_ALL:
-				bulk = CustomerTaskDAL.getInstance().getAll(false);
+				bulk = dal.getAll(false);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 				default:
@@ -88,7 +89,7 @@ public class CustomerTaskController extends HttpServlet {
 		try {
 			int customerId = Integer.parseInt(req.getParameter("customerId"));
 			int taskId = Integer.parseInt(req.getParameter("taskId"));
-			int customerTaskId = CustomerTaskDAL.getInstance().insert(customerId, taskId);
+			int customerTaskId = dal.insert(customerId, taskId);
 			json.addProperty(APIConst.FLD_CUSTOMERTASK_ID, customerTaskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {
@@ -118,7 +119,7 @@ public class CustomerTaskController extends HttpServlet {
 				customerTaskId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			CustomerTaskDAL.getInstance().delete(customerTaskId);
+			dal.delete(customerTaskId);
 			json.addProperty("customerTaskId", customerTaskId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {

@@ -35,6 +35,7 @@ public class AddressController extends HttpServlet {
 	private static final long serialVersionUID = 2510794507990929698L;
 	private Gson jsonHelper = null;
 	private String defaultCountry=null;
+	private AddressDAL dal = AddressDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,16 +48,16 @@ public class AddressController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			
 			if(action == ActionEnum.GET_ALL) {
-				List<Address> bulk = AddressDAL.getInstance().getAll();
+				List<Address> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.GET_SINGLE){
 				int id = Integer.parseInt(req.getParameter("addressId"));
-				address = AddressDAL.getInstance().get(id);
+				address = dal.get(id);
 				json.add("address", jsonHelper.toJsonTree(address));					
 			}else if(action == ActionEnum.ADDRESS_BY_CUSTOMER){
 				int id = Integer.parseInt(req.getParameter("customerId"));
-				List<Address> bulk = AddressDAL.getInstance().getByCustomer(id);
+				List<Address> bulk = dal.getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 			}
 			ServletHelper.doSuccess(json);
@@ -95,7 +96,7 @@ public class AddressController extends HttpServlet {
 			else
 				country = new String(IOUtils.toByteArray(filePart.getInputStream()), "UTF-8");			
 			
-			int addressId = AddressDAL.getInstance().insert(new Address(0, street, houseNum, city, country));
+			int addressId = dal.insert(new Address(0, street, houseNum, city, country));
 			CustomerAddressDAL.getInstance().insert(customerId, addressId);
 			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
 			
@@ -147,7 +148,7 @@ public class AddressController extends HttpServlet {
 				multiplier *= 10;
 			}			
 			
-			AddressDAL.getInstance().update(new Address(addressId, street, houseNum, city, country));
+			dal.update(new Address(addressId, street, houseNum, city, country));
 			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
@@ -173,7 +174,7 @@ public class AddressController extends HttpServlet {
 				multiplier *= 10;
 			}
 			
-			AddressDAL.getInstance().delete(addressId);
+			dal.delete(addressId);
 			json.addProperty(APIConst.FLD_ADDRESS_ID, addressId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {

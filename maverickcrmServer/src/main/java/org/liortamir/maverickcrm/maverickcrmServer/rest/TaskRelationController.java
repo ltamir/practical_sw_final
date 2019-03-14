@@ -31,7 +31,7 @@ public class TaskRelationController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -2104805615225405434L;
-	
+	private TaskRelationDAL dal = TaskRelationDAL.getInstance();
 	private Gson jsonHelper = new Gson();
 
 	@Override
@@ -49,18 +49,18 @@ public class TaskRelationController extends HttpServlet {
 			if(action == ActionEnum.GET_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_ID));
-				taskRelation = TaskRelationDAL.getInstance().get(id);
+				taskRelation = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelation", taskRelation);
 			
 			}else if(action == ActionEnum.GET_RELATION_PARENTS) {
 
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getParents(taskId);
+				List<TaskRelation> taskRelationList = dal.getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				
 			}else if(action == ActionEnum.GET_TASK_CHILDREN) {
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getChildren(taskId);
+				List<TaskRelation> taskRelationList = dal.getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
 			}
 			ServletHelper.doSuccess(json);
@@ -86,7 +86,7 @@ public class TaskRelationController extends HttpServlet {
 			
 			SecurityHandler sec = new SecurityHandler();
 			Task root = sec.getRootTask(parentTaskId);
-			int taskRelationId = TaskRelationDAL.getInstance().insert(parentTaskId, childTaskId, taskRelationTypeId, root.getTaskId());
+			int taskRelationId = dal.insert(parentTaskId, childTaskId, taskRelationTypeId, root.getTaskId());
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
@@ -134,9 +134,9 @@ public class TaskRelationController extends HttpServlet {
 			}
 
 			if(parentTaskId > 0)
-				TaskRelationDAL.getInstance().update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
+				dal.update(taskRelationId, parentTaskId, childTaskId, taskRelationTypeId);
 			else
-				TaskRelationDAL.getInstance().update(taskRelationId, taskRelationTypeId);
+				dal.update(taskRelationId, taskRelationTypeId);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {
@@ -162,7 +162,7 @@ public class TaskRelationController extends HttpServlet {
 		try {
 			taskRelationId = ServletHelper.getPartInt(req.getPart(APIConst.FLD_TASKRELATION_ID));
 		
-			TaskRelationDAL.getInstance().delete(taskRelationId);
+			dal.delete(taskRelationId);
 			json.addProperty(APIConst.FLD_TASKRELATION_ID, taskRelationId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException e) {

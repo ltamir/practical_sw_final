@@ -35,7 +35,7 @@ public class AssociationController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -4769452647655368178L;
 	private Gson jsonHelper =null;
-	
+	private AssociationDAL dal = AssociationDAL.getInstance();
 	
 	@Override
 	public void init() throws ServletException {
@@ -66,16 +66,16 @@ public class AssociationController extends HttpServlet {
 				
 			}else if(action == ActionEnum.GET_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-				association = AssociationDAL.getInstance().get(id);	
+				association = dal.get(id);	
 				json.add("association", jsonHelper.toJsonTree(association));	
 				
 			}else if(action == ActionEnum.GET_CUSTOMER_BY_CONTACT){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
-				List<Association> bulk = AssociationDAL.getInstance().getByContact(id);	
+				List<Association> bulk = dal.getByContact(id);	
 				json.add("array", jsonHelper.toJsonTree(bulk));									
 			}else if(action == ActionEnum.CONTACT_BY_CUSTOMER){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
-				List<Association> bulk = AssociationDAL.getInstance().getByCustomer(id);	
+				List<Association> bulk = dal.getByCustomer(id);	
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			}
 			ServletHelper.doSuccess(json);
@@ -99,7 +99,7 @@ public class AssociationController extends HttpServlet {
 			int contactTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_CONTACT_TYPE_ID));	
 			int addressId = Integer.parseInt(req.getParameter(APIConst.FLD_ASSOCIATION_ADDRESS_ID));
 			
-			int connectionId = AssociationDAL.getInstance().insert(customerId, contactId, contactTypeId, addressId);
+			int connectionId = dal.insert(customerId, contactId, contactTypeId, addressId);
 			if(connectionId > 0 && CustomerAddressDAL.getInstance().get(customerId, addressId) != null)
 				CustomerAddressDAL.getInstance().delete(customerId, addressId);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
@@ -152,7 +152,7 @@ public class AssociationController extends HttpServlet {
 				}
 				
 			}			
-			AssociationDAL.getInstance().update(associationId, customerId, contactId, contactTypeId, addressId);
+			dal.update(associationId, customerId, contactId, contactTypeId, addressId);
 			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, associationId);
 			ServletHelper.doSuccess(json);
@@ -179,11 +179,11 @@ public class AssociationController extends HttpServlet {
 				connectionId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			Association association = AssociationDAL.getInstance().get(connectionId);
-			List<Association> bulk = AssociationDAL.getInstance().getByAddress(association.getAddress().getAddressId());
+			Association association = dal.get(connectionId);
+			List<Association> bulk = dal.getByAddress(association.getAddress().getAddressId());
 			if(bulk.size() == 1)
 				CustomerAddressDAL.getInstance().insert(association.getCustomer().getCustomerId(), association.getAddress().getAddressId());
-			AssociationDAL.getInstance().delete(connectionId);
+			dal.delete(connectionId);
 			
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
 			ServletHelper.doSuccess(json);

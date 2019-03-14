@@ -33,6 +33,7 @@ public class ContactController extends HttpServlet {
 	private static final long serialVersionUID = -2104805615225405434L;
 	
 	private Gson jsonHelper = null;
+	private ContactDAL dal = ContactDAL.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,19 +49,19 @@ public class ContactController extends HttpServlet {
 			if(action ==ActionEnum.GET_LOGIN_CONTACT_ALL) {
 				
 				List<Contact> bulk=null;
-				bulk = ContactDAL.getInstance().getAllLogin();
+				bulk = dal.getAllLogin();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
 			}else if(action == ActionEnum.GET_ALL){
 				
 				List<Contact> bulk;
-				bulk = ContactDAL.getInstance().getAll();
+				bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 				
 			}else if(action == ActionEnum.GET_SINGLE){
 				
 				id = Integer.parseInt(req.getParameter("contactId"));
-				contact = ContactDAL.getInstance().get(id);
+				contact = dal.get(id);
 				json.add("contact", jsonHelper.toJsonTree(contact));					
 			}
 			ServletHelper.doSuccess(json);
@@ -103,7 +104,7 @@ public class ContactController extends HttpServlet {
 				}
 			}
 			
-			int contactId = ContactDAL.getInstance().insert(contact);
+			int contactId = dal.insert(contact);
 			json.addProperty(APIConst.FLD_CONTACT_ID, contactId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException e) {
@@ -154,7 +155,7 @@ public class ContactController extends HttpServlet {
 				}
 			}
 			
-			ContactDAL.getInstance().update(contact);
+			dal.update(contact);
 			json.addProperty(APIConst.FLD_CONTACT_ID, contact.getContactId());
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NullPointerException | NumberFormatException e) {
@@ -183,7 +184,7 @@ public class ContactController extends HttpServlet {
 				contactId += (bytes[i]-48) * multiplier;
 				multiplier *= 10;
 			}
-			ContactDAL.getInstance().delete(contactId);
+			dal.delete(contactId);
 			json.addProperty(APIConst.FLD_CONTACT_ID, contactId);
 			ServletHelper.doSuccess(json);
 		}catch(SQLException | NumberFormatException | NullPointerException e) {

@@ -53,6 +53,7 @@ public class AttachmentController extends HttpServlet {
 	private SimpleDateFormat frm=  new SimpleDateFormat();
 	private String storagePath;
 	private Reference ref = Reference.getInstance();
+	private AttachmentDAL dal = AttachmentDAL.getInstance();
 	private String refPrefix = "attachment";
 	private final static int FETCH_SIZE = 128;
 
@@ -69,17 +70,17 @@ public class AttachmentController extends HttpServlet {
 			switch(action){
 			case GET_ALL:
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<Attachment> bulk = AttachmentDAL.getInstance().getByTask(taskId);
+				List<Attachment> bulk = dal.getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
 			case GET_SINGLE:
 				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
-				attachment = AttachmentDAL.getInstance().get(attachmentId);
+				attachment = dal.get(attachmentId);
 				json.add("attachment", jsonHelper.toJsonTree(attachment));				
 				break;
 			case GET_ATTACHMENT:
 				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
-				attachment = AttachmentDAL.getInstance().get(attachmentId);
+				attachment = dal.get(attachmentId);
 				resp.setContentType("application/zip");
 				resp.setHeader("Content-disposition", "attachment; filename=" + attachment.getStorageFileName());
 				File attachmentFile = new File(attachment.getStorageFilePath().substring(2) + attachment.getStorageFileName());
@@ -139,7 +140,7 @@ public class AttachmentController extends HttpServlet {
 			}
 
 			taskLogId = TaskLogDAL.getInstance().insert(frm.format(new Date()), taskId, contactId, description, taskLogTypeId);
-			int attachmentId = AttachmentDAL.getInstance().insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
+			int attachmentId = dal.insert(attachmentTypeId, taskLogId, fileName, storageFileName, storagePath);
 			json.addProperty("taskLogId", taskLogId);
 			json.addProperty("attachmentId", attachmentId);
 			ServletHelper.doSuccess(json);
@@ -194,7 +195,7 @@ public class AttachmentController extends HttpServlet {
 				}
 			}	
 			
-			AttachmentDAL.getInstance().update(attachmentId, attachmentTypeId);	
+			dal.update(attachmentId, attachmentTypeId);	
 			TaskLogDAL.getInstance().update(attachmentTaskLogId, attachmentNotes, contactId);
 			json.addProperty("attachmentId", attachmentId);
 			ServletHelper.doSuccess(json);
