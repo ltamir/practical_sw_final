@@ -49,6 +49,21 @@ public class TaskRelationDAL {
 		return taskRelationList;
 	}
 	
+	public List<TaskRelation> getParents(int parentTaskId, int taskRelationType) throws SQLException{
+		List<TaskRelation> taskRelationList = null;
+		
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from taskRelation where childTaskId=? and taskRelationTypeId=?");
+			ps.setInt(1, parentTaskId);
+			ps.setInt(2, taskRelationType);
+			ResultSet rs = ps.executeQuery();
+			taskRelationList = new ArrayList<>(7);
+			while(rs.next()) 
+				taskRelationList.add(mapFields(rs));
+		}
+		return taskRelationList;
+	}
+	
 	public List<TaskRelation> getChildren(int parentTaskId) throws SQLException{
 		List<TaskRelation> taskRelationList = null;
 		
