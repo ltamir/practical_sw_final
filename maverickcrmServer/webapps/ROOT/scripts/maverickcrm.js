@@ -23,10 +23,19 @@ function prepareSearchTask(){
 	searchString += '&tasktypeId=' + searchModel.taskType.getValue();
 	searchString += '&showclosed=' + searchModel.status.getValue();
 	searchString += '&title=' + searchModel.title.getValue();
-	
+	//?actionId=2&customerId=0&tasktypeId=1&projectId=0&title=&duedate=&showclosed=1
 	return searchString;
 }
 
+function genericGet(model){
+	if(model == null) model = searchModel;
+	let searchString = '?actionId=2';
+	for(const field in model){
+		if(model[field].apiField != null)
+			searchString += '&' + model[field].apiField + '=' + model[field].getValue();
+	}
+	return searchString;
+}
 function searchTask(searchString, customerId, dueDate, txtSearchTitle, projectId, cmbSearchTaskType, showClosed){
 
 	if(searchString == null){
@@ -101,45 +110,11 @@ function resetTaskSearch(){
 	setMsg(msgType.ok, 'Ready');
 }
 
-
-function buttonToggler(img, check){
-	if(check != null && !checkPermission) return;
-	if(img.style.borderStyle=='inset' || img.style.borderStyle == null){
-		img.style.borderStyle='outset';
-	}else{
-		img.style.borderStyle='inset';
-	}	
-}
 function toggleAsBotton(img){
 	if(img.style.borderStyle=='inset' || img.style.borderStyle == null){
 		img.style.borderStyle='outset';
 	}else{
 		img.style.borderStyle='inset';
-	}
-}
-
-function flagToggle(lbl, field, ev){
-	if(ev.keyCode == 27 || ev.keyCode == 13){
-		toggleSearchDate(lbl, field);
-	}
-}
-
-function toggleSearchDate(lbl, field){
-	if(field.disabled && !checkPermission()) return;
-	if(field.getAttribute('data-isActive') == '0'){
-		field.style.display='inline';
-		lbl.style.display='none';
-		field.setAttribute('data-isActive', '1');
-		field.focus();
-	}else{
-		let formattedDate = 'Set due date';
-		field.style.display='none';
-		if(field.value != '')
-			lbl.innerHTML = getDate(field.value);
-		else
-			lbl.innerHTML = 'Set due date';
-		lbl.style.display='inline';
-		field.setAttribute('data-isActive', '0');
 	}
 }
 
