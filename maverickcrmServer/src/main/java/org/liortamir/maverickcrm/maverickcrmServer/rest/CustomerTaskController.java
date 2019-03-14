@@ -48,22 +48,22 @@ public class CustomerTaskController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 
 			switch(action) {
-			case ACT_SINGLE:
+			case GET_SINGLE:
 				id = Integer.parseInt(req.getParameter("customerTaskId"));
 				customerTask = CustomerTaskDAL.getInstance().get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "customerTask", customerTask);
 				break;
-			case ACT_CUSTOMER_TASK_BY_CUSTOMER:
+			case CUSTOMERTASK_BY_CUSTOMER:
 				id = Integer.parseInt(req.getParameter("customerId"));
 				bulk = CustomerTaskDAL.getInstance().getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_CUSTOMER_TASK_BY_TASK:
+			case CUSTOMERTASK_BY_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerTaskDAL.getInstance().getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_ALL:
+			case GET_ALL:
 				bulk = CustomerTaskDAL.getInstance().getAll(false);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;

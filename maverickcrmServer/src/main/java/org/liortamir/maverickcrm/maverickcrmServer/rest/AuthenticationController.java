@@ -39,7 +39,7 @@ public class AuthenticationController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			// TODO req.getDispatcherType() == INCLUDE
 			switch(action) {
-			case ACT_GET_LOGGED_IN:
+			case GET_LOGGED_IN:
 				String user = (String) req.getSession().getAttribute("username");
 				if(user == null)
 					throw new NullPointerException();
@@ -52,7 +52,7 @@ public class AuthenticationController extends HttpServlet {
 				json.add("login", jsonHelper.toJsonTree(login));
 				json.addProperty("devmod", ref.getAsString("devmod", "false"));
 				break;
-			case ACT_LOGOUT:
+			case DO_LOGOUT:
 				req.getSession().removeAttribute("username");
 				resp.sendRedirect("login.html");
 				break;

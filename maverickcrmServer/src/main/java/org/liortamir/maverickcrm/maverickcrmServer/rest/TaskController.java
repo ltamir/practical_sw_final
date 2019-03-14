@@ -55,7 +55,7 @@ public class TaskController extends HttpServlet {
 			
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action) {
-			case ACT_ALL:
+			case GET_ALL:
 				List<Task> taskList = null;			
 				int customerId = Integer.parseInt(req.getParameter("customerId"));
 				String dueDate = req.getParameter("duedate");
@@ -68,7 +68,7 @@ public class TaskController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(taskList));
 				
 				break;
-			case ACT_SINGLE:
+			case GET_SINGLE:
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId()).include(req, resp);
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
@@ -83,12 +83,12 @@ public class TaskController extends HttpServlet {
 				ServletHelper.addJsonTree(jsonHelper, json, "task", task);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
-			case ACT_RELATION_PARENTS:
+			case GET_RELATION_PARENTS:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				taskRelationList = dal.getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				break;
-			case ACT_RELATION_CHILDREN:
+			case GET_TASK_CHILDREN:
 				taskId = Integer.parseInt(req.getParameter("taskId"));
 				taskRelationList = dal.getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));

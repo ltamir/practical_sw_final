@@ -43,10 +43,10 @@ public class PermissionTypeController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				List<PermissionType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_PERMISSIONTYPE_ID));
 				permissionType = dal.get(id);	
 				ServletHelper.addJsonTree(jsonHelper, json, "permissiontype", permissionType);

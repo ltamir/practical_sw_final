@@ -45,12 +45,12 @@ public class LoginController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				
 				List<Login> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				String username = (String)req.getSession().getAttribute("username");
 				
 				id = Integer.parseInt(req.getParameter("loginId"));
@@ -58,7 +58,7 @@ public class LoginController extends HttpServlet {
 				if(!login.getUsername().equals(username))
 					login.setPassword("*****");
 				ServletHelper.addJsonTree(jsonHelper, json, "login", login);
-			}else if(action == ActionEnum.ACT_LOGIN_BY_CONTACT) {
+			}else if(action == ActionEnum.LOGIN_BY_CONTACT) {
 				int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
 				login = dal.getByContact(contactId);
 				req.getSession().setAttribute("login", login);

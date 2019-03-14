@@ -48,21 +48,21 @@ public class TaskPermissionController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 
 			switch(action) {
-			case ACT_ALL:
+			case GET_ALL:
 				bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_SINGLE:
+			case GET_SINGLE:
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKPERMISSION_ID));
 				taskPermission = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
-			case ACT_BY_TASK:
+			case PERMISSION_BY_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = dal.getByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_BY_TASK_AND_LOGIN:
+			case PERMISSION_BY_TASK_AND_LOGIN:
 				id = Integer.parseInt(req.getParameter("taskId")); 
 				int loginId = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_ID));
 				taskPermission = dal.get(id, loginId);

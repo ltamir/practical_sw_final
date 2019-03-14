@@ -46,19 +46,19 @@ public class TaskRelationController extends HttpServlet {
 		try {
 			
 			ActionEnum action = ServletHelper.getAction(req);
-			if(action == ActionEnum.ACT_SINGLE) {
+			if(action == ActionEnum.GET_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_ID));
 				taskRelation = TaskRelationDAL.getInstance().get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelation", taskRelation);
 			
-			}else if(action == ActionEnum.ACT_RELATION_PARENTS) {
+			}else if(action == ActionEnum.GET_RELATION_PARENTS) {
 
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				
-			}else if(action == ActionEnum.ACT_RELATION_CHILDREN) {
+			}else if(action == ActionEnum.GET_TASK_CHILDREN) {
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<TaskRelation> taskRelationList = TaskRelationDAL.getInstance().getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	

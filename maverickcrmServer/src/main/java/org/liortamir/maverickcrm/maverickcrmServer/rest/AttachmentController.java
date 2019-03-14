@@ -67,17 +67,17 @@ public class AttachmentController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action){
-			case ACT_ALL:
+			case GET_ALL:
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<Attachment> bulk = AttachmentDAL.getInstance().getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_SINGLE:
+			case GET_SINGLE:
 				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
 				attachment = AttachmentDAL.getInstance().get(attachmentId);
 				json.add("attachment", jsonHelper.toJsonTree(attachment));				
 				break;
-			case ACT_GET_ATTACHMENT:
+			case GET_ATTACHMENT:
 				attachmentId = Integer.parseInt(req.getParameter(APIConst.FLD_ATTACHMENT_ID));
 				attachment = AttachmentDAL.getInstance().get(attachmentId);
 				resp.setContentType("application/zip");

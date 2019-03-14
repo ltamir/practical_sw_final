@@ -48,26 +48,26 @@ public class CustomerController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 
 			switch(action) {
-			case ACT_ALL:
+			case GET_ALL:
 				bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_SINGLE:
+			case GET_SINGLE:
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				customer = CustomerDAL.getInstance().get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "customer", customer);
 				break;
-			case ACT_CUSTOMER_NOT_LINKED_TASK:
+			case CUSTOMER_NOT_LINKED_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerDAL.getInstance().getNonLinkedToTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;
-			case ACT_CUSTOMER_LINKED_BY_TASK:
+			case CUSTOMER_LINKED_BY_TASK:
 				id = Integer.parseInt(req.getParameter("taskId"));
 				bulk = CustomerDAL.getInstance().getAllByTask(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				break;				
-			case ACT_CUSTOMER_NOT_LINKED_CONTACT:
+			case CUSTOMER_NOT_LINKED_CONTACT:
 				id = Integer.parseInt(req.getParameter("contactId"));
 				bulk = CustomerDAL.getInstance().getNonLinkedToContact(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));

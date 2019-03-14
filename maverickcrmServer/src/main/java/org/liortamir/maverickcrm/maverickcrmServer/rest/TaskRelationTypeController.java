@@ -42,12 +42,12 @@ public class TaskRelationTypeController extends HttpServlet {
 		try {
 			
 			ActionEnum action = ServletHelper.getAction(req);
-			if(action == ActionEnum.ACT_SINGLE) {
+			if(action == ActionEnum.GET_SINGLE) {
 				
 				id = Integer.parseInt(req.getParameter("taskRelationTypeId"));
 				taskRelationType = dal.get(id);
 				ServletHelper.addJsonTree(jsonHelper, json, "taskRelatoinType", taskRelationType);
-			}else if(action == ActionEnum.ACT_ALL) {
+			}else if(action == ActionEnum.GET_ALL) {
 				
 				List<TaskRelationType> taskRelationList = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));

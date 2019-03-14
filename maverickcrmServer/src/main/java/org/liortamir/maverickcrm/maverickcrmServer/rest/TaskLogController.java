@@ -53,11 +53,11 @@ public class TaskLogController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 						
-			if(action == ActionEnum.ACT_ALL){
+			if(action == ActionEnum.GET_ALL){
 				int taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				List<TaskLog> bulk = dal.getByTask(taskId);
 				json.add("array", jsonHelper.toJsonTree(bulk));			
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				
 				taskLogId = Integer.parseInt(req.getParameter("taskLogId"));
 				taskLog = dal.get(taskLogId);

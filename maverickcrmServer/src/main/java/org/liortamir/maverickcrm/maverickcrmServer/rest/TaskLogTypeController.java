@@ -40,11 +40,11 @@ public class TaskLogTypeController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				List<TaskLogType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				
 				int id = Integer.parseInt(req.getParameter(APIConst.FLD_TASKLOGTYPE_ID));
 				taskLogType = dal.get(id);

@@ -48,25 +48,25 @@ public class BusinessController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action){
-			case ACT_TOTAL_HOURS:
+			case GET_TOTAL_HOURS:
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				Task task;
 				req.getRequestDispatcher("task?actionId=3&taskId=" + taskId).include(req, resp);
 				task = (Task)req.getSession().getAttribute("task");				
 				getTotalHours(task, json);
 				break;
-			case ACT_GENERATE_HASH:
+			case GENERATE_HASH:
 				String toHash = req.getParameter("tohash");
 				int hash = toHash.hashCode();
 				json.addProperty("hashcode", hash);
 				break;
-			case ACT_TIMELINE_ALL:
+			case TIMELINE_PROJECTS:
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
 				bulk = dal.getTimelineProjects(login.getLoginId());
 				getTimeline(bulk, json);
 				break;
-			case ACT_TIMELINE_PROJECT:
+			case TIMELINE_SUB_TASKS:
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));

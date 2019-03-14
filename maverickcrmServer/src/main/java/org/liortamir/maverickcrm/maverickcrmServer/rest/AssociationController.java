@@ -60,20 +60,20 @@ public class AssociationController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				List<Customer> bulk = CustomerDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				association = AssociationDAL.getInstance().get(id);	
 				json.add("association", jsonHelper.toJsonTree(association));	
 				
-			}else if(action == ActionEnum.ACT_CUSTOMER_BY_CONTACT){
+			}else if(action == ActionEnum.GET_CUSTOMER_BY_CONTACT){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByContact(id);	
 				json.add("array", jsonHelper.toJsonTree(bulk));									
-			}else if(action == ActionEnum.ACT_CONTACT_BY_CUSTOMER){
+			}else if(action == ActionEnum.CONTACT_BY_CUSTOMER){
 				id = Integer.parseInt(req.getParameter(APIConst.FLD_CUSTOMER_ID));
 				List<Association> bulk = AssociationDAL.getInstance().getByCustomer(id);	
 				json.add("array", jsonHelper.toJsonTree(bulk));

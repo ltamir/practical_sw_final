@@ -19,7 +19,7 @@ public abstract class AbstractHandler extends HttpServlet {
 	protected Gson jsonHelper = new Gson();
 	
 	protected ActionEnum getAction(HttpServletRequest req) {
-		ActionEnum action = ActionEnum.ACT_NONE;
+		ActionEnum action = ActionEnum.NONE;
 		
 		String strAction = req.getParameter("action");
 		try {

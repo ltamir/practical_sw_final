@@ -45,19 +45,19 @@ public class ContactController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action ==ActionEnum.ACT_LOGIN_CONTACT_ALL) {
+			if(action ==ActionEnum.GET_LOGIN_CONTACT_ALL) {
 				
 				List<Contact> bulk=null;
 				bulk = ContactDAL.getInstance().getAllLogin();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
-			}else if(action == ActionEnum.ACT_ALL){
+			}else if(action == ActionEnum.GET_ALL){
 				
 				List<Contact> bulk;
 				bulk = ContactDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));			
 				
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				
 				id = Integer.parseInt(req.getParameter("contactId"));
 				contact = ContactDAL.getInstance().get(id);

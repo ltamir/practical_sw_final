@@ -43,11 +43,11 @@ public class TaskTypeController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				resp.setContentType("application/json");
 				List<TaskType> bulk = dal.getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				id = Integer.parseInt(req.getParameter(APIConst.PARAM_ACTION_ID));
 				taskType = dal.get(id);	
 				ServletHelper.addJsonTree(jsonHelper, json, "taskType", taskType);

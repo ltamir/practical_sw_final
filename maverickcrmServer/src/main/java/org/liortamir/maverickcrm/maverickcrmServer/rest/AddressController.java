@@ -46,15 +46,15 @@ public class AddressController extends HttpServlet {
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
 			
-			if(action == ActionEnum.ACT_ALL) {
+			if(action == ActionEnum.GET_ALL) {
 				List<Address> bulk = AddressDAL.getInstance().getAll();
 				json.add("array", jsonHelper.toJsonTree(bulk));
 				
-			}else if(action == ActionEnum.ACT_SINGLE){
+			}else if(action == ActionEnum.GET_SINGLE){
 				int id = Integer.parseInt(req.getParameter("addressId"));
 				address = AddressDAL.getInstance().get(id);
 				json.add("address", jsonHelper.toJsonTree(address));					
-			}else if(action == ActionEnum.ACT_BY_CUSTOMER){
+			}else if(action == ActionEnum.ADDRESS_BY_CUSTOMER){
 				int id = Integer.parseInt(req.getParameter("customerId"));
 				List<Address> bulk = AddressDAL.getInstance().getByCustomer(id);
 				json.add("array", jsonHelper.toJsonTree(bulk));			
