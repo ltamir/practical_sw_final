@@ -30,7 +30,7 @@ function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler
     
     setImage(expandImg, taskListItemStat.collapseImg); 
     expandImg.setAttribute('data-id', taskRowEnum.collapse);
-    let toggler = new divRowToggler('cssTaskListRegular', 'cssTaskListSelected');
+    let toggler = new divRowToggler('cssTaskListRegular', 'cssChildTaskListSelected');
     let container = document.createElement('TBODY');
     
     let parentContainer = rowId.parentElement;

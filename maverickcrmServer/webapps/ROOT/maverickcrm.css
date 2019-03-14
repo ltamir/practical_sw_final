@@ -296,7 +296,12 @@
 	.cssTaskListSelected td{
 		background-color: #8899AA;
 		color: #FFFFFF;
-	}	
+	}
+	.cssChildTaskListSelected td{
+		background-color: #AABBCC;
+		color: #FFFFFF;
+	}
+		
 	.cssTaskRelationTitle{
 		background-color: WhiteSmoke;
 		color: Black;
