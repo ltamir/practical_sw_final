@@ -52,23 +52,26 @@ public class AuthenticationFilter implements Filter {
 		else
 			isAuthenticated = true;
 		
-//		this.context.log("Request: " + uri);
+		int tryCount = 0;
+		if(req.getSession().getAttribute("tryCount") != null) tryCount = (Integer)req.getSession().getAttribute("tryCount");
+		tryCount++;
+		req.getSession().setAttribute("tryCount", tryCount);
+		
 		if(isAuthenticated) {
-//			this.context.log("Approved: " + uri);
 			chain.doFilter(request, response);
 		}else if(session == null) {
 			this.context.log("Not approved: " + uri);
 			resp.sendRedirect("login.html");
 		}else if(uri.endsWith("authenticate")) {
-//			this.context.log("Authenticating: " + uri);
 			chain.doFilter(request, response);
 		}
-		else if(!isAuthenticated && (uri.contains("login.html") || uri.endsWith("png"))){	// )
-//			this.context.log("Login.html requested: " + uri);
+		else if(!isAuthenticated && (uri.contains("maverick/login.html") || uri.endsWith("png"))){	// )
 			chain.doFilter(request, response);
 		}else if(!isAuthenticated) {
-//			this.context.log("not authenticated: " + uri);
-			resp.sendRedirect("login.html");
+			if(tryCount > 2)
+				resp.sendError(404);
+			else
+				resp.sendRedirect("login.html");
 		}
 			
 	}

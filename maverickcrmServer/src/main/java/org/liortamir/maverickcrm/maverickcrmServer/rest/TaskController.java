@@ -31,7 +31,7 @@ import com.google.gson.JsonObject;
  * @author liort
  *
  */
-@WebServlet(name = "Task", urlPatterns="/task/*")
+@WebServlet(name = "Task", urlPatterns="/task")
 @MultipartConfig
 public class TaskController extends HttpServlet {
 
@@ -70,10 +70,8 @@ public class TaskController extends HttpServlet {
 				break;
 			case GET_SINGLE:
 				String id = req.getParameter(APIConst.FLD_TASK_ID);
-				if(id == null)
-					id = req.getPathInfo().substring(1);
 				taskId = Integer.parseInt(id);
-				req.getRequestDispatcher("/taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId() + "&taskId=" + id).include(req, resp);
+				req.getRequestDispatcher("taskpermission?actionId=19&"+APIConst.FLD_LOGIN_ID + "="+login.getLoginId() + "&taskId=" + id).include(req, resp);
 				TaskPermission taskPermission = (TaskPermission)req.getSession().getAttribute("taskPermission");
 				if(taskPermission == null){// in case there are no permissions
 					throw new InvalidPermissionException(taskId,login.getLoginId());
