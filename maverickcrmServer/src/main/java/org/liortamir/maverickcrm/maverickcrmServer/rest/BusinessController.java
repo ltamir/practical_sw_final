@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -64,6 +65,7 @@ public class BusinessController extends HttpServlet {
 				req.getRequestDispatcher("authenticate?actionId=16").include(req, resp);
 				login = (Login)req.getSession().getAttribute("login");
 				bulk = dal.getTimelineProjects(login.getLoginId());
+				Collections.sort(bulk, (t1, t2) -> t1.getDueDate().compareTo(t2.getDueDate()));
 				getTimeline(bulk, json);
 				break;
 			case TIMELINE_SUB_TASKS:
@@ -71,6 +73,7 @@ public class BusinessController extends HttpServlet {
 				login = (Login)req.getSession().getAttribute("login");
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				bulk = dal.getTimelineTask(taskId);
+				Collections.sort(bulk, (t1, t2) -> t1.getDueDate().compareTo(t2.getDueDate()));
 				getTimeline(bulk, json);		
 				break;
 			default:
@@ -113,7 +116,7 @@ public class BusinessController extends HttpServlet {
 			days = days % 20;
 		}
 		json.addProperty("total", months + ":" + days + ":" + hours);
-		json.addProperty("taskTotal", buildTotalEffortTime(getEffortHours(task.getEffortUnit(),task.getEffort())));
+		json.addProperty("taskTotal", buildTotalEffortTime(BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort())));
 		return json;
 	}
 
@@ -165,7 +168,7 @@ public class BusinessController extends HttpServlet {
 //			daysToDueDate -= daysToDueDate / 7 * 2;	// 5 working days, remove friday and saturday
 		int hoursToDueDate = (daysToDueDate < 0)?0 : (daysToDueDate * 9);
 		hoursToDueDate = (hoursToDueDate == 0)? 0 : (hoursToDueDate - usedEffort);
-		int effortInHours = getEffortHours(task.getEffortUnit(),task.getEffort());
+		int effortInHours = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
 		if(hoursToDueDate == 0)
 			remainingPercentage = 100;
 		else if(hoursToDueDate < effortInHours)
@@ -181,36 +184,10 @@ public class BusinessController extends HttpServlet {
 		//n/a, new, Running, Deliered, Closed, On Hold
 		double[] ststusEffort  = {0, 0, 0.25, 0.75, 1, 0};
 		
-		hours = getEffortHours(task.getEffortUnit(),task.getEffort());
+		hours = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
 		hours = (int) Math.round((hours * ststusEffort[task.getStatus().getStatusId()]));
 		return hours;
 	}
 	
-	private int getEffortHours(int effortUnit, int effort){
-		int hours = 0;
-		switch(effortUnit){
-		case 1:
-			hours = effort;
-			break;
-		case 2:
-			hours = daysToHours(effort);
-			break;
-		case 3:
-			hours = monthsToHours(effort);
-			break;
-		}	
-		return hours;
-	}
 	
-	private int daysToHours(int effort){
-		int hours = 0;
-		hours = effort * 9;
-		return hours;
-	}
-	
-	private int monthsToHours(int effort){
-		int hours = 0;
-		hours = effort * 9 * 20;
-		return hours;
-	}	
 }

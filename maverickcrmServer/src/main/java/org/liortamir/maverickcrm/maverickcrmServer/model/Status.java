@@ -1,6 +1,7 @@
+
 package org.liortamir.maverickcrm.maverickcrmServer.model;
 
-public class Status {
+public class Status implements Comparable<Status>{
 
 	private int statusId;
 	private String statusName;
@@ -21,6 +22,11 @@ public class Status {
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	@Override
+	public int compareTo(Status o) {
+		return o.getStatusId() - getStatusId();
 	}
 	
 	

@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.DatePredicate;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.predicate.IntPredicate;
@@ -30,9 +32,32 @@ import org.liortamir.maverickcrm.maverickcrmServer.persistency.DBHandler;
  */
 public class TaskDAL {
 
+	class CacheData{
+		private List<Task> taskList;
+		private int hash;
+		
+		public List<Task> getTaskList() {
+			return taskList;
+		}
+		public void setTaskList(List<Task> taskList) {
+			this.taskList = taskList;
+		}
+		public int getHash() {
+			return hash;
+		}
+		public void setHash(int hash) {
+			this.hash = hash;
+		}
+		public CacheData(List<Task> taskList, int hash) {
+			super();
+			this.taskList = taskList;
+			this.hash = hash;
+		}
+	}
 	
 	private static TaskDAL instance = new TaskDAL();
 	private PredicateContainer predicate = new PredicateContainer();
+	private Map<Integer, CacheData> taskListCache = new WeakHashMap<>();
 	
 	public static TaskDAL getInstance() {
 		return instance;
@@ -58,6 +83,27 @@ public class TaskDAL {
 		predicate.add("taskType", new IntPredicate(0, 
 				" task.taskTypeId=? ",
 				1));	
+	}
+	
+	public void addTaskList(int login, int hash, List<Task> taskList){
+		this.taskListCache.put(login, new CacheData(taskList, hash));
+	}
+	
+	public List<Task> getTaskList(int login, int hash){
+		CacheData cache = this.taskListCache.get(login);
+		if(cache != null){
+			if(hash == 0)
+				return cache.getTaskList();
+			if(cache.getHash() == hash)
+				return cache.getTaskList();
+		}
+		
+		removeCache(login);
+		return null;
+	}
+	
+	public void removeCache(int login){
+		this.taskListCache.remove(login);
 	}
 	
 	/**
@@ -169,7 +215,7 @@ public class TaskDAL {
 		sqlStatement.append(levelRoot.toString());
 		sqlStatement.append(sqlPredicate.toString());
 		
-		sqlStatement.append(orderBy);
+//		sqlStatement.append(orderBy);
 
 		try (Connection conn = DBHandler.getConnection()){
 

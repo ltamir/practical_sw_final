@@ -72,11 +72,11 @@
     <table class="cssTaskList">
     	<thead>
 			<tr id="parentTaskList" class="cssFixed">
-				<td class="cssTaskListType" style="text-align: left;">Type</td>
-				<td class="cssTaskListTitle" style="text-align: center;">Title</td>
-				<td class="cssTaskListDueDate">Due date</td>
-				<td class="cssTaskListEffort">Effort</td>
-				<td class="cssTaskListStatus">Status</td>
+				<td class="cssTaskListType" style="text-align: left;" onclick="sortTaskList(taskListEnum.taskType)">Type</td>
+				<td class="cssTaskListTitle" style="text-align: center;" onclick="sortTaskList(taskListEnum.title)">Title</td>
+				<td class="cssTaskListDueDate" onclick="sortTaskList(taskListEnum.dueDate)">Due date</td>
+				<td class="cssTaskListEffort" onclick="sortTaskList(taskListEnum.effort)">Effort</td>
+				<td class="cssTaskListStatus" onclick="sortTaskList(taskListEnum.status)">Status</td>
 			</tr>
     	</thead>
     	

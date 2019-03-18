@@ -26,5 +26,6 @@ public enum ActionEnum {
 	GET_TOTAL_HOURS,				//21
 	GENERATE_HASH,					//22
 	TIMELINE_PROJECTS,				//23
-	TIMELINE_SUB_TASKS;				//24
+	TIMELINE_SUB_TASKS,				//24
+	TASKLIST_SORT;					//25
 }

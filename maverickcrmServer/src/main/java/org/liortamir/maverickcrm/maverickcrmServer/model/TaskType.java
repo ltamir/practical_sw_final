@@ -1,6 +1,6 @@
 package org.liortamir.maverickcrm.maverickcrmServer.model;
 
-public class TaskType {
+public class TaskType implements Comparable<TaskType>{
 
 	private int taskTypeId;
 	private String taskTypeName;
@@ -20,6 +20,10 @@ public class TaskType {
 	}
 	public void setTaskTypeName(String taskTypeName) {
 		this.taskTypeName = taskTypeName;
+	}
+	@Override
+	public int compareTo(TaskType o) {
+		return o.getTaskTypeId() - getTaskTypeId();
 	}
 	
 	

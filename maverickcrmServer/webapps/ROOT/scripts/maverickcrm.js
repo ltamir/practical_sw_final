@@ -27,6 +27,10 @@ function prepareSearchTask(){
 	return searchString;
 }
 
+function sortTaskList(fieldId){
+	getData('taskList', 'task', '?actionId=25&sort=' + fieldId, fillTaskList);
+}
+
 function genericGet(model){
 	if(model == null) model = searchModel;
 	let searchString = '?actionId=2';

@@ -3,6 +3,8 @@ package org.liortamir.maverickcrm.maverickcrmServer.rest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.DispatcherType;
@@ -56,17 +58,28 @@ public class TaskController extends HttpServlet {
 			ActionEnum action = ServletHelper.getAction(req);
 			switch(action) {
 			case GET_ALL:
-				List<Task> taskList = null;			
-				int customerId = Integer.parseInt(req.getParameter("customerId"));
-				String dueDate = req.getParameter("duedate");
-				dueDate = (dueDate.equals("null"))?"":dueDate;
-				String title = req.getParameter("title");
-				int projectId = Integer.parseInt(req.getParameter("projectId"));
-				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
-				int status = Integer.parseInt(req.getParameter("showclosed"));
-				taskList = dal.getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
+				getTasks(req, login, json);
+//				List<Task> taskList = null;	
+//				String queryString = req.getQueryString();
+//				int reqHash = queryString.hashCode();
+//				int customerId = Integer.parseInt(req.getParameter("customerId"));
+//				String dueDate = req.getParameter("duedate");
+//				dueDate = (dueDate.equals("null"))?"":dueDate;
+//				String title = req.getParameter("title");
+//				int projectId = Integer.parseInt(req.getParameter("projectId"));
+//				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
+//				int status = Integer.parseInt(req.getParameter("showclosed"));
+//				taskList = dal.getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
+//				sortTasks(taskList, (t1, t2)-> t1.getDueDate().compareTo(t2.getDueDate()));
+//				json.add("array", jsonHelper.toJsonTree(taskList));
+
+				break;
+			case TASKLIST_SORT:
+				int sortField = Integer.parseInt(req.getParameter("sort"));
+				TaskListSort sorter = TaskListSort.values()[sortField];
+				List<Task> taskList = dal.getTaskList(login.getLoginId(), 0);
+				sorter.sort(taskList);
 				json.add("array", jsonHelper.toJsonTree(taskList));
-				
 				break;
 			case GET_SINGLE:
 				String id = req.getParameter(APIConst.FLD_TASK_ID);
@@ -224,6 +237,69 @@ public class TaskController extends HttpServlet {
 		PrintWriter out = resp.getWriter();
 		out.println(response);
 	}
-
 	
+	private void getTasks(HttpServletRequest req, Login login, JsonObject json) throws SQLException{
+		List<Task> taskList = null;	
+		TaskListSort sorter = TaskListSort.DUE_DATE;
+		String queryString = req.getQueryString();
+		int reqHash = queryString.hashCode();
+		taskList = dal.getTaskList(login.getLoginId(), reqHash);
+		if(taskList == null){
+			taskList = getTasks(req, login);
+			dal.addTaskList(login.getLoginId(), reqHash, taskList);
+			System.out.println("read tasks form db");
+		}
+		sorter.sort(taskList);
+//		sortTasks(taskList, (t1, t2)-> t1.getDueDate().compareTo(t2.getDueDate()));	
+		json.add("array", jsonHelper.toJsonTree(taskList));
+	}
+	
+	private List<Task> getTasks(HttpServletRequest req, Login login) throws SQLException{
+		int customerId = Integer.parseInt(req.getParameter("customerId"));
+		String dueDate = req.getParameter("duedate");
+		dueDate = (dueDate.equals("null"))?"":dueDate;
+		String title = req.getParameter("title");
+		int projectId = Integer.parseInt(req.getParameter("projectId"));
+		int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
+		int status = Integer.parseInt(req.getParameter("showclosed"));
+		return dal.getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
+	}
+	
+	enum TaskListSort{
+		TASK_TYPE {
+			@Override
+			void sort(List<Task> taskList) {
+				Collections.sort(taskList,(t1, t2)-> t1.getTaskType().compareTo(t2.getTaskType()));
+			}
+		},
+		TITLE {
+			@Override
+			void sort(List<Task> taskList) {
+				Collections.sort(taskList,(t1, t2)-> t1.getTitle().compareTo(t2.getTitle()));
+			}
+		},
+		DUE_DATE {
+			@Override
+			void sort(List<Task> taskList) {
+				Collections.sort(taskList, (t1, t2)->t1.getDueDate().compareTo(t2.getDueDate()));
+			}
+		},
+		EFFORT {
+			@Override
+			void sort(List<Task> taskList) {
+				Collections.sort(taskList, (t1, t2)-> BLHelper.getEffortHours(t1.getEffortUnit(), t1.getEffort()) - BLHelper.getEffortHours(t2.getEffortUnit(), t2.getEffort()));
+			}
+		},
+		STATUS {
+			@Override
+			void sort(List<Task> taskList) {
+				Collections.sort(taskList, (t1, t2)->t1.getStatus().compareTo(t2.getStatus()));
+			}
+		};		
+		abstract void sort(List<Task> taskList);
+	}
+	
+	private void sortTasks(List<Task> taskList, Comparator<Task> cmp){
+		Collections.sort(taskList,cmp);
+	}
 }
