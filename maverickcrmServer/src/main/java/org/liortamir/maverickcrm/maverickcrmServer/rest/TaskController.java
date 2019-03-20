@@ -98,12 +98,12 @@ public class TaskController extends HttpServlet {
 				ServletHelper.addJsonTree(jsonHelper, json, "taskPermission", taskPermission);
 				break;
 			case GET_RELATION_PARENTS:
-				taskId = Integer.parseInt(req.getParameter("taskId"));
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				taskRelationList = dal.getParents(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				break;
 			case GET_TASK_CHILDREN:
-				taskId = Integer.parseInt(req.getParameter("taskId"));
+				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
 				taskRelationList = dal.getChildren(taskId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				break;
@@ -250,7 +250,6 @@ public class TaskController extends HttpServlet {
 			System.out.println("read tasks form db");
 		}
 		sorter.sort(taskList);
-//		sortTasks(taskList, (t1, t2)-> t1.getDueDate().compareTo(t2.getDueDate()));	
 		json.add("array", jsonHelper.toJsonTree(taskList));
 	}
 	
@@ -268,38 +267,39 @@ public class TaskController extends HttpServlet {
 	enum TaskListSort{
 		TASK_TYPE {
 			@Override
-			void sort(List<Task> taskList) {
-				Collections.sort(taskList,(t1, t2)-> t1.getTaskType().compareTo(t2.getTaskType()));
+			Comparator<Task> getFieldCmp() {
+				return (t1, t2)-> t1.getTaskType().compareTo(t2.getTaskType());
 			}
 		},
 		TITLE {
 			@Override
-			void sort(List<Task> taskList) {
-				Collections.sort(taskList,(t1, t2)-> t1.getTitle().compareTo(t2.getTitle()));
+			Comparator<Task> getFieldCmp() {
+				return (t1, t2)-> t1.getTitle().compareTo(t2.getTitle());
 			}
 		},
 		DUE_DATE {
 			@Override
-			void sort(List<Task> taskList) {
-				Collections.sort(taskList, (t1, t2)->t1.getDueDate().compareTo(t2.getDueDate()));
+			Comparator<Task> getFieldCmp() {
+				return (t1, t2)->t1.getDueDate().compareTo(t2.getDueDate());
 			}
 		},
 		EFFORT {
 			@Override
-			void sort(List<Task> taskList) {
-				Collections.sort(taskList, (t1, t2)-> BLHelper.getEffortHours(t1.getEffortUnit(), t1.getEffort()) - BLHelper.getEffortHours(t2.getEffortUnit(), t2.getEffort()));
+			Comparator<Task> getFieldCmp() {
+				return (t1, t2)-> BLHelper.getEffortHours(t1.getEffortUnit(), t1.getEffort()) - BLHelper.getEffortHours(t2.getEffortUnit(), t2.getEffort());
 			}
 		},
 		STATUS {
 			@Override
-			void sort(List<Task> taskList) {
-				Collections.sort(taskList, (t1, t2)->t1.getStatus().compareTo(t2.getStatus()));
+			Comparator<Task> getFieldCmp() {
+				return (t1, t2)->t1.getStatus().compareTo(t2.getStatus());
 			}
 		};		
-		abstract void sort(List<Task> taskList);
+
+		abstract Comparator<Task> getFieldCmp();
+		
+		public void sort(List<Task> taskList){
+			Collections.sort(taskList,getFieldCmp());}
 	}
 	
-	private void sortTasks(List<Task> taskList, Comparator<Task> cmp){
-		Collections.sort(taskList,cmp);
-	}
 }
