@@ -308,7 +308,7 @@ function saveTask(){
 		return;
 	}
 	let pass = {length:-1, getValue:function(){return this.length}};
-	getData(pass, 'taskrelation', "?actionId=5&taskId="+taskModel.taskId.getValue(), (id, data)=>{
+	getData(pass, 'taskrelation', "?actionId=5&taskRelationTypeId=0&taskId="+taskModel.taskId.getValue(), (id, data)=>{
 		pass.length = data.array.length;
 		
 		let addChildTask = getById('addChildTask'); //if this is a non project new task and was not set as child task
@@ -511,8 +511,8 @@ function saveRelation(parent, child, relationType){
 	.then(function(){
 		if(activeTaskTab != tabEnum.relation)
 			return;
-		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
-		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
+		getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=0&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
+		getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskRelationTypeId=0&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
 		})
 	.then(function(){setMsg(msgType.ok, 'Relation saved')});
 }
@@ -531,8 +531,8 @@ function saveRelationType(relationTypeId){
 			getById('divRelationTypeList').style.display='none'; 
 			getById('divRelationTypeList').removeAttribute('data-taskrelationId');
 			getById('divTaskTab').appendChild(getById('divRelationTypeList'));
-			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
-			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);	
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=0&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null);
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskRelationTypeId=0&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null);	
 		});
 }
 
@@ -544,8 +544,8 @@ function validateRemoveTaskRelation(){
 function removeTaskRelation(){
 	genericSave(validateRemoveTaskRelation, taskRelationModel, taskLogModel.taskRelationId, Module.relation, 'DELETE', 'taskrelation',
 		(resp)=>{
-			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
-			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=0&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 1, null, null, null);
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskRelationTypeId=0&taskId='+taskModel.taskId.getValue(), fillTaskRelationList, 2, null, null, null);
 			getById('divTaskTab').removeAttribute('data-selected');
 			setMsg(msgType.ok, 'Relation Removed');
 		}, checkPermission);

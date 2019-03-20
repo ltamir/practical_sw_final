@@ -160,7 +160,7 @@
 
 		
 	.cssTab{
-		width: 15%;
+		width: 20%;
 		font-family: arial;
 		border-top: 1px outset #f5f5f0;
 		border-left: 1px outset #f5f5f0;
@@ -173,7 +173,7 @@
 	}
 
 	.cssTabSelected{
-	    width: 15%;
+	    width: 20%;
 		font-family: arial;
 		border-top: 1px solid #1e1e15;
 		border-left: 1px solid #1e1e15;	

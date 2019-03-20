@@ -10,6 +10,13 @@ function setImage(targetImg, imgNode){
 	targetImg.title = imgNode.title;
 }
 
+function createImage(imgNode){
+	let img = document.createElement("IMG");
+	img.src = imgNode.src;
+	img.title = imgNode.title;
+	return img;
+}
+
 function fillChildTaskList(id, data, rowIndex, funcValue, funcText, eventHandler){
 
 	let parentTable = getById('taskList');
@@ -178,7 +185,7 @@ function createTaskRow(row, item, parent, toggler){
 		    		expandImg.setAttribute('data-id', taskRowEnum.expand);
 		    	}
 	    	}else if(expandImg.getAttribute('data-id') == taskRowEnum.expand){
-		    	getDataEx(item.taskId, 'taskrelation', '?actionId=7&taskId='+item.taskId, fillChildTaskList, row.sectionRowIndex, null, null, null);
+		    	getDataEx(item.taskId, 'taskrelation', '?actionId=7&taskRelationTypeId=0&taskId='+item.taskId, fillChildTaskList, row.sectionRowIndex, null, null, null);
 //		    	setImage(expandImg, taskListItemStat.collapseImg); 
 //		    	expandImg.setAttribute('data-id', taskRowEnum.collapse);
 	    	} 

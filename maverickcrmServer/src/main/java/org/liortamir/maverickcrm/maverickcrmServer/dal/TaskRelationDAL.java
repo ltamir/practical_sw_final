@@ -78,6 +78,21 @@ public class TaskRelationDAL {
 		return taskRelationList;
 	}
 	
+	public List<TaskRelation> getChildren(int parentTaskId, int relationTypeId) throws SQLException{
+		List<TaskRelation> taskRelationList = null;
+		
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from taskRelation inner join task on taskId = childTaskId where parentTaskId=? and taskRelationTypeId=? order by task.duedate, task.statusId");
+			ps.setInt(1, parentTaskId);
+			ps.setInt(2, relationTypeId);
+			ResultSet rs = ps.executeQuery();
+			taskRelationList = new ArrayList<>(7);
+			while(rs.next()) 
+				taskRelationList.add(mapFields(rs));
+		}
+		return taskRelationList;
+	}	
+	
 	public int insert(int parentTaskId, int childTaskId, int relationTypeId, int rootTaskId) throws SQLException {
 		int identity = 0;
 		try (Connection conn = DBHandler.getConnection()){

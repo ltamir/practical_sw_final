@@ -41,6 +41,8 @@ public class TaskRelationController extends HttpServlet {
 		TaskRelation taskRelation = null;
 		int id = 0;
 		int taskId = 0;
+		int relationTypeId = 0;
+		List<TaskRelation> taskRelationList = null;
 		JsonObject json = new JsonObject();
 		
 		try {
@@ -55,12 +57,20 @@ public class TaskRelationController extends HttpServlet {
 			}else if(action == ActionEnum.GET_RELATION_PARENTS) {
 
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskRelation> taskRelationList = dal.getParents(taskId);
+				relationTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID));
+				if(relationTypeId == 0)
+					taskRelationList = dal.getParents(taskId);
+				else
+					taskRelationList = dal.getParents(taskId, relationTypeId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));
 				
 			}else if(action == ActionEnum.GET_TASK_CHILDREN) {
 				taskId = Integer.parseInt(req.getParameter(APIConst.FLD_TASK_ID));
-				List<TaskRelation> taskRelationList = dal.getChildren(taskId);
+				relationTypeId = Integer.parseInt(req.getParameter(APIConst.FLD_TASKRELATION_TASKRELATIONTYPE_ID));
+				if(relationTypeId == 0)
+					taskRelationList = dal.getChildren(taskId);
+				else
+					taskRelationList = dal.getChildren(taskId, relationTypeId);
 				json.add("array", jsonHelper.toJsonTree(taskRelationList));	
 			}
 			ServletHelper.doSuccess(json);

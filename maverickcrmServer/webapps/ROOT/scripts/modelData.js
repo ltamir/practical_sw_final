@@ -34,8 +34,8 @@ var taskStatusList = [
 ]
 
 var relationTypeList = [
-	{value:-1},
-	{value:1, src:"images/derived.png", title:"Derived from task"},
+	{value:-1, src:"images/tasktype/allTypes.png", title:"All"},
+	{value:1, src:"images/derived.png", title:"Derived"},
 	{value:2, src:"images/process.png", title:"Process"},
 	{value:3, src:"images/dependency.png", title:"Depends on"}
 ]

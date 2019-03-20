@@ -136,18 +136,50 @@ function viewTaskLogList(){
 }
 
 function activateTabRelation(){
-	getHTML('tabRelation.html').then(function(response){fillTab('divTaskTab', response)})
+	getHTML('tabRelation.html').then(function(response){
+		fillTab('divTaskTab', response);
+		let divRelationViewSelection = getById('divRelationSelection');
+
+		for(let pos = 0; pos< 4; pos++){
+			let img = createImage(relationTypeList[pos]);
+			img.style.marginRight = '0.2em';
+			let selectionDiv = document.createElement('DIV');
+			selectionDiv.style.borderRadius = '3px';
+			let titleSpan = document.createElement('SPAN');
+			selectionDiv.className = (pos == 0)? 'cssTabSelected' : 'cssTab';
+			selectionDiv.addEventListener("click", function(){
+				for(let divPos = 0; divPos < divRelationViewSelection.children.length; divPos++){
+					if(divRelationViewSelection.children[divPos] == this)
+						divRelationViewSelection.children[divPos].className = 'cssTabSelected';
+					else
+						divRelationViewSelection.children[divPos].className = 'cssTab';
+				}
+				let relationTypeId = pos;
+				if(getValue('taskId') > 0){
+					getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=' + pos + '&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)
+					getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskRelationTypeId=' + pos + '&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
+				}
+					
+			});	
+			titleSpan.innerHTML = img.title;
+			selectionDiv.style.display = 'inline-block';
+			selectionDiv.appendChild(img);
+			selectionDiv.appendChild(titleSpan);
+			divRelationViewSelection.appendChild(selectionDiv);
+		}
+
+		})
 	.then(()=>getDataEx('cmbTaskRelationType', 'taskrelationtype', '?actionId=2', fillSelect, 'Relation type', 
 			(opt,item)=>opt.value = item.taskRelationTypeId, 
 			(opt,item)=>opt.text = item.taskRelationTypeName, 
 			null))
 	.then(()=>{
 		if(getValue('taskId') > 0)
-			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=0&taskId='+getValue('taskId'), fillTaskRelationList, 1, null, null, null)
 			})
 	.then(()=>{
 		if(getValue('taskId') > 0)
-			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
+			getDataEx('divChildTaskList', 'taskrelation', '?actionId=7&taskRelationTypeId=0&taskId='+getValue('taskId'), fillTaskRelationList, 2, null, null, null)
 	})
 	.then(()=>searchProjectTask('cmbTabRelationProject'))
 	.then(()=>{
