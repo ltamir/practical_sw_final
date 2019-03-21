@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
@@ -243,15 +246,27 @@ public class TaskController extends HttpServlet {
 		TaskListSort sorter = TaskListSort.DUE_DATE;
 		String queryString = req.getQueryString();
 		int reqHash = queryString.hashCode();
-		taskList = dal.getTaskList(login.getLoginId(), reqHash);
-		if(taskList == null){
-			taskList = getTasks(req, login);
-			dal.addTaskList(login.getLoginId(), reqHash, taskList);
-			System.out.println("read tasks form db");
+		sessions.add(req.getSession().getId());
+		try{
+		synchronized (login) {
+			taskList = dal.getTaskList(login.getLoginId(), reqHash);
+			if(taskList == null){
+				taskList = getTasks(req, login);
+				dal.addTaskList(login.getLoginId(), reqHash, taskList);
+				System.out.println("read tasks form db");
+			}
+			sorter.sort(taskList);
 		}
-		sorter.sort(taskList);
 		json.add("array", jsonHelper.toJsonTree(taskList));
+			
+		}catch(ConcurrentModificationException e){
+			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			System.out.println(sessions);
+		}
+		
 	}
+	
+	private static Set<String> sessions = new HashSet<>();
 	
 	private List<Task> getTasks(HttpServletRequest req, Login login) throws SQLException{
 		int customerId = Integer.parseInt(req.getParameter("customerId"));
