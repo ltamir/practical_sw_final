@@ -218,6 +218,7 @@ function init(){
 	initModels();
 	searchModel.dueDate.dom = new DatePicker('tblSearchDueDate', null);
 	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate', checkPermission);
+	new EffortPicker('tblTaskEffort', null);	
 	
 	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers', 

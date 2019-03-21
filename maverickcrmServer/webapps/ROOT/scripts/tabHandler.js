@@ -102,8 +102,6 @@ function activateTabTaskLog(){
 		initModel(taskLogModel);
 		setDomPermission(taskLogModel);
 	});
-
-	getById('divTaskTab').style.width = '35em';
 }
 
 function viewTaskLogList(){
@@ -187,8 +185,6 @@ function activateTabRelation(){
 		setDomPermission(taskRelationModel);
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
-	getById('divTaskTab').style.width = '35em';
-	
 }
 
 function activateTabAttachment(){
@@ -210,7 +206,6 @@ function activateTabAttachment(){
 //		addFieldListener(attachmentModel);
 		setDomPermission(attachmentModel);
 	});
-	getById('divTaskTab').style.width = '35em';
 }
 
 function viewAttachmentList(){
@@ -259,7 +254,6 @@ function activateTabLinkedCustomer(){
 		initModel(customerTaskModel);
 		setDomPermission(customerTaskModel);
 	});
-	getById('divTaskTab').style.width = '35em';
 }
 
 var permissionTypes = {
@@ -276,7 +270,6 @@ function activateTabPermission(){
 		permissionTypes.edit.dom = getById('imgEditPermission');
 		permissionTypes.view.dom = getById('imgViewPermission');
 		taskPermissionModel.permissiontypeId.setValue(0);
-		getById('divTaskTab').style.width = '35em';
 		});
 }
 

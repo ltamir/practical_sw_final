@@ -185,6 +185,12 @@
 		cursor: pointer;
 	}
 
+	#divRelationSelection > .cssTabSelected{
+		width: 24.5%;
+	}
+	#divRelationSelection > .cssTab{
+		width: 24.5%;
+	}	
 	#cmbContactList{
 		font-family: arial, sans-serif;
         background-color: GhostWhite;
@@ -194,12 +200,12 @@
 	#txtDetailTaskTitle, #txtTaskLogDescription, #txtAttachmentNotes{
 		font-family: arial, sans-serif;
 		font-size:16px;
-		width:34.5em;		
+		width:44vw;		
 	}
 	
 	#divParentTaskList, #divChildTaskList{
 		height: 2em;
-		width: 35em;
+		width: 45vw;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}
@@ -209,7 +215,7 @@
 	}	
 	#divTaskLogList, #divConsoleLog, #divTimeline{
 		height: 5.5em;
-		width: 35em;
+		width: 45vw;
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
@@ -257,7 +263,7 @@
 		margin-top: 0.2em;
 	}
 	#divTaskDetailsBottom, #divTaskDetailsTop{
-		width: 36em;
+		width: 45vw;
 		left: 4em;
 	}	
 	
