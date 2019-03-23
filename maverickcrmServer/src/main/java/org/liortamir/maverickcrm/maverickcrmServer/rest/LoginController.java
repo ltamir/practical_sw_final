@@ -17,6 +17,7 @@ import javax.servlet.http.Part;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.LoginDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.InvalidLoginException;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 
 import com.google.gson.Gson;
@@ -51,12 +52,12 @@ public class LoginController extends HttpServlet {
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			
 			}else if(action == ActionEnum.GET_SINGLE){
-				String username = (String)req.getSession().getAttribute("username");
+				int sessionLoginId = (Integer)req.getSession().getAttribute(APIConst.FLD_LOGIN_ID);
 				
-				id = Integer.parseInt(req.getParameter("loginId"));
+				id = Integer.parseInt(req.getParameter(APIConst.FLD_LOGIN_ID));
 				login = dal.get(id);
-				if(!login.getUsername().equals(username))
-					login.setPassword("*****");
+//				if(login.getLoginId() != sessionLoginId)
+//					login.setPassword("*****");
 				ServletHelper.addJsonTree(jsonHelper, json, "login", login);
 			}else if(action == ActionEnum.LOGIN_BY_CONTACT) {
 				int contactId = Integer.parseInt(req.getParameter(APIConst.FLD_CONTACT_ID));
@@ -147,16 +148,13 @@ public class LoginController extends HttpServlet {
 			}
 
 			dal.update(username, contactId, loginId);
-			if(password != null && password.length()>4)
-				dal.updatePassword(password, loginId);
-			
-			int loggedInId = (Integer)req.getSession().getAttribute("loginId");
-			if(loggedInId == loginId)
-				req.getSession().setAttribute("username", username);
+			if(password == null || password.length() < 4)
+				throw new InvalidLoginException("password must have at least 4 characters");
+			dal.updatePassword(password, loginId);
 			
 			json.addProperty(APIConst.FLD_LOGIN_ID, loginId);
 			ServletHelper.doSuccess(json);
-		}catch(NullPointerException | NumberFormatException | SQLException e) {
+		}catch(NullPointerException | NumberFormatException | SQLException | InvalidLoginException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
 			json.addProperty(APIConst.FLD_LOGIN_ID, 0);
 		}

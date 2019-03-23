@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
+
 @WebFilter(filterName="AuthenticationFilter", urlPatterns="/*")
 @MultipartConfig
 public class AuthenticationFilter implements Filter {
@@ -42,12 +44,11 @@ public class AuthenticationFilter implements Filter {
 		String uri = req.getRequestURI();
 		HttpSession session = req.getSession(true);
 
-		String username = null;
+		Integer sessionLoginId = null;
 		if(session != null ) {
-			username = (String)session.getAttribute("username");
-
+			sessionLoginId = (Integer)session.getAttribute(APIConst.FLD_LOGIN_ID);
 		}
-		if(username == null)
+		if(sessionLoginId == null)
 			isAuthenticated = false;
 		else
 			isAuthenticated = true;
@@ -78,7 +79,6 @@ public class AuthenticationFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 	

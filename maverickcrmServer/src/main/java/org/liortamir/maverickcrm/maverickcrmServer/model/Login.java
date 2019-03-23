@@ -44,6 +44,18 @@ public class Login {
 	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Login)
+			return ((Login)obj).getLoginId() == getLoginId();
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getLoginId();
+	}
 	
 	
 }

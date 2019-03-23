@@ -37,12 +37,9 @@ public class AuthenticationController extends HttpServlet {
 		
 		try {
 			ActionEnum action = ServletHelper.getAction(req);
-			// TODO req.getDispatcherType() == INCLUDE
 			switch(action) {
 			case GET_LOGGED_IN:
-				String user = (String) req.getSession().getAttribute("username");
-				if(user == null)
-					throw new NullPointerException();
+				int user = (Integer) req.getSession().getAttribute(APIConst.FLD_LOGIN_ID);
 
 				Login login = LoginDAL.getInstance().get(user);
 				if(req.getDispatcherType() == DispatcherType.INCLUDE) {
@@ -53,7 +50,7 @@ public class AuthenticationController extends HttpServlet {
 				json.addProperty("devmod", ref.getAsString("devmod", "false"));
 				break;
 			case DO_LOGOUT:
-				req.getSession().removeAttribute("username");
+				req.getSession().removeAttribute(APIConst.FLD_LOGIN_ID);
 				resp.sendRedirect("login.html");
 				break;
 				default:
@@ -75,16 +72,16 @@ public class AuthenticationController extends HttpServlet {
 		Login login = null;
 		
 		try {
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
+			String username = req.getParameter(APIConst.FLD_LOGIN_USERNAME);
+			String password = req.getParameter(APIConst.FLD_LOGIN_PASSWORD);
 			login = LoginDAL.getInstance().authenticate(username, password);
 			if(login == null) {
 				json.addProperty("msg", "Invalid user or password. Please try Again");	
 				
 			}else {
-				req.getSession().setAttribute("username", login.getUsername());
 				req.getSession().setAttribute("loginId", login.getLoginId());
 				json.addProperty("msg", "ok");
+				ServletHelper.doSuccess(json);
 				json.addProperty("redirect", "index.html");
 			}
 		}catch(SQLException | NullPointerException e) {
