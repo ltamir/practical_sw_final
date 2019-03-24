@@ -29,6 +29,7 @@ import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 import org.liortamir.maverickcrm.maverickcrmServer.model.TaskPermission;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -62,20 +63,6 @@ public class TaskController extends HttpServlet {
 			switch(action) {
 			case GET_ALL:
 				getTasks(req, login, json);
-//				List<Task> taskList = null;	
-//				String queryString = req.getQueryString();
-//				int reqHash = queryString.hashCode();
-//				int customerId = Integer.parseInt(req.getParameter("customerId"));
-//				String dueDate = req.getParameter("duedate");
-//				dueDate = (dueDate.equals("null"))?"":dueDate;
-//				String title = req.getParameter("title");
-//				int projectId = Integer.parseInt(req.getParameter("projectId"));
-//				int taskTypeId = Integer.parseInt(req.getParameter("tasktypeId"));
-//				int status = Integer.parseInt(req.getParameter("showclosed"));
-//				taskList = dal.getAll(customerId, dueDate, title, projectId, taskTypeId, status,login.getLoginId());
-//				sortTasks(taskList, (t1, t2)-> t1.getDueDate().compareTo(t2.getDueDate()));
-//				json.add("array", jsonHelper.toJsonTree(taskList));
-
 				break;
 			case TASKLIST_SORT:
 				int sortField = Integer.parseInt(req.getParameter("sort"));
@@ -248,24 +235,41 @@ public class TaskController extends HttpServlet {
 		int reqHash = queryString.hashCode();
 		sessions.add(req.getSession().getId());
 		try{
-		synchronized (login) {
-			taskList = dal.getTaskList(login.getLoginId(), reqHash);
-			if(taskList == null){
-				taskList = getTasks(req, login);
-				dal.addTaskList(login.getLoginId(), reqHash, taskList);
-				System.out.println("read tasks form db");
+			synchronized (login) {
+				taskList = dal.getTaskList(login.getLoginId(), reqHash);
+				if(taskList == null){
+					taskList = getTasks(req, login);
+					
+					dal.addTaskList(login.getLoginId(), reqHash, taskList);
+				}
+				sorter.sort(taskList);
+				JsonElement jsonTaskList = jsonHelper.toJsonTree(taskList);
+				json.add("array", jsonTaskList);
+				
 			}
-			sorter.sort(taskList);
-		}
-		json.add("array", jsonHelper.toJsonTree(taskList));
-			
 		}catch(ConcurrentModificationException e){
-			ServletHelper.doError(e, this, ServletHelper.METHOD_PUT, json, req);
+			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 			System.out.println(sessions);
 		}
 		
 	}
 	
+//	private void formatEffortDisplay(List<Task> taskList) {
+//		String ff;
+//		taskList.stream().forEach((t) -> {
+//			int hours = 0, days = 0, months = 0;
+//			hours = t.getEffort();
+//			if(hours >= 20){
+//				months = hours / 9 / 20;
+//				hours = hours % (9*20);		
+//			}
+//			if(hours >= 9){
+//				days = hours / 9;
+//				hours = hours % 9;		
+//			}
+//			ff = months + ':' + days + ':' + hours;			
+//		});
+//	}
 	private static Set<String> sessions = new HashSet<>();
 	
 	private List<Task> getTasks(HttpServletRequest req, Login login) throws SQLException{
