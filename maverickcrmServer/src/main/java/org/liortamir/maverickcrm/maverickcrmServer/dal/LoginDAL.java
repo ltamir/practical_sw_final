@@ -131,8 +131,14 @@ public class LoginDAL {
 				throw new SQLException("error in update login");
 		}
 		Login login = this.cacheList.get(loginId);
-		login.setUsername(username);
-		login.setContact(ContactDAL.getInstance().get(contactId));
+		if(login == null) {
+			login = new Login(loginId, username, ContactDAL.getInstance().get(contactId));
+			this.cacheList.put(loginId, login);
+		}else {
+			login.setUsername(username);
+			login.setContact(ContactDAL.getInstance().get(contactId));			
+		}
+
 	}
 	
 	public void updatePassword(String password,int loginId) throws SQLException {
