@@ -41,10 +41,10 @@ function newAddress(){
 }
 
 function newLogin(){
-	login.loginId.setValue(0);
-	login.userName.setValue('');
-	login.password.setValue('');
-	login.contact.setValue('');
+	loginModel.loginId.setValue(0);
+	loginModel.username.setValue('');
+	loginModel.password.setValue('');
+	loginModel.contact.setValue('');
 	setValue('cmbAvailableLogins', 0);
 }
 
@@ -721,6 +721,7 @@ function saveLogin(){
 			viewLoginList();
 			setValue('loginId', resp.loginId);
 			setValue('cmbAvailableLogins', resp.loginId);
+			setMsg(msgType.ok, 'Save successfull');
 		});
 }
 
