@@ -205,36 +205,32 @@
 	
 	#divParentTaskList, #divChildTaskList{
 		height: 2em;
-		width: 45vw;
+	}
+	
+	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
-	}
+	}	
 	#divChildTaskList{
 		height: 4.8em;
 		border-bottom:none;
 	}	
 	#divTaskLogList, #divConsoleLog, #divTimeline{
 		height: 5.5em;
-		width: 45vw;
-		overflow-y: scroll;
-		border-bottom: 1px inset #000000;
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
 	}
 	#divConsoleLog{
 		height: 4.5em;
-		width: 36em;
+		width: 50vw;
 	}
 	#divTimeline{
 		height: 11.6em;
-		width: 95vh;
 		border-bottom: none;
 	}
 	
-	#divAttachmentList, divPermissionRow, #cmbRelationTaskList{
-		width: 35em;
-		overflow-y: scroll;
-		border-bottom: 1px inset #000000;
+	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divTaskLogList, #divTimeline, #divParentTaskList, #divChildTaskList, #hrTask, #hrtaskTab{
+		width: 45vw;
 	}
 	
 	#divPermissionLoginList, #divPermissionList{
