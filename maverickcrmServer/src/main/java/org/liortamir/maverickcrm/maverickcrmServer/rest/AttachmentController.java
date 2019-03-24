@@ -54,7 +54,7 @@ public class AttachmentController extends HttpServlet {
 	private String storagePath;
 	private Reference ref = Reference.getInstance();
 	private AttachmentDAL dal = AttachmentDAL.getInstance();
-	private String refPrefix = "attachment";
+	private final String REF_PREFIX = "attachment";
 	private final static int FETCH_SIZE = 128;
 
 	@Override
@@ -212,7 +212,7 @@ public class AttachmentController extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		frm.applyPattern("yyyy-MM-dd HH:mm:ss");
-		storagePath = ref.getAsString(refPrefix + ".fileStorage");
+		storagePath = ref.getAsString(REF_PREFIX + ".fileStorage");
 		if(storagePath == null)
 			throw new ServletException("Invalid fileStoragein configuration");
 	}
