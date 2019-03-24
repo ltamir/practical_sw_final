@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.BusinessDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.Reference;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
 
@@ -36,6 +37,17 @@ public class BusinessController extends HttpServlet {
 	private static final long serialVersionUID = 2510794507990929698L;
 	private Gson jsonHelper = new Gson();
 	private BusinessDAL dal = BusinessDAL.getInstance();
+	private Reference ref = Reference.getInstance();
+	private final String REF_PREFIX = "business";
+	
+	private int daysInMonth = 0;
+	private int hoursInday = 0;
+	
+	@Override
+	public void init() throws ServletException {
+		hoursInday = ref.getAsInt(REF_PREFIX + ".hoursInday");
+		daysInMonth = ref.getAsInt(REF_PREFIX + ".daysInMonth");
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -89,50 +101,69 @@ public class BusinessController extends HttpServlet {
 		out.println(response);
 	}
 	
-	private JsonObject getTotalHours(Task task, JsonObject json) throws SQLException{
+	private void getTotalHours(Task task, JsonObject json) throws SQLException{
+		getSubTasksTotalHours(task, json);
+		getTaskEffort(task, json);
+	}
+
+	private void getSubTasksTotalHours(Task task, JsonObject json) throws SQLException{
 		int hours = 0;
 		int days = 0;
 		int months = 0;
 		int totalHours = 0;
+		JsonObject subTasksTotal = new JsonObject();
 
 		hours = dal.getHours(task.getTaskId());
 		totalHours += hours;
-		json.addProperty("hours", hours);
+		subTasksTotal.addProperty("hours", hours);
 		days = dal.getDays(task.getTaskId());
 		totalHours += days*9;
-		json.addProperty("days", days);
+		subTasksTotal.addProperty("days", days);
 		months = dal.getMonths(task.getTaskId());
 		totalHours += months * 20 * 9;
-		json.addProperty("months", months);
+		subTasksTotal.addProperty("months", months);
 
-		json.addProperty("totalHours", totalHours);
-		if(hours > 9){
-			days += hours/9;
-			hours = hours % 9;
+		subTasksTotal.addProperty("totalHours", totalHours);
+		if(hours > hoursInday){
+			days += hours/hoursInday;
+			hours = hours % hoursInday;
 		}
 
-		if(days > 20){
-			months += days/20;
-			days = days % 20;
+		if(days > daysInMonth){
+			months += days/daysInMonth;
+			days = days % daysInMonth;
 		}
-		json.addProperty("total", months + ":" + days + ":" + hours);
-		json.addProperty("taskTotal", buildTotalEffortTime(BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort())));
-		return json;
+		subTasksTotal.addProperty("formattedTotal", months + ":" + days + ":" + hours);
+		json.add("subTasksEffort", subTasksTotal);
+	}	
+	
+	private void getTaskEffort(Task task, JsonObject json) {
+		int effortInHours = 0;
+		String formattedTotal;
+		JsonObject taskTotal = new JsonObject();
+		effortInHours = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
+		formattedTotal = buildTotalEffortTime(effortInHours, taskTotal);
+		taskTotal.addProperty("formattedTotal", formattedTotal);
+		taskTotal.addProperty("totalHours", effortInHours);
+		json.add("taskEffort", taskTotal);
 	}
-
-	private String buildTotalEffortTime(int totalHours){
+	
+	private String buildTotalEffortTime(int totalHours,  JsonObject json){
 		String totalEffort = "";
 		int days= 0, months = 0;
 		
-		if(totalHours > 9){
-			days += totalHours/9;
+		if(totalHours > hoursInday){
+			days += totalHours/hoursInday;
 			totalHours = totalHours % 9;
 		}
 
-		if(days > 20){
-			months += days/20;
-			days = days % 20;
+		if(days > daysInMonth){
+			months += days/daysInMonth;
+			days = days % daysInMonth;
 		}
+		json.addProperty("hours", totalHours);
+		json.addProperty("days", days);
+		json.addProperty("months", months);
 		totalEffort =  months + ":" + days + ":" + totalHours;
 		return totalEffort;
 	}
@@ -148,7 +179,7 @@ public class BusinessController extends HttpServlet {
 			for(Task childTask : childBulk){
 				calculatedUsedEffort += calculateUsedEffort(childTask);
 			}
-			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime(calculatedUsedEffort));
+			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime(calculatedUsedEffort, new JsonObject()));
 			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
 			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task, calculatedUsedEffort));
 			
@@ -162,8 +193,8 @@ public class BusinessController extends HttpServlet {
 		int remainingPercentage = 0;
 		Period period = Period.between(currentDate, task.getDueDate());
 		int daysToDueDate = period.getDays();
-		daysToDueDate += period.getMonths() * 20;
-		daysToDueDate += period.getYears() * 12 * 20;
+		daysToDueDate += period.getMonths() * daysInMonth;
+		daysToDueDate += period.getYears() * 12 * daysInMonth;
 //		if(daysToDueDate >5)
 //			daysToDueDate -= daysToDueDate / 7 * 2;	// 5 working days, remove friday and saturday
 		int hoursToDueDate = (daysToDueDate < 0)?0 : (daysToDueDate * 9);

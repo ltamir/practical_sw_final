@@ -66,6 +66,13 @@ function newTask(taskType){
 	
 	if(getById('addChildTask').getAttribute('data-state') == 1){
 		setChildTask(getById('addChildTask'));
+	}else if(taskType != 1 && getById('cmbParentProject') == null){
+		let parentProject = getById('cmbSearchProject').cloneNode(true);
+		parentProject.onchange = null;
+		parentProject.id = 'cmbParentProject'
+		getById('divTaskDetailsBottom').appendChild(parentProject);
+	}else if(taskType == 1 && getById('cmbParentProject') != null){
+		getById('cmbParentProject').remove();
 	}
 	
 	setTab(tabEnum.taskLog); 
@@ -181,12 +188,12 @@ function viewTask(id, data){
 function viewTotalEffort(){
 	getDataEx('', 'business', '?actionId=21&taskId=' + taskModel.taskId.getValue(), 
 			function(id, data, defaultOption, funcValue, funcText, eventHandler){
-				getById('totalTaskEffort').innerHTML = data.taskTotal + '/' + data.total;
-
+				getById('totalTaskEffort').innerHTML = '/' + data.subTasksEffort.formattedTotal;
+				
 				let effortState = getById('imgEffortStatus');
 				let taskEffort = effortUnitList[taskModel.effortUnit.dom.value].getHours(taskModel.effort.dom.value);
 
-				if(taskEffort < data.totalHours){
+				if(data.taskEffort.totalHours < data.subTasksEffort.totalHours){
 					effortState.src='images/state_alert.png';
 					effortState.title = 'effort is smaller than total effort '+ data.taskTotal;
 				}else{

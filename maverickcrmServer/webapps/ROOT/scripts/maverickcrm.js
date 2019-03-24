@@ -131,7 +131,7 @@ function initMenuData(){
 			}, getById('divMenuTaskTypeParent'));	
 	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;},  getById('divMenuTaskStatusParent'));
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, getById('divMenuEffortUnitParent'));	
-	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), newTaskModel.taskType, taskTypeList, newTask,  getById('divMenuNewTaskTypeParent'));
+	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), newTaskModel.taskType, taskTypeList, newTask, getById('divMenuNewTaskTypeParent'));
 	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, getById('divSearchTaskTypeParent'));
 	menuData.searchTaskStatus = new MenuItem(getById('imgSearchTaskStatus'), getById('divSearchTaskStatus'), searchModel.status, searchStatusList, dummyAction, getById('divSearchTaskStatusParent'));
 }
@@ -218,7 +218,7 @@ function init(){
 	initModels();
 	searchModel.dueDate.dom = new DatePicker('tblSearchDueDate', null);
 	taskModel.dueDate.dom = new DatePicker('tblTaskDueDate', checkPermission);
-	new EffortPicker('tblTaskEffort', null);	
+	taskModel.effort.dom = new EffortPicker('tblTaskEffort', null);	
 	
 	initMenuData();
 	getDataEx('cmbSearchCustomer', 'customer', '?actionId=2', fillSelect, 'Customers', 

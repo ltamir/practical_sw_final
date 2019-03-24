@@ -146,9 +146,7 @@ function updateTaskRow(taskId){
     setTextDirection(row.cells[1], row.cells[1].innerHTML);
     row.cells[2].innerHTML = getDate(taskModel.dueDate.getValue());
     
-    let effort = taskModel.effort.getValue();
-    row.cells[3].innerHTML = (effort.length==1)?'0'+effort:effort ;
-    row.cells[3].innerHTML +=' ' + effortUnitList[taskModel.effortUnit.getValue()].unit;
+    row.cells[3].innerHTML = getEffortDisplay(taskModel.effort.getValue()) ;
     row.cells[4].innerHTML = taskStatusList[taskModel.status.getValue()].title;
 }
 
@@ -218,17 +216,40 @@ function createTaskRow(row, item, parent, toggler){
 	
     let effortCell  = row.insertCell(3);
 	effortCell.classList.add("cssTaskListEffort");
-	let strEffort = new String(item.effort)
-	strEffort = (strEffort.length==1)?'0'+strEffort:strEffort;
-	strEffort +=' ' + effortUnitList[item.effortUnit].unit;
-	effortCell.appendChild(document.createTextNode(strEffort));
+//	let strEffort = new String(item.effort)
+//	strEffort = (strEffort.length==1)?'0'+strEffort:strEffort;
+//	strEffort +=' ' + effortUnitList[item.effortUnit].unit;
+//	effortCell.appendChild(document.createTextNode(strEffort));
+	effortCell.appendChild(document.createTextNode(getEffortDisplay(item.effort)));
+	
 
 	let statusNameCell  = row.insertCell(4);
 	statusNameCell.classList.add("cssTaskListStatus");
 	statusNameCell.appendChild(document.createTextNode(item.status.statusName));
 }
-
-
+function leftPad(value){
+	if(value < 10)
+		return '0' + value;
+	return value;
+}
+function getEffortDisplay(effort){
+	let hours = 0, days = 0, months = 0, res = '';
+	hours = effort;
+	if(hours >= (20 * 9)){
+		months = Number.parseInt(hours / 9 / 20);
+		hours = hours % (9*20);	
+		res = leftPad(months) + ' m';
+	}
+	if(hours >= 9){
+		days = Number.parseInt(hours / 9);
+		hours = hours % 9;
+		res += ' ' + leftPad(days) + ' d';
+	}
+	if(res.length > 0 && hours == 0)
+		return res;
+	res += ' ' + leftPad(hours) + ' h';
+	return res;
+}
 //TODO move to a div 
 function fillTaskRelationSearchResult(id, data){
 	let selectElement = getById(id);
