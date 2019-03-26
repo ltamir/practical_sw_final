@@ -307,34 +307,29 @@ function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, even
 
     	});
     	
-    	let gotoImg = document.createElement("IMG");
-    	gotoImg.src="images/goto_task.png";
-    	gotoImg.title="goto task";
-    	gotoImg.style.marginLeft = '0.1em';
-    	gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+taskId, viewTask)});
-
+    	let task = (defaultOption == 1)? item.parentTask : item.childTask;
+    	
+        let gotoImg = createImage(taskTypeList[task.taskType.taskTypeId]);
+        gotoImg.title = "goto " + gotoImg.title;
+        gotoImg.style.marginLeft = '0.1em';
+        gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+task.taskId, viewTask)});
+        
     	let relTask = document.createElement("SPAN");
-    	let taskId;
-    	let taskTitle;
     	if(defaultOption == 1){	//filling with parent tasks
-    		taskId = item.parentTask.taskId;
-    		taskTitle = item.parentTask.title;
     		relTask.id = 'taskParentList' + taskId;
     	}
     	else{
-    		taskId = item.childTask.taskId;
-    		taskTitle = item.childTask.title;
     		relTask.id = 'taskChildList' + taskId;
     	}
 
     	relTask.style.marginLeft = '0.3em';
-    	relTask.innerHTML = taskTitle;
+    	relTask.innerHTML = task.title;
 
-    	relTask.setAttribute("data-taskId", taskId);
+    	relTask.setAttribute("data-taskId", task.taskId);
     	relTask.classList.add("cssTaskRelationTitle");
     	relTask.addEventListener("click", function(){
     		toggler.toggle(relTask);   		
-    		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, viewTaskRelationDetails); setValue('taskRelationSelectedTaskId', taskId);
+    		getData('', 'taskrelation', '?actionId=3&taskRelationId='+item.taskRelationId, viewTaskRelationDetails); setValue('taskRelationSelectedTaskId', task.taskId);
     		});
     		
     	setTextDirection(relTask, relTask.innerHTML);
