@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.liortamir.maverickcrm.maverickcrmServer.dal.TaskDAL;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.APIConst;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.ActionEnum;
+import org.liortamir.maverickcrm.maverickcrmServer.infra.InvalidLoginException;
 import org.liortamir.maverickcrm.maverickcrmServer.infra.InvalidPermissionException;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Login;
 import org.liortamir.maverickcrm.maverickcrmServer.model.Task;
@@ -102,7 +103,7 @@ public class TaskController extends HttpServlet {
 			}
 			req.getSession().removeAttribute("login");
 			ServletHelper.doSuccess(json);
-		}catch(NumberFormatException | NullPointerException | SQLException | InvalidActionException |InvalidPermissionException e) {
+		}catch(NumberFormatException | NullPointerException | SQLException | InvalidActionException |InvalidPermissionException | InvalidLoginException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 		}
 		response = jsonHelper.toJson(json);
@@ -228,7 +229,7 @@ public class TaskController extends HttpServlet {
 		out.println(response);
 	}
 	
-	private void getTasks(HttpServletRequest req, Login login, JsonObject json) throws SQLException{
+	private void getTasks(HttpServletRequest req, Login login, JsonObject json) throws SQLException, InvalidLoginException{
 		List<Task> taskList = null;	
 		TaskListSort sorter = TaskListSort.DUE_DATE;
 		String queryString = req.getQueryString();
@@ -250,26 +251,12 @@ public class TaskController extends HttpServlet {
 		}catch(ConcurrentModificationException e){
 			ServletHelper.doError(e, this, ServletHelper.METHOD_GET, json, req);
 			System.out.println(sessions);
+		}catch(NullPointerException e) {
+			throw new InvalidLoginException("Unable to retrieve credentials");
 		}
 		
 	}
 	
-//	private void formatEffortDisplay(List<Task> taskList) {
-//		String ff;
-//		taskList.stream().forEach((t) -> {
-//			int hours = 0, days = 0, months = 0;
-//			hours = t.getEffort();
-//			if(hours >= 20){
-//				months = hours / 9 / 20;
-//				hours = hours % (9*20);		
-//			}
-//			if(hours >= 9){
-//				days = hours / 9;
-//				hours = hours % 9;		
-//			}
-//			ff = months + ':' + days + ':' + hours;			
-//		});
-//	}
 	private static Set<String> sessions = new HashSet<>();
 	
 	private List<Task> getTasks(HttpServletRequest req, Login login) throws SQLException{
