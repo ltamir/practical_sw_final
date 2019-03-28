@@ -30,7 +30,7 @@ function setDebugModule(moduleNum){
  * impl - the function that handles the returned data with the id
  */
 function getData(id, resource, params, impl){
-    var url = "http://127.0.0.1:8082/maverick/"+resource+params;
+    var url = resource+params;
     fetch(url)
     .then(function(response) {
     	if(response.status != 200){
@@ -54,8 +54,8 @@ function getData(id, resource, params, impl){
     
 }
 
-function setData(method, formData, resource){
-	return fetch('http://127.0.0.1:8082/maverick/' + resource, {
+function setData(method, formData, resource){ //'http://127.0.0.1:8082/maverick/'
+	return fetch(resource, {
         method: method,
         body: formData
     })
@@ -71,7 +71,7 @@ function setData(method, formData, resource){
 }
 
 function getDataEx(id, resource, params, impl, defaultOption, funcValue, funcText, eventHandler){
-    var url = "http://127.0.0.1:8082/maverick/"+resource+params;
+    var url = resource+params;
     fetch(url)
     .then(function(response) {
     		if(response.redirected)
