@@ -529,7 +529,7 @@ function viewTimeline(taskArray){
 	taskArray.forEach(function (item) {
     	let span = document.createElement('SPAN');
     	
-    	span.innerHTML = item.title + ' -> ' + item.usedEffortFormatted + 'h/' + item.effort + effortUnitList[item.effortUnit].unit + ' ' + jsonToDisplay(item.dueDate);
+    	span.innerHTML = item.title + ' ' + item.usedEffortFormatted + 'h/' + item.totalEffortFormatted + ' -> ' + jsonToDisplay(item.dueDate);
     	span.title = 'goto task';
     	span.style.cursor = 'pointer';
     	span.style.marginLeft = '0.4em';
@@ -581,9 +581,9 @@ function viewTimeline(taskArray){
 				}, null, null, null, null);	
     	})
     	
-    	let totalLeftEffort = item.leftEffort;
+    	let totalLeftEffort = item.usedEffort;
     	innerDiv.style.width = totalLeftEffort +'%';
-    	innerDiv.innerHTML = ( (totalLeftEffort >100)? 100 : totalLeftEffort ) +  '%'
+    	innerDiv.innerHTML = totalLeftEffort +  '%'
     	innerDiv.style.textAlign = 'right';
     	innerDiv.title = 'Show child tasks';
     	let imgTaskType = getTaskTypeImg(item.taskType.taskTypeId)

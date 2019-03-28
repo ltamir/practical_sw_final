@@ -175,18 +175,41 @@ public class BusinessController extends HttpServlet {
 			JsonObject jsonTask = (JsonObject)jsonArray.get(jsonArray.size()-1);
 			
 			List<Task> childBulk = dal.getTimelineTask(task.getTaskId());
-			int calculatedUsedEffort = (childBulk.size() == 0) ? calculateUsedEffort(task) : 0;
+			float childrenEffort = (childBulk.size() == 0) ? calculateUsedEffort(task) : 0;
 			for(Task childTask : childBulk){
-				calculatedUsedEffort += calculateUsedEffort(childTask);
+					childrenEffort += calculateUsedEffort(childTask);
 			}
-			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime(calculatedUsedEffort, new JsonObject()));
-			jsonTask.addProperty("usedEffort", calculatedUsedEffort);
-			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task, calculatedUsedEffort));
+//			float childrenEffort = calcSubEffort(task);
+			int parentEffort = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
+			int usedParentEffort = (int)(childrenEffort / (float)parentEffort * 100);
+			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime((int)childrenEffort, new JsonObject()));
+			jsonTask.addProperty("totalEffortFormatted", buildTotalEffortTime(task.getEffort(), new JsonObject()));
+			jsonTask.addProperty("usedEffort", usedParentEffort);
+			jsonTask.addProperty("leftEffort", caculateDateDiff(currentDate, task, (int)childrenEffort));
 			
 		}
 		ServletHelper.addJsonTree(jsonHelper, json, "array", jsonArray);
 		
 		return json;
+	}
+	
+	private float calcSubEffort(Task task) throws SQLException{
+		float childrenEffort = 0;
+		float parentEffort = 0;
+		float usedParentEffort = 0;
+		
+		List<Task> childrenBulk = dal.getTimelineTask(task.getTaskId());
+		if(childrenBulk.size() == 0)
+			return calculateUsedEffort(task);
+		
+		parentEffort = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
+		for(Task childTask : childrenBulk){
+			childrenEffort += calcSubEffort(childTask);
+			
+		}
+		usedParentEffort = childrenEffort / parentEffort * 100;
+		return usedParentEffort;
+		
 	}
 	
 	private int caculateDateDiff(LocalDate currentDate, Task task, int usedEffort){
@@ -210,13 +233,13 @@ public class BusinessController extends HttpServlet {
 		return remainingPercentage;		
 	}
 	
-	private int calculateUsedEffort(Task task){
-		int hours = 0;
+	private float calculateUsedEffort(Task task){
+		float hours = 0;
 		//n/a, new, Running, Deliered, Closed, On Hold
 		double[] ststusEffort  = {0, 0, 0.25, 0.75, 1, 0};
 		
 		hours = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
-		hours = (int) Math.round((hours * ststusEffort[task.getStatus().getStatusId()]));
+		hours = Math.round((hours * ststusEffort[task.getStatus().getStatusId()]));
 		return hours;
 	}
 	
