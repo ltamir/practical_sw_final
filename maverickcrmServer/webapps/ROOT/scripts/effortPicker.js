@@ -1,6 +1,9 @@
 function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
 
-            this.dom = {picker:null, value:{monthsEffort:0, daysEffort:0, hoursEffort:0}, lblEffort:null, effortSetter:null};
+            this.dom = {picker:null, lblEffort:null, effortSetter:null};
+            this.monthsEffort = null;
+            this.daysEffort = null;
+            this.hoursEffort = null;
             this.guiState = 0;
             this.dayToMonth = dayToMonth;
             this.hourToDay = hourToDay;
@@ -8,14 +11,14 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
             // ***** Getters ***** //
             this.padLeft = (val)=>{return (val < 10)?'0'+val:val};
             this.getValue = function(){
-            	return {months:this.dom.value.monthsEffort.value, days:this.dom.value.daysEffort.value, hours:this.dom.value.hoursEffort.value};
+            	return {months:this.monthsEffort.value, days:this.daysEffort.value, hours:this.hoursEffort.value};
             }
 
             // ***** Setter ***** //
             this.setValue = function(months, days, hours){
-            	this.dom.value.monthsEffort.value = (months == '' || months == null)?0 : months;
-            	this.dom.value.daysEffort.value = (days == '' || days == null)?0 : days;
-            	this.dom.value.hoursEffort.value = (hours == '' || hours == null)?0 : hours;
+            	this.monthsEffort.value = (months == '' || months == null)?0 : months;
+            	this.daysEffort.value = (days == '' || days == null)?0 : days;
+            	this.hoursEffort.value = (hours == '' || hours == null)?0 : hours;
             	this.setDisplay(months, days, hours);
             };
             
@@ -32,6 +35,9 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
             	this.setValue(mm, dd, hh);
             };            
             
+            this.formatValue = function(val){
+            	return Number.parseInt(val); // try - catch with undo upon exception
+            }
             // ***** Display ***** //
 
             this.show  = function (){
@@ -45,7 +51,9 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
                 this.dom.picker.blur();
                 this.dom.picker.tabIndex = '';
                 this.guiState = 0;
-                this.setDisplay(this.dom.value.monthsEffort.value, this.dom.value.daysEffort.value, this.dom.value.hoursEffort.value);
+                this.setDisplay(this.formatValue(this.monthsEffort.value),
+                		this.formatValue(this.daysEffort.value),
+                		this.formatValue(this.hoursEffort.value));
             };
             this.toggle = function (){
                 if(this.guiState == 0){
@@ -79,20 +87,24 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
                 input.placeholder = placeholder;
                 input.style.width = '1.3em';
                 input.title = title;
+                input.value = 0;
                 input.onkeydown = function(event){
                 	let char = parseInt(event.key, 10); //event.which || event.keyCode;
                 	if(event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 37 || event.keyCode == 39)
                 		return;
+                	if(event.keyCode == 13)
+                		me.hide();
                 	if(isNaN(char))
                 		return false;
                 	}
                 input.onblur = function(event){
                 	let evt = window.event || event;
-	                	if(evt.target == me.dom.value.monthsEffort || evt.target == me.dom.value.daysEffort || evt.target == me.dom.value.hoursEffort){
-	                		me.hide()
-	                    	if(input.value.length == 0)
-	                    		input.value = 0;
-	                	}
+                	if(evt.relatedTarget == me.monthsEffort || evt.relatedTarget == me.daysEffort || evt.relatedTarget == me.hoursEffort)
+                		return;
+                	
+            		me.hide()
+                	if(input.value.length == 0)
+                		input.value = 0;
                 	};                
                 return input;
             };
@@ -109,12 +121,12 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
             this.dom.picker = document.getElementById(pickerId);
             this.dom.picker.onblur = function(event){
             	let evt = window.event || event;
-            	if(evt.relatedTarget == me.dom.value.monthsEffort || evt.relatedTarget == me.dom.value.daysEffort || evt.relatedTarget == me.dom.value.hoursEffort)
+            	if(evt.relatedTarget == me.monthsEffort || evt.relatedTarget == me.daysEffort || evt.relatedTarget == me.hoursEffort)
             		return;
             	me.hide()};
             this.dom.picker.onclick = function(event){
             	let evt = window.event || event;
-            	if(evt.target == me.dom.value.monthsEffort || evt.target == me.dom.value.daysEffort || evt.target == me.dom.value.hoursEffort)
+            	if(evt.target == me.monthsEffort || evt.target == me.daysEffort || evt.target == me.hoursEffort)
             		return;
             	};
             	
@@ -131,14 +143,14 @@ function EffortPicker (pickerId,onShowFunc, dayToMonth = 20, hourToDay = 9) {
             // effort setters
             this.dom.effortSetter = this.createDIV('datePicker', 'none');
             this.dom.effortSetter.className = 'cssdropDown';
-            this.dom.value.monthsEffort = this.createNumberInput('months', '', 0, 'months');
-            this.dom.effortSetter.appendChild(this.dom.value.monthsEffort);
+            this.monthsEffort = this.createNumberInput('months', '', 0, 'months');
+            this.dom.effortSetter.appendChild(this.monthsEffort);
             this.dom.effortSetter.appendChild(document.createTextNode(':'));
-            this.dom.value.daysEffort = this.createNumberInput('days', '', 0, 'days');
-            this.dom.effortSetter.appendChild(this.dom.value.daysEffort);
+            this.daysEffort = this.createNumberInput('days', '', 0, 'days');
+            this.dom.effortSetter.appendChild(this.daysEffort);
             this.dom.effortSetter.appendChild(document.createTextNode(':'));
-            this.dom.value.hoursEffort = this.createNumberInput('hours', '', 0, 'hours');
-            this.dom.effortSetter.appendChild(this.dom.value.hoursEffort);
+            this.hoursEffort = this.createNumberInput('hours', '', 0, 'hours');
+            this.dom.effortSetter.appendChild(this.hoursEffort);
             
             this.dom.picker.appendChild(this.dom.effortSetter);
    
