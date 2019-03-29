@@ -204,7 +204,7 @@
 	}
 	
 	#divParentTaskList, #divChildTaskList, #divRelationSearchTaskList{
-		height: 7vh;
+		height: 8vh;
 	}
 	
 	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divRelationSearchTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
