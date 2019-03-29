@@ -388,6 +388,26 @@ public class TaskDAL {
 	}
 	
 	/**
+	 * retrieve child tasks for given task
+	 * @param taskId
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Task> getProcessChildren(int taskId) throws SQLException{
+		List<Task> taskList = null;
+		
+		try (Connection conn = DBHandler.getConnection()){
+			PreparedStatement ps = conn.prepareStatement("select * from task where taskId in(select childTaskId from taskRelation where parentTaskId=? and taskrelationTypeId = 2)");
+			ps.setInt(1, taskId);
+			ResultSet rs = ps.executeQuery();
+			taskList = new ArrayList<>(7);
+			while(rs.next()) 
+				taskList.add(mapFields(rs));
+		}
+		return taskList;
+	}
+	
+	/**
 	 * Field mapper between result set and a Task POJO 
 	 * @param rs
 	 * @return

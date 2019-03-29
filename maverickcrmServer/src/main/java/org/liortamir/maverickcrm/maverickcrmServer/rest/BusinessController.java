@@ -174,13 +174,15 @@ public class BusinessController extends HttpServlet {
 			jsonArray.add(jsonHelper.toJsonTree(task));
 			JsonObject jsonTask = (JsonObject)jsonArray.get(jsonArray.size()-1);
 			
-			List<Task> childBulk = dal.getTimelineTask(task.getTaskId());
-			float childrenEffort = (childBulk.size() == 0) ? calculateUsedEffort(task) : 0;
-			for(Task childTask : childBulk){
-					childrenEffort += calculateUsedEffort(childTask);
-			}
-//			float childrenEffort = calcSubEffort(task);
+//			List<Task> childBulk = dal.getTimelineTask(task.getTaskId());
+//			float childrenEffort = (childBulk.size() == 0) ? calculateUsedEffort(task) : 0;
+//			for(Task childTask : childBulk){
+//					childrenEffort += calculateUsedEffort(childTask);
+//			}
+			float childrenEffort = calcSubEffort(task);
 			int parentEffort = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
+			;
+			childrenEffort += (int) calculateUsedEffort((int)(parentEffort - childrenEffort), 1, task.getStatus().getStatusId());
 			int usedParentEffort = (int)(childrenEffort / (float)parentEffort * 100);
 			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime((int)childrenEffort, new JsonObject()));
 			jsonTask.addProperty("totalEffortFormatted", buildTotalEffortTime(task.getEffort(), new JsonObject()));
@@ -195,19 +197,17 @@ public class BusinessController extends HttpServlet {
 	
 	private float calcSubEffort(Task task) throws SQLException{
 		float childrenEffort = 0;
-		float parentEffort = 0;
 		float usedParentEffort = 0;
 		
 		List<Task> childrenBulk = dal.getTimelineTask(task.getTaskId());
 		if(childrenBulk.size() == 0)
 			return calculateUsedEffort(task);
 		
-		parentEffort = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
 		for(Task childTask : childrenBulk){
 			childrenEffort += calcSubEffort(childTask);
 			
 		}
-		usedParentEffort = childrenEffort / parentEffort * 100;
+		usedParentEffort = childrenEffort;
 		return usedParentEffort;
 		
 	}
@@ -234,14 +234,16 @@ public class BusinessController extends HttpServlet {
 	}
 	
 	private float calculateUsedEffort(Task task){
+		return calculateUsedEffort(task.getEffort(), task.getEffortUnit(), task.getStatus().getStatusId());
+	}
+	
+	private float calculateUsedEffort(int effort, int effortUnit, int statusId){
 		float hours = 0;
 		//n/a, new, Running, Deliered, Closed, On Hold
 		double[] ststusEffort  = {0, 0, 0.25, 0.75, 1, 0};
 		
-		hours = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
-		hours = Math.round((hours * ststusEffort[task.getStatus().getStatusId()]));
+		hours = BLHelper.getEffortHours(effortUnit,effort);
+		hours = Math.round((hours * ststusEffort[statusId]));
 		return hours;
-	}
-	
-	
+	}	
 }

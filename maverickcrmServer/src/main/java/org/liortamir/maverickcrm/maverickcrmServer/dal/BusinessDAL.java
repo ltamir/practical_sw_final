@@ -84,7 +84,7 @@ public class BusinessDAL {
 	}	
 
 	public List<Task> getTimelineTask(int taskId) throws SQLException {
-		List<Task> bulk = TaskDAL.getInstance().getChildren(taskId);
+		List<Task> bulk = TaskDAL.getInstance().getProcessChildren(taskId);
 
 		return bulk;
 	}
