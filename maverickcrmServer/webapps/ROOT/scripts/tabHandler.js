@@ -520,7 +520,6 @@ function viewTimeline(taskArray){
 	let colors = ['#4CAF50', '#2196F3', '#f44336', '#808080'];
 	let colorPos = 0;
 	let currentDate = new Date();
-	let milliInHour = 1000*60*60;
 	let divTimeline = getById('divTimeline');
 	
 	for(let i = divTimeline.childNodes.length-1; i > -1; i--)
@@ -528,7 +527,6 @@ function viewTimeline(taskArray){
 	
 	taskArray.forEach(function (item) {
     	let span = document.createElement('SPAN');
-    	
     	span.innerHTML = item.title + ' ' + item.usedEffortFormatted + 'h/' + item.totalEffortFormatted + ' -> ' + jsonToDisplay(item.dueDate);
     	span.title = 'goto task';
     	span.style.cursor = 'pointer';
@@ -539,7 +537,13 @@ function viewTimeline(taskArray){
     	let div = document.createElement('DIV');
     	div.style.width = '100%';
     	div.style.marginBottom = '0.4em';
-    	div.style.backgroundColor = '#EAEAEA';
+    	if(item.dueDate.year < currentDate.getFullYear() 	// if fue date has passed
+    			|| (item.dueDate.year == currentDate.getFullYear() && item.dueDate.month < currentDate.getMonth() + 1)
+    			|| (item.dueDate.year == currentDate.getFullYear() &&  item.dueDate.month == currentDate.getMonth() + 1 &&  item.dueDate.day < currentDate.getDate())
+    			){
+    		div.style.backgroundColor = '#FFFFFF';
+    	}else    	
+    		div.style.backgroundColor = '#EAEAEA';
     	
     	let innerDiv = document.createElement('DIV');
     	innerDiv.style.display = 'inline-block';
