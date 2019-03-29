@@ -74,8 +74,24 @@ function searchRelationTask(){
 	if(dbg==Module.menu)
 		addLog(searchTaskParams);
 	
-	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
-	
+//	getData('cmbRelationTaskList', 'task', searchTaskParams, fillTaskRelationSearchResult);
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getDataEx('divRelationSearchTaskList', 'task', searchTaskParams, fillDivList, null, 
+    		(divRow,item)=>{
+    			let taskTypeImg = createImage(taskTypeList[item.taskType.taskTypeId]);
+    			divRow.appendChild(taskTypeImg);			
+				divRow.addEventListener("click", function(){
+    				toggler.toggle(divRow);
+    				setValue('taskRelationSelectedTaskId', item.taskId);
+    			});	
+				divRow.addEventListener("mouseover", function(){this.style.cursor='pointer';});
+			}, 
+    		(txtPart,item)=>{
+    			if(dbg==Module.tasklog)
+    				addLog(item);				
+    			txtPart.innerHTML = item.title;
+			},
+    		null);
 }
 
 /**

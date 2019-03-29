@@ -250,28 +250,6 @@ function getEffortDisplay(effort){
 	res += ' ' + leftPad(hours) + ' h';
 	return res;
 }
-//TODO move to a div 
-function fillTaskRelationSearchResult(id, data){
-	let selectElement = getById(id);
-	
-	if(dbg==Module.tasklog)
-		addLog(data);
-	
-    for (let i = selectElement.length - 1; i >= 0; i--) {
-        selectElement.remove(i);
-	}
-    setValue('taskRelationId', 0);
-    data.array.forEach(function (item) {
-    	let thisDate = new Date(item.sysdate);
-        let opt = document.createElement("OPTION");
-        opt.value = item.taskId;
-        opt.text = item.title;
-        opt.addEventListener("mouseover", function(){this.style.cursor='pointer';});
-        opt.addEventListener("click", function(){setValue('taskRelationSelectedTaskId', item.taskId);});
-        selectElement.appendChild(opt);
-    });            
-}
-
 
 function fillTaskRelationList(id, data, defaultOption, funcValue, funcText, eventHandler){
 	let parentElement = getById(id);

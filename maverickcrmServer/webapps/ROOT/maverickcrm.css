@@ -203,11 +203,11 @@
 		width:44vw;		
 	}
 	
-	#divParentTaskList, #divChildTaskList{
-		height: 2em;
+	#divParentTaskList, #divChildTaskList, #divRelationSearchTaskList{
+		height: 7vh;
 	}
 	
-	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
+	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divRelationSearchTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}	
