@@ -126,8 +126,14 @@
 					<input type="hidden" id="effortUnit" value="1"> 
 					<input type="hidden" id="taskId" value="0">
 					<img align="right"  style="margin-right:1em;" src="images/save.png" title="Save task" id="imgSaveTask" onmousedown="toggleAsBotton(this)" onmouseup="saveTask(); toggleAsBotton(this)">
-					<input type="image" style="margin-right:0.5em;"  src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
-	            	<input type="image" style="margin-right:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addChildTask" data-parentTask="0" data-state="0" onclick="setChildTask(this)">
+					<input type="image" style="margin-right:0.5em;" src="images/add_project.png" title="Add full project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this)">
+
+					<img style="margin-right:0.5em; display: none" src="images/add_child.png" title="New sub task indicator" id="subTaskInd">
+					<div id="divMenuNewSubTaskParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.addSubTask, 0, true)">
+		            	<img style="margin-right:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addSubTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.addSubTask, null, true)">
+		            	<div id="divMenuNewSubTask" onblur="menuHandler(menuData.addSubTask, 0)"></div>
+	            	</div>
+	            		            	
 					<div id="divMenuNewTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.newTaskType, 0, false)">
 		            	<img style="margin-right:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType, null, true)">
 		            	<div id="divMenuNewTaskType" onblur="menuHandler(menuData.newTaskType, 0)"></div>

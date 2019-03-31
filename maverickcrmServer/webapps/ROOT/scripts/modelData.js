@@ -197,7 +197,8 @@ var taskModel={
 	dueDate:new Model(null, -1, null, 'dueDate', function(){return this.dom.getIsoDate()}, function(val){this.dom.setJsonDate(val); this.dom.setDisplayDate();}, new Method([''], 'Please select a due date', true), new Method([''], 'Please select a due date', true), new Method()),
 	status:new Model('cmbDetailStatus', -1, null, 'statusId', null, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.taskStatus, val, pastAct);}, new Method(null, null, true), new Method(null, null, true), new Method()),
 	permissionType:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()), //1:edit, 2:view
-	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method())
+	version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()),
+	subTask:new Model(null, -1, {isDefault:true, disabled:false, value:0, set:false, parentTask:0}, null, null, null, new Method(), new Method(), new Method())
 	}
 
 taskModel.status.changed = false;
@@ -306,6 +307,9 @@ var searchModel = {
 var newTaskModel = {
 		taskType:new Model(null, null, {isDefault:true, disabled:false, value:0}, null, function(){return this.dom.value}, function(val, pastAct){this.dom.value = val; imgListSetter(menuData.newTaskType, val, pastAct);}, new Method(), new Method(), new Method())
 }
+var newSubTaskModel = {
+		taskType:new Model(null, null, {isDefault:true, disabled:false, value:0}, null, function(){return this.dom.value}, function(val, postAct){imgListSetterPreCheck(menuData.addSubTask, val, postAct);}, new Method(), new Method(), new Method())
+}
 
 var searchTaskStatusToggle = new Map();
 
@@ -319,9 +323,20 @@ function MenuItem(menuid, menuDiv, model, menuList, action, parent ){
 }
 var menuData = {}
 
-function imgListSetter(MenuItem, val, pastAct){
+function imgListSetter(MenuItem, val, postAct){
 	MenuItem.menuid.src = MenuItem.menuList[val].src;
 	MenuItem.menuid.title = MenuItem.menuList[val].title;
-	if(pastAct)
+	if(postAct)
 		MenuItem.action(val);
+}
+
+function imgListSetterPreCheck(MenuItem, val, postAct){
+
+	if(taskModel.subTask.dom.set){
+		setMsg(msgType.nok, 'Save this sub task first');
+		return false;
+	}
+	MenuItem.menuid.src = MenuItem.menuList[val].src;
+	MenuItem.menuid.title = MenuItem.menuList[val].title;	
+	MenuItem.action(val);
 }

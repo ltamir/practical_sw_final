@@ -140,7 +140,6 @@ function toggleAsBotton(img){
 
 function initMenuData(){
 	menuData.taskType = new MenuItem(getById('imgTaskType'), getById('divMenuTaskType'), taskModel.taskType, taskTypeList,
-
 			(val)=>{
 				if(val != 1 && taskModel.taskType.prevTaskType == 1)
 					alert('Changing from Project will delete permissions and Linked customers of this task');
@@ -148,6 +147,7 @@ function initMenuData(){
 	menuData.taskStatus = new MenuItem(getById('imgTaskStatus'), getById('divMenuTaskStatus'), taskModel.status, taskStatusList, (val)=>{taskModel.status.changed = true;},  getById('divMenuTaskStatusParent'));
 	menuData.taskEffortUnit = new MenuItem(getById('imgEffortUnit'), getById('divMenuEffortUnit'), taskModel.effortUnit, effortUnitList, dummyAction, getById('divMenuEffortUnitParent'));	
 	menuData.newTaskType = new MenuItem(getById('addTask'), getById('divMenuNewTaskType'), newTaskModel.taskType, taskTypeList, newTask, getById('divMenuNewTaskTypeParent'));
+	menuData.addSubTask = new MenuItem(getById('addSubTask'), getById('divMenuNewSubTask'), newSubTaskModel.taskType, taskTypeList, addSubTask, getById('divMenuNewSubTaskParent'));
 	menuData.searchTaskType = new MenuItem(getById('imgSearchTaskType'), getById('divSearchTaskType'), searchModel.taskType, taskTypeList, dummyAction, getById('divSearchTaskTypeParent'));
 	menuData.searchTaskStatus = new MenuItem(getById('imgSearchTaskStatus'), getById('divSearchTaskStatus'), searchModel.status, searchStatusList, dummyAction, getById('divSearchTaskStatusParent'));
 }
@@ -157,7 +157,7 @@ function showMenu(menuItem){
 		if(item.value == -1 || menuItem.model.getValue() == item.value) continue;
 		let imgItem = document.createElement('IMG');
 		setImage(imgItem, item);
-		imgItem.addEventListener('click', function(){menuItem.model.setValue(item.value, true); menuHandler(menuItem)})
+		imgItem.addEventListener("click", ()=>{menuItem.model.setValue(item.value, true); menuHandler(menuItem)})
 		menuItem.menuDiv.appendChild(imgItem);
 		let br = document.createElement('BR');
 		menuItem.menuDiv.appendChild(br);

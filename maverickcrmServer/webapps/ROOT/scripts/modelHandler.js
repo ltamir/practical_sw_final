@@ -64,9 +64,9 @@ function newTask(taskType){
 	taskModel.status.setValue(1);
 	taskModel.status.setValue(1);
 	
-	if(getById('addChildTask').getAttribute('data-state') == 1){
-		setChildTask(getById('addChildTask'));
-	}else if(taskType != 1 && getById('cmbParentProject') == null){
+	if(taskModel.subTask.dom.set == true)
+		cancelSubTask();
+	else if(taskType != 1 && getById('cmbParentProject') == null){
 		let parentProject = getById('cmbSearchProject').cloneNode(true);
 		parentProject.onchange = null;
 		parentProject.id = 'cmbParentProject'
@@ -121,28 +121,31 @@ function viewAddress(id, item){
 	setTextDirectionModel(addressModel);
 }
 
-function setChildTask(setter){
-	
-	if(setter.getAttribute('data-parentTask') > 0){
-		setter.setAttribute('data-parentTask', 0);
-		setter.setAttribute('data-state', 0);
-		setMsg(msgType.ok, 'new Task will not be set as child');
-		toggleAsBotton(setter)
-		return;
-	}
+function cancelSubTask(){
+	toggleAsBotton(getById('subTaskInd'));
+	getById('subTaskInd').style.display = 'none';
+	taskModel.subTask.dom.set = false;
+	taskModel.subTask.dom.parentTask = 0;
+	menuData.addSubTask.menuid.src = 'images/add_child.png';
+	menuData.addSubTask.menuid.title = 'Add a child to this task';	
+	menuData.addSubTask.menuid.style.display='';
+}
 
-	if(taskModel.taskId.getValue() == 0){
+function addSubTask(taskTypeId){
+	let parentTaskId = taskModel.taskId.getValue();
+
+	if(parentTaskId == 0){
 		setMsg(msgType.nok, 'Please select a task');
 		return;
 	}
 	
-	if(!checkPermission()) return;
-	
-	toggleAsBotton(setter);
-	let parentTaskId = taskModel.taskId.getValue();
-	newTask(taskModel.taskType.getValue());
-	setter.setAttribute('data-parentTask', parentTaskId);
-	setter.setAttribute('data-state', 1);
+	newTask(taskTypeId);
+	taskModel.subTask.dom.set = true;
+	taskModel.subTask.dom.parentTask = parentTaskId;
+	toggleAsBotton(getById('subTaskInd'));
+	menuData.addSubTask.menuid.style.display='none';
+	getById('subTaskInd').style.display = '';
+	getById('subTaskInd').title += 'New sub task' 
 	setMsg(msgType.ok, 'new Task will be set as child');
 }
 
@@ -158,10 +161,9 @@ function viewTask(id, data){
 	taskModel.effortUnit.setValue(task.effortUnit);
 	taskModel.dueDate.setValue(task.dueDate);
 	
-	let addChildTaskState = getById('addChildTask');
-	if(addChildTaskState.getAttribute('data-state') == 1){
-		setChildTask(addChildTaskState);
-	}
+	if(taskModel.subTask.dom.set == true)
+		cancelSubTask();
+	
 	taskModel.status.oldValue = task.status.statusId;
 	taskModel.taskType.prevTaskType = task.taskType.taskTypeId;
 	
@@ -266,6 +268,7 @@ function checkPermission(){
 		setMsg(msgType.nok, 'You have view permission on this task');
 		return false;
 	}
+	
 	return true;
 }
 
@@ -318,8 +321,8 @@ function saveTask(){
 	getData(pass, 'taskrelation', "?actionId=5&taskRelationTypeId=0&taskId="+taskModel.taskId.getValue(), (id, data)=>{
 		pass.length = data.array.length;
 		
-		let addChildTask = getById('addChildTask'); //if this is a non project new task and was not set as child task
-		if(addChildTask.getAttribute('data-parentTask') == 0 && taskModel.taskType.getValue() != 1)
+		//if this is a non project new task and was not set as child task
+		if(taskModel.subTask.dom.set == false && taskModel.taskType.getValue() != 1)
 			if(!validate(pass, 0, 'Please add a parent task in Relations',getData, validate)) return;
 		
 		genericSave(()=>{return true;}, taskModel, taskModel.taskId, Module.task, null, 'task',
@@ -345,16 +348,13 @@ function postTaskSave(resp, method){
 			taskPermissionModel.permissiontypeId.setValue(1);
 			addPermission();	
 		}
-		
-		let addChildTask = getById('addChildTask');
-		if(addChildTask.getAttribute('data-parentTask') != 0){
+
+		if(taskModel.subTask.dom.set == true){
 			taskRelationModel.taskRelationId.setValue(0);
 //			taskRelationModel.taskRelationType.setValue(2);
-			saveRelation(addChildTask.getAttribute('data-parentTask'), resp.taskId, 2);
-			addChildTask.setAttribute('data-parentTask', 0);
-			addChildTask.setAttribute('data-state', 0);
+			saveRelation(taskModel.subTask.dom.parentTask, resp.taskId, 2);
 			isNewChildTask = true;
-			toggleAsBotton(addChildTask);
+			cancelSubTask();
 		}
 		
 		taskModel.taskId.setValue(resp.taskId);
@@ -424,7 +424,6 @@ function postTaskSave(resp, method){
 	updateTaskRow(resp.taskId);
 	setTextDirectionModel(taskModel);
 	
-	addChildTask.setAttribute('data-state', 0);
 	if(!isNewChildTask)
 		viewTotalEffort();
 }
