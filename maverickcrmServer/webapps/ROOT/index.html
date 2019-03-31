@@ -152,7 +152,7 @@
 				<div id="divDataFrame" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; align:right; display:none; font-size: medium; float:left; height:15em; width: 50vw;z-index: 1;">
 					<img src="images/dev_execute.png" id="execJS" title="Execute javascript" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeJs()">
 					<img src="images/add_down.png" id="copyJs" title="copy to JS console" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); copyJS()">
-					<select id="jsHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 46vw;">
+					<select id="jsHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: small; width: 45vw;">
 						<option>for(let i = 0; i &lt; getById('taskList').childNodes.length; i++) addLog(getById('taskList').childNodes[i].innerHTML)</option>
 						<option>getById('')</option>
 						<option>addLog()</option>
@@ -161,10 +161,10 @@
 					<br>
 					<textarea rows="2" cols="80" id="txtJS" style="background-image: none; background-color: #001122; color: LimeGreen; font-family: Lucida Console; font-size: medium; width: 50vw;" placeholder="getById();addLog();"></textarea>
 					<div id="divConsoleLog" class="cssDivRow"></div>
-					<br>
+
 					<img src="images/dev_execute.png" id="execSQL" title="Execute SQL" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); executeSQL()">					
 					<img src="images/add_down.png" id="copySQL" title="copy to SQL console" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); copySQL()">
-					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: medium; width: 46vw;">
+					<select id="sqlHistory" size="1" style="font-family: Tahoma, Geneva, sans-serif; font-size: small; width: 45vw;">
 						<option>select * from task</option>
 					</select>
 					<br>

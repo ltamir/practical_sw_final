@@ -95,18 +95,7 @@
     border-collapse: collapse;
     width: 100%;
 	}
-	
-/* 	table.cssTaskList tbody {
-	    float: left;
-	    width: 100%;
-	    font-family: Geneva, arial, sans-serif;
-	    font-size:16px;
-	    overflow-y: auto;
-	    overflow-x: hidden;
-	    height: 30vh;
-	    background-color: WhiteSmoke;
-	    color: #121212;
-	} */
+
 	#taskList{
 		float: left;
 	    width: 100%;
@@ -203,10 +192,12 @@
 		width:44vw;		
 	}
 	
-	#divParentTaskList, #divChildTaskList, #divRelationSearchTaskList{
-		height: 8vh;
+	#divChildTaskList, #divRelationSearchTaskList{
+		height: 7.5vh;
 	}
-	
+	#divParentTaskList{
+		height: 7vh;
+	}
 	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divRelationSearchTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
@@ -216,18 +207,25 @@
 		border-bottom:none;
 	}	
 	#divTaskLogList, #divConsoleLog, #divTimeline{
-		height: 5.5em;
 		font-family: arial, sans-serif;
         background-color: WhiteSmoke;
 	}
+	
+	#divAttachmentList{     
+        height: 22vh;
+	}
+	
+	#divTaskLogList{
+		height: 20vh;
+	}	
 	#divConsoleLog{
 		height: 4.5em;
 		width: 50vw;
 	}
 	#divTimeline{
-		height: 11.6em;
 		border-bottom: none;
-		wisth: 50vw;
+		height: 30vh;
+		width: 50vw;
 	}
 	
 	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divTaskLogList, #divParentTaskList, #divChildTaskList, #hrTask, #hrtaskTab{
@@ -264,10 +262,6 @@
 		left: 4em;
 	}	
 	
-	#divAttachmentList{     
-        height: 4.5em;
-	}
-
 	.cssDivRow{
 		background-color: WhiteSmoke;
 		font-family: arial, sans-serif;
