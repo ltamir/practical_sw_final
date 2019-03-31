@@ -47,11 +47,11 @@
             <td width="5%">
                 <input type="text" class="cssMenu" size="15" title="Title" placeholder="task title" id="txtSearchTitle" onchange="setSearchPredicate(this)" onkeypress="submitOnEnter(event, ()=>{searchTask(prepareSearchTask())})">            
             </td>
-            <td style="width: 10vw;">
+            <td style="width: 8vw;">
             	<div id="tblSearchDueDate" style="display:inline-block;outline:none;" ></div>
             </td> 
-            <td width="22%" align="right">            	            	
-            	<span id="lblLoggedInContact"></span>
+            <td style="width: 20vw;" align="right">            	            	
+            	<span id="lblLoggedInContact" style="display:inline-block; width: 7vw;"></span>
             	<img src="images/logout.png" style="margin-left:0.1em;" id="logout" title="Logout" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); logout()">
             	<img src="images/dev_tools.png" style="margin-left:0.1em;" id="showDatabase" title="Show SQL" data-state="0" onclick="toggleDatabase(this)">
             	<select id="cmbDebug" tabIndex="-1" onchange="setDebugModule()" style="width:4.5em;">
