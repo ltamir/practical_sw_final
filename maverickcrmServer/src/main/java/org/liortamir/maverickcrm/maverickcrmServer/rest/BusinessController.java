@@ -181,7 +181,7 @@ public class BusinessController extends HttpServlet {
 //			}
 			float childrenEffort = calcSubEffort(task);
 			int parentEffort = BLHelper.getEffortHours(task.getEffortUnit(),task.getEffort());
-			;
+			
 			childrenEffort += (int) calculateUsedEffort((int)(parentEffort - childrenEffort), 1, task.getStatus().getStatusId());
 			int usedParentEffort = (int)(childrenEffort / (float)parentEffort * 100);
 			jsonTask.addProperty("usedEffortFormatted", buildTotalEffortTime((int)childrenEffort, new JsonObject()));
