@@ -8,6 +8,7 @@ function setTab(tab){
 		getById('TabRelation').className='cssTab';
 		getById('TabLinkedCustomer').className='cssTab';
 		getById('TabPermission').className='cssTab';
+		getById('tabWork').className='cssTab';
 		activateTabTaskLog();
 		activeTaskTab = tab;
 		break;
@@ -17,6 +18,7 @@ function setTab(tab){
 		getById('TabRelation').className='cssTabSelected';
 		getById('TabLinkedCustomer').className='cssTab';
 		getById('TabPermission').className='cssTab';
+		getById('tabWork').className='cssTab';
 		activateTabRelation();  
 		activeTaskTab = tab;
 		break;
@@ -26,15 +28,27 @@ function setTab(tab){
 		getById('TabRelation').className='cssTab';		
 		getById('TabLinkedCustomer').className='cssTab';
 		getById('TabPermission').className='cssTab';
+		getById('tabWork').className='cssTab';
 		activateTabAttachment();
 		activeTaskTab = tab;
 		break;
+	case tabEnum.work:
+		getById('tabWork').className='cssTabSelected';
+		getById('TabAttachment').className='cssTab';
+		getById('TabLog').className='cssTab';
+		getById('TabRelation').className='cssTab';		
+		getById('TabLinkedCustomer').className='cssTab';
+		getById('TabPermission').className='cssTab';
+		activateTabWork();
+		activeTaskTab = tab;
+		break;		
 	case tabEnum.linkedCustomer:
 		getById('TabLinkedCustomer').className='cssTabSelected';
 		getById('TabAttachment').className='cssTab';
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTab';	
 		getById('TabPermission').className='cssTab';
+		getById('tabWork').className='cssTab';
 		activateTabLinkedCustomer();
 		activeTaskTab = tab;
 		break;
@@ -44,6 +58,7 @@ function setTab(tab){
 		getById('TabLog').className='cssTab';
 		getById('TabRelation').className='cssTab';	
 		getById('TabPermission').className='cssTabSelected';
+		getById('tabWork').className='cssTab';
 		activateTabPermission();
 		activeTaskTab = tab;
 		break;		
@@ -185,6 +200,65 @@ function activateTabRelation(){
 		setDomPermission(taskRelationModel);
 	});
 	getById('divTaskTab').removeAttribute('data-selected');
+}
+
+function activateTabWork(){
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getHTML('tabWork.html').then(function(response){
+		fillTab('divTaskTab', response);
+		if(getValue('taskId') > 0)
+			getDataEx('divParentTaskList', 'taskrelation', '?actionId=5&taskRelationTypeId=0&taskId='+getValue('taskId'), fillDivList, null, 
+					(divRow, item) => {
+						let task = item.parentTask;
+				        let gotoImg = createImage(taskTypeList[task.taskType.taskTypeId]);
+				        gotoImg.title = "goto " + gotoImg.title;
+				        gotoImg.style.marginLeft = '0.1em';
+				        gotoImg.addEventListener("click", function(){getData('', 'task', '?actionId=3&taskId='+task.taskId, viewTask)});
+				        divRow.appendChild(gotoImg);
+					},
+					(txtPart,item)=>{
+						let task = item.parentTask;
+						let relTask = document.createElement("SPAN");
+				    	relTask.style.marginLeft = '0.3em';
+				    	relTask.innerHTML = task.title;
+				    	relTask.setAttribute("data-taskId", task.taskId);
+				    	relTask.classList.add("cssTaskRelationTitle");
+						txtPart.innerHTML = task.title;
+						
+						}, 
+					(txtPart,item)=>{
+						let task = item.parentTask;
+						txtPart.addEventListener("click", function(){
+				    		toggler.toggle(txtPart);   		
+			    	    	getDataEx('divSelectedTaskLog', 'tasklog', '?actionId=2&taskId='+task.taskId, fillDivList, null, 
+			    	        		(divRow,item)=>{
+			    	        			divRow.setAttribute('data-taskLogId', item.taskLogId);
+			    	    				let taskLogImg = document.createElement("IMG");
+			    	    				taskLogImg.src= taskLogTypeList[item.taskLogType.taskLogTypeId].src;
+			    	    				taskLogImg.title = taskLogTypeList[item.taskLogType.taskLogTypeId].title;
+			    	    				let prefixPart = document.createElement('SPAN');
+			    	    				let thisDate = getDate(item.sysdate.split(' ')[0]);
+			    	    				prefixPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
+			    	    				divRow.appendChild(prefixPart);
+			    	    				divRow.appendChild(taskLogImg);
+			    	    				divRow.addEventListener("click", function(){
+			    	        				toggler.toggle(divRow);
+			    	        			});	
+			    	    			}, 
+			    	        		(txtPart,item)=>{
+			    	        			let thisDate = getDate(item.sysdate.split(' ')[0]);
+			    	        			txtPart.innerHTML = item.description;
+			    	        			txtPart.title = thisDate + ": " + item.contact.firstName + " " + item.contact.lastName;
+			    	        			}, 
+			    	        		null);
+			    		});
+
+					})		
+	});
+}
+
+function setWorkTaskLog(logType){
+	taskLogModel.taskLogType.setValue(logType);
 }
 
 function activateTabAttachment(){

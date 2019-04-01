@@ -198,7 +198,7 @@
 	#divParentTaskList{
 		height: 7vh;
 	}
-	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divRelationSearchTaskList, #divTaskLogList, #divConsoleLog, #divTimeline{
+	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divParentTaskList, #divChildTaskList, #divRelationSearchTaskList, #divTaskLogList, #divSelectedTaskLog, #divConsoleLog, #divTimeline{
 		overflow-y: scroll;
 		border-bottom: 1px inset #000000;
 	}	
@@ -218,6 +218,9 @@
 	#divTaskLogList{
 		height: 20vh;
 	}	
+	#divSelectedTaskLog{
+		height: 15vh;
+	}		
 	#divConsoleLog{
 		height: 4.5em;
 		width: 50vw;
@@ -228,7 +231,7 @@
 		width: 50vw;
 	}
 	
-	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divTaskLogList, #divParentTaskList, #divChildTaskList, #hrTask, #hrtaskTab{
+	#divAttachmentList, #divPermissionRow, #cmbRelationTaskList, #divTaskLogList, #divSelectedTaskLog, #divParentTaskList, #divChildTaskList, #hrTask, #hrtaskTab{
 		width: 45vw;
 	}
 	

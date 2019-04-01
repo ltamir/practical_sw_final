@@ -428,6 +428,13 @@ function postTaskSave(resp, method){
 		viewTotalEffort();
 }
 
+function saveWorkTaskLog(){
+	taskLogModel.contact.setValue(taskModel.contact.getValue());
+	taskLogModel.description.setValue(getById('txtTaskLogDescription').value);
+	
+	saveTaskLog();	
+	taskLogModel.taskLogType.setValue(0);
+}
 function saveTaskLog(){
 	if(taskModel.taskId == 0){
 		setMsg(msgType.nok, 'Please select a task');
