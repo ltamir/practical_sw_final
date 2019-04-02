@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -49,6 +50,7 @@ public class LoginController extends HttpServlet {
 			if(action == ActionEnum.GET_ALL) {
 				
 				List<Login> bulk = dal.getAll();
+				Collections.sort(bulk, (l1, l2)->l1.getContact().toString().compareTo(l2.getContact().toString()));
 				json.add("array", jsonHelper.toJsonTree(bulk));
 			
 			}else if(action == ActionEnum.GET_SINGLE){

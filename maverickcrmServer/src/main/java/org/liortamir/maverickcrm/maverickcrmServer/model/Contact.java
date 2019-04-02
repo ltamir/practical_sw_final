@@ -82,6 +82,9 @@ public class Contact {
 		this.notes = notes;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return getFirstName() + " " + getLastName();
+	}
 	
 }
