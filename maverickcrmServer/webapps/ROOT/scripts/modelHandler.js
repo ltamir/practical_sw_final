@@ -588,6 +588,7 @@ function saveContact(){
 
 function saveAssociation(action){
 	if(action == 1){	// POST  or  PUT
+		associationModel.customer.setValue(getValue('cmbConnectedCustomer'));
 		genericSave(()=>{return true;}, associationModel, associationModel.associationId, Module.contact, null, 'association',
 			(resp)=>{
 				if(getById('imgFilterContact').getAttribute("data-state") == 1)

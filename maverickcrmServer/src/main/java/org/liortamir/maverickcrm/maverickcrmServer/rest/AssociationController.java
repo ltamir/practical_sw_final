@@ -105,7 +105,7 @@ public class AssociationController extends HttpServlet {
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, connectionId);
 			
 			ServletHelper.doSuccess(json);
-		}catch(SQLException | NullPointerException e) {
+		}catch(SQLException | NumberFormatException | NullPointerException e) {
 			ServletHelper.doError(e, this, ServletHelper.METHOD_POST, json, req);
 			json.addProperty(APIConst.FLD_ASSOCIATION_ID, "0");
 			if( e instanceof SQLException && ((SQLException)e).getSQLState().equals("23505")) {
