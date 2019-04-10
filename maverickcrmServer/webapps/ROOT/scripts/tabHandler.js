@@ -1,5 +1,5 @@
 function setTab(tab){
-	//{taskLog:1, relation:2, attachment:3, customer:4, contact:5}
+	//taskLog:1, relation:2, attachment:3, customer:4, timeline:5, linkedCustomer:6, login:7, connection:8, permission:9, work:10
 	
 	switch(tab){
 	case tabEnum.taskLog:
