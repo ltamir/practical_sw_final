@@ -62,11 +62,11 @@ public class Bootstrap {
 		try {
 			tomcat.start();
 		} catch (MalformedURLException | ServletException | LifecycleException e) {
+			System.out.println("Error starting Tomcat");
 			e.printStackTrace();
 			System.exit(0);
 		}
 		
-
 	}
 
 }
