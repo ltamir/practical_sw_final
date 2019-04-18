@@ -431,7 +431,7 @@
 	
 	
 	#tblConnectedEditContact, #divConnectedEditAddress, #cssConnectionList, #divAddressList{
-		width: 33em;
+		width: 50vw;
 	}
 		
 	#divAddressList{
