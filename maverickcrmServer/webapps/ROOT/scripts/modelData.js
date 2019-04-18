@@ -263,7 +263,7 @@ var attachmentModel = {
 
 var associationModel = {
 		version:new Model(null, -1, null, null, null, null, new Method(), new Method(), new Method()),
-		associationId:new Model('connectionAssociationId', -1, null, 'associationId', null, null, new Method(), new Method(null, null, true), new Method([0, ''], 'Something not selected', true)),
+		associationId:new Model('connectionAssociationId', -1, null, 'associationId', null, null, new Method(), new Method(null, null, true), new Method([0, ''], 'Filter the customer you want to remove', true)),
 		contact:new Model('connectionContactId', -1, null, 'contactId', null, null, new Method([0,''], 'Contact not selected', true), new Method([0,''], 'Contact not selected', true), new Method([0,''], 'Contact not selected', true)),
 		customer:new Model('cmbConnectedCustomer', -1, null, 'customerId', null, null, new Method([0,''], 'Customer not selected', true), new Method([0,''], 'Customer not selected', true), new Method([0,''], 'Customer not selected', true)),
 		contactType:new Model('cmbContactType', -1, null, 'contactTypeId', null, null, new Method([0,''], 'Contact Type not selected', true), new Method([0,''], 'Contact Type not selected', true), new Method()),
