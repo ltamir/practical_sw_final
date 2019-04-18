@@ -175,8 +175,9 @@ function fillDivList(divId, data, defaultOption, funcValue, funcText, eventHandl
 	
 	data.array.forEach(function (item) {
 		let divRow = document.createElement('DIV');
-		divList.appendChild(divRow);	
-		funcValue(divRow, item); 
+		divList.appendChild(divRow);
+		if(funcValue != null)
+			funcValue(divRow, item); 
 		let txtPart;
 		if(funcText != null){
 			txtPart = document.createElement("SPAN");
@@ -325,6 +326,8 @@ function setTextDirection(dom, value){
 	const heb_start = 1488;
 	const heb_end = 1514;
 	const non_letters = 65;
+	
+	if(value == null) return;
 	
 	for(let pos = 0; pos < 4; pos++){
 		if(value.charCodeAt(pos) > non_letters && value.charCodeAt(pos) >= heb_start && value.charCodeAt(pos) <= heb_end){
