@@ -5,7 +5,7 @@
 
 <br>
 
-<table id="tblConnectedEditContact" class="cssCard card">
+<table id="tblConnectedEditContact" class="cssCard card" border="1">
 <tr>
 	<td rowspan="3" style="border: 2px outset #DCDCDC;">
 		<input type="text" id="txtFirstName" size="9" class="cssCardInput" placeholder="First name">
@@ -21,7 +21,10 @@
 	<td rowspan="2">
 		<img title="Notes" src="images/notes.png" class="cssCardInput" style="vertical-align: 150%;">
 		<textarea rows="3" cols="18" id="txtNotes" class="cssCardInput" placeholder="Notes..." ></textarea>
-	</td>		
+	</td>	
+	<td rowspan="3">
+		<div id="divAssociatedCustomer"><span>No connected Customers</span></div>
+	</td>	
 </tr>
 <tr>
 	<td>
@@ -43,10 +46,10 @@
 <input type="hidden" id="connectionAssociationId" value="0">
 <div id="divAddressList"></div>
 <div id="divConnectedEditAddress" class="cssCard card">
-	<input type="text" id="txtAddressStreet" size="16" class="cssCardInput" placeholder="Street">
+	<input type="text" id="txtAddressStreet" size="30" class="cssCardInput" placeholder="Street">
 	<input type="text" id="txtAddressHouseNum" size="2" class="cssCardInput" placeholder="No.">
-	<input type="text" id="txtAddressCity" size="12" class="cssCardInput" placeholder="City">
-	<input type="text" id="txtAddressCountry" size="8" class="cssCardInput" placeholder="Country">	
+	<input type="text" id="txtAddressCity" size="19" class="cssCardInput" placeholder="City">
+	<input type="text" id="txtAddressCountry" size="12" class="cssCardInput" placeholder="Country">	
 	<img src="images/save.png" title="Save address" id="imgSaveAddress" style="float:right; margin-left:0.2em;" onmousedown="toggleAsBotton(this)" onmouseup="saveAddress(); toggleAsBotton(this)">
 	<img src="images/newitem.png" title="New address" id="imgNewAddress" style="float:right" onmousedown="toggleAsBotton(this)" onmouseup="newAddress(); toggleAsBotton(this)">
 	<input type="hidden" id="addressId" value="0">
