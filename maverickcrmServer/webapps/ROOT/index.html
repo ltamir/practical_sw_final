@@ -133,11 +133,8 @@
 		            	<img style="margin-right:0.5em;" src="images/add_child.png" title="Add a child to this task" id="addSubTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.addSubTask, null, true)">
 		            	<div id="divMenuNewSubTask" onblur="menuHandler(menuData.addSubTask, 0)"></div>
 	            	</div>
-	            		            	
-					<div id="divMenuNewTaskTypeParent" style="display:inline-block;outline:none;" onblur="menuHandler(menuData.newTaskType, 0, false)">
-		            	<img style="margin-right:0.5em;" src="images/newitem.png" title="Add a single task" id="addTask" data-state="0" onmousedown="toggleAsBotton(this)" onmouseup="menuHandler(menuData.newTaskType, null, true)">
-		            	<div id="divMenuNewTaskType" onblur="menuHandler(menuData.newTaskType, 0)"></div>
-	            	</div>
+	            	
+	            	<input type="image" style="margin-right:0.5em;" src="images/newitem.png" title="Add a new Project" id="addProject" onmousedown="toggleAsBotton(this)" onmouseup="toggleAsBotton(this); newTask(1)">	            	
             	</div>
 				<hr id="hrTask" align="left">
 				<span class="cssTabSelected" id="TabLog" onclick="setTab(tabEnum.taskLog)">Log</span>

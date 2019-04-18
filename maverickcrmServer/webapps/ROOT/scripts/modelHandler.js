@@ -64,16 +64,17 @@ function newTask(taskType){
 	taskModel.status.setValue(1);
 	taskModel.status.setValue(1);
 	
+	if(getById('cmbParentProject') != null)
+		getById('cmbParentProject').remove();
+	
 	if(taskModel.subTask.dom.set == true)
 		cancelSubTask();
-	else if(taskType != 1 && getById('cmbParentProject') == null){
-		let parentProject = getById('cmbSearchProject').cloneNode(true);
-		parentProject.onchange = null;
-		parentProject.id = 'cmbParentProject'
-		getById('divTaskDetailsBottom').appendChild(parentProject);
-	}else if(taskType == 1 && getById('cmbParentProject') != null){
-		getById('cmbParentProject').remove();
-	}
+//	else if(taskType != 1 && getById('cmbParentProject') == null){
+//		let parentProject = getById('cmbSearchProject').cloneNode(true);
+//		parentProject.onchange = null;
+//		parentProject.id = 'cmbParentProject'
+//		getById('divTaskDetailsBottom').appendChild(parentProject);
+//	}
 	
 	setTab(tabEnum.taskLog); 
 	customerFilterOff(getById('imgFilterCustomer'));
@@ -107,8 +108,22 @@ function viewContact(id, item){
 	contactModel.notes.setValue(contact.notes);
 	contactModel.contactId.setValue(contact.contactId);
 	setTextDirectionModel(contactModel);
+	
+	viewConnectedCustomers(contact.contactId);
+	//getData('divAssociatedCustomer', 'association', '?actionId=8&contactId='+contact.contactId, viewConnectedCustomers)
 }
 
+function viewConnectedCustomers(contactId){
+	
+	let toggler = new divRowToggler('cssTaskRelationTitle', 'cssTaskRelationTitleSelected');
+	getDataEx('divAssociatedCustomer', 'association', '?actionId=8&contactId='+contactId, fillDivList, null,
+			(divRow,item)=>{
+				divRow.addEventListener("click", ()=>{toggler.toggle(divRow)})
+				}, 
+			(txtPart,item)=>txtPart.innerHTML = item.customer.customerName,
+			null
+		);
+}
 
 function viewAddress(id, item){
 	let address = item.address;
