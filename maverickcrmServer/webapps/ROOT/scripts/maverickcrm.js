@@ -293,7 +293,8 @@ function showAllContacts(){
 			}, 
 			(txtPart,item)=>txtPart.innerHTML = item.firstName + " " + item.lastName,
 			null
-		)
+		);
+	associationModel.associationId.setValue(0);
 }
 
 // ***** database & log ***** //
