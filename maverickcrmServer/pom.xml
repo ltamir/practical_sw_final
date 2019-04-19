@@ -12,11 +12,60 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  	<tomcat.version>8.5.23</tomcat.version>
+  	<tomcat.version>8.5.38</tomcat.version>
   	<maven.compiler.source>1.8</maven.compiler.source> 
   <maven.compiler.target>1.8</maven.compiler.target>    
   </properties>
 
+<!-- 	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-jar-plugin</artifactId>
+	      <version>3.1.0</version>
+	      <configuration>
+	        <archive>
+	          <manifest>
+	            <addClasspath>true</addClasspath>
+	            <classpathPrefix>lib/</classpathPrefix>
+	            <mainClass>org.liortamir.maverickcrm.maverickcrmServer.infra.Bootstrap</mainClass>
+	          </manifest>
+	        </archive>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build> -->
+	
+	
+	<build>
+	  <plugins>
+<plugin>
+  <artifactId>maven-assembly-plugin</artifactId>
+  <configuration>
+    <archive>
+      <manifest>
+        <mainClass>org.liortamir.maverickcrm.maverickcrmServer.infra.Bootstrap</mainClass>
+      </manifest>
+    </archive>
+    <descriptorRefs>
+      <descriptorRef>jar-with-dependencies</descriptorRef>
+    </descriptorRefs>
+  </configuration>
+  <executions>
+    <execution>
+      <id>make-assembly</id> <!-- this is used for inheritance merges -->
+      <phase>package</phase> <!-- bind to the packaging phase -->
+      <goals>
+        <goal>single</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+	  </plugins>
+	</build>	
+	
+
+	
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -29,6 +78,14 @@
   		<artifactId>tomcat-embed-core</artifactId>
   		<version>${tomcat.version}</version>
   	</dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-logging-log4j -->
+<dependency>
+    <groupId>org.apache.tomcat.embed</groupId>
+    <artifactId>tomcat-embed-logging-log4j</artifactId>
+    <version>8.5.2</version>
+</dependency>
+
+	
   	<dependency>
   		<groupId>org.apache.tomcat.embed</groupId>
   		<artifactId>tomcat-embed-jasper</artifactId>
